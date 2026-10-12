@@ -150,6 +150,19 @@ class MongoConverterConfigTest {
         assertThat(restored.id()).isEqualTo("promo-code-1");
     }
 
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void deploymentReleaseRetainsTheNetworkDtoStoredIdentityAfterExtraction() {
+        var converter = domainConverter();
+        var value = new com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorAnnouncementLinkDto(
+                "release-notes", "https://example.org/releases/1.0.0");
+        var document = new Document();
+        converter.write(new Payload(value), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+                .isEqualTo("com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos$OperatorAnnouncementLinkDto");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+    }
+
     private MappingMongoConverter mappingMongoConverter() {
         MongoMappingContext mappingContext = new MongoMappingContext();
         mappingContext.afterPropertiesSet();

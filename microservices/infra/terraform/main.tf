@@ -14,9 +14,9 @@ provider "libvirt" {
 }
 
 locals {
-  name     = "myscoutee-msc121"
+  name     = var.lab_name
   guest_ip = cidrhost(var.network_cidr, 10)
-  mac      = "52:54:00:12:10:01"
+  mac      = var.mac_address
 }
 
 resource "libvirt_pool" "lab" {
@@ -37,7 +37,7 @@ resource "libvirt_network" "lab" {
   name      = local.name
   autostart = false
   forward   = { mode = "nat" }
-  bridge    = { name = "virbr-msc121" }
+  bridge    = { name = var.bridge_name }
   ips = [{
     address = cidrhost(var.network_cidr, 1)
     prefix  = tonumber(split("/", var.network_cidr)[1])

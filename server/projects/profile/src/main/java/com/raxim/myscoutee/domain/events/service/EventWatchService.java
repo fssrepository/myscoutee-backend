@@ -44,7 +44,6 @@ public class EventWatchService {
 
     private static final String SYSTEM_USER_ID = "event-watchlist";
     private static final String DEFAULT_CLICK_URL = "/game";
-    private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
 
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -376,8 +375,8 @@ public class EventWatchService {
                 title,
                 "A new spot is available. Open the event to book it.",
                 DEFAULT_CLICK_URL,
-                firstNonBlank(event.getImageUrl(), APP_BADGE_URL),
-                APP_BADGE_URL,
+                firstNonBlank(event.getImageUrl(), null),
+                null,
                 "event-watchlist-available-" + eventId + "-" + userId,
                 payload,
                 SYSTEM_USER_ID));

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "volumes": [
+    {
+      "environment": "REGISTRY_DEMO_VOLUME_NAME",
+      "default": "myscoutee-registry-demo-data-v1"
+    },
+    {
+      "environment": "REGISTRY_DEMO_CLIENT_VOLUME_NAME",
+      "default": "myscoutee-registry-demo-client-data-v1"
+    },
+    {
+      "environment": "PAYMENT_SIMULATOR_VOLUME_NAME",
+      "default": "myscoutee-payment-simulator-data-v1"
+    }
+  ]
+}

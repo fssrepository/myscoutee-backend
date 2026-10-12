@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import java.security.SecureRandom;
 import java.text.Normalizer;
@@ -26,10 +27,10 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.operator.document.GlobalIdentityLinkState;
 import com.raxim.myscoutee.domain.operator.document.GlobalIdentityLinkState.PendingOperation;
 import com.raxim.myscoutee.domain.accounts.api.AccountConsents.Consent;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfile;
 import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityLinkStateRepository;
 import com.raxim.myscoutee.domain.accounts.api.AccountConsents;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfiles;
 import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
 import com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient;
@@ -67,7 +68,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
 
     private final OperatorRevenueRegistryRuntimeResolver runtimeResolver;
     private final GlobalIdentityLinkStateRepository linkRepository;
-    private final ProfileDirectory usersRepository;
+    private final EmailProfiles usersRepository;
     private final AccountConsents privacyConsentsRepository;
     private final ObjectMapper objectMapper;
     private final GlobalIdentityVoprfClient voprfClient;
@@ -80,7 +81,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
     public OperatorGlobalIdentityService(
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             GlobalIdentityLinkStateRepository linkRepository,
-            ProfileDirectory usersRepository,
+            EmailProfiles usersRepository,
             AccountConsents privacyConsentsRepository,
             ObjectMapper objectMapper) {
         this(
@@ -97,7 +98,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
     OperatorGlobalIdentityService(
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             GlobalIdentityLinkStateRepository linkRepository,
-            ProfileDirectory usersRepository,
+            EmailProfiles usersRepository,
             AccountConsents privacyConsentsRepository,
             ObjectMapper objectMapper,
             GlobalIdentityVoprfClient voprfClient,
@@ -229,8 +230,17 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
             return;
         }
         RegistryProtocol.requirePeriod(period);
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(
-                qualifiedUserIds.stream().distinct().toList())) {
+        var users = qualifiedUserIds.stream().distinct().toList();
+        // The same account port is local in the monolith and bounded over HTTP.
+        for (int offset = 0; offset < users.size(); offset += 1024) {
+            prepareQualifiedProfiles(runtime, key, period, usersRepository.findByUserIdIn(
+                    users.subList(offset, Math.min(users.size(), offset + 1024))));
+        }
+    }
+
+    private void prepareQualifiedProfiles(RegisteredRuntime runtime, GlobalIdentityVoprfKey key,
+            String period, List<? extends EmailProfile> users) {
+        for (EmailProfile user : users) {
             if (!StringUtils.hasText(user.getUserId())
                     || !StringUtils.hasText(user.getEmail())) {
                 throw new IllegalStateException(
@@ -301,8 +311,8 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
         String consentNonce = RegistryProtocol.randomToken(
                 "consent_",
                 secureRandom);
-        String consentCommitment = RegistryProtocol.sha256(
-                RegistryProtocol.canonical(
+        String consentCommitment = CanonicalValues.sha256(
+                CanonicalValues.canonical(
                         CONSENT_EVIDENCE_DOMAIN,
                         privacyConsent.revisionId(),
                         Integer.toString(privacyConsent.revisionVersion()),
@@ -375,7 +385,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
         pending.setEffectivePeriod(currentPeriod());
         pending.setReasonCommitment(reasonCommitment(reasonCode, now));
         pending.setCreatedAt(now);
-        pending.setPayloadHash(RegistryProtocol.sha256(
+        pending.setPayloadHash(CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityLinkActionPayload(
                         pending.getAction(),
                         state.getLinkId(),
@@ -448,7 +458,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
         pending.setEffectivePeriod(effectivePeriod);
         pending.setReasonCommitment(reasonCommitment("KEY_ROTATION", now));
         pending.setCreatedAt(now);
-        pending.setPayloadHash(RegistryProtocol.sha256(
+        pending.setPayloadHash(CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityLinkActionPayload(
                         pending.getAction(),
                         state.getLinkId(),
@@ -487,7 +497,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
         pending.setVerifiedAt(verifiedAt);
         pending.setEffectivePeriod(effectivePeriod);
         pending.setCreatedAt(verifiedAt);
-        pending.setPayloadHash(RegistryProtocol.sha256(
+        pending.setPayloadHash(CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityLinkPayload(
                         pending.getKeyVersion(),
                         pending.getSuite(),
@@ -629,11 +639,11 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
             RegisteredRuntime runtime,
             GlobalIdentityVoprfKey key,
             String normalizedEmail) {
-        byte[] privateInput = RegistryProtocol.canonical(
+        byte[] privateInput = CanonicalValues.canonical(
                 INPUT_DOMAIN,
                 normalizedEmail);
         try (BlindSession blind = voprfClient.blind(privateInput)) {
-            String payloadHash = RegistryProtocol.sha256(
+            String payloadHash = CanonicalValues.sha256(
                     RegistryProtocol.globalIdentityEvaluationPayload(
                             key.keyVersion(),
                             key.suite(),
@@ -680,7 +690,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
             verifyEvaluationResponse(
                     runtime,
                     key,
-                    RegistryProtocol.sha256(signedMessage),
+                    CanonicalValues.sha256(signedMessage),
                     response);
             byte[] output = voprfClient.finish(
                     blind,
@@ -729,7 +739,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
                 || !runtime.registryKeyId().equals(key.registryKeyId())
                 || !runtime.registryPublicKeyBase64().equals(
                         key.registryPublicKey())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityVoprfKey(key),
                         key.signature())) {
@@ -737,7 +747,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
                     HttpStatus.CONFLICT,
                     "Global identity registry key failed its trust check.");
         }
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 key.activatedAt(),
                 "activated_at");
         return key;
@@ -768,13 +778,13 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
                     HttpStatus.CONFLICT,
                     "Global identity evaluation failed its trust check.");
         }
-        String expectedResponseHash = RegistryProtocol.sha256(
+        String expectedResponseHash = CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityEvaluationResult(response));
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 response.evaluatedAt(),
                 "evaluated_at");
         if (!expectedResponseHash.equals(response.responseHash())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityEvaluationReceipt(
                                 response),
@@ -897,22 +907,22 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
             throw new IllegalStateException(
                     "Global identity event does not match the request.");
         }
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 event.aggregateCommitment(),
                 "aggregate_commitment");
         RegistryProtocol.requireToken(event.eventId(), "event_id");
         RegistryProtocol.requirePeriod(event.period());
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 event.previousEventHash(),
                 "previous_event_hash");
-        RegistryProtocol.requireHash(event.eventHash(), "event_hash");
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireHash(event.eventHash(), "event_hash");
+        CanonicalValues.requireUtcTimestamp(
                 event.acceptedAt(),
                 "accepted_at");
-        String expectedHash = RegistryProtocol.sha256(
+        String expectedHash = CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityEvent(event));
         if (!expectedHash.equals(event.eventHash())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityEventReceipt(event),
                         event.signature())) {
@@ -947,11 +957,11 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
         }
         PendingOperation pending = state.getPendingOperation();
         if (Boolean.TRUE.equals(state.getPurgeRequested())) {
-            RegistryProtocol.requireUtcTimestamp(
+            CanonicalValues.requireUtcTimestamp(
                     state.getPurgeRequestedAt(),
                     "purge_requested_at");
             if (StringUtils.hasText(state.getPurgedAt())) {
-                RegistryProtocol.requireUtcTimestamp(
+                CanonicalValues.requireUtcTimestamp(
                         state.getPurgedAt(),
                         "purged_at");
                 if (!state.getLocalUserId().startsWith("gitomb_")
@@ -976,12 +986,12 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
             RegistryProtocol.requireToken(
                     pending.getIdempotencyKey(),
                     "idempotency_key");
-            RegistryProtocol.requireHash(
+            CanonicalValues.requireHash(
                     pending.getPayloadHash(),
                     "payload_hash");
             String expectedPayload;
             if (ACTION_LINK.equals(pending.getAction())) {
-                expectedPayload = RegistryProtocol.sha256(
+                expectedPayload = CanonicalValues.sha256(
                         RegistryProtocol.globalIdentityLinkPayload(
                                 pending.getKeyVersion(),
                                 pending.getSuite(),
@@ -997,7 +1007,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
                 boolean correction =
                         RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_CORRECT
                                 .equals(pending.getAction());
-                expectedPayload = RegistryProtocol.sha256(
+                expectedPayload = CanonicalValues.sha256(
                         RegistryProtocol.globalIdentityLinkActionPayload(
                                 pending.getAction(),
                                 state.getLinkId(),
@@ -1042,8 +1052,8 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
                     || !StringUtils.hasText(
                             state.getConsentEvidenceNonce())
                     || !Objects.equals(
-                            RegistryProtocol.sha256(
-                                    RegistryProtocol.canonical(
+                            CanonicalValues.sha256(
+                                    CanonicalValues.canonical(
                                             CONSENT_EVIDENCE_DOMAIN,
                                             state.getConsentVersion(),
                                             state.getVerifiedAt(),
@@ -1053,10 +1063,10 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
                         HttpStatus.CONFLICT,
                         "Stored global identity state failed its integrity check.");
             }
-            RegistryProtocol.requireHash(
+            CanonicalValues.requireHash(
                     state.getNetworkIdentityCommitment(),
                     "network_identity_commitment");
-            RegistryProtocol.requireUtcTimestamp(
+            CanonicalValues.requireUtcTimestamp(
                     state.getVerifiedAt(),
                     "verified_at");
             RegistryProtocol.requirePeriod(state.getActiveFromPeriod());
@@ -1107,7 +1117,7 @@ public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain
     }
 
     private String reasonCommitment(String reasonCode, String at) {
-        return RegistryProtocol.sha256(RegistryProtocol.canonical(
+        return CanonicalValues.sha256(CanonicalValues.canonical(
                 REASON_DOMAIN,
                 reasonCode,
                 at,

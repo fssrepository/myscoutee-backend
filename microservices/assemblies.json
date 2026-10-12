@@ -1,6 +1,13 @@
 {
   "schemaVersion": 1,
   "issue": "MSC-121",
+  "projectName": "myscoutee-microservices",
+  "version": "msc121",
+  "sharedJavaIncludes": [],
+  "repositoryFactoryBean": "com.raxim.myscoutee.common.config.repository.MongoRepositoryFactoryBean",
+  "sharedConfigurationImports": [
+    "com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler"
+  ],
   "services": {
     "identity": {
       "domains": [
@@ -8,8 +15,6 @@
         "access",
         "administration",
         "platform",
-        "operator",
-        "registry",
         "integrations"
       ],
       "libraries": [
@@ -36,8 +41,7 @@
         "community",
         "events",
         "campaigns",
-        "content",
-        "help"
+        "content"
       ],
       "libraries": [
         "jsoup"
@@ -132,6 +136,45 @@
         "validation",
         "data-mongodb",
         "data-redis",
+        "cache"
+      ],
+      "memoryMiB": 768,
+      "heapMiB": 384,
+      "runtimeStage": "jre-runtime"
+    },
+    "help": {
+      "domains": [
+        "help"
+      ],
+      "libraries": [
+        "jsoup"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "cache"
+      ],
+      "memoryMiB": 512,
+      "heapMiB": 256,
+      "runtimeStage": "jre-runtime"
+    },
+    "network": {
+      "domains": [
+        "operator",
+        "registry"
+      ],
+      "libraries": [
+        "bouncycastle"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
         "cache"
       ],
       "memoryMiB": 768,

@@ -34,15 +34,7 @@ public final class RemoteAdministrativeAccess extends RemoteReadTransport implem
                 "administrative-access.dashboard_2", AdministrativeAccessProtocol.MAX_RESPONSE_BYTES, v -> true);
         return result;
     }
-    @Override public com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto resolveAdminActor(String adminUserId) {
-        var command = new AdministrativeAccessProtocol.ResolveAdminActor1(AdministrativeAccessProtocol.Scope.current(), adminUserId);
-        if (!AdministrativeAccessProtocol.valid(command)) throw new IllegalArgumentException("Invalid administrative-access request");
-        byte[] bytes = mapper.writeValueAsBytes(command);
-        if (bytes.length > AdministrativeAccessProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("administrative-access request exceeds byte limit");
-        var result = ownerExchange(AdministrativeAccessProtocol.RESOLVEADMINACTOR_1, bytes, new TypeReference<com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto>() {},
-                "administrative-access.resolveadminactor_1", AdministrativeAccessProtocol.MAX_RESPONSE_BYTES, v -> true);
-        return result;
-    }
+
     @Override public com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminDashboardDto warn(String userId, com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminActionRequestDto request) {
         var command = new AdministrativeAccessProtocol.Warn1(AdministrativeAccessProtocol.Scope.current(), userId, request);
         if (!AdministrativeAccessProtocol.valid(command)) throw new IllegalArgumentException("Invalid administrative-access request");
@@ -88,33 +80,9 @@ public final class RemoteAdministrativeAccess extends RemoteReadTransport implem
                 "administrative-access.resolvefeedback_1", AdministrativeAccessProtocol.MAX_RESPONSE_BYTES, v -> true);
         return result;
     }
-    @Override public boolean isBaseAdminProfile(String userId) {
-        var command = new AdministrativeAccessProtocol.IsBaseAdminProfile1(AdministrativeAccessProtocol.Scope.current(), userId);
-        if (!AdministrativeAccessProtocol.valid(command)) throw new IllegalArgumentException("Invalid administrative-access request");
-        byte[] bytes = mapper.writeValueAsBytes(command);
-        if (bytes.length > AdministrativeAccessProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("administrative-access request exceeds byte limit");
-        var result = ownerExchange(AdministrativeAccessProtocol.ISBASEADMINPROFILE_1, bytes, new TypeReference<AdministrativeAccessProtocol.IsBaseAdminProfile1Result>() {},
-                "administrative-access.isbaseadminprofile_1", AdministrativeAccessProtocol.MAX_RESPONSE_BYTES, v -> v.value()!=null);
-        return result.value();
-    }
-    @Override public String baseGroupId(String adminUserId) {
-        var command = new AdministrativeAccessProtocol.BaseGroupId1(AdministrativeAccessProtocol.Scope.current(), adminUserId);
-        if (!AdministrativeAccessProtocol.valid(command)) throw new IllegalArgumentException("Invalid administrative-access request");
-        byte[] bytes = mapper.writeValueAsBytes(command);
-        if (bytes.length > AdministrativeAccessProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("administrative-access request exceeds byte limit");
-        var result = ownerExchange(AdministrativeAccessProtocol.BASEGROUPID_1, bytes, new TypeReference<AdministrativeAccessProtocol.BaseGroupId1Result>() {},
-                "administrative-access.basegroupid_1", AdministrativeAccessProtocol.MAX_RESPONSE_BYTES, v -> Boolean.TRUE.equals(v.resolved()));
-        return result.value();
-    }
-    @Override public java.util.Map<String, java.util.List<com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent>> baseProfileEvents(java.util.List<com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent> batch) {
-        var command = new AdministrativeAccessProtocol.BaseProfileEvents1(AdministrativeAccessProtocol.Scope.current(), batch);
-        if (!AdministrativeAccessProtocol.valid(command)) throw new IllegalArgumentException("Invalid administrative-access request");
-        byte[] bytes = mapper.writeValueAsBytes(command);
-        if (bytes.length > AdministrativeAccessProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("administrative-access request exceeds byte limit");
-        var result = ownerExchange(AdministrativeAccessProtocol.BASEPROFILEEVENTS_1, bytes, new TypeReference<java.util.Map<String, java.util.List<com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent>>>() {},
-                "administrative-access.baseprofileevents_1", AdministrativeAccessProtocol.MAX_RESPONSE_BYTES, v -> true);
-        return result;
-    }
+
+
+
     private <T> T ownerExchange(String path, byte[] bytes, TypeReference<T> type, String operation, int limit,
             java.util.function.Predicate<T> valid) {
         try {

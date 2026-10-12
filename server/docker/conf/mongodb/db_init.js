@@ -34,6 +34,7 @@ const requiredCollections = [
   'helpCenterGuideFields',
   'helpCenterAudit',
   'privacyConsents',
+  'accountDeletionWarnings',
   'userExperienceProfiles',
   'navigatorContacts',
   'countryPartitions',
@@ -48,7 +49,14 @@ const requiredCollections = [
 const appUsername = process.env.MONGO_APP_USERNAME || 'guest';
 const appPassword = process.env.MONGO_APP_PASSWORD || 'guest';
 
-const configuredDatabases = [
+// The installer reuses this complete initializer after rebuilding Explore.
+// A reset must never initialize or alter another database alongside demo_db.
+const resetDatabase = process.env.MONGO_RESET_DATABASE;
+if (resetDatabase !== undefined && (resetDatabase !== 'demo_db'
+    || process.env.MONGO_REAL_DATABASE === resetDatabase)) {
+  throw new Error('Rejected Mongo initializer reset target');
+}
+const configuredDatabases = resetDatabase ? [resetDatabase] : [
   'demo_db',
   'myscoutee_db',
   process.env.MONGO_INITDB_DATABASE,
@@ -70,6 +78,8 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     }
   });
 
+  portalDb.accountDeletionWarnings.createIndex({ userId: 1 }, { name: 'account_warning_user' });
+
   portalDb.countryPartitions.createIndex(
     { partitionKey: 1 },
     { name: 'country_partition_key', unique: true }
@@ -82,6 +92,22 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { geometry: '2dsphere' },
     { name: 'country_partition_geometry' }
   );
+
+  portalDb.integrationTokens.createIndex({ tokenHash: 1 }, { name: 'integration_token_hash', unique: true });
+  portalDb.integrationTokens.createIndex({ ownerUserId: 1, createdAtIso: -1 }, { name: 'integration_token_owner_created' });
+  portalDb.mcpOAuthClients.createIndex({ createdAt: 1 }, { name: 'createdAt' });
+  portalDb.mcpOAuthClients.createIndex({ expiresAt: 1 }, { name: 'expiresAt', expireAfterSeconds: 0 });
+  portalDb.mcpAuthorizations.createIndex({ clientId: 1 }, { name: 'clientId' });
+  portalDb.mcpAuthorizations.createIndex({ accessHash: 1 }, { name: 'accessHash' });
+  portalDb.mcpAuthorizations.createIndex({ refreshHash: 1 }, { name: 'refreshHash' });
+  portalDb.mcpAuthorizations.createIndex({ expiresAt: 1 }, { name: 'expiresAt', expireAfterSeconds: 0 });
+  portalDb.mcpEventSubscriptions.createIndex({ ownerUserId: 1, name: 1, resourceId: 1, enabled: 1 }, { name: 'mcp_events_owner_event' });
+  portalDb.mcpEventSubscriptions.createIndex({ ownerUserId: 1, tokenId: 1, clientId: 1, callbackUrl: 1 }, { name: 'mcp_events_callback' });
+  portalDb.mcpEventSubscriptions.createIndex({ ownerUserId: 1, enabled: 1, expiresAt: 1 }, { name: 'mcp_events_owner_active' });
+  portalDb.mcpEventSubscriptions.createIndex({ deleteAfter: 1 }, { name: 'deleteAfter', expireAfterSeconds: 0 });
+  portalDb.integrationWebhookDeliveries.createIndex({ protocol: 1, status: 1, ownerUserId: 1 }, { name: 'integration_delivery_protocol_status' });
+  portalDb.integrationWebhookDeliveries.createIndex({ status: 1, nextAttemptAtIso: 1, createdAtIso: 1 }, { name: 'integration_webhook_delivery_due' });
+  portalDb.integrationWebhookDeliveries.createIndex({ deleteAfter: 1 }, { name: 'deleteAfter', expireAfterSeconds: 0 });
 
   portalDb.users.createIndex(
     { syncKey: 1 },
@@ -124,25 +150,13 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { syncKey: 1 },
     { name: 'notification_rule_config_sync_key', unique: true, sparse: true }
   );
-  portalDb.notificationRuleConfigs.createIndex(
-    { ruleKey: 1 },
-    { name: 'notification_rule_config_rule_key', unique: true }
-  );
   portalDb.emailTemplates.createIndex(
     { syncKey: 1 },
     { name: 'email_template_sync_key', unique: true, sparse: true }
   );
-  portalDb.emailTemplates.createIndex(
-    { templateKey: 1 },
-    { name: 'email_template_key', unique: true }
-  );
   portalDb.emailCampaignRules.createIndex(
     { syncKey: 1 },
     { name: 'email_campaign_rule_sync_key', unique: true, sparse: true }
-  );
-  portalDb.emailCampaignRules.createIndex(
-    { ruleKey: 1 },
-    { name: 'email_campaign_rule_key', unique: true }
   );
   portalDb.emailCampaignRules.createIndex(
     { enabled: 1, priority: -1 },
@@ -151,10 +165,6 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.notificationTemplates.createIndex(
     { syncKey: 1 },
     { name: 'notification_template_sync_key', unique: true, sparse: true }
-  );
-  portalDb.notificationTemplates.createIndex(
-    { templateKey: 1 },
-    { name: 'notification_template_key', unique: true }
   );
   portalDb.userNotifications.createIndex(
     { syncKey: 1 },
@@ -722,6 +732,59 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { key: 1, lang: 1 },
     { name: 'i18n_messages_key_lang', unique: true }
   );
+
+  // Existing import/runtime indexes also belong to fresh database initialization.
+  portalDb.notificationRuleConfigs.createIndex({"baseGroupId":1,"ruleKey":1}, {"name":"notification_rule_group_key","unique":true});
+  portalDb.emailTemplates.createIndex({"baseGroupId":1,"templateKey":1}, {"name":"email_template_key_group","unique":true});
+  portalDb.emailCampaignRules.createIndex({"baseGroupId":1,"ruleKey":1}, {"name":"email_campaign_rule_key_group","unique":true});
+  portalDb.notificationTemplates.createIndex({"baseGroupId":1,"templateKey":1}, {"name":"notification_template_key_group","unique":true});
+  portalDb.affinityRecomputeTasks.createIndex({"baseGroupId":1,"status":1,"availableAtIso":1}, {"name":"affinity_recompute_group_status_available"});
+  portalDb.notificationOutbox.createIndex({"baseGroupId":1,"status":1,"nextRetryAt":1,"createdDate":1}, {"name":"notification_outbox_group_status_retry"});
+  portalDb.scheduledMessageTasks.createIndex({"baseGroupId":1,"status":1,"dueAtIso":1}, {"name":"scheduled_message_group_status_due"});
+  portalDb.userAffinityEdges.createIndex({"pairKey":1}, {"name":"user_affinity_edge_pair_key","unique":true});
+  portalDb.userAffinityEdges.createIndex({"leftUserId":1,"rightUserId":1}, {"name":"user_affinity_edge_left_right","unique":true});
+  portalDb.userAffinityEdges.createIndex({"leftUserId":1,"edgeWeight":-1}, {"name":"user_affinity_edge_left_weight"});
+  portalDb.userAffinityEdges.createIndex({"rightUserId":1,"edgeWeight":-1}, {"name":"user_affinity_edge_right_weight"});
+  portalDb.adminAffinityGraphLayouts.createIndex({"layoutVersion":1}, {"name":"admin_affinity_graph_layout_version","unique":true});
+  portalDb.adminAffinityGraphLayouts.createIndex({"generatedAtIso":1}, {"name":"admin_affinity_graph_layout_generated_at"});
+  portalDb.adminAffinityGraphNodes.createIndex({"layoutVersion":1}, {"name":"admin_affinity_graph_node_layout"});
+  portalDb.adminAffinityGraphNodes.createIndex({"layoutVersion":1,"userId":1}, {"name":"admin_affinity_graph_node_layout_user","unique":true});
+  portalDb.adminAffinityGraphNodes.createIndex({"layoutVersion":1,"tileZ":1,"tileX":1,"tileY":1}, {"name":"admin_affinity_graph_node_layout_tile"});
+  portalDb.adminAffinityGraphNodes.createIndex({"layoutVersion":1,"x":1,"z":1}, {"name":"admin_affinity_graph_node_layout_position"});
+  portalDb.adminAffinityGraphNodes.createIndex({"layoutVersion":1,"componentId":1}, {"name":"admin_affinity_graph_node_layout_component"});
+  portalDb.adminAffinityGraphNodes.createIndex({"layoutVersion":1,"centrality":-1}, {"name":"admin_affinity_graph_node_layout_centrality"});
+  portalDb.adminAffinityGraphEdges.createIndex({"layoutVersion":1}, {"name":"admin_affinity_graph_edge_layout"});
+  portalDb.adminAffinityGraphEdges.createIndex({"layoutVersion":1,"sourceUserId":1,"targetUserId":1}, {"name":"admin_affinity_graph_edge_layout_pair","unique":true});
+  portalDb.adminAffinityGraphEdges.createIndex({"layoutVersion":1,"sourceUserId":1}, {"name":"admin_affinity_graph_edge_layout_source"});
+  portalDb.adminAffinityGraphEdges.createIndex({"layoutVersion":1,"targetUserId":1}, {"name":"admin_affinity_graph_edge_layout_target"});
+  portalDb.adminAffinityGraphEdges.createIndex({"layoutVersion":1,"componentId":1,"lodLevel":1}, {"name":"admin_affinity_graph_edge_layout_component_lod"});
+  portalDb.adminAffinityGraphEdges.createIndex({"layoutVersion":1,"weight":-1}, {"name":"admin_affinity_graph_edge_layout_weight"});
+  portalDb.adminAffinityGraphForests.createIndex({"layoutVersion":1}, {"name":"admin_affinity_graph_forest_layout"});
+  portalDb.adminAffinityGraphForests.createIndex({"layoutVersion":1,"componentId":1}, {"name":"admin_affinity_graph_forest_layout_component","unique":true});
+  portalDb.adminAffinityGraphForests.createIndex({"layoutVersion":1,"memberCount":-1}, {"name":"admin_affinity_graph_forest_layout_size"});
+  portalDb.helpCenterRevisions.createIndex({"baseGroupId":1,"documentType":1,"lang":1,"contextKey":1,"version":-1}, {"name":"help_revision_group_document_lang_context_version","unique":true});
+  portalDb.helpCenterRevisions.createIndex({"baseGroupId":1,"documentType":1,"lang":1,"contextKey":1,"active":1,"version":-1}, {"name":"help_revision_group_document_lang_context_active"});
+  portalDb.helpCenterRevisions.createIndex({"documentType":1}, {"name":"help_revision_document_type"});
+  portalDb.helpCenterRevisions.createIndex({"lang":1}, {"name":"help_revision_lang"});
+  portalDb.helpCenterRevisions.createIndex({"contextKey":1}, {"name":"help_revision_context_key"});
+  portalDb.helpCenterRevisions.createIndex({"active":1}, {"name":"help_revision_active"});
+  portalDb.helpCenterGuideFields.createIndex({"screenKey":1,"id":1}, {"name":"help_guide_field_screen_id","unique":true});
+  portalDb.helpCenterGuideFields.createIndex({"screenKey":1,"order":1}, {"name":"help_guide_field_screen_order"});
+  if (portalDb.notificationRuleConfigs.getIndexes().some(index => index.name === 'notification_rule_config_rule_key')) {
+    portalDb.notificationRuleConfigs.dropIndex('notification_rule_config_rule_key');
+  }
+  if (portalDb.emailTemplates.getIndexes().some(index => index.name === 'email_template_key')) {
+    portalDb.emailTemplates.dropIndex('email_template_key');
+  }
+  if (portalDb.emailCampaignRules.getIndexes().some(index => index.name === 'email_campaign_rule_key')) {
+    portalDb.emailCampaignRules.dropIndex('email_campaign_rule_key');
+  }
+  if (portalDb.notificationTemplates.getIndexes().some(index => index.name === 'notification_template_key')) {
+    portalDb.notificationTemplates.dropIndex('notification_template_key');
+  }
+  if (portalDb.helpCenterRevisions.getIndexes().some(index => index.name === 'help_revision_document_lang_context_version')) {
+    portalDb.helpCenterRevisions.dropIndex('help_revision_document_lang_context_version');
+  }
 
   if (!portalDb.getUser(appUsername)) {
     portalDb.createUser({

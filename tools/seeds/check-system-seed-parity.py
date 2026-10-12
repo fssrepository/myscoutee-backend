@@ -1,37 +1,75 @@
 #!/usr/bin/env python3
 """Audit all seed inventories, shared definitions and environment boundaries."""
+import argparse
 import copy
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SEEDS = ROOT / 'server/docker/conf/mongodb'
-SHARED = (
-    'accessPolicyDefinitions', 'communityProviders', 'paymentProviders',
-    'countryPartitions', 'helpCenterRevisions', 'ideaPosts', 'emailTemplates',
-    'emailCampaignRules', 'notificationTemplates', 'i18n_messages', 'i18n_bundles',
-    'scheduledMessageTasks', 'exchangeRates',
-)
-CONFIGURED = (
-    'affinityConfigs', 'appSettings', 'deploymentConfigurations',
-    'notificationRuleConfigs', 'adminStats', 'adminMonitoring',
-    'operatorRegistryEndpoints',
-)
-RUNTIME = (
-    'users', 'userRates', 'userFilterPreferences', 'assets', 'assetRequests',
-    'activityMembers', 'activityResources', 'activitySubEventStageRuntime', 'communityGroups',
-    'chats', 'chatMessages', 'events', 'eventFeedbackStates', 'eventFeedbackAnswers',
-    'navigatorContacts', 'payments', 'savedPaymentMethods', 'userAffinityEdges',
-    'userExperienceProfiles', 'userFeedback', 'userNotifications', 'userReports',
-)
+from seed_audit_project import SHARED, CONFIGURED, RUNTIME, DEMO_ONLY_RUNTIME, audit_project
 
 def identity(value):
     return value.get('$oid') if isinstance(value, dict) else value
 
-def audit(seeds=SEEDS):
+def import_collections(rule, database):
+    return {name for item in rule.split(';') if item.partition(':')[0] == database
+            for name in item.partition(':')[2].split(',') if name}
+
+
+def audit_delivery(data, errors, packaged_root=None):
+    """Compare delivery with the classified DEV/production baseline, not itself."""
+    production = data['myscoutee_db']
+    required = set(SHARED + CONFIGURED) | {name for name, rows in production.items() if rows}
+    package = json.loads((ROOT / 'packaging/scripts/release-project.json').read_text())['packageName']
+    policy = json.loads((ROOT / 'packaging/templates/install-policy.json').read_text())
+    env_path = Path('packaging/templates') / (package + '.env')
+    source_env = (ROOT / 'server/.env').read_text()
+    packaged_env = (ROOT / env_path).read_text()
+    importer = (SEEDS / 'mongo-seed-policy.inc').read_text()
+    env_rule = lambda text: re.search(r'^MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=(.*)$', text, re.M).group(1)
+    fallback = re.search(r'allowed_collections_by_db="\$\{MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-(.*)\}"', importer).group(1)
+    rules = [('source environment', env_rule(source_env)), ('importer default', fallback),
+             ('installed environment', env_rule(packaged_env)), ('install fallback', policy['mongoSeedFallback'])]
+    for label, rule in rules:
+        for database in ('production_db', 'myscoutee_db') if label in ('source environment', 'importer default') else ('production_db',):
+            actual = import_collections(rule, database)
+            if '*' in actual or not required.issubset(actual):
+                errors.append(f'{label}/{database}: missing production inputs {sorted(required - actual)}; wildcard={"*" in actual}')
+    missing_upgrade = required - set(policy['requiredMongoCollections'])
+    if missing_upgrade:
+        errors.append(f'install upgrade policy: missing production inputs {sorted(missing_upgrade)}')
+    if packaged_root is None:
+        return
+    installed = Path(packaged_root) / 'server/docker/conf/mongodb'
+    if (installed / 'e2e_db').exists():
+        errors.append('installed Mongo inputs contain E2E fixtures')
+    for path in SEEDS.iterdir():
+        if path.is_file() and (not (installed / path.name).is_file()
+                               or path.read_bytes() != (installed / path.name).read_bytes()):
+            errors.append(f'installed Mongo initializer differs or is missing: {path.name}')
+    for mode in ('demo_db', 'myscoutee_db'):
+        expected = set(data[mode]) if mode == 'demo_db' else required
+        actual = {p.stem for p in (installed / mode).glob('*.json')}
+        if actual != expected:
+            errors.append(f'installed {mode}: missing={sorted(expected - actual)}, unexpected={sorted(actual - expected)}')
+        for name in expected & actual:
+            reference = copy.deepcopy(data[mode][name])
+            if name == 'appSettings':
+                admins = sorted({row['email'] for row in data['demo_db']['users']
+                                 if row.get('hostTier') == 'Admin' and re.search(r'@[^@]+\.(local|invalid)$', row.get('email', ''), re.I)})
+                for row in reference:
+                    if row.get('settingsKey') == 'global':
+                        row['adminEmails'] = admins if mode == 'demo_db' else []
+            if json.loads((installed / mode / (name + '.json')).read_text()) != reference:
+                errors.append(f'installed {mode}/{name}: differs from canonical environment input')
+
+
+def audit(seeds=SEEDS, packaged_root=None):
     errors = []
     data = {}
-    known = set(SHARED + CONFIGURED + RUNTIME) | {'adminUsers'}
+    known = set(SHARED + CONFIGURED + RUNTIME + DEMO_ONLY_RUNTIME) | {'adminUsers'}
     for mode in ('demo_db', 'myscoutee_db', 'e2e_db'):
         data[mode] = {}
         for path in (seeds / mode).glob('*.json'):
@@ -45,69 +83,21 @@ def audit(seeds=SEEDS):
             if len(set(ids)) != len(ids):
                 errors.append(f'{mode}/{path.stem}: duplicate identity')
             data[mode][path.stem] = rows
-        for name in SHARED + CONFIGURED + RUNTIME:
+        required = SHARED + CONFIGURED + RUNTIME + (() if mode == 'myscoutee_db' else DEMO_ONLY_RUNTIME)
+        for name in required:
             if name not in data[mode]:
                 errors.append(f'{mode}/{name}: missing JSON baseline')
     if errors:
         return errors
-    demo = data['demo_db']
-    for mode in ('myscoutee_db', 'e2e_db'):
-        target = data[mode]
-        for name in SHARED:
-            keyed = lambda rows: {identity(r['_id']): r for r in rows}
-            if keyed(target[name]) != keyed(demo[name]):
-                errors.append(f'{mode}/{name}: differs from shared catalog')
-        for name in ('affinityConfigs', 'appSettings', 'deploymentConfigurations', 'notificationRuleConfigs'):
-            reference = copy.deepcopy(demo[name])
-            actual = copy.deepcopy(target[name])
-            if name == 'affinityConfigs' and mode == 'myscoutee_db':
-                reference[0]['_id'] = actual[0]['_id']
-            if name == 'appSettings' and mode == 'myscoutee_db':
-                reference[0]['adminEmails'] = []
-            if name == 'deploymentConfigurations':
-                # Explicitly curated, empty deployment contact/social defaults.
-                reference[0]['privacyContact'] = actual[0]['privacyContact']
-                if mode == 'myscoutee_db':
-                    if actual[0]['socialLinks']:
-                        errors.append('production social links must not contain demo destinations')
-                    if actual[0].get('integration', {}).get('publicBaseUrl') is not None:
-                        errors.append('production integration URL must be operator-configured')
-                    reference[0]['socialLinks'] = []
-                    reference[0]['integration'] = {'publicBaseUrl': None}
-                    if actual[0]['payment'].get('exchangeRateUrl') != 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml':
-                        errors.append('production exchange-rate source must default to public ECB HTTPS')
-                    reference[0]['payment']['exchangeRateUrl'] = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
-            if name == 'notificationRuleConfigs' and mode == 'e2e_db':
-                for row in reference:
-                    if row['_id'] == 'notification-rule-event-counter-expiry':
-                        timing = next(r['timing'] for r in actual if r['_id'] == row['_id'])
-                        if timing.get('intervalSeconds') != 5:
-                            errors.append('e2e counter expiry must retain its 5-second fixture timing')
-                        row['timing'] = timing
-            if actual != reference:
-                errors.append(f'{mode}/{name}: unexpected configuration difference')
-        for name in ('adminStats', 'adminMonitoring'):
-            if mode == 'e2e_db' and target[name] != demo[name]:
-                errors.append(f'{mode}/{name}: differs from demo telemetry fixture')
-            if not set(demo[name][0]).issubset(target[name][0]):
-                errors.append(f'{mode}/{name}: missing top-level telemetry fields')
-        if mode == 'myscoutee_db':
-            for name in RUNTIME + ('operatorRegistryEndpoints', 'adminUsers'):
-                if target.get(name) != []:
-                    errors.append(f'{mode}/{name}: must remain empty')
-        else:
-            if target['operatorRegistryEndpoints'] != demo['operatorRegistryEndpoints']:
-                errors.append('e2e Registry fixture differs from demo baseline')
-            users = {identity(r['_id']) for r in target['users']}
-            for card in target['savedPaymentMethods']:
-                if card.get('userId') not in users or not card.get('providerPaymentMethodRef', '').startswith('pm_sim_'):
-                    errors.append('e2e saved payment method has missing owner or non-simulator reference')
-            if target['savedPaymentMethods'] != demo['savedPaymentMethods']:
-                errors.append('e2e simulator payment-method fixture is incomplete')
+    audit_project(data, errors)
+    audit_delivery(data, errors, packaged_root)
     return errors
 
 if __name__ == '__main__':
-    errors = audit()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--packaged-root', type=Path, help='Extracted /opt/<package> directory to compare with DEV/source inputs')
+    args = parser.parse_args()
+    errors = audit(packaged_root=args.packaged_root)
     if errors:
         raise SystemExit('\n'.join(errors))
-    print(f'PASS: all {len(SHARED + CONFIGURED + RUNTIME)} dev/prod/e2e seed baselines classified; shared definitions, configuration differences, production isolation and simulator-card owners verified.')
+    print(f'PASS: all {len(SHARED + CONFIGURED + RUNTIME + DEMO_ONLY_RUNTIME)} dev/prod/e2e seed baselines classified and project parity verified.')

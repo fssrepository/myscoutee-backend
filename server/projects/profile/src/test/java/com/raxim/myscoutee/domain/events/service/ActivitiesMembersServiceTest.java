@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.PaymentService;
 
@@ -76,6 +76,10 @@ class ActivitiesMembersServiceTest {
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
+    private com.raxim.myscoutee.domain.accounts.api.ProfileReadState profileReadState;
+    @Mock
+    private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
+    @Mock
     private AssetsService assetsService;
     @Mock
     private ActivitiesResourcesService activitiesResourcesService;
@@ -92,7 +96,7 @@ class ActivitiesMembersServiceTest {
     @Mock
     private AdminTelemetryService adminTelemetryService;
     @Mock
-    private ChatService chatService;
+    private EventConversations chatService;
     @Mock
     private EventSlotReadModelService eventSlotReadModelService;
     @Mock
@@ -112,9 +116,9 @@ class ActivitiesMembersServiceTest {
                 activityEventsRepository,
                 activitySubEventResourcesRepository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                selectedProfile,
                 homeUserProfileService,
-                homeUserProfileService,
-                homeUserProfileService,
+                profileReadState,
                 assetsService,
                 activitiesResourcesService,
                 eventParticipationTicketService,
@@ -148,7 +152,7 @@ class ActivitiesMembersServiceTest {
         targetUser.setName("Target User");
         targetUser.setInitials("TU");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -240,7 +244,7 @@ class ActivitiesMembersServiceTest {
 
     @Test
     void disqualifyRejectsTheRequestWithoutMutationWhenPolicyDenies() {
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(false);
         assertThatThrownBy(() -> service.applyAction(new ActivityMemberActionRequestDto(
                 new ActivityMemberOwnerRefDto("event", "event-1"), "admin", "target", "disqualify", null)))
@@ -254,11 +258,11 @@ class ActivitiesMembersServiceTest {
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "disqualified");
         UserMenuCountersDto counters = mock(UserMenuCountersDto.class);
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenReturn(List.of(member));
-        when(homeUserProfileService.queryMenuCounters("admin")).thenReturn(counters);
+        when(profileReadState.queryMenuCounters("admin")).thenReturn(counters);
 
         var result = service.applyActionWithContext(new ActivityMemberActionRequestDto(
                 new ActivityMemberOwnerRefDto("event", "event-1"),
@@ -273,7 +277,7 @@ class ActivitiesMembersServiceTest {
                 .extracting(ActivityMemberEntryDto::status)
                 .isEqualTo("disqualified");
         assertThat(result.counterOverrides()).isSameAs(counters);
-        verify(homeUserProfileService).queryMenuCounters("admin");
+        verify(profileReadState).queryMenuCounters("admin");
     }
 
     @Test
@@ -292,7 +296,7 @@ class ActivitiesMembersServiceTest {
         joinRequest.setRequestKind("join");
         List<ActivityMember> stored = List.of(accepted, reserved, joinRequest);
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target"))
                 .thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
@@ -328,7 +332,7 @@ class ActivitiesMembersServiceTest {
         targetUser.setName("Target User");
         targetUser.setInitials("TU");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canReinstateEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -365,7 +369,7 @@ class ActivitiesMembersServiceTest {
 
     @Test
     void replaceEventMembersThrowsForbiddenWhenPolicyDenies() {
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canManageEventMembers("event-1", "admin")).thenReturn(false);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> service.replace(new ActivityMembersReplaceRequestDto(
@@ -383,7 +387,7 @@ class ActivitiesMembersServiceTest {
         ActivityEvent event = event("event-1", "owner", "owner");
         ActivityMember inviter = member("inviter-sync", "event-1", "member-inviter", "Member", "accepted");
 
-        when(homeUserProfileService.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
+        when(selectedProfile.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
         when(accessControlService.canManageEventMembers("event-1", "member-inviter")).thenReturn(false);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(inviter));
@@ -420,7 +424,7 @@ class ActivitiesMembersServiceTest {
         targetUser.setId("target");
         targetUser.setName("Target User");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canManageEventMembers("event-1", "admin")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1")).thenReturn(List.of());
@@ -451,7 +455,7 @@ class ActivitiesMembersServiceTest {
         ActivityEvent event = event("event-1", "admin", "admin");
         event.setCapacityTotal(2);
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canManageEventMembers("event-1", "admin")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
@@ -511,7 +515,7 @@ class ActivitiesMembersServiceTest {
                 null)));
         AtomicReference<List<ActivityMember>> storedMembers = new AtomicReference<>(List.of());
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
@@ -555,7 +559,7 @@ class ActivitiesMembersServiceTest {
         ActivityMember admin = member("admin-sync", ownerId, "admin", "Admin", "accepted");
         admin.setOwnerType("subEvent");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenReturn(List.of(admin));
 
@@ -615,7 +619,7 @@ class ActivitiesMembersServiceTest {
                 member("suppressed-sync", "event-1", "suppressed", "Member", "accepted"),
                 "accepted",
                 "event-1");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("visible");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("visible");
         when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenReturn(List.of(visible, suppressed));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
@@ -1124,8 +1128,8 @@ class ActivitiesMembersServiceTest {
                         false,
                         List.of()))));
 
-        when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
+        when(selectedProfile.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("asset-owner");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(pendingAsset));
         when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(pendingAsset), Optional.of(acceptedAsset));
@@ -1163,7 +1167,7 @@ class ActivitiesMembersServiceTest {
 
     @Test
     void replaceScopedAssetMembersDelegatesOneScopedAssetMutationWithoutReplacingGlobalMembers() {
-        when(homeUserProfileService.resolveSelectedUserId("borrower")).thenReturn("borrower");
+        when(selectedProfile.resolveSelectedUserId("borrower")).thenReturn("borrower");
         ActivityMemberEntryDto invited = entry("group-member");
         when(assetsService.canManageScopedAssetMembers(
                 "asset-1",
@@ -1205,7 +1209,7 @@ class ActivitiesMembersServiceTest {
 
     @Test
     void replaceScopedAssetMembersRejectsPendingBorrowerBeforeMutation() {
-        when(homeUserProfileService.resolveSelectedUserId("pending-borrower")).thenReturn("pending-borrower");
+        when(selectedProfile.resolveSelectedUserId("pending-borrower")).thenReturn("pending-borrower");
         when(assetsService.canManageScopedAssetMembers(
                 "asset-1",
                 "event-1",
@@ -1274,8 +1278,8 @@ class ActivitiesMembersServiceTest {
         clearedAsset.setStatus("A");
         clearedAsset.setRequests(List.of());
 
-        when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
+        when(selectedProfile.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("asset-owner");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(scopedAsset));
         when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(scopedAsset), Optional.of(clearedAsset));
@@ -1355,8 +1359,8 @@ class ActivitiesMembersServiceTest {
                 "Manager",
                 "accepted");
 
-        when(homeUserProfileService.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("asset-owner");
+        when(selectedProfile.resolveSelectedUserId("asset-owner")).thenReturn("asset-owner");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("asset-owner");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(scopedAsset));
         when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(scopedAsset), Optional.of(clearedAsset));
@@ -1450,8 +1454,8 @@ class ActivitiesMembersServiceTest {
                 "2026-09-03T08:00:00Z",
                 pendingAsset.getRequests().getFirst().booking())));
 
-        when(homeUserProfileService.resolveSelectedUserId("invitee")).thenReturn("invitee");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("invitee");
+        when(selectedProfile.resolveSelectedUserId("invitee")).thenReturn("invitee");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("invitee");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(pendingAsset));
         when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(pendingAsset), Optional.of(acceptedAsset));
@@ -1529,7 +1533,7 @@ class ActivitiesMembersServiceTest {
                         null,
                         null))));
 
-        when(homeUserProfileService.resolveSelectedUserId("member-1")).thenReturn("member-1");
+        when(selectedProfile.resolveSelectedUserId("member-1")).thenReturn("member-1");
         when(assetsService.findAssetByAssetId("asset-1")).thenReturn(Optional.of(acceptedAsset));
         when(assetsService.findAssetByAssetIdWithScopedRequests("asset-1", eventId, subEventId, null, null))
                 .thenReturn(Optional.of(acceptedAsset));
@@ -1565,7 +1569,7 @@ class ActivitiesMembersServiceTest {
         targetUser.setId("target");
         targetUser.setName("Target User");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -1621,7 +1625,7 @@ class ActivitiesMembersServiceTest {
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");
         AtomicReference<ActivityMember> storedMember = new AtomicReference<>(member);
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -1706,7 +1710,7 @@ class ActivitiesMembersServiceTest {
                 null,
                 null)));
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> List.of(admin, storedTarget.get()));
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
@@ -1774,7 +1778,7 @@ class ActivitiesMembersServiceTest {
                 null,
                 null)));
 
-        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(selectedProfile.resolveSelectedUserId("target")).thenReturn("target");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> List.of(storedInvitation.get()));
         when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
@@ -1826,7 +1830,7 @@ class ActivitiesMembersServiceTest {
                 new AtomicReference<>(List.of(invitation, inviter));
         ActivityEvent event = event(eventId, "owner", "owner");
 
-        when(homeUserProfileService.resolveSelectedUserId(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(selectedProfile.resolveSelectedUserId(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
@@ -1888,7 +1892,7 @@ class ActivitiesMembersServiceTest {
         approval.setInvitedByUserId("member-inviter");
         AtomicReference<ActivityMember> storedApproval = new AtomicReference<>(approval);
 
-        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(selectedProfile.resolveSelectedUserId("target")).thenReturn("target");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> List.of(storedApproval.get()));
         when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
@@ -1921,7 +1925,7 @@ class ActivitiesMembersServiceTest {
         ActivityMember unrelatedMember = member("other-sync", ownerId, "other-member", "Member", "accepted");
         unrelatedMember.setOwnerType("subEvent");
 
-        when(homeUserProfileService.resolveSelectedUserId("other-member")).thenReturn("other-member");
+        when(selectedProfile.resolveSelectedUserId("other-member")).thenReturn("other-member");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenReturn(List.of(invitation, unrelatedMember));
         when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
@@ -1952,7 +1956,7 @@ class ActivitiesMembersServiceTest {
         invitation.setInvitedByUserId("member-inviter");
         AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
 
-        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(selectedProfile.resolveSelectedUserId("target")).thenReturn("target");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> List.of(storedInvitation.get()));
         when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
@@ -1987,7 +1991,7 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> storedMembers =
                 new AtomicReference<>(List.of(invitation, inviter));
 
-        when(homeUserProfileService.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
+        when(selectedProfile.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
@@ -2028,7 +2032,7 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> storedMembers =
                 new AtomicReference<>(List.of(invitation, manager));
 
-        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(selectedProfile.resolveSelectedUserId("target")).thenReturn("target");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", ownerId))
                 .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.findManagementOrderedByOwner("asset", ownerId))
@@ -2070,7 +2074,7 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> storedMembers =
                 new AtomicReference<>(List.of(currentAdmin, successor));
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
                 .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
@@ -2114,7 +2118,7 @@ class ActivitiesMembersServiceTest {
 
     @Test
     void acceptPendingMemberThrowsForbiddenWithoutWritesWhenPolicyDenies() {
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(false);
 
         assertThatThrownBy(() -> service.applyAction(new ActivityMemberActionRequestDto(
@@ -2132,7 +2136,7 @@ class ActivitiesMembersServiceTest {
         invitation.setRequestKind("invite");
         invitation.setInvitedByUserId("member-inviter");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(invitation));
@@ -2201,8 +2205,8 @@ class ActivitiesMembersServiceTest {
         invitation.setInvitedByUserId("member-inviter");
         AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
 
-        when(homeUserProfileService.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("member-inviter");
+        when(selectedProfile.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("member-inviter");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
                 .thenAnswer(invocation -> Optional.of(storedInvitation.get()));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
@@ -2255,8 +2259,8 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> storedMembers =
                 new AtomicReference<>(List.of(owner, accepted, invitation, waiting));
 
-        when(homeUserProfileService.resolveSelectedUserId("owner")).thenReturn("owner");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("owner");
+        when(selectedProfile.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("owner");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
                 "event", "event-1", "target"))
                 .thenAnswer(invocation -> storedMembers.get().stream()
@@ -2349,7 +2353,7 @@ class ActivitiesMembersServiceTest {
         targetUser.setId("target");
         targetUser.setName("Target User");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canRemoveEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.findByParentEventIdIn(List.of("event-1")))
@@ -2450,8 +2454,8 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> storedMembers =
                 new AtomicReference<>(List.of(owner, manager));
 
-        when(homeUserProfileService.resolveSelectedUserId("manager")).thenReturn("manager");
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("manager");
+        when(selectedProfile.resolveSelectedUserId("manager")).thenReturn("manager");
+        when(selectedProfile.resolveSelectedUserId(null)).thenReturn("manager");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> storedMembers.get());
@@ -2542,7 +2546,7 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> rootMembers =
                 new AtomicReference<>(List.of(owner, root));
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> rootMembers.get());
         when(activityMembersRepository.findParticipationTreeForUser(
@@ -2629,7 +2633,7 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> rootMembers =
                 new AtomicReference<>(List.of(owner, invitation));
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> rootMembers.get());
         when(activityMembersRepository.findParticipationTreeForUser(
@@ -2714,7 +2718,7 @@ class ActivitiesMembersServiceTest {
         AtomicReference<List<ActivityMember>> rootMembers =
                 new AtomicReference<>(List.of(owner, root));
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> rootMembers.get());
         when(activityMembersRepository.findParticipationTreeForUser(
@@ -2788,7 +2792,7 @@ class ActivitiesMembersServiceTest {
                 "Member",
                 "deleted");
         legacyDeleted.setUpdatedUser("viewer");
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(legacyDeleted));
 
@@ -2810,7 +2814,7 @@ class ActivitiesMembersServiceTest {
         viewerOverlay.setStatus(ActivityEvent.STATUS_TRASHED);
         viewerOverlay.setStatusBeforeSuppression(ActivityEvent.STATUS_ACTIVE);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(activeRoot));
         when(activityMembersRepository.findParticipationTreeForUser(
@@ -2841,7 +2845,7 @@ class ActivitiesMembersServiceTest {
         viewerOverlay.setStatus(ActivityEvent.STATUS_TRASHED);
         viewerOverlay.setStatusBeforeSuppression(null);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(invitedRoot));
         when(activityMembersRepository.findParticipationTreeForUser(
@@ -2879,7 +2883,7 @@ class ActivitiesMembersServiceTest {
         ActivityEvent canonical = event("event-1", "owner", "owner");
         canonical.setStatus(ActivityEvent.STATUS_TRASHED);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(suppressedRoot));
         when(activityMembersRepository.findParticipationTreeForUser(
@@ -2907,7 +2911,7 @@ class ActivitiesMembersServiceTest {
         ActivityEvent canonical = event("event-1", "owner", "owner");
         canonical.setCapacityTotal(1);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(owner, suppressedRoot));
         when(activityMembersRepository.findParticipationTreeForUser(
@@ -2939,7 +2943,7 @@ class ActivitiesMembersServiceTest {
         successorUser.setGender("man");
         successorUser.setCity("Seattle");
 
-        when(homeUserProfileService.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(selectedProfile.resolveSelectedUserId("owner")).thenReturn("owner");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
@@ -2988,7 +2992,7 @@ class ActivitiesMembersServiceTest {
         ActivityMember promotedAdmin = member("admin-sync", "event-1", "promoted-admin", "Admin", "accepted");
         AtomicReference<List<ActivityMember>> storedMembers = new AtomicReference<>(List.of(owner, promotedAdmin));
 
-        when(homeUserProfileService.resolveSelectedUserId("promoted-admin")).thenReturn("promoted-admin");
+        when(selectedProfile.resolveSelectedUserId("promoted-admin")).thenReturn("promoted-admin");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> storedMembers.get());
@@ -3023,7 +3027,7 @@ class ActivitiesMembersServiceTest {
         ActivityEvent event = event("event-1", "owner", "owner");
         ActivityMember admin = member("admin-sync", "event-1", "promoted-admin", "Admin", "accepted");
         AtomicReference<ActivityMember> storedAdmin = new AtomicReference<>(admin);
-        when(homeUserProfileService.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(selectedProfile.resolveSelectedUserId("owner")).thenReturn("owner");
         when(accessControlService.canRemoveEventMember("event-1", "owner", "promoted-admin")).thenReturn(false);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
@@ -3052,7 +3056,7 @@ class ActivitiesMembersServiceTest {
         ActivityEvent event = event("event-1", "owner", "owner");
         ActivityMember admin = member("admin-sync", "event-1", "promoted-admin", "Admin", "accepted");
         AtomicReference<ActivityMember> storedAdmin = new AtomicReference<>(admin);
-        when(homeUserProfileService.resolveSelectedUserId("promoted-admin")).thenReturn("promoted-admin");
+        when(selectedProfile.resolveSelectedUserId("promoted-admin")).thenReturn("promoted-admin");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
                 "event", "event-1", "promoted-admin")).thenReturn(Optional.of(admin));
@@ -3076,22 +3080,36 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void requestInvitesKeepAuthenticatedProfileWhenRequestNamesAnotherInviter() {
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("viewer");
+        when(accessControlService.canInviteEventMembers("event-1", "viewer")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.inviteEventMembers(new ActivityMembersInviteRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"), List.of("target"), "admin")))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(error -> assertThat(((ResponseStatusException) error).getStatusCode().value()).isEqualTo(403));
+
+        verify(accessControlService).canInviteEventMembers("event-1", "viewer");
+        verify(accessControlService, never()).canInviteEventMembers("event-1", "admin");
+        verifyNoInteractions(activityMembersRepository);
+    }
+
+    @Test
     void inviteUsersReturnsEmptyWhenPolicyDenies() {
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(false);
 
         List<String> result = service.inviteUsers("event-1", "admin", List.of("target"), event("event-1", "host", "admin"));
 
         assertThat(result).isEmpty();
+        verifyNoInteractions(selectedProfile);
         verify(activityMembersRepository, never()).saveAll(anyList());
     }
 
     @Test
-    void inviteUsersUsesPolicyAndSavesPendingInvites() {
+    void scheduledInvitesUseStoredInviterWithoutRequestProfileAndSavePendingInvites() {
         ActivityEvent event = event("event-1", "host", "admin");
         event.setLocation("Bratislava");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1")).thenReturn(List.of());
         when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -3101,6 +3119,8 @@ class ActivitiesMembersServiceTest {
         List<String> result = service.inviteUsers("event-1", "admin", List.of("target"), event);
 
         assertThat(result).containsExactly("target");
+        verifyNoInteractions(selectedProfile);
+        verify(accessControlService).canInviteEventMembers("event-1", "admin");
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityMember>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityMembersRepository).saveAll(savedCaptor.capture());
@@ -3123,7 +3143,6 @@ class ActivitiesMembersServiceTest {
         ActivityMember accepted =
                 member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(accepted));
@@ -3386,7 +3405,7 @@ class ActivitiesMembersServiceTest {
         ActivityMember existingInvite = member("existing-sync", "event-1", "existing", "Member", "pending");
         existingInvite.setRequestKind("invite");
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -3436,7 +3455,7 @@ class ActivitiesMembersServiceTest {
         reservedInvite.setRequestKind("invite");
         List<ActivityMember> existing = List.of(accepted, reservedInvite);
 
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))

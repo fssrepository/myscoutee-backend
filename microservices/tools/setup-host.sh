@@ -3,7 +3,7 @@
 set -euo pipefail
 umask 077
 tools_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-state_root="${XDG_STATE_HOME:-${HOME}/.local/state}/myscoutee-microservices/msc121"
+state_root="$(python3 "${tools_root}/runtime_config.py" state)"
 [[ ! -L "${state_root}" ]] || { echo 'Refusing symlinked lab state.' >&2; exit 2; }
 install -d -m 0700 "${state_root}"
 rm -f -- "${state_root}/host-setup.complete"

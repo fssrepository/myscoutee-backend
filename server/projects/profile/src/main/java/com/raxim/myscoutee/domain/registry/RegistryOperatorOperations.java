@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import java.security.PublicKey;
 import com.raxim.myscoutee.domain.registry.dto.RegistryExpectation;
 import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
@@ -177,12 +178,12 @@ public class RegistryOperatorOperations implements com.raxim.myscoutee.domain.re
                 expectation.deploymentId());
         String registryScope = RegistryProtocol.requireRegistryScope(
                 expectation.registryScope());
-        String selectedFingerprint = RegistryProtocol.requireHash(
+        String selectedFingerprint = CanonicalValues.requireHash(
                 expectation.registryPublicKeyFingerprint(),
                 "selected registry public-key fingerprint");
         String selectedKeyId = RegistryProtocol.requireRegistryKeyId(
                 expectation.registryKeyId());
-        String nodeFingerprint = RegistryProtocol.requireHash(
+        String nodeFingerprint = CanonicalValues.requireHash(
                 expectation.nodePublicKeyFingerprint(),
                 "persisted node public-key fingerprint");
 
@@ -216,12 +217,12 @@ public class RegistryOperatorOperations implements com.raxim.myscoutee.domain.re
             throw new IllegalStateException(
                     "Signed deployment registration receipt does not match local state.");
         }
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 registration.registeredAt(),
                 "registered_at");
-        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(
+        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistryProtocol.parseRegistryPublicKey(
                 registration.registryPublicKey());
-        String registryFingerprint = RegistryProtocol.publicKeyFingerprint(
+        String registryFingerprint = CanonicalValues.publicKeyFingerprint(
                 registryPublicKey.getEncoded());
         String registryKeyId = RegistryProtocol.registryKeyId(
                 registryFingerprint);
@@ -230,7 +231,7 @@ public class RegistryOperatorOperations implements com.raxim.myscoutee.domain.re
                 || !registryKeyId.equals(registration.registryKeyId())
                 || !registryFingerprint.equals(
                         state.trustedRegistryKeyFingerprint())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         registryPublicKey,
                         RegistryProtocol.registrationReceipt(registration),
                         registration.receiptSignature())) {
@@ -307,28 +308,28 @@ public class RegistryOperatorOperations implements com.raxim.myscoutee.domain.re
             throw new IllegalStateException(
                     "Installation receipt is not the registered deployment's signed installation test.");
         }
-        RegistryProtocol.requireHash(receipt.batchHash(), "batch_hash");
-        RegistryProtocol.requireHash(receipt.entryHash(), "entry_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(receipt.batchHash(), "batch_hash");
+        CanonicalValues.requireHash(receipt.entryHash(), "entry_hash");
+        CanonicalValues.requireHash(
                 receipt.previousEntryHash(),
                 "previous_entry_hash");
         RegistryProtocol.requirePeriod(receipt.period());
-        String commitmentHash = RegistryProtocol.sha256(
+        String commitmentHash = CanonicalValues.sha256(
                 RegistryProtocol.installationCommitment(
                         state.deploymentId(),
                         state.installationIdempotencyKey()));
-        String expectedBatchHash = RegistryProtocol.sha256(
+        String expectedBatchHash = CanonicalValues.sha256(
                 RegistryProtocol.mauBatchPayload(
                         RegistryProtocol.INSTALLATION_KIND,
                         state.installationPeriod(),
                         RegistryProtocol.INSTALLATION_RULESET,
                         RegistryProtocol.INSTALLATION_MAU_COUNT,
                         commitmentHash));
-        var acceptedAt = RegistryProtocol.requireUtcTimestamp(
+        var acceptedAt = CanonicalValues.requireUtcTimestamp(
                 receipt.acceptedAt(),
                 "accepted_at");
         RegistryProtocol.requireCheckpointDate(receipt.checkpointDate());
-        String expectedEntryHash = RegistryProtocol.sha256(
+        String expectedEntryHash = CanonicalValues.sha256(
                 RegistryProtocol.ledgerEntry(
                         RegistryProtocol.PROTOCOL_VERSION,
                         state.registryScope(),
@@ -351,7 +352,7 @@ public class RegistryOperatorOperations implements com.raxim.myscoutee.domain.re
                         receipt.entryHash())
                 || !RegistryProtocol.checkpointDateAt(acceptedAt).equals(
                     receipt.checkpointDate())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         registryPublicKey,
                         RegistryProtocol.mauReceipt(response),
                         receipt.signature())) {

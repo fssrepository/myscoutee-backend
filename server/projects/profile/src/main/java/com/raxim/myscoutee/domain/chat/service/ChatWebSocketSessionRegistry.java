@@ -1,6 +1,5 @@
 package com.raxim.myscoutee.domain.chat.service;
 
-import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,8 +10,6 @@ import java.util.Objects;
 import java.util.Set;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.community.api.CaseParticipants;
-import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,14 +33,14 @@ public class ChatWebSocketSessionRegistry implements com.raxim.myscoutee.domain.
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatWebSocketSessionRegistry.class);
 
     private final ObjectMapper objectMapper;
-    private final CaseParticipants cases;
-    private final ProfileSummaries users;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private ChatBroadcastAudience audience;
     private final Map<String, Map<String, SessionRef>> sessionsByChatId = new ConcurrentHashMap<>();
     private final Map<String, Object> sendLocksBySessionId = new ConcurrentHashMap<>();
     private final ExecutorService broadcastExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
-    public ChatWebSocketSessionRegistry(ObjectMapper objectMapper, CaseParticipants cases, ProfileSummaries users) {
-        this.objectMapper = objectMapper; this.cases = cases; this.users = users;
+    public ChatWebSocketSessionRegistry(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     @PreDestroy
@@ -113,8 +110,8 @@ public class ChatWebSocketSessionRegistry implements com.raxim.myscoutee.domain.
         List<Future<?>> futures = new ArrayList<>(sessionRefs.size());
         Map<MongoSessionMode, Set<String>> caseMembers = new LinkedHashMap<>();
         for (SessionRef sessionRef : sessionRefs) {
-            if (event.chatId().startsWith("c-case-")) {
-                Set<String> allowed = caseMembers.computeIfAbsent(sessionRef.mode(), mode -> caseMembers(event.chatId(), mode));
+            if (audience != null && audience.supports(event.chatId())) {
+                Set<String> allowed = caseMembers.computeIfAbsent(sessionRef.mode(), mode -> audience.members(event.chatId(), mode));
                 if (!allowed.contains(sessionRef.userId())) {
                     unregister(sessionRef.session());
                     try { sessionRef.session().close(org.springframework.web.socket.CloseStatus.NOT_ACCEPTABLE); }
@@ -134,17 +131,6 @@ public class ChatWebSocketSessionRegistry implements com.raxim.myscoutee.domain.
                 // Individual sends unregister failed sessions inside broadcastToSession.
             }
         }
-    }
-
-    private Set<String> caseMembers(String chatId, MongoSessionMode mode) {
-        MongoSessionMode previous = MongoSessionModeContext.currentMode();
-        try {
-            MongoSessionModeContext.set(mode);
-            var serviceCase = cases.conversation(chatId.substring("c-case-".length())).orElse(null);
-            if (serviceCase == null || !BaseGroups.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())) return Set.of();
-            return users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds())
-                    .stream().map(u -> u.getUserId()).collect(java.util.stream.Collectors.toSet());
-        } finally { MongoSessionModeContext.set(previous); }
     }
 
     private void broadcastToSession(ChatStreamEvent event, SessionRef sessionRef, Map<String, String> payloadCache) {

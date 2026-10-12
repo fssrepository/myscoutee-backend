@@ -2924,13 +2924,14 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 result.rejections());
     }
 
-    public List<String> inviteUsers(String eventId, String inviterUserId, List<String> invitedUserIds, ActivityEvent eventRecord) {
+    /** Internal scheduler path: the inviter comes from the stored event, not a request profile. */
+    List<String> inviteUsers(String eventId, String inviterUserId, List<String> invitedUserIds, ActivityEvent eventRecord) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
             return List.of();
         }
 
-        String actorUserId = resolveActorUserId(
+        String actorUserId = normalizeId(
                 StringUtils.hasText(inviterUserId)
                         ? inviterUserId
                         : eventRecord == null ? null : eventRecord.getCreatorUserId());

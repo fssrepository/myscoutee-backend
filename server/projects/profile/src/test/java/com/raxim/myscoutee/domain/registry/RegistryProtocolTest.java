@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -403,14 +404,14 @@ class RegistryProtocolTest {
 
     @Test
     void canonicalCodecRejectsLineInjectionAndNonCanonicalBase64() {
-        assertThatThrownBy(() -> RegistryProtocol.canonical("safe", "line\ninjection"))
+        assertThatThrownBy(() -> CanonicalValues.canonical("safe", "line\ninjection"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("CR or LF");
 
         byte[] bytes = "ed25519".getBytes(StandardCharsets.US_ASCII);
         String padded = Base64.getEncoder().encodeToString(bytes);
-        assertThat(RegistryProtocol.decodeStandardBase64(padded, "value")).isEqualTo(bytes);
-        assertThatThrownBy(() -> RegistryProtocol.decodeStandardBase64(
+        assertThat(CanonicalValues.decodeStandardBase64(padded, "value")).isEqualTo(bytes);
+        assertThatThrownBy(() -> CanonicalValues.decodeStandardBase64(
                 Base64.getUrlEncoder().withoutPadding().encodeToString(bytes),
                 "value"))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -418,7 +419,7 @@ class RegistryProtocolTest {
 
     @Test
     void installationPayloadDoesNotEncodeAnyProposedRealMauRule() {
-        String commitment = RegistryProtocol.sha256(RegistryProtocol.installationCommitment(
+        String commitment = CanonicalValues.sha256(RegistryProtocol.installationCommitment(
                 "dep_0123456789abcdef",
                 "installation_0123456789"));
         String payload = new String(RegistryProtocol.mauBatchPayload(

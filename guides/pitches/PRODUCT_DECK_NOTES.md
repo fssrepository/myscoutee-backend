@@ -121,7 +121,7 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
 
 - 1–10 rating UI and rate sync:
   `frontend/src/app/home/components/home/home.component.ts`,
-  `frontend/src/app/shared/core/http/services/rates.service.ts`,
+  `frontend/src/app/shared/core/http/services/affinity/rates.service.ts`,
   `server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/UserRatesService.java`.
 - Reciprocal/context affinity:
   `server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/AffinityCalculationService.java`,

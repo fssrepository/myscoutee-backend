@@ -6,6 +6,34 @@ its [CSV source](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv), and the
 [evidence directory](../evidence/). Resume from the
 [current QA handoff](../handoffs/CURRENT_QA_SESSION.md).
 
+## Template regression and fix propagation — MSC-122
+
+The outstanding MSC-115, MSC-116, MSC-117 and MSC-119 cases must also assess
+`myscoutee-template`. Each linked checklist defines its retained scope. Test
+shared functionality in the template itself; omitted product features are N/A
+with a reason, not missing template functionality.
+
+For every defect found in these cases:
+
+1. Record whether the template is affected, with the owning code/configuration
+   and a concrete reason. An unchecked impact remains pending.
+2. Repair the canonical owner and carry the applicable correction into the
+   template, including its selected seeds, configuration or shared component
+   revision where needed. Do not copy omitted product domains.
+3. Record the source and template backend/frontend/components revisions that
+   changed, the template regression command or checklist step, environment,
+   result and evidence. Record an unaffected decision explicitly when applicable.
+4. Verify the retained counterpart in applicable local and HTTP modes. For a
+   completed backend change batch, use the existing serial monolith/KVM gates;
+   only one stack runs at a time. Use focused checks, not a new stress campaign
+   for every defect.
+
+Keep source and template results separate in the testcase's matrix evidence and
+in the template's own qualification matrix. Source PASS does not imply template
+PASS. An affected fix remains open until propagation and targeted template
+verification are recorded. These requirements do not change existing execution
+statuses or authorize starting a manual browser campaign.
+
 ## Domain directories
 
 Folder assignment follows the matrix's **QA domain** column. A testcase's name

@@ -2,10 +2,16 @@
 set -euo pipefail
 umask 077
 
-KEY_DIR="${MYSCOUTEE_OPERATOR_CONFIGURATION_KEY_DIR:-/etc/myscoutee/configuration}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
+
+KEY_DIR="${MYSCOUTEE_OPERATOR_CONFIGURATION_KEY_DIR:-/etc/${RELEASE_PROJECT_NAME}/configuration}"
 KEY_PATH="${KEY_DIR}/deployment-master-key"
 OWNER_UID="${MYSCOUTEE_CONFIGURATION_OWNER_UID:-0}"
-OWNER_GID="${MYSCOUTEE_CONFIGURATION_OWNER_GID:-10001}"
+OWNER_GID="${MYSCOUTEE_CONFIGURATION_OWNER_GID:-$RELEASE_PROJECT_GID}"
 
 validate_key() {
   local value size

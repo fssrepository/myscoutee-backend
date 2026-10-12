@@ -32,6 +32,11 @@ public final class AssetDetails {
             List<String> acceptedPolicyIds,
             String paymentSessionId,
             Boolean inventoryApplied) {
+        public AssetRequestBookingRecord {
+            // Missing persisted lists and empty HTTP lists both mean no acceptance.
+            acceptedPolicyIds = acceptedPolicyIds == null ? List.of() : acceptedPolicyIds;
+        }
+
         public AssetRequestBookingRecord(
                 String eventId,
                 String eventTitle,

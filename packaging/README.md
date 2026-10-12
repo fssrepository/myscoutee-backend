@@ -1,5 +1,14 @@
 # MyScoutee Packaging
 
+The installed `scripts/release-project.json` owns the Debian package identity and
+managed-image inventory, including historical image introductions. The updater
+loads this package-owned policy, never a policy supplied by the browser or an
+incoming release. It must be a regular, root-owned file without group/other write
+permission. `scripts/release-project.sh` validates that policy and the exact
+candidate image manifest. Signature contexts and update request schemas remain
+unchanged. Run `bash packaging/tests/release-project-test.sh` and the existing
+`packaging/tests/update-worker-test.sh` after changing this boundary.
+
 The current Debian package release is **1.3.0** (`v1.3.0`). The
 [1.3.1 frontend patch](../guides/releases/v1.3.1.md) publishes only an nginx image
 compatible with that package; it does not build or install a new DEB.

@@ -3,6 +3,18 @@
 Stable follow-up for the MSC-116 user corrections. Execution status belongs in the
 QA matrix. Use the approved completed-case feedback fixture when this run starts.
 
+## Template regression and fix propagation — MSC-122
+
+The service-rating workflow in this case is omitted from the template; it is
+not the template's retained general feedback/moderation flow. Assess any shared
+FormFlow, image, guide or rating-control defect against an actual retained
+surface, propagate the applicable fix and test that surface. Record N/A with a
+reason for product-only service feedback.
+
+Follow the [shared template regression requirements](../README.md#template-regression-and-fix-propagation--msc-122).
+Record template impact, propagated revisions and its own targeted result for
+each defect; source PASS alone does not close the template follow-up.
+
 1. Open a pending service feedback from its existing card. The Start feedback badge
    has the shared media-badge height. Check neighboring badges/actions align.
 2. The form uses the existing event FormFlow layout: service image (not provider

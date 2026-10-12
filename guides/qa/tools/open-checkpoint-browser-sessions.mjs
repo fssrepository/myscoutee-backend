@@ -18,6 +18,7 @@ const configurationPath = process.env.QA_BROWSER_SESSION_CONFIG
   || path.join(scriptDirectory, 'browser-session-checkpoints.json');
 const chromeBinary = process.env.CHROME_BIN || '/opt/google/chrome/chrome';
 const argumentsList = process.argv.slice(2);
+const headless = argumentsList.includes('--headless');
 const closeOnly = argumentsList.includes('--close-only');
 const dismissGuidesOnly = argumentsList.includes('--dismiss-guides');
 const verifyExistingOnly = argumentsList.includes('--verify-existing');
@@ -150,6 +151,7 @@ await prepareConfiguredDemoSessions();
 
 const manifest = {
   checkpointId,
+  headless,
   createdAt: new Date().toISOString(),
   sessions: []
 };
@@ -188,6 +190,7 @@ try {
     }
 
     const browserArguments = [
+      ...(headless ? ['--headless=new'] : []),
       `--user-data-dir=${userDataDirectory}`,
       '--remote-debugging-port=0',
       '--no-first-run',
@@ -374,6 +377,7 @@ async function reopenManagedActor(actor) {
   const targetUrl = `${configured.targetUrl || defaultTargetUrl}`;
   const position = retained.position;
   const browser = spawn(chromeBinary, [
+    ...(existing.headless === true ? ['--headless=new'] : []),
     `--user-data-dir=${retained.userDataDirectory}`, '--remote-debugging-port=0', '--no-first-run',
     '--no-default-browser-check', '--disable-session-crashed-bubble', '--hide-crash-restore-bubble',
     ...((checkpoint.ignoreCertificateErrors ?? defaults.ignoreCertificateErrors ?? true) ? ['--ignore-certificate-errors'] : []),

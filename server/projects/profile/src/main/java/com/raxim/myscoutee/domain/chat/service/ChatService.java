@@ -1,13 +1,10 @@
 package com.raxim.myscoutee.domain.chat.service;
 
-import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
-
-import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+import static com.raxim.myscoutee.domain.chat.service.ChatRecordContext.*;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
-import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 
@@ -57,36 +54,21 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.community.dto.CaseConversation;
 
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
-import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
-import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
-import com.raxim.myscoutee.domain.events.api.EventResourceDirectory.Resource;
-import com.raxim.myscoutee.domain.events.api.EventResourceDirectory.StageRuntime;
-import com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageAttachmentRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReactionRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReplyRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord;
-import com.raxim.myscoutee.domain.events.api.EventResourceDirectory.AssetSettings;
-import com.raxim.myscoutee.domain.events.api.EventResourceDirectory.SupplyContribution;
-import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseAssigneeRecord;
 import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseRecord;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDeviceDeleteRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDto;
-import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatGroupContextDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatHeaderSyncResponseDto;
-import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMetricBucketDto;
-import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMetricsDto;
-import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatNavigationContextDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMemberDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMembersPageResponseDto;
@@ -96,11 +78,7 @@ import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessagesPageResponseDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatReadReceiptDto;
-import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatServiceEnsureRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserMenuCountersDto;
-import com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto;
-import com.raxim.myscoutee.domain.events.api.MemberDirectory;
-import com.raxim.myscoutee.domain.events.api.EventResourceDirectory;
 import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
@@ -112,47 +90,21 @@ import com.raxim.myscoutee.domain.chat.mapper.ChatMessageMapper;
 import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
-public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventConversations, com.raxim.myscoutee.domain.chat.api.CaseConversations, com.raxim.myscoutee.domain.chat.api.SupportMessages, com.raxim.myscoutee.domain.chat.api.ChatQueries {
+public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQueries {
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountDevices accountDevices;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ChatCounters chatCounters;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
 
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.RatingDirectory ratings;
-    @org.springframework.beans.factory.annotation.Autowired
-    private GroupDirectory groupDirectory;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.api.CaseParticipants cases;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.api.AnnouncementDirectory announcements;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
-    private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
-    private static final String SUPPORT_CASE_STATUS_WARNED = "warned";
-    private static final String SUPPORT_CASE_STATUS_PICKED = "picked";
-    private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
-    private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
+    static final String SUPPORT_CASE_STATUS_PENDING = "pending";
+    static final String SUPPORT_CASE_STATUS_WARNED = "warned";
+    static final String SUPPORT_CASE_STATUS_PICKED = "picked";
+    static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
+    static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
     private static final String SUPPORT_CASE_FILTER_ALL = "all";
-    private static final String CHAT_CHANNEL_MAIN_EVENT = "mainEvent";
-    private static final String CHAT_CHANNEL_OPTIONAL_SUB_EVENT = "optionalSubEvent";
-    private static final String CHAT_CHANNEL_GROUP_SUB_EVENT = "groupSubEvent";
-    private static final String CHAT_CHANNEL_SERVICE_EVENT = "serviceEvent";
-    private static final String CHAT_CHANNEL_GROUP_SUPPORT = "groupSupport";
-    private static final String CHAT_CHANNEL_APP_SUPPORT = "appSupport";
-    private static final String CHAT_CHANNEL_SUPPORT_CASE = "supportCase";
-    private static final String OWNER_TYPE_EVENT = "event";
-    private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
-    private static final String OWNER_TYPE_GROUP = "group";
-    private static final String MEMBER_STATUS_ACCEPTED = "accepted";
-    private static final String MEMBER_STATUS_PENDING = "pending";
-    private static final String RUNTIME_STATUS_DELETED = "D";
-    private static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
-    private static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
-    private static final String ASSET_TYPE_SUPPLIES = AssetCatalog.TYPE_SUPPLIES;
+
     private static final int DEFAULT_CHAT_MESSAGES_PAGE_SIZE = 20;
     private static final int MAX_CHAT_MESSAGES_PAGE_SIZE = 100;
 
@@ -160,16 +112,19 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     private final ChatMessagesRepository chatMessagesRepository;
     private final MongoTemplate mongoTemplate;
     private final ProfileSummaries profileDirectory;
-    private final MemberDirectory memberDirectory;
-    private final EventResourceDirectory eventResources;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private ChatMemberPages memberPages;
     private final ProfileReadState profilePresentation;
-    private final ActivityCounters activityCounters;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
     private final NotificationInbox userNotificationService;
     private final OperationalTelemetry adminTelemetryService;
     private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private ChatPagePresentation pagePresentation;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private List<ChatAccessRestriction> accessRestrictions = List.of();
     private final ChatMapper chatMapper;
     private final ChatMessageMapper chatMessageMapper;
     private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
@@ -179,10 +134,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             ChatMessagesRepository chatMessagesRepository,
             MongoTemplate mongoTemplate,
             ProfileSummaries profileDirectory,
-            MemberDirectory memberDirectory,
-            EventResourceDirectory eventResources,
             ProfileReadState profilePresentation,
-            ActivityCounters activityCounters,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
             NotificationInbox userNotificationService,
@@ -195,10 +147,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         this.chatMessagesRepository = chatMessagesRepository;
         this.mongoTemplate = mongoTemplate;
         this.profileDirectory = profileDirectory;
-        this.memberDirectory = memberDirectory;
-        this.eventResources = eventResources;
         this.profilePresentation = profilePresentation;
-        this.activityCounters = activityCounters;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatPushNotificationService = chatPushNotificationService;
         this.userNotificationService = userNotificationService;
@@ -236,136 +185,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 ? snapshot.chatDocuments().get(0)
                 : snapshot.viewerChat();
         return toChatDto(chat, chatMemberUsers(List.of(chat)));
-    }
-
-    public String ensureMainEventChat(com.raxim.myscoutee.domain.events.api.EventChatContext event, Collection<String> participantUserIds) {
-        return ensureMainEventChatDocuments(event, participantUserIds).chatId();
-    }
-
-    public PublishedMainEventChatResult ensurePublishedMainEventChat(
-            com.raxim.myscoutee.domain.events.api.EventChatContext event,
-            Collection<String> participantUserIds) {
-        MainEventChatDocumentsResult result = ensureMainEventChatDocuments(event, participantUserIds);
-        Set<String> createdOwnerUserIds = result.createdDocuments().stream()
-                .map(Chat::getOwnerUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        return new PublishedMainEventChatResult(result.chatId(), createdOwnerUserIds);
-    }
-
-    private MainEventChatDocumentsResult ensureMainEventChatDocuments(
-            com.raxim.myscoutee.domain.events.api.EventChatContext event,
-            Collection<String> participantUserIds) {
-        String eventId = normalizeId(event == null ? null : event.getSourceId());
-        List<String> memberUserIds = participantUserIds == null
-                ? List.of()
-                : participantUserIds.stream()
-                        .map(this::normalizeId)
-                        .filter(StringUtils::hasText)
-                        .distinct()
-                        .sorted()
-                        .toList();
-        if (!StringUtils.hasText(eventId) || memberUserIds.isEmpty()) {
-            throw new IllegalStateException("A system event chat requires an event id and participants.");
-        }
-
-        String chatId = eventId;
-        String nowIso = Instant.now().toString();
-        List<Chat> existingDocuments = chatsRepository.findByChatId(chatId).stream()
-                .filter(Objects::nonNull)
-                .toList();
-        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
-        for (Chat existing : existingDocuments) {
-            String ownerUserId = normalizeId(existing.getOwnerUserId());
-            if (StringUtils.hasText(ownerUserId)) {
-                existingByOwnerUserId.putIfAbsent(ownerUserId, existing);
-            }
-        }
-
-        List<Chat> documentsToSave = new ArrayList<>();
-        List<Chat> createdDocuments = new ArrayList<>();
-        for (String memberUserId : memberUserIds) {
-            Chat current = existingByOwnerUserId.get(memberUserId);
-            Chat document = current == null ? new Chat() : copyChat(current);
-            boolean contextWindowChanged = current != null
-                    && (!Objects.equals(current.getContextStartAtIso(), event.getStartAtIso())
-                            || !Objects.equals(current.getContextEndAtIso(), event.getEndAtIso()));
-            document.setMongoId(current == null
-                    ? buildMongoId(memberUserId, chatId)
-                    : current.getMongoId());
-            document.setChatId(chatId);
-            document.setOwnerUserId(memberUserId);
-            document.setAvatar(firstNonBlank(event.getAvatar(), "SY"));
-            document.setTitle(firstNonBlank(event.getTitle(), "Random Room"));
-            document.setLastMessage(current == null ? "" : safeText(current.getLastMessage()));
-            document.setLastSenderId(current == null ? null : current.getLastSenderId());
-            document.setMemberIds(new ArrayList<>(memberUserIds));
-            document.setUnread(current == null ? 0 : normalizeCount(current.getUnread()));
-            document.setDateIso(current == null
-                    ? nowIso
-                    : firstNonBlank(current.getDateIso(), nowIso));
-            document.setContextStartAtIso(event.getStartAtIso());
-            document.setContextEndAtIso(event.getEndAtIso());
-            document.setChannelType(CHAT_CHANNEL_MAIN_EVENT);
-            document.setOwnerId(eventId);
-            document.setEventId(eventId);
-            document.setOwnerStatus("A");
-            document.setRevision(current == null
-                    ? 1L
-                    : contextWindowChanged
-                            ? nextChatRevision(current)
-                            : normalizeChatRevision(current.getRevision()));
-            document.setSubEventId(null);
-            document.setGroupId(null);
-            document.setDistanceKm(null);
-            document.setDistanceMetersExact(null);
-            document.setSupportCase(null);
-            documentsToSave.add(document);
-            if (current == null) {
-                createdDocuments.add(document);
-            }
-        }
-        chatsRepository.saveAll(documentsToSave);
-
-        List<Chat> staleDocuments = existingDocuments.stream()
-                .filter(document -> !memberUserIds.contains(normalizeId(document.getOwnerUserId())))
-                .toList();
-        if (!staleDocuments.isEmpty()) {
-            chatsRepository.deleteAll(staleDocuments);
-            incrementStoredChatCounters(staleDocuments.stream()
-                    .map(document -> new ChatCounterChange(document, -normalizeCount(document.getUnread())))
-                    .toList());
-        }
-        evictChatOwnerReadCaches(documentsToSave);
-        evictChatOwnerReadCaches(staleDocuments);
-
-        return new MainEventChatDocumentsResult(chatId, List.copyOf(createdDocuments));
-    }
-
-    public long updateEventChatOwnerStatus(String eventId, String ownerStatus) {
-        String normalizedEventId = normalizeId(eventId);
-        String normalizedOwnerStatus = safeText(ownerStatus);
-        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedOwnerStatus)) {
-            return 0L;
-        }
-        List<Chat> chatDocuments = chatsRepository.findByEventId(normalizedEventId).stream()
-                .filter(Objects::nonNull)
-                .toList();
-        if (chatDocuments.isEmpty()) {
-            return 0L;
-        }
-        Query query = Query.query(Criteria.where("eventId").is(normalizedEventId)
-                .and("ownerStatus").ne(normalizedOwnerStatus));
-        long modifiedCount = mongoTemplate.updateMulti(
-                query,
-                Update.update("ownerStatus", normalizedOwnerStatus)
-                        .set("revision", Instant.now().toEpochMilli()),
-                Chat.class).getModifiedCount();
-        if (modifiedCount > 0L) {
-            evictChatOwnerReadCaches(chatDocuments);
-        }
-        return modifiedCount;
     }
 
     public ChatHeaderSyncResponseDto syncChatHeader(
@@ -485,7 +304,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (chat == null || !"contact".equals(chat.getChannelType()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only contact chats accept contact invitations.");
         List<String> targets = (userIds == null ? List.<String>of() : userIds).stream()
-                .map(this::normalizeId).distinct().toList();
+                .map(ChatRecordContext::normalizeId).distinct().toList();
         if (targets.isEmpty()) return toChatDto(chat, chatMemberUsers(List.of(chat)));
         if (targets.size() > 100) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many contacts.");
         List<String> newTargets = targets.stream().filter(id -> !safeMemberIds(chat.getMemberIds()).contains(id)).toList();
@@ -549,313 +368,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (targetIds.stream().anyMatch(id -> !WorkspaceContext.sameWorkspace(actor, users.get(id))))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
         return users;
-    }
-
-    public ChatDto ensureServiceChat(ChatServiceEnsureRequestDto request, String requestedUserId) {
-        String userId = requireResolvedUserId(requestedUserId);
-        if (request == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service chat request is required.");
-        }
-        String serviceContext = safeText(request.serviceContext()).toLowerCase(Locale.US);
-        if ("campaign".equals(serviceContext)) return ensureCampaignChat(request, userId);
-        if ("case".equals(serviceContext)) return ensureCaseChat(request, userId);
-        if ("groupsupport".equals(serviceContext)) return ensureAnnouncementFeedbackChat(request, userId);
-        if (!"event".equals(serviceContext) && !"asset".equals(serviceContext)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported service chat context.");
-        }
-        String eventId = normalizeId(request.eventId());
-        if (!StringUtils.hasText(eventId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event id is required.");
-        }
-        Event event = findServiceChatEvent(eventId);
-        if (event == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found.");
-        }
-
-        String subEventId = normalizeId(request.subEventId());
-        String assetId = normalizeId(request.assetId());
-        String requestedTargetUserId = normalizeId(request.targetUserId());
-        Asset asset = null;
-        String targetUserId;
-        String chatId;
-        if ("asset".equals(serviceContext)) {
-            if (!StringUtils.hasText(assetId) || !StringUtils.hasText(subEventId)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Asset and sub-event ids are required.");
-            }
-            asset = findServiceChatAsset(assetId);
-            if (asset == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Asset not found.");
-            }
-            targetUserId = normalizeId(asset.getOwnerUserId());
-            chatId = "c-service-asset-" + assetId + "-" + subEventId + "-" + userId;
-        } else {
-            targetUserId = normalizeId(event.getCreatorUserId());
-            if (!StringUtils.hasText(targetUserId)) {
-                targetUserId = normalizeId(event.getOwnerUserId());
-            }
-            chatId = "c-service-event-" + eventId + "-" + userId;
-        }
-        ProfileSummary targetUser = StringUtils.hasText(targetUserId) ? findUser(targetUserId) : null;
-        if (targetUser == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service chat recipient not found.");
-        }
-        if (!"asset".equals(serviceContext)
-                && StringUtils.hasText(requestedTargetUserId)
-                && !targetUserId.equals(requestedTargetUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The selected service chat recipient is not the resource owner.");
-        }
-        if (targetUserId.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The resource owner cannot open a service chat with themselves.");
-        }
-
-        SubEvent contextSubEvent = findChatContextSubEvent(event, subEventId);
-        String contextStartAtIso = firstNonBlank(
-                contextSubEvent == null ? null : contextSubEvent.startAt(),
-                event.getStartAtIso());
-        String contextEndAtIso = firstNonBlank(
-                contextSubEvent == null ? null : contextSubEvent.endAt(),
-                event.getEndAtIso());
-
-        List<Chat> chatDocuments = chatsRepository.findByChatId(chatId);
-        if (chatDocuments.isEmpty()) {
-            Chat baseChat = new Chat();
-            baseChat.setMongoId(buildMongoId(userId, chatId));
-            baseChat.setChatId(chatId);
-            baseChat.setOwnerUserId(userId);
-            baseChat.setAvatar(resolveUserInitials(targetUser, targetUserId));
-            baseChat.setTitle(serviceChatTitle(request.title(), serviceContext, asset, event));
-            baseChat.setLastMessage(serviceChatLastMessage(request.lastMessage(), serviceContext, asset, event));
-            baseChat.setLastSenderId(targetUserId);
-            baseChat.setMemberIds(List.of(userId, targetUserId));
-            baseChat.setUnread(0);
-            baseChat.setDateIso(Instant.now().toString());
-            baseChat.setContextStartAtIso(contextStartAtIso);
-            baseChat.setContextEndAtIso(contextEndAtIso);
-            baseChat.setChannelType(CHAT_CHANNEL_SERVICE_EVENT);
-            baseChat.setOwnerId(eventId);
-            baseChat.setEventId(eventId);
-            baseChat.setOwnerStatus(event.getStatus());
-            baseChat.setSubEventId(StringUtils.hasText(subEventId) ? subEventId : null);
-            chatsRepository.save(baseChat);
-            chatDocuments = List.of(baseChat);
-        } else {
-            chatDocuments = reconcileServiceChatParticipants(
-                    chatDocuments,
-                    userId,
-                    targetUserId,
-                    resolveUserInitials(targetUser, targetUserId),
-                    contextStartAtIso,
-                    contextEndAtIso);
-        }
-        chatDocuments = ensureOwnerCopies(chatDocuments);
-        Chat viewerChat = findOwnerChat(chatDocuments, userId);
-        Chat responseChat = viewerChat == null ? chatDocuments.get(0) : viewerChat;
-        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
-    }
-
-    private ChatDto ensureAnnouncementFeedbackChat(ChatServiceEnsureRequestDto request, String userId) {
-        var a = announcements.find(normalizeId(request.announcementId())).orElse(null);
-        ProfileSummary actor = findUser(userId);
-        if (a == null || actor == null || !"published".equals(a.status()) || !a.communityId().equals(actor.getWorkspaceGroupId()))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement unavailable.");
-        var group = groupDirectory.findById(a.communityId()).orElse(null);
-        var roster = memberDirectory.findByOwnerTypeAndOwnerId("community", a.communityId());
-        String account = firstNonBlank(actor.getAccountUserId(), userId);
-        if (group == null || group.deleted() || group.awaitingOwner() || !roster.stream().anyMatch(m -> account.equals(m.getUserId()) && "accepted".equals(m.getStatus())))
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Announcement unavailable.");
-        String adminId = "group:" + group.id() + ":" + group.ownerUserId();
-        if (adminId.equals(userId) || findUser(adminId) == null
-                || !roster.stream().anyMatch(m -> group.ownerUserId().equals(m.getUserId()) && "Admin".equals(m.getRole()) && "accepted".equals(m.getStatus())))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Group manager unavailable.");
-        String chatId = "c-moderation-group-" + userId;
-        Chat viewer = findOwnerChat(syncResourceChat(chatId, CHAT_CHANNEL_GROUP_SUPPORT, null, group.name(), List.of(userId, adminId)), userId);
-        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
-    }
-
-    private ChatDto ensureCampaignChat(ChatServiceEnsureRequestDto request, String userId) {
-        var campaign = campaignCatalog.find(normalizeId(request.campaignId()));
-        ProfileSummary actor = findUser(userId);
-        if (campaign == null || actor == null || !Objects.equals(actor.getWorkspaceGroupId(), campaign.workspaceGroupId())
-                || !"published".equals(campaign.status()) || userId.equals(campaign.ownerUserId()))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campaign unavailable.");
-        if (!ratings.hasPositiveCampaignRating(campaign.id(), userId, campaign.ownerUserId()))
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Rate the campaign before asking its organizer.");
-        String chatId = "c-campaign-" + campaign.id() + "-" + userId;
-        List<Chat> copies = syncResourceChat(chatId, "campaign", campaign.id(), campaign.title(),
-                List.of(userId, campaign.ownerUserId()));
-        Chat viewer = findOwnerChat(copies, userId);
-        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
-    }
-
-    private ChatDto ensureCaseChat(ChatServiceEnsureRequestDto request, String userId) {
-        CaseConversation serviceCase = cases.conversation(normalizeId(request.caseId())).orElse(null);
-        if (!caseChatAccess(serviceCase, findUser(userId), request.caseOfferId()))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
-        syncCaseChat(serviceCase);
-        List<Chat> copies = chatsRepository.findByChatId(StringUtils.hasText(request.caseOfferId())
-                ? "c-case-offer-" + serviceCase.id() + "-" + request.caseOfferId() : "c-case-" + serviceCase.id());
-        Chat viewer = findOwnerChat(copies, userId);
-        if (viewer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
-        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
-    }
-
-    private boolean caseChatAccess(CaseConversation serviceCase, ProfileSummary actor, String caseOfferId) {
-        return serviceCase != null && actor != null
-                && BaseGroups.COMMUNITY_BASE_ID.equals(actor.getWorkspaceGroupId())
-                && BaseGroups.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())
-                && (StringUtils.hasText(caseOfferId) ? serviceCase.offerChatParticipantAccountIds(caseOfferId) : serviceCase.chatParticipantAccountIds()).contains(
-                        StringUtils.hasText(actor.getAccountUserId()) ? actor.getAccountUserId() : actor.getUserId());
-    }
-
-    /** Case and quotation groups share the existing Cases channel and membership lifecycle. */
-    @Override public void synchronizeCase(CaseConversation serviceCase) { syncCaseChat(serviceCase); }
-    public List<Chat> syncCaseChat(CaseConversation serviceCase) {
-        var profiles = profileDirectory.findByWorkspaceGroupIdAndAccountUserIdIn(
-                BaseGroups.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds());
-        var byAccount = profiles.stream().collect(java.util.stream.Collectors.toMap(
-                u -> StringUtils.hasText(u.getAccountUserId()) ? u.getAccountUserId() : u.getUserId(), ProfileSummary::getUserId, (a,b) -> a));
-        java.util.function.Function<List<String>, List<String>> memberProfiles = ids -> ids.stream().map(byAccount::get).filter(Objects::nonNull).toList();
-        var main = syncResourceChat("c-case-" + serviceCase.id(), "case", serviceCase.id(), serviceCase.title(), memberProfiles.apply(serviceCase.chatParticipantAccountIds()));
-        for (var offer : serviceCase.offers()) {
-            syncResourceChat("c-case-offer-" + serviceCase.id() + "-" + offer.id(), "case", serviceCase.id(),
-                    serviceCase.title() + " · " + java.math.BigDecimal.valueOf(offer.amount()).stripTrailingZeros().toPlainString() + " " + offer.currency(),
-                    memberProfiles.apply(serviceCase.offerChatParticipantAccountIds(offer.id())), offer.id());
-        }
-        return main;
-    }
-
-    private List<Chat> syncResourceChat(String chatId, String channel, String ownerId, String title, List<String> members) {
-        return syncResourceChat(chatId, channel, ownerId, title, members, null);
-    }
-    private List<Chat> syncResourceChat(String chatId, String channel, String ownerId, String title, List<String> members, String caseOfferId) {
-        List<Chat> existing = chatsRepository.findByChatId(chatId);
-        List<Chat> saved = new ArrayList<>();
-        for (String member : members) {
-            Chat copy = findOwnerChat(existing, member);
-            if (copy == null) {
-                copy = new Chat(); copy.setMongoId(buildMongoId(member, chatId)); copy.setChatId(chatId);
-                copy.setOwnerUserId(member); copy.setUnread(0); copy.setLastMessage(""); copy.setLastSenderId("");
-                copy.setDateIso(Instant.now().toString()); copy.setAvatar("case".equals(channel) ? "C" : "W");
-            }
-            copy.setChannelType(channel); copy.setOwnerId(ownerId); copy.setTitle(title); copy.setCaseOfferId(caseOfferId);
-            copy.setMemberIds(List.copyOf(members)); copy.setRevision(nextChatRevision(copy)); saved.add(copy);
-        }
-        if (!saved.isEmpty()) {
-            BulkOperations writes = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class);
-            for (Chat copy : saved) writes.upsert(Query.query(Criteria.where("_id").is(copy.getMongoId())),
-                    new Update().setOnInsert("id", chatId).setOnInsert("ownerUserId", copy.getOwnerUserId())
-                            .setOnInsert("unread", 0).setOnInsert("lastMessage", "").setOnInsert("lastSenderId", "")
-                            .setOnInsert("dateIso", copy.getDateIso()).setOnInsert("avatar", copy.getAvatar())
-                            .set("channelType", channel).set("ownerId", ownerId).set("title", title).set("caseOfferId", caseOfferId)
-                            .set("memberIds", members).inc("revision", 1));
-            writes.execute();
-        }
-        List<Chat> removed = existing.stream().filter(c -> !members.contains(c.getOwnerUserId())).toList();
-        if (!removed.isEmpty()) {
-            chatsRepository.deleteAll(removed);
-            incrementStoredChatCounters(removed.stream().map(c -> new ChatCounterChange(c, -normalizeCount(c.getUnread()))).toList());
-        }
-        evictChatOwnerReadCaches(saved); evictChatOwnerReadCaches(removed);
-        return saved;
-    }
-
-    private SubEvent findChatContextSubEvent(Event event, String subEventId) {
-        String normalizedSubEventId = normalizeId(subEventId);
-        if (event == null || !StringUtils.hasText(normalizedSubEventId)) {
-            return null;
-        }
-        return (event.getSubEvents() == null ? List.<SubEvent>of() : event.getSubEvents()).stream()
-                .filter(Objects::nonNull)
-                .filter(item -> normalizedSubEventId.equals(normalizeId(item.id())))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private Event findServiceChatEvent(String eventId) {
-        return eventOwnership.findByIdOrSourceId(eventId);
-    }
-
-    private Asset findServiceChatAsset(String assetId) {
-        return assetOwnership.findByIdOrAssetId(assetId);
-    }
-
-    private List<Chat> reconcileServiceChatParticipants(
-            List<Chat> existingDocuments,
-            String requesterUserId,
-            String targetUserId,
-            String targetAvatar,
-            String contextStartAtIso,
-            String contextEndAtIso) {
-        List<String> memberUserIds = List.of(requesterUserId, targetUserId);
-        List<Chat> activeDocuments = new ArrayList<>();
-        List<Chat> staleDocuments = new ArrayList<>();
-        List<Chat> changedDocuments = new ArrayList<>();
-        for (Chat existing : existingDocuments == null ? List.<Chat>of() : existingDocuments) {
-            if (existing == null) {
-                continue;
-            }
-            if (!memberUserIds.contains(normalizeId(existing.getOwnerUserId()))) {
-                staleDocuments.add(existing);
-                continue;
-            }
-            Chat next = copyChat(existing);
-            boolean changed = !memberUserIds.equals(existing.getMemberIds())
-                    || !Objects.equals(existing.getAvatar(), targetAvatar)
-                    || !Objects.equals(existing.getContextStartAtIso(), contextStartAtIso)
-                    || !Objects.equals(existing.getContextEndAtIso(), contextEndAtIso);
-            next.setMemberIds(new ArrayList<>(memberUserIds));
-            next.setAvatar(targetAvatar);
-            next.setContextStartAtIso(contextStartAtIso);
-            next.setContextEndAtIso(contextEndAtIso);
-            if (changed) {
-                next.setRevision(nextChatRevision(existing));
-                changedDocuments.add(next);
-            }
-            activeDocuments.add(next);
-        }
-        if (!changedDocuments.isEmpty()) {
-            chatsRepository.saveAll(changedDocuments);
-        }
-        if (!staleDocuments.isEmpty()) {
-            chatsRepository.deleteAll(staleDocuments);
-            incrementStoredChatCounters(staleDocuments.stream()
-                    .map(document -> new ChatCounterChange(document, -normalizeCount(document.getUnread())))
-                    .toList());
-        }
-        evictChatOwnerReadCaches(changedDocuments);
-        evictChatOwnerReadCaches(staleDocuments);
-        return activeDocuments;
-    }
-
-    private String serviceChatTitle(
-            String requestedTitle,
-            String serviceContext,
-            Asset asset,
-            Event event) {
-        String title = safeText(requestedTitle);
-        if (StringUtils.hasText(title)) {
-            return title;
-        }
-        String subject = "asset".equals(serviceContext)
-                ? safeText(asset == null ? null : asset.getTitle())
-                : safeText(event == null ? null : event.getTitle());
-        return ("asset".equals(serviceContext) ? "Asset Service" : "Event Service")
-                + (StringUtils.hasText(subject) ? " · " + subject : "");
-    }
-
-    private String serviceChatLastMessage(
-            String requestedLastMessage,
-            String serviceContext,
-            Asset asset,
-            Event event) {
-        String lastMessage = safeText(requestedLastMessage);
-        if (StringUtils.hasText(lastMessage)) {
-            return lastMessage;
-        }
-        String subject = "asset".equals(serviceContext)
-                ? safeText(asset == null ? null : asset.getTitle())
-                : safeText(event == null ? null : event.getTitle());
-        return "Service chat for " + (StringUtils.hasText(subject) ? subject : serviceContext) + ".";
     }
 
     private ChatPageResponseDto querySupportCasePage(
@@ -947,42 +459,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 counters.chat());
     }
 
-    public ChatDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
-        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
-        String normalizedChatId = normalizeId(chatId);
-        if (!StringUtils.hasText(normalizedChatId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
-        }
-        if (!accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, userId, userId, normalizedChatId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage this support chat.");
-        }
-        ProfileSummary actor = findUser(userId);
-        String action = normalizeSupportCaseAction(actionValue);
-        if (!StringUtils.hasText(action)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
-        }
-
-        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
-        if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(this::isSupportCaseChat)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case not found.");
-        }
-
-        SupportCaseState state = nextSupportCaseState(action, userId, actor);
-        List<Chat> updatedDocuments = new ArrayList<>();
-        for (Chat existing : chatDocuments) {
-            Chat next = copyChat(existing);
-            applySupportCaseState(next, state);
-            updatedDocuments.add(next);
-        }
-        chatsRepository.saveAll(updatedDocuments);
-        activityCounters.refreshSupportCaseCountersForAdmins();
-        adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
-
-        Chat viewerChat = findOwnerChat(updatedDocuments, userId);
-        Chat responseChat = viewerChat == null ? updatedDocuments.get(0) : viewerChat;
-        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
-    }
-
     public List<ChatMessageDto> querySharedMessages(String chatId, String requestedUserId, String kind) {
         String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
@@ -1041,7 +517,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 .toList();
         List<String> loadedMessageIds = messages.stream()
                 .map(ChatMessage::getId)
-                .map(this::normalizeId)
+                .map(ChatRecordContext::normalizeId)
                 .filter(StringUtils::hasText)
                 .toList();
         ChatReadUpdate readUpdate = !markViewed ? null : target != null
@@ -1077,38 +553,12 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         String memberOwnerId = normalizeId(memberSource.getOwnerId());
         int limit = normalizeChatPageLimit(limitValue);
         int offset = parseChatCursorOffset(cursor);
-        if (StringUtils.hasText(memberOwnerType) && StringUtils.hasText(memberOwnerId)) {
-            var memberPage = memberDirectory.pageByOwnerAndStatus(memberOwnerType, memberOwnerId,
-                    Boolean.TRUE.equals(pendingOnly) ? MEMBER_STATUS_PENDING : MEMBER_STATUS_ACCEPTED, offset, limit);
-            long total = memberPage.total();
-            var memberRecords = memberPage.items();
-            Set<String> pageMemberIds = memberRecords.stream()
-                    .map(Member::getUserId)
-                    .map(this::normalizeId)
-                    .filter(StringUtils::hasText)
-                    .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-            Map<String, ProfileSummary> usersById = new LinkedHashMap<>();
-            for (ProfileSummary user : profileDirectory.findByUserIdIn(pageMemberIds)) {
-                String memberUserId = normalizeId(user == null ? null : user.getUserId());
-                if (StringUtils.hasText(memberUserId)) {
-                    usersById.put(memberUserId, user);
-                }
-            }
-            List<ChatMemberDto> items = memberRecords.stream()
-                    .map(record -> chatMapper.toMemberDto(
-                            usersById.get(normalizeId(record.getUserId())),
-                            safeText(record.getStatus()).toLowerCase(Locale.ROOT)))
-                    .filter(Objects::nonNull)
-                    .toList();
-            int nextOffset = offset + memberRecords.size();
-            return new ChatMembersPageResponseDto(
-                    items,
-                    safePageTotal(total),
-                    nextOffset < total && !memberRecords.isEmpty() ? Integer.toString(nextOffset) : null);
+        if (memberPages != null && StringUtils.hasText(memberOwnerType) && StringUtils.hasText(memberOwnerId)) {
+            return memberPages.query(memberOwnerType, memberOwnerId, pendingOnly, offset, limit);
         }
 
         List<String> memberIds = safeMemberIds(memberSource.getMemberIds()).stream()
-                .map(this::normalizeId)
+                .map(ChatRecordContext::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
@@ -1252,126 +702,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return persistChatMessage(accessSnapshot, userId, message);
     }
 
-    public ChatMessageDto sendAdminSupportMessage(
-            String targetUserId,
-            String adminUserId,
-            String adminName,
-            String adminInitials,
-            String text,
-            String supportStatus) {
-        return sendAdminSupportMessage(targetUserId, adminUserId, adminName, adminInitials, text, supportStatus, null);
-    }
-
-    public ChatMessageDto sendAdminSupportMessage(String targetUserId, String adminUserId, String adminName,
-            String adminInitials, String text, String supportStatus, String stableMessageId) {
-        String normalizedTargetUserId = normalizeId(targetUserId);
-        String normalizedAdminUserId = normalizeId(adminUserId);
-        String normalizedText = normalizeText(text);
-        if (!StringUtils.hasText(normalizedTargetUserId)
-                || !StringUtils.hasText(normalizedAdminUserId)
-                || !StringUtils.hasText(normalizedText)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Support target, admin and message are required.");
-        }
-        ProfileSummary targetUser = findUser(normalizedTargetUserId);
-        if (targetUser == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support target was not found.");
-        }
-        ProfileSummary adminUser = findUser(normalizedAdminUserId);
-        String workspaceGroupId = normalizeId(targetUser.getWorkspaceGroupId());
-        var targetGroup = StringUtils.hasText(workspaceGroupId) ? groupDirectory.findById(workspaceGroupId).orElse(null) : null;
-        boolean appModeration = isAdminUser(adminUser);
-        if (appModeration) {
-            String targetBase = normalizeId(com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(workspaceGroupId)
-                    ? workspaceGroupId : targetGroup == null ? null : targetGroup.baseId());
-            if (!targetBase.equals(normalizeId(adminUser.getWorkspaceGroupId())))
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case unavailable in this base group.");
-        }
-        boolean groupModeration = StringUtils.hasText(workspaceGroupId) && !appModeration;
-        if (groupModeration && (adminUser == null || !workspaceGroupId.equals(normalizeId(adminUser.getWorkspaceGroupId())))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Moderator and recipient must belong to the same workspace.");
-        }
-        String chatId = (groupModeration ? "c-moderation-group-" : "c-support-admin-") + normalizedTargetUserId;
-        if (stableMessageId != null) {
-            var delivered = chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElse(null);
-            if (delivered != null) return chatMessageMapper.toDto(delivered, normalizedAdminUserId);
-        }
-        var group = groupModeration ? targetGroup : null;
-        String chatTitle = groupModeration ? (group == null ? workspaceGroupId : group.name()) : "MyScoutee Support";
-        String resolvedAdminName = firstNonBlank(adminName, resolveUserName(adminUser, normalizedAdminUserId));
-        String resolvedAdminInitials = firstNonBlank(adminInitials, resolveUserInitials(adminUser, normalizedAdminUserId));
-        String nowIso = Instant.now().toString();
-        SupportCaseState supportCaseState = new SupportCaseState(
-                normalizeSupportCaseStatus(supportStatus),
-                normalizedAdminUserId,
-                resolvedAdminName,
-                resolvedAdminInitials,
-                nowIso);
-        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
-        for (Chat existing : chatsRepository.findByChatId(chatId)) {
-            if (existing != null && StringUtils.hasText(normalizeId(existing.getOwnerUserId()))) {
-                existingByOwnerUserId.put(normalizeId(existing.getOwnerUserId()), existing);
-            }
-        }
-        Chat targetChat = supportChatDocument(
-                existingByOwnerUserId.get(normalizedTargetUserId),
-                normalizedTargetUserId,
-                chatId,
-                resolvedAdminInitials,
-                chatTitle,
-                List.of(normalizedTargetUserId, normalizedAdminUserId),
-                supportCaseState);
-        Chat adminChat = supportChatDocument(
-                existingByOwnerUserId.get(normalizedAdminUserId),
-                normalizedAdminUserId,
-                chatId,
-                resolveUserInitials(targetUser, normalizedTargetUserId),
-                chatTitle + " · " + resolveUserName(targetUser, normalizedTargetUserId),
-                List.of(normalizedTargetUserId, normalizedAdminUserId),
-                supportCaseState);
-        if (!groupModeration) {
-            targetChat.setSupportBaseGroupId(adminUser == null ? null : adminUser.getWorkspaceGroupId());
-            adminChat.setSupportBaseGroupId(targetChat.getSupportBaseGroupId());
-        }
-        if (groupModeration) {
-            for (Chat chat : List.of(targetChat, adminChat)) {
-                chat.setChannelType(CHAT_CHANNEL_GROUP_SUPPORT);
-                chat.setOwnerId(null);
-                chat.setSupportCase(null);
-            }
-        }
-        List<Chat> chatDocuments = normalizedTargetUserId.equals(normalizedAdminUserId)
-                ? List.of(adminChat) : List.of(targetChat, adminChat);
-        chatsRepository.saveAll(chatDocuments);
-        if (!groupModeration) activityCounters.refreshSupportCaseCountersForAdmins();
-
-        ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
-        message.setSender(resolvedAdminName);
-        ChatAvatarRecord senderAvatar = message.getSenderAvatar();
-        if (senderAvatar != null) {
-            senderAvatar.setInitials(resolvedAdminInitials);
-        }
-        if (stableMessageId != null) {
-            message.setId(stableMessageId);
-            message.setChatId(chatId);
-            message.setMongoId(ChatMessage.buildMongoId(chatId, stableMessageId));
-            message.refreshMessageSearchFields();
-            try { chatMessagesRepository.insert(message); }
-            catch (DuplicateKeyException duplicate) {
-                return chatMessageMapper.toDto(chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElseThrow(), normalizedAdminUserId);
-            }
-            var updated = updateChatSummaries(chatDocuments, message, normalizedAdminUserId, true);
-            var streamEvent = chatMessageMapper.toStreamEvent(chatId, message);
-            observeChatEventPublish(publishChatEventAsync(streamEvent), streamEvent);
-            chatPushNotificationService.notifyRecipients(updated, streamEvent);
-            return chatMessageMapper.toDto(message, normalizedAdminUserId);
-        }
-        return persistChatMessage(
-                new ChatDocumentsSnapshot(chatId, adminChat, chatDocuments),
-                normalizedAdminUserId,
-                message);
-    }
-
-    private ChatMessageDto persistChatMessage(
+    ChatMessageDto persistChatMessage(
             ChatDocumentsSnapshot accessSnapshot,
             String userId,
             ChatMessage message) {
@@ -1393,33 +724,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.sent", "chats", accessSnapshot.chatId(), userId);
         return chatMessageMapper.toDto(message, userId);
-    }
-
-    private Chat supportChatDocument(
-            Chat existing,
-            String ownerUserId,
-            String chatId,
-            String avatar,
-            String title,
-            List<String> memberIds,
-            SupportCaseState supportCaseState) {
-        Chat chat = existing == null ? new Chat() : copyChat(existing);
-        if (existing == null) {
-            chat.setMongoId(buildMongoId(ownerUserId, chatId));
-            chat.setChatId(chatId);
-            chat.setOwnerUserId(ownerUserId);
-            chat.setUnread(0);
-            chat.setLastMessage("");
-            chat.setLastSenderId("");
-            chat.setDateIso(supportCaseState.updatedAtIso());
-        }
-        chat.setAvatar(avatar);
-        chat.setTitle(title);
-        chat.setMemberIds(memberIds);
-        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
-        chat.setOwnerId(chatId);
-        applySupportCaseState(chat, supportCaseState);
-        return chat;
     }
 
     public ChatMessageDto editMessage(String chatId, String requestedUserId, String messageId, String text) {
@@ -1635,7 +939,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return requireChatAccessForSend(snapshot == null ? "" : snapshot.chatId(), userId).chatDocuments();
     }
 
-    private List<Chat> ensureOwnerCopies(List<Chat> chatDocuments) {
+    List<Chat> ensureOwnerCopies(List<Chat> chatDocuments) {
         if (chatDocuments == null || chatDocuments.isEmpty()) {
             return List.of();
         }
@@ -1728,7 +1032,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         Set<String> targetMessageIds = requestedMessageIds == null
                 ? Set.of()
                 : requestedMessageIds.stream()
-                        .map(this::normalizeId)
+                        .map(ChatRecordContext::normalizeId)
                         .filter(StringUtils::hasText)
                         .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
         Set<String> readMessageIds = new LinkedHashSet<>();
@@ -1805,7 +1109,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                         || !viewerUserId.equals(normalizeId(message.getSenderAvatar().getId())))
                 .filter(message -> !hasReader(message, viewerUserId))
                 .map(ChatMessage::getId)
-                .map(this::normalizeId)
+                .map(ChatRecordContext::normalizeId)
                 .filter(StringUtils::hasText)
                 .toList();
         Chat viewerChat = snapshot.viewerChat();
@@ -1897,7 +1201,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         }
     }
 
-    private List<Chat> updateChatSummaries(
+    List<Chat> updateChatSummaries(
             List<Chat> chatDocuments,
             ChatMessage message,
             String lastSenderId,
@@ -1946,7 +1250,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return updatedDocuments;
     }
 
-    private void incrementStoredChatCounters(Collection<ChatCounterChange> changes) {
+    void incrementStoredChatCounters(Collection<ChatCounterChange> changes) {
         List<ChatCounterChange> applicable = changes == null
                 ? List.of()
                 : changes.stream()
@@ -1962,7 +1266,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 normalizeId(change.chat().getOwnerUserId()), chatCounterContextField(change.chat().getChannelType()), change.delta())).toList());
     }
 
-    private void incrementStoredChatCounters(Chat chat, int unreadDelta) {
+    void incrementStoredChatCounters(Chat chat, int unreadDelta) {
         String ownerUserId = normalizeId(chat == null ? null : chat.getOwnerUserId());
         if (!StringUtils.hasText(ownerUserId) || unreadDelta == 0) return;
         chatCounters.increment(new com.raxim.myscoutee.domain.accounts.api.ChatCounters.Change(
@@ -1984,7 +1288,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         };
     }
 
-    private void evictChatOwnerReadCaches(List<Chat> chatDocuments) {
+    void evictChatOwnerReadCaches(List<Chat> chatDocuments) {
         Set<String> ownerUserIds = new LinkedHashSet<>();
         for (Chat chat : chatDocuments == null ? List.<Chat>of() : chatDocuments) {
             if (chat != null && StringUtils.hasText(chat.getOwnerUserId())) {
@@ -2038,7 +1342,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         void apply(ChatMessage message, String userId, ProfileSummary user);
     }
 
-    private record ChatCounterChange(Chat chat, int delta) {
+    record ChatCounterChange(Chat chat, int delta) {
     }
 
     private boolean addReader(ChatMessage message, ChatReadAvatarRecord reader) {
@@ -2063,146 +1367,27 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         }
         return safeReadBy(message.getReadBy()).stream()
                 .map(ChatReadAvatarRecord::getId)
-                .map(this::normalizeId)
+                .map(ChatRecordContext::normalizeId)
                 .anyMatch(normalizedViewerUserId::equals);
     }
 
-
-
-    private ChatDto toChatDto(Chat chat) {
+    ChatDto toChatDto(Chat chat) {
         return chatMapper.toDto(chat);
     }
 
-    private ChatDto toChatDto(Chat chat, Map<String, ProfileSummary> usersById) {
+    ChatDto toChatDto(Chat chat, Map<String, ProfileSummary> usersById) {
         return chatMapper.toDto(chat, usersById);
     }
 
     private List<ChatDto> chatDtosWithMetrics(List<Chat> records) {
         List<Chat> safeRecords = records == null ? List.of() : records;
         Map<String, ProfileSummary> usersById = chatMemberUsers(safeRecords);
-        List<Chat> metricRecords = safeRecords.stream()
-                .filter(this::metricChatRecord)
-                .toList();
-        Map<String, ChatDto> dtoByOwnerId = chatMapper.toMap(metricRecords, usersById);
-        patchChatDtosWithMetrics(metricRecords, dtoByOwnerId);
-        List<ChatDto> result = new ArrayList<>();
-        for (Chat record : safeRecords) {
-            ChatDto dto = toChatDto(record, usersById);
-            String ownerId = normalizeId(dto == null ? null : dto.ownerId());
-            if (StringUtils.hasText(ownerId) && supportsChatMetrics(chatChannelType(record))) {
-                result.add(dtoByOwnerId.getOrDefault(ownerId, dto));
-            } else if (dto != null) {
-                result.add(dto);
-            }
-        }
-        return patchChatDtosWithNavigationContext(safeRecords, result);
+        if (pagePresentation != null) return pagePresentation.present(safeRecords, usersById);
+        return safeRecords.stream().map(record -> chatMapper.toDto(record, usersById))
+                .filter(Objects::nonNull).toList();
     }
 
-    private List<ChatDto> patchChatDtosWithNavigationContext(List<Chat> records, List<ChatDto> dtos) {
-        if (records == null || records.isEmpty() || dtos == null || dtos.isEmpty()) {
-            return dtos == null ? List.of() : dtos;
-        }
-        Set<String> eventIds = new LinkedHashSet<>();
-        for (Chat record : records) {
-            ChatOwnerParts parts = chatOwnerParts(record);
-            String channelType = chatChannelType(record);
-            if ((CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
-                    || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))
-                    && StringUtils.hasText(parts.eventId())) {
-                eventIds.add(parts.eventId());
-            }
-        }
-        if (eventIds.isEmpty()) {
-            return dtos;
-        }
-
-        var eventRecords = eventOwnership.chatNavigationEvents(eventIds);
-        Map<String, Event> eventsByViewerAndId = new LinkedHashMap<>();
-        Map<String, Event> fallbackEventsById = new LinkedHashMap<>();
-        for (Event event : eventRecords == null ? List.<Event>of() : eventRecords) {
-            String eventId = normalizeId(event == null ? null : event.getSourceId());
-            if (!StringUtils.hasText(eventId)) {
-                continue;
-            }
-            fallbackEventsById.putIfAbsent(eventId, event);
-            String ownerUserId = normalizeId(event.getOwnerUserId());
-            if (StringUtils.hasText(ownerUserId)) {
-                eventsByViewerAndId.put(ownerUserId + ":" + eventId, event);
-            }
-        }
-
-        List<ChatDto> result = new ArrayList<>(dtos.size());
-        for (int index = 0; index < dtos.size(); index += 1) {
-            ChatDto dto = dtos.get(index);
-            Chat record = index < records.size() ? records.get(index) : null;
-            ChatOwnerParts parts = chatOwnerParts(record);
-            String eventId = parts.eventId();
-            Event event = eventsByViewerAndId.get(normalizeId(record == null ? null : record.getOwnerUserId())
-                    + ":" + eventId);
-            if (event == null) {
-                event = fallbackEventsById.get(eventId);
-            }
-            result.add(chatMapper.withNavigationContext(
-                    dto,
-                    chatNavigationContext(record, dto, event, parts)));
-        }
-        return result;
-    }
-
-    private ChatNavigationContextDto chatNavigationContext(
-            Chat chat,
-            ChatDto dto,
-            Event event,
-            ChatOwnerParts parts) {
-        String channelType = chatChannelType(chat);
-        if (event == null
-                || (!CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
-                        && !CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))) {
-            return null;
-        }
-        SubEvent subEvent = findChatContextSubEvent(event, parts.subEventId());
-        if (subEvent == null) {
-            return null;
-        }
-        String viewerUserId = normalizeId(chat == null ? null : chat.getOwnerUserId());
-        boolean canManage = viewerUserId.equals(normalizeId(event.getCreatorUserId()))
-                || (event.getAdmins() != null && event.getAdmins().stream()
-                        .map(this::normalizeId)
-                        .anyMatch(viewerUserId::equals));
-        return new ChatNavigationContextDto(
-                parts.eventId(),
-                safeText(event.getTitle()),
-                canManage ? "hosting" : "events",
-                normalizeCount(event.getPendingMembers()),
-                eventOwnership.presentSubEvent(subEvent),
-                CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
-                        ? toChatGroupContext(subEvent, parts.groupId(), dto == null ? null : dto.metrics())
-                        : null);
-    }
-
-    private ChatGroupContextDto toChatGroupContext(SubEvent subEvent, String groupId, ChatMetricsDto metrics) {
-        ChatMetricBucketDto members = metrics == null ? null : metrics.members();
-        SubEventGroupItemDto group = (subEvent == null || subEvent.groups() == null
-                ? List.<SubEventGroupItemDto>of()
-                : subEvent.groups()).stream()
-                .filter(Objects::nonNull)
-                .filter(item -> normalizeId(groupId).equals(normalizeId(item.id())))
-                .findFirst()
-                .orElse(null);
-        if (group == null) {
-            return null;
-        }
-        return new ChatGroupContextDto(
-                normalizeId(group.id()),
-                safeText(group.name()),
-                safeText(group.source()),
-                members == null ? 0 : members.accepted(),
-                members == null ? 0 : members.pending(),
-                normalizeCount(group.capacityMin()),
-                normalizeCount(group.capacityMax()));
-    }
-
-    private Map<String, ProfileSummary> chatMemberUsers(Collection<Chat> records) {
+    Map<String, ProfileSummary> chatMemberUsers(Collection<Chat> records) {
         Set<String> memberIds = new LinkedHashSet<>();
         for (Chat record : records == null ? List.<Chat>of() : records) {
             for (String memberId : safeMemberIds(record == null ? null : record.getMemberIds())) {
@@ -2225,410 +1410,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return usersById;
     }
 
-    private void patchChatDtosWithMetrics(List<Chat> records, Map<String, ChatDto> dtoByOwnerId) {
-        if (records == null || records.isEmpty() || dtoByOwnerId == null || dtoByOwnerId.isEmpty()) {
-            return;
-        }
-        Map<String, ChatMetricLookup> lookupByOwnerId = new LinkedHashMap<>();
-        Map<String, MemberOwnerLookup> memberOwnersByKey = new LinkedHashMap<>();
-        Set<String> resourceOwnerIds = new LinkedHashSet<>();
-        Set<String> resourceViewerUserIds = new LinkedHashSet<>();
-        Set<String> stageRuntimeOwnerIds = new LinkedHashSet<>();
-
-        for (Chat record : records) {
-            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
-            String channelType = chatChannelType(record);
-            if (!StringUtils.hasText(ownerId)
-                    || !dtoByOwnerId.containsKey(ownerId)
-                    || !supportsChatMetrics(channelType)) {
-                continue;
-            }
-            ChatOwnerParts parts = chatOwnerParts(record);
-            String viewerUserId = normalizeId(record.getOwnerUserId());
-            lookupByOwnerId.put(ownerId, new ChatMetricLookup(channelType, ownerId, viewerUserId, parts));
-
-            String memberOwnerType = memberOwnerType(channelType);
-            if (StringUtils.hasText(memberOwnerType)) {
-                memberOwnersByKey.put(memberOwnerType + ":" + ownerId, new MemberOwnerLookup(memberOwnerType, ownerId));
-            }
-            if ((CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType) || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))
-                    && StringUtils.hasText(parts.subEventId())) {
-                if (StringUtils.hasText(parts.eventId())) {
-                    resourceOwnerIds.add(parts.eventId());
-                    stageRuntimeOwnerIds.add(parts.eventId());
-                }
-                resourceOwnerIds.add(ownerId);
-                if (StringUtils.hasText(viewerUserId)) {
-                    resourceViewerUserIds.add(viewerUserId);
-                }
-                stageRuntimeOwnerIds.add(ownerId);
-            }
-        }
-
-        Map<String, List<Member>> membersByOwnerKey = activityMembersByOwnerKey(memberOwnersByKey.values());
-        Set<String> acceptedMemberIds = membersByOwnerKey.values().stream()
-                .flatMap(Collection::stream)
-                .filter(record -> MEMBER_STATUS_ACCEPTED.equals(
-                        safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT)))
-                .map(Member::getUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        Map<String, ProfileSummary> activityMemberUsersById = new LinkedHashMap<>();
-        if (!acceptedMemberIds.isEmpty()) {
-            for (ProfileSummary user : profileDirectory.findByUserIdIn(acceptedMemberIds)) {
-                String memberUserId = normalizeId(user == null ? null : user.getUserId());
-                if (StringUtils.hasText(memberUserId)) {
-                    activityMemberUsersById.put(memberUserId, user);
-                }
-            }
-        }
-        Map<String, List<Resource>> resourcesByMetricKey = resourceRecordsByMetricKey(
-                resourceOwnerIds,
-                resourceViewerUserIds);
-        Map<String, Asset> assetsByOwnerAndId = assetsByOwnerAndId(resourcesByMetricKey.values());
-        Map<String, StageRuntime> stageRuntimeByMetricKey = stageRuntimeByMetricKey(stageRuntimeOwnerIds);
-
-        for (Map.Entry<String, ChatMetricLookup> entry : lookupByOwnerId.entrySet()) {
-            String ownerIdKey = entry.getKey();
-            ChatMetricLookup lookup = entry.getValue();
-            String memberOwnerType = memberOwnerType(lookup.channelType());
-            ChatMetricBucketDto members = StringUtils.hasText(memberOwnerType)
-                    ? memberBucket(membersByOwnerKey.getOrDefault(memberOwnerType + ":" + lookup.ownerId(), List.of()))
-                    : null;
-            ChatMetricsDto metrics = buildChatMetrics(
-                    lookup,
-                    members,
-                    resourcesByMetricKey,
-                    assetsByOwnerAndId,
-                    stageRuntimeByMetricKey);
-            ChatDto dto = dtoByOwnerId.get(ownerIdKey);
-            if (dto != null) {
-                List<String> authoritativeMemberIds = StringUtils.hasText(memberOwnerType)
-                        ? membersByOwnerKey.getOrDefault(
-                                        memberOwnerType + ":" + lookup.ownerId(),
-                                        List.of()).stream()
-                                .filter(record -> MEMBER_STATUS_ACCEPTED.equals(
-                                        safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT)))
-                                .map(Member::getUserId)
-                                .map(this::normalizeId)
-                                .filter(StringUtils::hasText)
-                                .distinct()
-                                .toList()
-                        : dto.memberIds();
-                ChatDto withMembers = chatMapper.withMembers(dto, authoritativeMemberIds, activityMemberUsersById);
-                dtoByOwnerId.put(ownerIdKey, chatMapper.withMetrics(withMembers, metrics));
-            }
-        }
-    }
-
-    private ChatMetricsDto buildChatMetrics(
-            ChatMetricLookup lookup,
-            ChatMetricBucketDto members,
-            Map<String, List<Resource>> resourcesByMetricKey,
-            Map<String, Asset> assetsByOwnerAndId,
-            Map<String, StageRuntime> stageRuntimeByMetricKey) {
-        ChatMetricBucketDto transport = null;
-        ChatMetricBucketDto accommodation = null;
-        ChatMetricBucketDto supplies = null;
-        Integer groupsCount = null;
-        int pendingTotal = countValue(members == null ? null : members.pending());
-
-        if (lookup != null
-                && (CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(lookup.channelType())
-                        || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(lookup.channelType()))
-                && StringUtils.hasText(lookup.parts().subEventId())) {
-            List<Resource> resources = metricResourceRecords(
-                    resourcesByMetricKey,
-                    lookup.viewerUserId(),
-                    CHAT_CHANNEL_GROUP_SUB_EVENT.equals(lookup.channelType()) ? "" : lookup.parts().eventId(),
-                    lookup.ownerId(),
-                    lookup.parts().subEventId());
-            transport = assetBucket(resources, ASSET_TYPE_TRANSPORT, assetsByOwnerAndId);
-            accommodation = assetBucket(resources, ASSET_TYPE_ACCOMMODATION, assetsByOwnerAndId);
-            supplies = assetBucket(resources, ASSET_TYPE_SUPPLIES, assetsByOwnerAndId);
-            StageRuntime stageRuntime = firstStageRuntime(
-                    stageRuntimeByMetricKey,
-                    lookup.parts().eventId(),
-                    lookup.ownerId(),
-                    lookup.parts().subEventId());
-            groupsCount = stageRuntime == null ? null : countValue(stageRuntime.getGroupsCount());
-            pendingTotal += countValue(transport.pending())
-                    + countValue(accommodation.pending())
-                    + countValue(supplies.pending());
-        }
-
-        return new ChatMetricsDto(
-                members,
-                transport,
-                accommodation,
-                supplies,
-                groupsCount,
-                pendingTotal);
-    }
-
-    private Map<String, List<Member>> activityMembersByOwnerKey(Collection<MemberOwnerLookup> lookups) {
-        Map<String, Set<String>> ownerIdsByType = new LinkedHashMap<>();
-        for (MemberOwnerLookup lookup : lookups == null ? List.<MemberOwnerLookup>of() : lookups) {
-            if (lookup == null || !StringUtils.hasText(lookup.ownerType()) || !StringUtils.hasText(lookup.ownerId())) {
-                continue;
-            }
-            ownerIdsByType.computeIfAbsent(lookup.ownerType(), ignored -> new LinkedHashSet<>()).add(lookup.ownerId());
-        }
-
-        Map<String, List<Member>> result = new LinkedHashMap<>();
-        for (Map.Entry<String, Set<String>> entry : ownerIdsByType.entrySet()) {
-            if (entry.getValue().isEmpty()) {
-                continue;
-            }
-            var records = memberDirectory.findByOwnerTypeAndOwnerIdIn(entry.getKey(), entry.getValue());
-            for (Member record : records == null ? List.<Member>of() : records) {
-                String ownerType = safeText(record == null ? null : record.getOwnerType());
-                String ownerId = normalizeId(record == null ? null : record.getOwnerId());
-                if (!StringUtils.hasText(ownerType) || !StringUtils.hasText(ownerId)) {
-                    continue;
-                }
-                result.computeIfAbsent(ownerType + ":" + ownerId, ignored -> new ArrayList<>()).add(record);
-            }
-        }
-        return result;
-    }
-
-    private Map<String, List<Resource>> resourceRecordsByMetricKey(
-            Set<String> ownerIds,
-            Set<String> viewerUserIds) {
-        if (ownerIds == null || ownerIds.isEmpty() || viewerUserIds == null || viewerUserIds.isEmpty()) {
-            return Map.of();
-        }
-        var records = eventResources
-                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
-                        ownerIds,
-                        viewerUserIds,
-                        RUNTIME_STATUS_DELETED);
-        Map<String, List<Resource>> result = new LinkedHashMap<>();
-        for (Resource record : records == null ? List.<Resource>of() : records) {
-            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
-            String subEventId = normalizeId(record == null ? null : record.getSubEventId());
-            if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId)) {
-                continue;
-            }
-            String assetOwnerUserId = normalizeId(record.getAssetOwnerUserId());
-            if (StringUtils.hasText(assetOwnerUserId)) {
-                result.computeIfAbsent(
-                        assetOwnerUserId + ":" + ownerId + ":" + subEventId,
-                        ignored -> new ArrayList<>()).add(record);
-            }
-        }
-        return result;
-    }
-
-    private Map<String, Asset> assetsByOwnerAndId(Collection<List<Resource>> resourceBuckets) {
-        Set<String> ownerUserIds = new LinkedHashSet<>();
-        Set<String> assetIds = new LinkedHashSet<>();
-        for (List<Resource> bucket : resourceBuckets == null
-                ? List.<List<Resource>>of()
-                : resourceBuckets) {
-            for (Resource record : bucket == null ? List.<Resource>of() : bucket) {
-                String ownerUserId = normalizeId(record == null ? null : record.getAssetOwnerUserId());
-                if (StringUtils.hasText(ownerUserId)) {
-                    ownerUserIds.add(ownerUserId);
-                }
-                if (record != null && record.getAssetAssignmentIds() != null) {
-                    record.getAssetAssignmentIds().values().stream()
-                            .filter(Objects::nonNull)
-                            .flatMap(Collection::stream)
-                            .map(this::normalizeId)
-                            .filter(StringUtils::hasText)
-                            .forEach(assetIds::add);
-                }
-            }
-        }
-        if (ownerUserIds.isEmpty() || assetIds.isEmpty()) {
-            return Map.of();
-        }
-        Map<String, Asset> result = new LinkedHashMap<>();
-        for (Asset asset : assetOwnership.findByOwnersAndIds(ownerUserIds, assetIds)) {
-            String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
-            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
-            if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(assetId)) {
-                result.put(ownerUserId + ":" + assetId, asset);
-            }
-        }
-        return result;
-    }
-
-    private Map<String, StageRuntime> stageRuntimeByMetricKey(Set<String> ownerIds) {
-        if (ownerIds == null || ownerIds.isEmpty()) {
-            return Map.of();
-        }
-        var records = eventResources.findByOwnerIdInAndStatusNot(ownerIds, RUNTIME_STATUS_DELETED);
-        Map<String, StageRuntime> result = new LinkedHashMap<>();
-        for (StageRuntime record : records == null ? List.<StageRuntime>of() : records) {
-            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
-            String subEventId = normalizeId(record == null ? null : record.getSubEventId());
-            if (StringUtils.hasText(ownerId) && StringUtils.hasText(subEventId)) {
-                result.put(ownerId + ":" + subEventId, record);
-            }
-        }
-        return result;
-    }
-
-    private List<Resource> metricResourceRecords(
-            Map<String, List<Resource>> recordsByKey,
-            String viewerUserId,
-            String eventId,
-            String ownerId,
-            String subEventId) {
-        Map<String, Resource> result = new LinkedHashMap<>();
-        List<String> keys = new ArrayList<>();
-        if (StringUtils.hasText(eventId)) {
-            keys.add(viewerUserId + ":" + eventId + ":" + subEventId);
-        }
-        if (StringUtils.hasText(ownerId)) {
-            keys.add(viewerUserId + ":" + ownerId + ":" + subEventId);
-        }
-        for (String key : keys) {
-            for (Resource record : recordsByKey.getOrDefault(key, List.of())) {
-                String recordKey = firstNonBlank(
-                        record == null ? null : record.getRecordId(),
-                        record == null ? null : record.getId(),
-                        key + ":" + normalizeId(record == null ? null : record.getAssetOwnerUserId()));
-                if (StringUtils.hasText(recordKey)) {
-                    result.put(recordKey, record);
-                }
-            }
-        }
-        return new ArrayList<>(result.values());
-    }
-
-    private StageRuntime firstStageRuntime(
-            Map<String, StageRuntime> recordsByKey,
-            String eventId,
-            String ownerId,
-            String subEventId) {
-        if (StringUtils.hasText(eventId)) {
-            StageRuntime record = recordsByKey.get(eventId + ":" + subEventId);
-            if (record != null) {
-                return record;
-            }
-        }
-        return StringUtils.hasText(ownerId) ? recordsByKey.get(ownerId + ":" + subEventId) : null;
-    }
-
-    private ChatMetricBucketDto memberBucket(List<Member> records) {
-        int accepted = 0;
-        int pending = 0;
-        for (Member record : records == null ? List.<Member>of() : records) {
-            String status = safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT);
-            if (MEMBER_STATUS_ACCEPTED.equals(status)) {
-                accepted += 1;
-            } else if (MEMBER_STATUS_PENDING.equals(status)) {
-                pending += 1;
-            }
-        }
-        return new ChatMetricBucketDto(accepted, pending, 0, Math.max(accepted, accepted + pending));
-    }
-
-    private ChatMetricBucketDto assetBucket(
-            List<Resource> records,
-            String type,
-            Map<String, Asset> assetsByOwnerAndId) {
-        int accepted = 0;
-        int pending = 0;
-        int capacityMin = 0;
-        int capacityMax = 0;
-        for (Resource record : records == null ? List.<Resource>of() : records) {
-            Map<String, ? extends Map<String, ? extends AssetSettings>> settingsByType =
-                    record == null || record.getAssetSettingsByType() == null
-                            ? Map.of()
-                            : record.getAssetSettingsByType();
-            Map<String, ? extends AssetSettings> settingsByAssetId = settingsByType.get(type);
-            if (settingsByAssetId == null) settingsByAssetId = Map.of();
-            List<String> assignedIds = record == null || record.getAssetAssignmentIds() == null
-                    ? List.of()
-                    : record.getAssetAssignmentIds().getOrDefault(type, List.of());
-            List<String> assetIds = assignedIds == null || assignedIds.isEmpty()
-                    ? new ArrayList<>(settingsByAssetId.keySet())
-                    : assignedIds;
-            for (String assetId : assetIds) {
-                AssetSettings settings = settingsByAssetId.get(assetId);
-                capacityMin += countValue(settings == null ? null : settings.capacityMin());
-                Asset asset = assetsByOwnerAndId.get(
-                        normalizeId(record.getAssetOwnerUserId()) + ":" + normalizeId(assetId));
-                capacityMax += countValue(settings != null && settings.capacityMax() != null
-                        ? settings.capacityMax()
-                        : asset == null ? null : asset.getCapacityTotal());
-                if (ASSET_TYPE_SUPPLIES.equals(type)) {
-                    accepted += supplyContributionQuantity(record, assetId);
-                } else if (asset != null) {
-                    int[] requestCounts = assetRequestCountsForMetric(
-                            asset,
-                            record.getSubEventId(),
-                            record.getOwnerId());
-                    accepted += requestCounts[0];
-                    pending += requestCounts[1];
-                }
-            }
-        }
-        return new ChatMetricBucketDto(
-                accepted,
-                pending,
-                capacityMin,
-                Math.max(Math.max(capacityMin, capacityMax), accepted + pending));
-    }
-
-    private int[] assetRequestCountsForMetric(Asset asset, String subEventId, String ownerId) {
-        String normalizedSubEventId = normalizeId(subEventId);
-        String normalizedOwnerId = normalizeId(ownerId);
-        Map<String, String> statusByMemberIdentity = new LinkedHashMap<>();
-        for (AssetRequestRecord request : asset == null || asset.getRequests() == null
-                ? List.<AssetRequestRecord>of()
-                : asset.getRequests()) {
-            String bookingSubEventId = normalizeId(
-                    request == null || request.booking() == null ? null : request.booking().subEventId());
-            String bookingOwnerId = normalizeId(
-                    request == null || request.booking() == null ? null : request.booking().eventId());
-            if (!normalizedSubEventId.equals(bookingSubEventId)
-                    || !normalizedOwnerId.equals(bookingOwnerId)) {
-                continue;
-            }
-            String status = safeText(request.status()).toLowerCase(Locale.ROOT);
-            if (!MEMBER_STATUS_ACCEPTED.equals(status) && !MEMBER_STATUS_PENDING.equals(status)) {
-                continue;
-            }
-            String identity = firstNonBlank(
-                    normalizeId(request.id()),
-                    normalizeId(request.userId()));
-            if (!StringUtils.hasText(identity)) {
-                continue;
-            }
-            String existing = statusByMemberIdentity.get(identity);
-            if (!MEMBER_STATUS_ACCEPTED.equals(existing) || MEMBER_STATUS_ACCEPTED.equals(status)) {
-                statusByMemberIdentity.put(identity, status);
-            }
-        }
-        int accepted = (int) statusByMemberIdentity.values().stream()
-                .filter(MEMBER_STATUS_ACCEPTED::equals)
-                .count();
-        int pending = (int) statusByMemberIdentity.values().stream()
-                .filter(MEMBER_STATUS_PENDING::equals)
-                .count();
-        return new int[] {accepted, pending};
-    }
-
-    private int supplyContributionQuantity(Resource record, String assetId) {
-        if (record == null || record.getSupplyContributionEntriesByAssetId() == null) {
-            return 0;
-        }
-        int total = 0;
-        var entries = record.getSupplyContributionEntriesByAssetId().get(assetId);
-        for (SupplyContribution entry : entries == null ? List.<SupplyContribution>of() : entries) {
-            total += countValue(entry == null ? null : entry.quantity());
-        }
-        return total;
-    }
-
-    private ChatMessage buildMessage(
+    ChatMessage buildMessage(
             ProfileSummary sender,
             String senderUserId,
             String text,
@@ -2706,11 +1488,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         chatStreamPublisher.publish(streamEvent);
     }
 
-    private CompletableFuture<Boolean> publishChatEventAsync(ChatStreamEvent streamEvent) {
+    CompletableFuture<Boolean> publishChatEventAsync(ChatStreamEvent streamEvent) {
         return CompletableFuture.supplyAsync(() -> chatStreamPublisher.publish(streamEvent), chatWriteExecutor);
     }
 
-    private void observeChatEventPublish(CompletableFuture<Boolean> redisPublish, ChatStreamEvent streamEvent) {
+    void observeChatEventPublish(CompletableFuture<Boolean> redisPublish, ChatStreamEvent streamEvent) {
         if (redisPublish == null) {
             return;
         }
@@ -2725,7 +1507,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         });
     }
 
-    private Chat findOwnerChat(List<Chat> chats, String ownerUserId) {
+    Chat findOwnerChat(List<Chat> chats, String ownerUserId) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         Chat selected = null;
         for (Chat chat : chats) {
@@ -2776,8 +1558,9 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             return false;
         }
         String normalizedUserId = normalizeId(userId);
-        if ("case".equals(chat.getChannelType()) && !caseChatAccess(
-                cases.conversation(chat.getOwnerId()).orElse(null), findUser(normalizedUserId), chat.getCaseOfferId())) return false;
+        for (var restriction : accessRestrictions) {
+            if (!restriction.allows(chat, normalizedUserId)) return false;
+        }
         if (normalizedUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;
         }
@@ -2789,7 +1572,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             return false;
         }
         return chat.getMemberIds().stream()
-                .map(this::normalizeId)
+                .map(ChatRecordContext::normalizeId)
                 .anyMatch(normalizedUserId::equals);
     }
 
@@ -2813,7 +1596,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return normalizeLongCount(mongoTemplate.count(unreadQuery, ChatMessage.class));
     }
 
-    private Chat copyChat(Chat source) {
+    Chat copyChat(Chat source) {
         Chat copy = new Chat();
         copy.setMongoId(source.getMongoId());
         copy.setChatId(source.getChatId());
@@ -2841,11 +1624,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return copy;
     }
 
-    private long normalizeChatRevision(Long value) {
+    long normalizeChatRevision(Long value) {
         return value == null || value < 1L ? 1L : value;
     }
 
-    private long nextChatRevision(Chat chat) {
+    long nextChatRevision(Chat chat) {
         long current = normalizeChatRevision(chat == null ? null : chat.getRevision());
         return current + 1L;
     }
@@ -3066,7 +1849,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return copy;
     }
 
-    private ProfileSummary findUser(String userId) {
+    ProfileSummary findUser(String userId) {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
@@ -3079,11 +1862,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 ? profile.getAccountUserId() : profileId;
     }
 
-    private String resolveChatActor(String chatId, String profileId) {
+    String resolveChatActor(String chatId, String profileId) {
         return accessControlService.resolveChatActorUserId(chatId, profileId);
     }
 
-    private String requireResolvedUserId(String requestedUserId) {
+    String requireResolvedUserId(String requestedUserId) {
         String userId = resolveUserId(requestedUserId);
         if (!StringUtils.hasText(userId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing authenticated user.");
@@ -3104,14 +1887,14 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return "";
     }
 
-    private String resolveUserName(ProfileSummary user, String fallbackUserId) {
+    String resolveUserName(ProfileSummary user, String fallbackUserId) {
         if (user != null && StringUtils.hasText(user.getName())) {
             return user.getName().trim();
         }
         return StringUtils.hasText(fallbackUserId) ? fallbackUserId.trim() : "User";
     }
 
-    private String resolveUserInitials(ProfileSummary user, String fallbackUserId) {
+    String resolveUserInitials(ProfileSummary user, String fallbackUserId) {
         if (user != null && StringUtils.hasText(user.getInitials())) {
             return user.getInitials().trim();
         }
@@ -3130,7 +1913,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             return "";
         }
         return user.getImages().stream()
-                .map(this::safeText)
+                .map(ChatRecordContext::safeText)
                 .filter(StringUtils::hasText)
                 .findFirst()
                 .orElse("");
@@ -3183,10 +1966,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return reactions == null ? List.of() : reactions;
     }
 
-    private int normalizeCount(Integer value) {
-        return Math.max(0, value == null ? 0 : value);
-    }
-
     private int normalizeLongCount(long value) {
         if (value <= 0L) {
             return 0;
@@ -3212,120 +1991,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         }
     }
 
-    private String normalizeText(String value) {
+    String normalizeText(String value) {
         return value == null ? "" : value.trim();
-    }
-
-    private String normalizeId(String value) {
-        return value == null ? "" : value.trim();
-    }
-
-    private String safeText(String value) {
-        return value == null ? "" : value.trim();
-    }
-
-    private String firstNonBlank(String... values) {
-        for (String value : values == null ? new String[0] : values) {
-            String normalized = safeText(value);
-            if (StringUtils.hasText(normalized)) {
-                return normalized;
-            }
-        }
-        return "";
-    }
-
-    private boolean supportsChatMetrics(String channelType) {
-        return CHAT_CHANNEL_MAIN_EVENT.equals(channelType)
-                || CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
-                || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType);
-    }
-
-    private boolean metricChatRecord(Chat record) {
-        return StringUtils.hasText(normalizeId(record == null ? null : record.getOwnerId()))
-                && supportsChatMetrics(chatChannelType(record));
-    }
-
-    private String memberOwnerType(String channelType) {
-        if (CHAT_CHANNEL_MAIN_EVENT.equals(channelType)) {
-            return OWNER_TYPE_EVENT;
-        }
-        if (CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)) {
-            return OWNER_TYPE_SUB_EVENT;
-        }
-        if (CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)) {
-            return OWNER_TYPE_GROUP;
-        }
-        return "";
-    }
-
-    private String chatChannelType(Chat record) {
-        String channelType = safeText(record == null ? null : record.getChannelType());
-        if ("campaign".equals(channelType) || "case".equals(channelType) || "contact".equals(channelType)
-                || CHAT_CHANNEL_MAIN_EVENT.equals(channelType)
-                || CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
-                || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
-                || CHAT_CHANNEL_SERVICE_EVENT.equals(channelType)
-                || CHAT_CHANNEL_GROUP_SUPPORT.equals(channelType)
-                || CHAT_CHANNEL_APP_SUPPORT.equals(channelType)
-                || CHAT_CHANNEL_SUPPORT_CASE.equals(channelType)) {
-            return channelType;
-        }
-        List<String> parts = splitOwnerId(record == null ? null : record.getOwnerId());
-        if (parts.size() >= 3) {
-            return CHAT_CHANNEL_GROUP_SUB_EVENT;
-        }
-        if (parts.size() == 2) {
-            return CHAT_CHANNEL_OPTIONAL_SUB_EVENT;
-        }
-        return parts.size() == 1 ? CHAT_CHANNEL_MAIN_EVENT : "general";
-    }
-
-    private ChatOwnerParts chatOwnerParts(Chat record) {
-        String channelType = chatChannelType(record);
-        String ownerId = normalizeId(record == null ? null : record.getOwnerId());
-        String eventId = normalizeId(record == null ? null : record.getEventId());
-        String subEventId = normalizeId(record == null ? null : record.getSubEventId());
-        String groupId = normalizeId(record == null ? null : record.getGroupId());
-        List<String> parts = splitOwnerId(ownerId);
-        if (CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)) {
-            return new ChatOwnerParts(
-                    StringUtils.hasText(eventId) ? eventId : parts.isEmpty() ? "" : parts.get(0),
-                    StringUtils.hasText(subEventId) ? subEventId : parts.size() > 1 ? parts.get(1) : "",
-                    StringUtils.hasText(groupId)
-                            ? groupId
-                            : parts.size() > 2 ? String.join(":", parts.subList(2, parts.size())) : "");
-        }
-        if (CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)) {
-            return new ChatOwnerParts(
-                    StringUtils.hasText(eventId) ? eventId : parts.size() > 1 ? parts.get(0) : "",
-                    StringUtils.hasText(subEventId)
-                            ? subEventId
-                            : parts.size() > 1 ? String.join(":", parts.subList(1, parts.size())) : ownerId,
-                    "");
-        }
-        if (CHAT_CHANNEL_MAIN_EVENT.equals(channelType)) {
-            return new ChatOwnerParts(StringUtils.hasText(eventId) ? eventId : ownerId, "", "");
-        }
-        return new ChatOwnerParts("", "", "");
-    }
-
-    private List<String> splitOwnerId(String ownerId) {
-        String normalizedOwnerId = normalizeId(ownerId);
-        if (!StringUtils.hasText(normalizedOwnerId)) {
-            return List.of();
-        }
-        List<String> parts = new ArrayList<>();
-        for (String part : normalizedOwnerId.split(":")) {
-            String normalizedPart = normalizeId(part);
-            if (StringUtils.hasText(normalizedPart)) {
-                parts.add(normalizedPart);
-            }
-        }
-        return parts;
-    }
-
-    private int countValue(Integer value) {
-        return normalizeCount(value);
     }
 
     private String normalizeChatContextFilter(String value) {
@@ -3382,7 +2049,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 : item.supportCase().status()));
     }
 
-    private boolean isSupportCaseChat(Chat chat) {
+    boolean isSupportCaseChat(Chat chat) {
         if (chat == null) {
             return false;
         }
@@ -3391,23 +2058,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 || normalizeId(chat.getChatId()).startsWith("c-support-admin-");
     }
 
-    private boolean isAdminUser(ProfileSummary user) {
+    boolean isAdminUser(ProfileSummary user) {
         return adminMenuCounterService.isAdminUser(user);
-    }
-
-    private SupportCaseRecord toSupportCaseRecord(SupportCaseState state) {
-        SupportCaseRecord supportCase = new SupportCaseRecord();
-        supportCase.setStatus(normalizeSupportCaseStatus(state == null ? null : state.status()));
-        supportCase.setUpdatedAtIso(state == null ? "" : safeText(state.updatedAtIso()));
-        String assigneeUserId = normalizeId(state == null ? null : state.assigneeUserId());
-        if (StringUtils.hasText(assigneeUserId)) {
-            SupportCaseAssigneeRecord assignee = new SupportCaseAssigneeRecord();
-            assignee.setUserId(assigneeUserId);
-            assignee.setName(state == null ? "" : safeText(state.assigneeName()));
-            assignee.setInitials(state == null ? "" : safeText(state.assigneeInitials()));
-            supportCase.setAssignee(assignee);
-        }
-        return supportCase;
     }
 
     private SupportCaseRecord copySupportCase(SupportCaseRecord source) {
@@ -3433,7 +2085,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return safeText(supportCase == null ? null : supportCase.getStatus());
     }
 
-    private String normalizeSupportCaseStatus(String value) {
+    String normalizeSupportCaseStatus(String value) {
         String normalized = safeText(value).toLowerCase(Locale.ROOT);
         return switch (normalized) {
             case SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
@@ -3447,42 +2099,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             case SUPPORT_CASE_STATUS_PENDING, SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
             default -> SUPPORT_CASE_FILTER_ALL;
         };
-    }
-
-    private String normalizeSupportCaseAction(String value) {
-        String normalized = safeText(value).toLowerCase(Locale.ROOT);
-        return switch (normalized) {
-            case "pick", "unpick", "solve", "block", "reopen" -> normalized;
-            default -> "";
-        };
-    }
-
-    private SupportCaseState nextSupportCaseState(String action, String actorUserId, ProfileSummary actor) {
-        String nowIso = Instant.now().toString();
-        return switch (action) {
-            case "pick" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_PICKED, actorUserId, actor, nowIso);
-            case "solve" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_SOLVED, actorUserId, actor, nowIso);
-            case "block" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_BLOCKED, actorUserId, actor, nowIso);
-            case "unpick", "reopen" -> new SupportCaseState(SUPPORT_CASE_STATUS_PENDING, "", "", "", nowIso);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
-        };
-    }
-
-    private SupportCaseState assignedSupportCaseState(String status, String actorUserId, ProfileSummary actor, String nowIso) {
-        return new SupportCaseState(
-                status,
-                normalizeId(actorUserId),
-                resolveUserName(actor, actorUserId),
-                resolveUserInitials(actor, actorUserId),
-                nowIso);
-    }
-
-    private void applySupportCaseState(Chat chat, SupportCaseState state) {
-        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
-        if (!StringUtils.hasText(normalizeId(chat.getOwnerId()))) {
-            chat.setOwnerId(normalizeId(chat.getChatId()));
-        }
-        chat.setSupportCase(toSupportCaseRecord(state));
     }
 
     private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
@@ -3640,10 +2256,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         }
     }
 
-    private int safePageTotal(long total) {
-        return total >= Integer.MAX_VALUE ? Integer.MAX_VALUE : Math.max(0, (int) total);
-    }
-
     private String rangeStartIsoFromMillis(long value) {
         return value == Long.MIN_VALUE ? null : Instant.ofEpochMilli(value).toString();
     }
@@ -3687,35 +2299,12 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         }
     }
 
-
-
-    private String buildMongoId(String ownerUserId, String chatId) {
+    String buildMongoId(String ownerUserId, String chatId) {
         String stableKey = normalizeId(ownerUserId) + "|" + normalizeId(chatId);
         return "chat-owner-copy:" + UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    private record MainEventChatDocumentsResult(String chatId, List<Chat> createdDocuments) {
-    }
-
     private record InitialSystemMessageResult(ChatMessageDto message, boolean inserted) {
-    }
-
-    private record ChatMetricLookup(
-            String channelType,
-            String ownerId,
-            String viewerUserId,
-            ChatOwnerParts parts) {
-    }
-
-    private record MemberOwnerLookup(
-            String ownerType,
-            String ownerId) {
-    }
-
-    private record ChatOwnerParts(
-            String eventId,
-            String subEventId,
-            String groupId) {
     }
 
     private record ChatReadUpdate(
@@ -3727,14 +2316,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             boolean changed) {
     }
 
-    private record ChatDocumentsSnapshot(String chatId, Chat viewerChat, List<Chat> chatDocuments) {
+    record ChatDocumentsSnapshot(String chatId, Chat viewerChat, List<Chat> chatDocuments) {
     }
 
-    private record SupportCaseState(
-            String status,
-            String assigneeUserId,
-            String assigneeName,
-            String assigneeInitials,
-            String updatedAtIso) {
-    }
 }

@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -21,7 +22,6 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorSettl
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorSettlementPageDto;
 import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
 import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.SettlementHistoryItem;
@@ -110,7 +110,7 @@ public class OperatorSettlementService {
                 query.afterSettlementId(),
                 "",
                 "");
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 RegistryProtocol.settlementQueryPayload(unsigned));
         byte[] requestMessage = RegistryProtocol.signedRequest(
                 "POST",
@@ -180,10 +180,10 @@ public class OperatorSettlementService {
                     "Registry settlement response is incomplete.");
         }
         RegistryProtocol.requireToken(response.queryId(), "query_id");
-        RegistryProtocol.requireHash(response.queryHash(), "query_hash");
-        RegistryProtocol.requireHash(response.itemsHash(), "items_hash");
+        CanonicalValues.requireHash(response.queryHash(), "query_hash");
+        CanonicalValues.requireHash(response.itemsHash(), "items_hash");
         RegistryProtocol.requireRegistryKeyId(response.registryKeyId());
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 response.generatedAt(),
                 "generated_at");
         if (!RegistryProtocol.PROTOCOL_VERSION.equals(
@@ -198,13 +198,13 @@ public class OperatorSettlementService {
                 || !runtime.registryPublicKeyBase64().equals(
                         response.registryPublicKey())
                 || !RegistryProtocol.hashEquals(
-                        RegistryProtocol.sha256(requestMessage),
+                        CanonicalValues.sha256(requestMessage),
                         response.queryHash())
                 || !RegistryProtocol.hashEquals(
                         RegistryProtocol.settlementHistoryItemsHash(
                                 response.items()),
                         response.itemsHash())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.settlementQueryResponse(response),
                         response.signature())) {
@@ -352,13 +352,13 @@ public class OperatorSettlementService {
                     "Registry settlement item violates the supported valuation ruleset.");
         }
         RegistryProtocol.requireOperatorGroupId(item.beneficiaryId());
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 item.sourceFingerprint(),
                 "source_fingerprint");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 item.settlementHash(),
                 "settlement_hash");
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 item.acceptedAt(),
                 "accepted_at");
         validateShare(item.shareNumerator(), item.shareDenominator());
@@ -711,11 +711,11 @@ public class OperatorSettlementService {
             String denominator) {
         try {
             BigInteger normalizedNumerator =
-                    new BigInteger(RegistryProtocol.requireCanonical(
+                    new BigInteger(CanonicalValues.requireCanonical(
                             numerator,
                             "share_numerator"));
             BigInteger normalizedDenominator =
-                    new BigInteger(RegistryProtocol.requireCanonical(
+                    new BigInteger(CanonicalValues.requireCanonical(
                             denominator,
                             "share_denominator"));
             if (normalizedNumerator.signum() < 0
@@ -740,7 +740,7 @@ public class OperatorSettlementService {
             String value,
             String fieldName) {
         try {
-            String normalized = RegistryProtocol.requireCanonical(
+            String normalized = CanonicalValues.requireCanonical(
                     value,
                     fieldName);
             YearMonth period = YearMonth.parse(normalized);
@@ -791,7 +791,7 @@ public class OperatorSettlementService {
             String fieldName) {
         return value == null || value.isEmpty()
                 ? ""
-                : RegistryProtocol.requireCanonical(value, fieldName);
+                : CanonicalValues.requireCanonical(value, fieldName);
     }
 
     private static String safeMessage(RuntimeException exception) {

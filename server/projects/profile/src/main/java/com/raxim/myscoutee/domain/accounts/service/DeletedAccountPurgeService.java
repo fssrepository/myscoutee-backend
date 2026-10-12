@@ -32,10 +32,13 @@ import org.springframework.util.StringUtils;
 
 import org.bson.Document;
 import com.raxim.myscoutee.domain.accounts.document.AccountPurgeJob;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
+import com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions;
+import com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions.Action;
+import com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions.Context;
+import java.util.EnumMap;
+import java.util.function.Consumer;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.AccountPurgeJobsRepository;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
@@ -44,9 +47,6 @@ import com.raxim.myscoutee.domain.operator.api.GlobalIdentityPrivacy;
 @Service
 public class DeletedAccountPurgeService {
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.integrations.api.IntegrationPrivacy integrationPrivacy;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.payments.api.PaymentPrivacy paymentPrivacy;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentPrivacy contentPrivacy;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.AffinityPrivacy affinityPrivacy;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
     @org.springframework.beans.factory.annotation.Autowired
@@ -67,10 +67,8 @@ public class DeletedAccountPurgeService {
     private static final String OWNER_TYPE_ASSET = "asset";
 
     private final UsersRepository usersRepository;
+    private final Map<Action, Consumer<Context>> productPurgeActions;
     private final com.raxim.myscoutee.domain.chat.api.ChatPrivacy chatPrivacy;
-    private final com.raxim.myscoutee.domain.events.api.EventPrivacy eventPrivacy;
-    @Autowired private com.raxim.myscoutee.domain.assets.api.AssetPrivacy assetPrivacy;
-    private final AssetOwnershipReads assetsRepository;
     private final AccountPurgeJobsRepository accountPurgeJobsRepository;
     private final MediaCleanup mediaStorageService;
     private final MongoTemplate mongoTemplate;
@@ -82,16 +80,22 @@ public class DeletedAccountPurgeService {
     public DeletedAccountPurgeService(
             UsersRepository usersRepository,
             com.raxim.myscoutee.domain.chat.api.ChatPrivacy chatPrivacy,
-            com.raxim.myscoutee.domain.events.api.EventPrivacy eventPrivacy,
-            AssetOwnershipReads assetsRepository,
+            List<AccountPurgeActions> productCleanup,
             AccountPurgeJobsRepository accountPurgeJobsRepository,
             MediaCleanup mediaStorageService,
             MongoTemplate mongoTemplate,
             SchedulingPolicy platformParametersService) {
         this.usersRepository = usersRepository;
         this.chatPrivacy = chatPrivacy;
-        this.eventPrivacy = eventPrivacy;
-        this.assetsRepository = assetsRepository;
+        var actions = new EnumMap<Action, Consumer<Context>>(Action.class);
+        for (AccountPurgeActions contributor : productCleanup) {
+            contributor.accountPurgeActions().forEach((action, operation) -> {
+                if (actions.putIfAbsent(action, Objects.requireNonNull(operation)) != null) {
+                    throw new IllegalStateException("Duplicate account purge action: " + action);
+                }
+            });
+        }
+        this.productPurgeActions = Map.copyOf(actions);
         this.accountPurgeJobsRepository = accountPurgeJobsRepository;
         this.mediaStorageService = mediaStorageService;
         this.mongoTemplate = mongoTemplate;
@@ -227,41 +231,39 @@ public class DeletedAccountPurgeService {
         }
         try {
             startJob(job, userId, now);
+            Context context = new PurgeContext(userId, job);
+            requireRecordedCleanupOwners(job);
 
             markStage(job, "profile-media");
             purgeUserMedia(user);
 
             markStage(job, "owned-events");
-            List<com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto> ownedEvents = eventPrivacy.findOwnedEventsForPurge(userId);
-            job.setOwnedEventIds(mergeIds(job.getOwnedEventIds(), sourceIds(ownedEvents)));
-            saveJob(job);
-            eventPrivacy.purgeOwnedEvents(ownedEvents.stream()
-                    .map(com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto::id).toList(), job.getOwnedEventIds());
+            runProductCleanup(Action.OWNED_EVENTS, context);
 
             markStage(job, "owned-assets");
-            List<? extends Asset> ownedAssets = assetsRepository.findByOwnerUserId(userId);
-            job.setOwnedAssetIds(mergeIds(job.getOwnedAssetIds(), assetIds(ownedAssets)));
-            saveJob(job);
-            purgeOwnedAssets(ownedAssets, job.getOwnedAssetIds());
+            runProductCleanup(Action.DISCOVER_OWNED_ASSETS, context);
+            runProductCleanup(Action.OWNED_ASSET_MEDIA, context);
+            runProductCleanup(Action.ASSET_MEMBERSHIPS, context);
+            runProductCleanup(Action.OWNED_ASSET_RECORDS, context);
 
             markStage(job, "memberships");
-            eventPrivacy.purgeActivityMemberships(userId);
-            eventPrivacy.purgeManagedEventAdminReferences(userId);
+            runProductCleanup(Action.ACTIVITY_MEMBERSHIPS, context);
+            runProductCleanup(Action.MANAGED_EVENT_ADMINS, context);
 
             markStage(job, "asset-requests");
-            assetPrivacy.purgeRemainingAssetRequests(userId);
+            runProductCleanup(Action.ASSET_REQUESTS, context);
 
             markStage(job, "activity-resources");
-            eventPrivacy.purgeActivityResources(userId, job.getOwnedEventIds(), job.getOwnedAssetIds());
+            runProductCleanup(Action.ACTIVITY_RESOURCES, context);
 
             markStage(job, "idea-posts");
-            contentPrivacy.purgeIdeaPosts(userId);
+            runProductCleanup(Action.IDEA_POSTS, context);
 
             markStage(job, "chat-activity");
             chatPrivacy.purgeUserChatActivity(userId);
 
             markStage(job, "referenced-documents");
-            purgeUserReferencedDocuments(userId);
+            purgeUserReferencedDocuments(context);
 
             markStage(job, "global-identity-unlink");
             if (operatorGlobalIdentityService != null) {
@@ -425,34 +427,42 @@ public class DeletedAccountPurgeService {
 
 
 
-    private List<String> sourceIds(List<com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto> ownedEvents) {
-        return (ownedEvents == null ? List.<com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto>of() : ownedEvents).stream()
-                .filter(Objects::nonNull)
-                .map(com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto::sourceId)
-                .map(this::safeText)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
+    private void runProductCleanup(Action action, Context context) {
+        Consumer<Context> operation = productPurgeActions.get(action);
+        if (operation != null) operation.accept(context);
     }
 
-
-
-    private List<String> assetIds(List<? extends Asset> ownedAssets) {
-        return (ownedAssets == null ? List.<Asset>of() : ownedAssets).stream()
-                .filter(Objects::nonNull)
-                .map(Asset::getAssetId)
-                .map(this::safeText)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
+    private void requireRecordedCleanupOwners(AccountPurgeJob job) {
+        if (!job.getOwnedEventIds().isEmpty() && !productPurgeActions.containsKey(Action.OWNED_EVENTS)) {
+            throw new IllegalStateException("Recorded event cleanup requires its installed owner.");
+        }
+        if (!job.getOwnedAssetIds().isEmpty() && !productPurgeActions.containsKey(Action.OWNED_ASSET_RECORDS)) {
+            throw new IllegalStateException("Recorded asset cleanup requires its installed owner.");
+        }
     }
 
-    private void purgeOwnedAssets(List<? extends Asset> ownedAssets, Collection<String> assetIds) {
-        List<String> assets = assetIds(ownedAssets);
-        assetPrivacy.purgeOwnedMedia(assets);
-        eventPrivacy.purgeAssetMemberships(assetIds);
-        if (!assets.isEmpty()) {
-            assetPrivacy.deleteOwnedRecords(assets);
+    private final class PurgeContext implements Context {
+        private final String userId;
+        private final AccountPurgeJob job;
+        private List<String> discoveredAssetIds = List.of();
+
+        private PurgeContext(String userId, AccountPurgeJob job) {
+            this.userId = userId;
+            this.job = job;
+        }
+
+        @Override public String userId() { return userId; }
+        @Override public List<String> ownedEventIds() { return job.getOwnedEventIds(); }
+        @Override public List<String> ownedAssetIds() { return job.getOwnedAssetIds(); }
+        @Override public List<String> discoveredAssetIds() { return discoveredAssetIds; }
+        @Override public void rememberOwnedEventIds(Collection<String> ids) {
+            job.setOwnedEventIds(mergeIds(job.getOwnedEventIds(), ids));
+            saveJob(job);
+        }
+        @Override public void rememberOwnedAssetIds(Collection<String> ids) {
+            discoveredAssetIds = mergeIds(List.of(), ids);
+            job.setOwnedAssetIds(mergeIds(job.getOwnedAssetIds(), discoveredAssetIds));
+            saveJob(job);
         }
     }
 
@@ -493,33 +503,35 @@ public class DeletedAccountPurgeService {
 
 
 
-    private void purgeUserReferencedDocuments(String userId) {
+    private void purgeUserReferencedDocuments(Context context) {
+        String userId = context.userId();
         deleteDocumentsByAnyField("contactAccessOperations", List.of("actor", "target"), userId);
-        affinityPrivacy.purgeRatings(userId);
-        affinityPrivacy.purgeEdges(userId);
+        runProductCleanup(Action.RATINGS, context);
+        runProductCleanup(Action.EDGES, context);
         deleteDocumentsByAnyField("userFriendships", List.of("leftUserId", "rightUserId"), userId);
         deleteDocumentsByAnyField("userExperienceProfiles", List.of("userId"), userId);
         deleteDocumentsByAnyField("userFilterPreferences", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("userPageFilterPreferences", List.of("userId"), userId);
         integrationPrivacy.purgeParticipantData(userId);
         deleteDocumentsByAnyField("privacyConsents", List.of("userId"), userId);
-        contentPrivacy.purgeFeedback(userId);
-        contentPrivacy.purgeReports(userId);
+        deleteDocumentsByAnyField("accountDeletionWarnings", List.of("userId"), userId);
+        runProductCleanup(Action.CONTENT_FEEDBACK, context);
+        runProductCleanup(Action.CONTENT_REPORTS, context);
         deleteDocumentsByAnyField("userSessionActions", List.of("userId", "createdUser", "updatedUser"), userId);
-        contentPrivacy.purgeFeedViews(userId);
-        paymentPrivacy.purgePayerRecords(userId);
+        runProductCleanup(Action.CONTENT_FEED_VIEWS, context);
+        runProductCleanup(Action.PAYER_RECORDS, context);
         emailPrivacy.purgeDeliveryData(userId);
         notificationPrivacy.purgeDeliveryData(userId);
-        eventPrivacy.anonymizeTicketAudit(userId);
-        contentPrivacy.purgeShareTokens(userId);
-        eventPrivacy.purgeFeedback(userId);
-        affinityPrivacy.purgeTasks(userId);
-        eventPrivacy.purgeLeaderboard(userId);
+        runProductCleanup(Action.TICKET_AUDIT, context);
+        runProductCleanup(Action.CONTENT_SHARE_TOKENS, context);
+        runProductCleanup(Action.EVENT_FEEDBACK, context);
+        runProductCleanup(Action.AFFINITY_TASKS, context);
+        runProductCleanup(Action.LEADERBOARD, context);
         helpPrivacy.anonymizeAuthors(userId);
-        eventPrivacy.anonymizeSchedulerMarkers(userId);
+        runProductCleanup(Action.SCHEDULER_MARKERS, context);
         emailPrivacy.anonymizeAuthors(userId);
         notificationPrivacy.anonymizeRuleAuthors(userId);
-        affinityPrivacy.anonymizeAuthors(userId);
+        runProductCleanup(Action.AFFINITY_AUTHORS, context);
     }
 
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {

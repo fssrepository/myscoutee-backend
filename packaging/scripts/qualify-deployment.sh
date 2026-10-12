@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-SERVICE_NAME="${MYSCOUTEE_SERVICE_NAME:-myscoutee.service}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
+source "${SCRIPT_DIR}/host-project-checks.sh"
+BACKEND_CONTAINER="$(jq -er '.images[] | select(.service=="profilemanagement") | .container' "$RELEASE_PROJECT_POLICY")"
+
+SERVICE_NAME="${MYSCOUTEE_SERVICE_NAME:-${RELEASE_PROJECT_NAME}.service}"
 COMPOSE_PROJECT="${MYSCOUTEE_COMPOSE_PROJECT:-server}"
-ENV_FILE="${MYSCOUTEE_ENV_FILE:-/etc/myscoutee/myscoutee.env}"
-SMOKE_SCRIPT="${MYSCOUTEE_SMOKE_SCRIPT:-/opt/myscoutee/packaging/scripts/smoke-mongo-compatibility.sh}"
-DIAGNOSTICS_SCRIPT="${MYSCOUTEE_DIAGNOSTICS_SCRIPT:-/opt/myscoutee/packaging/scripts/deployment-diagnostics.sh}"
-REGISTRY_STATE_DIR="${MYSCOUTEE_REGISTRY_STATE_DIR:-/var/lib/myscoutee/registry}"
-REGISTRY_KEY_DIR="${MYSCOUTEE_REGISTRY_KEY_DIR:-/etc/myscoutee/registry}"
+ENV_FILE="${MYSCOUTEE_ENV_FILE:-/etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.env}"
+SMOKE_SCRIPT="${MYSCOUTEE_SMOKE_SCRIPT:-${RELEASE_PROJECT_ROOT}/packaging/scripts/smoke-mongo-compatibility.sh}"
+DIAGNOSTICS_SCRIPT="${MYSCOUTEE_DIAGNOSTICS_SCRIPT:-${RELEASE_PROJECT_ROOT}/packaging/scripts/deployment-diagnostics.sh}"
 BASE_URL="${MYSCOUTEE_BASE_URL:-http://127.0.0.1}"
 TIMEOUT_SECONDS="${MYSCOUTEE_QUALIFY_TIMEOUT_SECONDS:-300}"
 STOP_ON_FAILURE=true
@@ -26,7 +32,7 @@ Usage:
 Options:
   --expected-version X.Y.Z       Require the installed Debian package version.
   --timeout-seconds N            Bound readiness and smoke checks (default: 300).
-  --leave-running-on-failure     Do not stop myscoutee.service after a failure.
+  --leave-running-on-failure     Do not stop the application service after a failure.
   -h, --help                     Show this help.
 
 This is an explicit host qualification command. Debian postinst never invokes it.
@@ -152,18 +158,25 @@ wait_for_container_health() {
 }
 
 wait_for_deployment_containers() {
-  local container
-
-  for container in mongodb redis minio registry-demo payment-simulator mcp myscoutee nginx; do
+  local container service
+  local configuration inventory
+  local compose="${MYSCOUTEE_COMPOSE_SCRIPT:-${SCRIPT_DIR}/myscoutee-compose.sh}"
+  configuration="$("$compose" config --no-env-resolution --format json)" || fail "installed Compose configuration is unavailable"
+  inventory="$(jq -er '.services | to_entries | select(length>0) | .[] | [.key, (.value.container_name // "")] | @tsv' <<< "$configuration")" || fail "installed container inventory is empty"
+  while IFS=$'\t' read -r service container; do
+    if [[ -z "$container" ]]; then
+      container="$("$compose" ps -a -q "$service")" || fail "container for $service is unavailable"
+      [[ -n "$container" && "$container" != *$'\n'* ]] || fail "expected one container for $service"
+    fi
     wait_for_container_health "${container}"
-  done
+  done <<< "$inventory"
 }
 
 verify_installed_version() {
   local installed_version
 
   [[ -n "${EXPECTED_VERSION}" ]] || return 0
-  installed_version="$(dpkg-query -W -f='${Version}' myscoutee 2>/dev/null || true)"
+  installed_version="$(dpkg-query -W -f='${Version}' "$RELEASE_PROJECT_NAME" 2>/dev/null || true)"
   [[ "${installed_version//\~/-}" == "${EXPECTED_VERSION//\~/-}" ]] \
     || fail "installed version ${installed_version:-missing} does not match ${EXPECTED_VERSION}"
   log "installed package version: ${installed_version}"
@@ -191,7 +204,7 @@ check_i18n_bundle() {
   local body
 
   body="$(
-    docker exec myscoutee sh -lc \
+    docker exec "$BACKEND_CONTAINER" sh -lc \
       "wget -qO- 'http://localhost:8080/i18n/bundle?lang=hu'"
   )"
   [[ "${body}" == *'"lang":"hu"'* && "${body}" == *'"data":{'* ]] \
@@ -199,49 +212,6 @@ check_i18n_bundle() {
   log "internal Hungarian i18n bundle smoke passed"
 }
 
-report_registry_status() {
-  local registry_url state_dir key_dir state_file public_key
-  local deployment_id fingerprint
-
-  registry_url="$(read_env_file_value REGISTRY_BASE_URL "${ENV_FILE}" || true)"
-  state_dir="$(read_env_file_value REGISTRY_STATE_DIR_HOST "${ENV_FILE}" || true)"
-  key_dir="$(read_env_file_value REGISTRY_KEY_DIR_HOST "${ENV_FILE}" || true)"
-  state_dir="${state_dir:-${REGISTRY_STATE_DIR}}"
-  key_dir="${key_dir:-${REGISTRY_KEY_DIR}}"
-  state_file="${state_dir}/deployment-state.json"
-  public_key="${key_dir}/deployment-public-key.der"
-
-  deployment_id=""
-  if [[ -s "${state_file}" && ! -L "${state_file}" ]]; then
-    if command -v jq >/dev/null 2>&1; then
-      deployment_id="$(jq -r '.deployment_id // empty' "${state_file}" 2>/dev/null || true)"
-    else
-      deployment_id="$(
-        sed -n 's/.*"deployment_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
-          "${state_file}" | head -n 1
-      )"
-    fi
-  fi
-  if [[ ! "${deployment_id}" =~ ^dep_[0-9a-f]{32}$ ]]; then
-    deployment_id=""
-  fi
-
-  fingerprint=""
-  if command -v openssl >/dev/null 2>&1 \
-      && [[ -s "${public_key}" && ! -L "${public_key}" ]]; then
-    fingerprint="$(openssl dgst -sha256 -r "${public_key}" | awk '{ print $1 }')"
-  fi
-
-  if [[ -n "${deployment_id}" ]]; then
-    log "deployment code: ${deployment_id}"
-    log "deployment registry: registered at ${registry_url:-configured registry}"
-  elif [[ -n "${fingerprint}" ]]; then
-    log "node identity is initialized but unregistered"
-    log "deployment public-key fingerprint: sha256:${fingerprint}"
-  else
-    log "node is uninitialized; installation did not select or contact a registry"
-  fi
-}
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   usage
@@ -334,7 +304,7 @@ check_i18n_bundle
 stage="restart-loop check"
 check_restart_loops
 
-stage="registry status"
-report_registry_status
+stage="project status"
+project_qualification_report
 
 log "deployment qualification passed"

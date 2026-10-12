@@ -1,4 +1,3 @@
-rootProject.name = 'myscoutee-microservices'
 def backendRoot = file(providers.gradleProperty('backendSourceDir')
     .orElse(providers.environmentVariable('MYSCOUTEE_BACKEND_SOURCE'))
     .orElse(settingsDir.parentFile.absolutePath).get()).canonicalFile
@@ -13,6 +12,7 @@ dependencyResolutionManagement {
 }
 include('contracts', 'bootstrap-tests')
 def assembly = new groovy.json.JsonSlurper().parse(file('assemblies.json'))
+rootProject.name = assembly.projectName
 def domainRoot = new File(backendRoot, 'server/projects/profile/src/main/java/com/raxim/myscoutee/domain')
 def expectedDomains = domainRoot.listFiles().findAll { it.directory }.collect { it.name }.toSet()
 def assignedDomains = assembly.services.values().collectMany { it.domains }

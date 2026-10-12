@@ -76,7 +76,11 @@ class DomainServiceBoundaryTest {
                             if ("assets".equals(value) && semanticAssetLabel(name, method)) return;
                             if ("events".equals(value) && semanticEventLabel(name, method)) return;
                             if ("chats".equals(value) && name.equals(DOMAIN + "administration/service/AdminMonitoringService") && method.equals("categoryFor")) return;
-                            if ("chatMessages".equals(value) && name.equals(DOMAIN + "integrations/service/IntegrationCapabilitiesService") && method.equals("describe")) return;
+                            if ("chatMessages".equals(value) && name.equals(DOMAIN + "integrations/service/IntegrationCapabilitiesService") && method.equals("<clinit>")) return;
+                            // The common change-stream owner accepts collection names solely
+                            // to invalidate existing projections/schedules. These reviewed
+                            // subscriptions are not foreign document queries or mutations.
+                            if (changeStreamSubscription(name, method, value)) return;
                             assertThat(COLLECTIONS.get(domain).contains(value)).as("Raw foreign collection in %s.%s: %s", name, method, value)
                                     .isFalse();
                         }
@@ -110,6 +114,131 @@ class DomainServiceBoundaryTest {
         assertThat(checked).as("Scanned production classes in %s", domain).isGreaterThan(5);
     }
 
+    @org.junit.jupiter.api.Test
+    void accountLifecycleLocationAndApiSettingsDoNotRequireProductOwners() throws Exception {
+        for (String type : List.of("accounts/service/AccountLifecycleService", "accounts/service/AccountLocationService",
+                "accounts/service/ProfileStatusValues", "integrations/service/IntegrationSettingsService")) {
+            var resource = new org.springframework.core.io.ClassPathResource(DOMAIN + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).as(type).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "campaigns/", DOMAIN + "assets/", DOMAIN + "groups/", DOMAIN + "affinity/", DOMAIN + "payments/",
+                        DOMAIN + "accounts/service/HomeUserProfileService");
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void genericChatDoesNotRequireProductServiceContracts() throws Exception {
+        for (String type : List.of("chat/service/ChatService", "chat/service/ChatWebSocketSessionRegistry",
+                "chat/service/ChatRecordContext", "chat/mapper/ChatMessageMapper", "access/security/ChatPolicyFacts")) {
+            var resource = new org.springframework.core.io.ClassPathResource(DOMAIN + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).as(type).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "campaigns/", DOMAIN + "assets/", DOMAIN + "groups/api/GroupDirectory");
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void deploymentPlatformDoesNotRequireProductNetworkContracts() throws Exception {
+        for (Resource resource : productionDomainClasses()) {
+            String name = className(resource);
+            if (!name.startsWith(DOMAIN + "platform/")) continue;
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).as("Deployment platform dependency in %s", name)
+                        .doesNotContain(DOMAIN + "operator/", DOMAIN + "registry/");
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void schedulingValueReaderDoesNotRequireAffinityTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                "com/raxim/myscoutee/common/config/PlatformParametersService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "affinity/");
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void notificationStorageDoesNotRequireCommunityTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "notifications/repository/UserNotificationPageRepository.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/", DOMAIN + "groups/");
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void accountPurgeCoordinatorDoesNotRequireOptionalProductTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "accounts/service/DeletedAccountPurgeService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "assets/",
+                    DOMAIN + "content/", DOMAIN + "affinity/", DOMAIN + "payments/");
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void sharedJobScopeDoesNotRequireProductOwnerTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "platform/service/JobGroupScopeService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "assets/",
+                    DOMAIN + "groups/", DOMAIN + "affinity/");
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void accountChatCountersDoNotRequireProductOwners() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "accounts/service/AccountChatCounterService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                    DOMAIN + "groups/", DOMAIN + "assets/", DOMAIN + "content/", DOMAIN + "affinity/");
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void storedProfileCountersDoNotRequireProductOrDiscoveryOwners() throws Exception {
+        for (String type : List.of("ProfileMenuCountersService", "ProfileReadStateService", "AccountCounterMapper")) {
+            var resource = new org.springframework.core.io.ClassPathResource(
+                    DOMAIN + "accounts/service/" + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "groups/", DOMAIN + "assets/", DOMAIN + "content/", DOMAIN + "affinity/",
+                        "HomeUserProfileService");
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void profileStatusAndPersonalMcpDoNotRequireProductOwnerTypes() throws Exception {
+        for (String type : List.of("accounts/service/ProfileStatusWork", "integrations/service/McpAuthorizationService",
+                "integrations/service/IntegrationCapabilitiesService",
+                "integrations/controller/IntegrationCommunicationReadController")) {
+            var resource = new org.springframework.core.io.ClassPathResource(DOMAIN + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "groups/", DOMAIN + "assets/", DOMAIN + "content/", DOMAIN + "affinity/",
+                        "AccountWorkspaces");
+            }
+        }
+    }
+
+    private boolean changeStreamSubscription(String name, String method, Object value) {
+        if (name.equals(DOMAIN + "administration/service/AdminStatsTelemetryWorkerService")
+                && method.equals("watchInputs")) {
+            return Set.of("users", "userAffinityEdges", "userRates", "activityMembers",
+                    "affinityRecomputeTasks", "notificationOutbox", "notificationRuleConfigs").contains(value);
+        }
+        return "notificationRuleConfigs".equals(value)
+                && ((name.equals(DOMAIN + "email/service/PromotionalEmailDeliveryProcessor")
+                        && method.equals("watchDeliveries"))
+                    || (name.equals(DOMAIN + "email/service/ScheduledMessageTaskService")
+                        && method.equals("watchScheduledTasks")));
+    }
+
     private boolean semanticUserLabel(String name, String method) {
         return switch (name.substring(DOMAIN.length())) {
             case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "usersCategory", "categoryFor").contains(method);
@@ -129,7 +258,7 @@ class DomainServiceBoundaryTest {
             case "assets/service/AssetsService" -> Set.of("toAssetTicketDto");
             case "integrations/service/McpEventsService" -> Set.of("catalog");
             case "integrations/controller/IntegrationReadController" -> Set.of("listEvents");
-            case "chat/service/ChatService" -> Set.of("chatNavigationContext");
+            case "chat/service/ChatActivityPresentation" -> Set.of("chatNavigationContext");
             default -> Set.<String>of();
         };
         return methods.contains(method) || methods.stream().anyMatch(owner -> method.startsWith("lambda$" + owner + "$"));
@@ -140,7 +269,7 @@ class DomainServiceBoundaryTest {
             case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "assetsCategory", "categoryFor", "nodeFor");
             case "administration/service/AdminStatsService" -> Set.of("applyTelemetryEvents", "applyDailyActivity", "timelineItems");
             case "affinity/service/AdminParamsService" -> Set.of("<clinit>", "fieldsFor", "applySection", "copySection");
-            case "operator/service/OperatorUpdateReleaseService" -> Set.of("releases");
+            case "platform/service/OperatorUpdateReleaseService" -> Set.of("releases");
             default -> Set.<String>of();
         };
         return methods.contains(method) || methods.stream().anyMatch(owner -> method.startsWith("lambda$" + owner + "$"));

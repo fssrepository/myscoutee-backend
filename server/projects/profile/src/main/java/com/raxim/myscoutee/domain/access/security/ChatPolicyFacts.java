@@ -15,7 +15,7 @@ import com.raxim.myscoutee.domain.administration.api.AdministratorClassification
 
 @Component
 public class ChatPolicyFacts {
-    private final com.raxim.myscoutee.domain.community.api.CaseParticipants cases;
+    private final List<ChatPolicyRestriction> restrictions;
     private final ChatDirectory chatsRepository;
     private final ProfileDirectory usersRepository;
     private final AdministratorClassification adminMenuCounterService;
@@ -23,8 +23,8 @@ public class ChatPolicyFacts {
     public ChatPolicyFacts(
             ChatDirectory chatsRepository,
             ProfileDirectory usersRepository,
-            AdministratorClassification adminMenuCounterService, com.raxim.myscoutee.domain.community.api.CaseParticipants cases) {
-        this.chatsRepository = chatsRepository; this.cases = cases;
+            AdministratorClassification adminMenuCounterService, List<ChatPolicyRestriction> restrictions) {
+        this.chatsRepository = chatsRepository; this.restrictions = List.copyOf(restrictions);
         this.usersRepository = usersRepository;
         this.adminMenuCounterService = adminMenuCounterService;
     }
@@ -80,11 +80,8 @@ public class ChatPolicyFacts {
             return false;
         }
         String normalizedActorUserId = normalizeId(actorUserId);
-        if ("case".equals(chat.getChannelType())) {
-            var c = cases.activeAccounts(chat.getOwnerId()).orElse(null);
-            var profile = usersRepository.findByUserId(normalizedActorUserId).orElse(null);
-            if (c == null || profile == null || !"myscoutee-community".equals(profile.getWorkspaceGroupId())
-                    || !c.contains(profile.getAccountUserId() == null ? normalizedActorUserId : profile.getAccountUserId())) return false;
+        for (var restriction : restrictions) {
+            if (!restriction.allows(chat, normalizedActorUserId)) return false;
         }
         if (normalizedActorUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;

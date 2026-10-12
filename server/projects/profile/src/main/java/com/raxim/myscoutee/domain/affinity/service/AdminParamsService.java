@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.administration.api.AdminAudience;
 
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 
 import java.time.Instant;
 import java.util.ArrayList;

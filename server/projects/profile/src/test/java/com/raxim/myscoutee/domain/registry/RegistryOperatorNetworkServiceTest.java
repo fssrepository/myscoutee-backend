@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.platform.api.ReleaseProtocol;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocolException;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
@@ -49,7 +51,7 @@ import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionRe
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorClaimStatusReceipt;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorClaimStatusResponse;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationResponse;
-import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.platform.api.ReleaseProtocol.UpdateManifest;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -1353,7 +1355,7 @@ class RegistryOperatorNetworkServiceTest {
         properties.setPackageSigningPublicKeyPath(packagePublicKey);
 
         RegistryLocalStore store = new RegistryLocalStore(properties, objectMapper);
-        String deploymentFingerprint = RegistryProtocol.publicKeyFingerprint(
+        String deploymentFingerprint = CanonicalValues.publicKeyFingerprint(
                 registry.deploymentKeyPair.getPublic().getEncoded());
         LocalState initial = store.createInitial(
                 deploymentFingerprint,
@@ -1413,9 +1415,9 @@ class RegistryOperatorNetworkServiceTest {
         private final KeyPair deploymentKeyPair = RegistryTestIdentity.generate();
         private final KeyPair packageSigningKeyPair = RegistryTestIdentity.generate();
         private final String registryPublicKey =
-                RegistryProtocol.standardBase64(registryKeyPair.getPublic().getEncoded());
+                CanonicalValues.standardBase64(registryKeyPair.getPublic().getEncoded());
         private final String registryFingerprint =
-                RegistryProtocol.publicKeyFingerprint(registryKeyPair.getPublic().getEncoded());
+                CanonicalValues.publicKeyFingerprint(registryKeyPair.getPublic().getEncoded());
         private final String registryKeyId =
                 RegistryProtocol.registryKeyId(registryFingerprint);
         private final AtomicReference<Throwable> handlerFailure = new AtomicReference<>();
@@ -1494,7 +1496,7 @@ class RegistryOperatorNetworkServiceTest {
                     SCOPE,
                     registryKeyId,
                     null);
-            String snapshotHash = RegistryProtocol.sha256(
+            String snapshotHash = CanonicalValues.sha256(
                     RegistryProtocol.leaderboardSnapshotHash(unsignedSnapshot));
             LeaderboardSnapshot hashedSnapshot = new LeaderboardSnapshot(
                     unsignedSnapshot.snapshotId(),
@@ -1598,10 +1600,10 @@ class RegistryOperatorNetworkServiceTest {
                 boolean tokenDerivedClaim =
                         redeemToken && redeemAsTokenDerivedClaim;
                 String submittedClientTokenHash = redeemToken
-                        ? RegistryProtocol.sha256(
+                        ? CanonicalValues.sha256(
                                 request.clientToken().getBytes(StandardCharsets.UTF_8))
                         : "";
-                String expectedPayloadHash = RegistryProtocol.sha256(
+                String expectedPayloadHash = CanonicalValues.sha256(
                         structuredClaim
                                 ? RegistryProtocol.operatorClaimPayload(
                                         request.legalName(),
@@ -1625,7 +1627,7 @@ class RegistryOperatorNetworkServiceTest {
                                         request.tokenId(),
                                         request.linkId()));
                 require(expectedPayloadHash.equals(request.payloadHash()), "Action payload hash was invalid.");
-                require(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                require(com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                                 deploymentKeyPair.getPublic(),
                                 RegistryProtocol.signedRequest(
                                         "POST",
@@ -1669,7 +1671,7 @@ class RegistryOperatorNetworkServiceTest {
                 boolean issueToken = RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN
                         .equals(request.action());
                 String tokenHash = issueToken
-                        ? RegistryProtocol.sha256(
+                        ? CanonicalValues.sha256(
                                 CLIENT_TOKEN.getBytes(StandardCharsets.UTF_8))
                         : redeemToken ? submittedClientTokenHash : null;
                 long auditIndex = auditEvents.incrementAndGet();
@@ -1739,7 +1741,7 @@ class RegistryOperatorNetworkServiceTest {
                         SCOPE,
                         registryKeyId,
                         null);
-                String auditHash = RegistryProtocol.sha256(
+                String auditHash = CanonicalValues.sha256(
                         RegistryProtocol.operatorAudit(auditSeed, request.payloadHash()));
                 lastAuditHash.set(auditHash);
                 OperatorActionReceipt unsigned = new OperatorActionReceipt(
@@ -2155,7 +2157,7 @@ class RegistryOperatorNetworkServiceTest {
             String artifactHash =
                     "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
             UpdateManifest unsignedManifest = new UpdateManifest(
-                    RegistryProtocol.UPDATE_MANIFEST_VERSION,
+                    ReleaseProtocol.UPDATE_MANIFEST_VERSION,
                     "1.2.3",
                     "stable",
                     "2026-07-28T00:00:04Z",
@@ -2164,7 +2166,7 @@ class RegistryOperatorNetworkServiceTest {
                     "https://downloads.example.test/myscoutee_1.2.3_amd64.deb",
                     123L,
                     artifactHash,
-                    RegistryProtocol.packageSigningKeyId(
+                    ReleaseProtocol.packageSigningKeyId(
                             packageSigningKeyPair.getPublic().getEncoded()),
                     "",
                     "https://downloads.example.test/releases/1.2.3",
@@ -2187,7 +2189,7 @@ class RegistryOperatorNetworkServiceTest {
                     unsignedManifest.packageSigningKeyId(),
                     RegistryTestIdentity.sign(
                             packageSigningKeyPair.getPrivate(),
-                            RegistryProtocol.releasePackage(unsignedManifest)),
+                            ReleaseProtocol.releasePackage(unsignedManifest)),
                     unsignedManifest.releaseNotesUrl(),
                     unsignedManifest.backupRequired(),
                     unsignedManifest.expectedDowntimeSeconds(),
@@ -2195,12 +2197,12 @@ class RegistryOperatorNetworkServiceTest {
                     unsignedManifest.supersedesVersion(),
                     unsignedManifest.supersededByVersion(),
                     unsignedManifest.revocationReason());
-            String contentHash = RegistryProtocol.sha256(
+            String contentHash = CanonicalValues.sha256(
                     RegistryProtocol.announcementContent("", "", localizations));
-            String linksHash = RegistryProtocol.sha256(
+            String linksHash = CanonicalValues.sha256(
                     RegistryProtocol.announcementLinks(links));
-            String manifestHash = RegistryProtocol.sha256(
-                    RegistryProtocol.updateManifest(manifest));
+            String manifestHash = CanonicalValues.sha256(
+                    ReleaseProtocol.updateManifest(manifest));
             AnnouncementEntry unsigned = new AnnouncementEntry(
                     RegistryProtocol.PROTOCOL_VERSION,
                     SCOPE,
@@ -2224,7 +2226,7 @@ class RegistryOperatorNetworkServiceTest {
                     "2026-07-28T00:00:05Z",
                     registryKeyId,
                     null);
-            String announcementHash = RegistryProtocol.sha256(
+            String announcementHash = CanonicalValues.sha256(
                     RegistryProtocol.announcementEntry(unsigned));
             AnnouncementEntry hashed = new AnnouncementEntry(
                     unsigned.protocolVersion(),
@@ -2292,7 +2294,7 @@ class RegistryOperatorNetworkServiceTest {
                     SCOPE,
                     registryKeyId,
                     null);
-            String snapshotHash = RegistryProtocol.sha256(
+            String snapshotHash = CanonicalValues.sha256(
                     RegistryProtocol.announcementSnapshotHash(unsigned));
             AnnouncementSnapshot hashed = new AnnouncementSnapshot(
                     unsigned.snapshotId(),

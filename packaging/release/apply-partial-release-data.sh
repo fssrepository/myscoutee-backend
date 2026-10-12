@@ -33,6 +33,11 @@ for database in production_db demo_db; do
 done
 # Existing systemd startup must recognize schema5 on later service restarts.
 for source in "$release"/migrations/*.js; do install -m 0644 "$source" "$package/migrations/$(basename "$source")"; done
+if [[ -d "$release/migrations/seeds" ]]; then
+ while IFS= read -r -d '' source; do
+  install -D -m 0644 "$source" "$package/migrations/seeds/${source#"$release/migrations/seeds/"}"
+ done < <(find "$release/migrations/seeds" -type f -name '*.json' -print0)
+fi
 for name in migrate-production-data.sh run-data-migrations.js sync-release-system-seeds.js sync-i18n-seeds.sh; do
  install -m 0755 "$release/scripts/$name" "$package/scripts/$name"
 done

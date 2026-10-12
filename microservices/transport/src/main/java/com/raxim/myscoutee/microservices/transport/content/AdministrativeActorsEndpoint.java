@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.microservices.transport.content;
 
-import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.microservices.transport.common.ReadQueryBodies;
 import com.raxim.myscoutee.microservices.transport.security.ActorDelegation;
 import com.raxim.myscoutee.microservices.transport.security.DelegatedRequestBodies;

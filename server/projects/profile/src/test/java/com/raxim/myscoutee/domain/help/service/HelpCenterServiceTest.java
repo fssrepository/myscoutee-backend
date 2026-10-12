@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.help.service;
 
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
@@ -72,7 +72,7 @@ class HelpCenterServiceTest {
                 adminTelemetryService,
                 appSettingsService,
                 accessControlService);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", org.mockito.Mockito.mock(AdminModerationService.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", org.mockito.Mockito.mock(AdministrativeActors.class));
     }
 
     @AfterEach
@@ -82,7 +82,7 @@ class HelpCenterServiceTest {
 
     @Test
     void workAdminCannotActivateOrDeleteADatingRevision() {
-        var moderation = org.mockito.Mockito.mock(AdminModerationService.class);
+        var moderation = org.mockito.Mockito.mock(AdministrativeActors.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", moderation);
         when(moderation.baseGroupId("work-admin")).thenReturn("myscoutee-work");
         var dating = revision("dating", 1);

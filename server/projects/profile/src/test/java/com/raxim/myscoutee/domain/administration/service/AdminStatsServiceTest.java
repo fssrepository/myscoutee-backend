@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.domain.administration.service;
 
 import com.raxim.myscoutee.domain.affinity.service.AdminGraphScienceService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -33,7 +32,8 @@ class AdminStatsServiceTest {
         AdminStatsService service = new AdminStatsService(
                 repository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileStatisticsService(mock(UsersRepository.class)),
-                mock(AdminModerationService.class),
+                mock(com.raxim.myscoutee.domain.administration.api.AdministrativeActors.class),
+                mock(com.raxim.myscoutee.domain.administration.service.AdminTelemetryScopeService.class),
                 mock(AdminGraphScienceService.class));
 
         AdminStatsDashboardDto dashboard = service.dashboard("admin-user");

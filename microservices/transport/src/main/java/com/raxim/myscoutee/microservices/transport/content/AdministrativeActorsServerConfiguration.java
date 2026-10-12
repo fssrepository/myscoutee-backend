@@ -14,7 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/** Explicit import in the content owner only; no broad component scan. */
+/** Explicit import in the administration owner only; no broad component scan. */
 @Configuration(proxyBeanMethods = false)
 @Import({AdministrativeActorsEndpoint.class,com.raxim.myscoutee.microservices.transport.security.ActorDelegationVerifierConfiguration.class})
 public class AdministrativeActorsServerConfiguration {

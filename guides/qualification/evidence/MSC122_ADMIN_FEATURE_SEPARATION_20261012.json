@@ -1,0 +1,852 @@
+{
+  "updated": "2026-10-12",
+  "status": "NATIVE_SOURCE_JUNIT_ASSEMBLIES_KVM_MONOLITH_PASSED",
+  "baselineSourceRevision": "5d71945a232ece49882f071562695a84f3f922d5",
+  "scope": "Make omitted report, feedback and support feature dependencies selectable before template packaging. Native full-app behavior remains installed.",
+  "changes": [
+    "Separate native report/feedback submission routes and owner from mandatory profile service.",
+    "Separate moderation HTTP controller from other admin capabilities.",
+    "Reuse administrator identity and stateless classification without imposing administrator authority on ordinary group-role classification.",
+    "Move telemetry batch scoping to administration, preserving one distinct-profile batch lookup.",
+    "Separate support creation/case mutation from generic chat, reusing its persistence, stream and counter helpers.",
+    "Separate support-case counters from ordinary single/bulk unread updates.",
+    "Account status work starts without support; undelivered intent keeps its work marker.",
+    "Select admin moderation attention through the existing Optional feature pattern; native numeric fields unchanged, absent feature fields omitted from JSON."
+  ],
+  "methodExtraction": [
+    {
+      "method": "submitFeedback",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "submitReport",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolvePreferredEventRecord",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolveAcceptedReportMember",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "isReportableEventOrganizer",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolveActivityMemberEntryId",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "normalizeMemberStatus",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "preferredEventRecordsBySourceId",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "shouldPreferEventRecord",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "reportSyncKey",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "baseProfileEvents",
+      "source": "content/service/AdminModerationService.java",
+      "destination": "administration/service/AdminTelemetryScopeService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "refreshSupportCaseCountersForAdmins",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolveSupportCaseCounters",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "updateSupportCaseCounters",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "hasSupportCaseCounters",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "updateUserActivityFields",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "sendAdminSupportMessage",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 2,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "updateSupportCase",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "supportChatDocument",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "toSupportCaseRecord",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "normalizeSupportCaseAction",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "nextSupportCaseState",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "assignedSupportCaseState",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "applySupportCaseState",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    }
+  ],
+  "junit": {
+    "coherentBatch": [
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminGraphScienceServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.controller.ContentModerationControllerTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.IdeaPostsServiceTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminAffinityGraphControllerTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.ModerationSubmissionServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.ProfileStatusWorkTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.dto.AdminStatsRevenueIsolationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.AccountChatCounterServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.payments.controller.AdminPaymentSimulatorControllerTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdministrativeActorServiceTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.HomeUserProfileServiceTest",
+        "tests": 60,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.access.security.BoundaryPolicyAnnotationTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminMonitoringServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.ContentModerationWorkerTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminStatsTelemetryWorkerServiceTest",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.integrations.service.AdminClientServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminStatsServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.repository.ContentModerationRepositoryTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.ContentModerationServiceTest",
+        "tests": 16,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminParamsServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminTelemetryScopeServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.AdminProfileCounterServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.AdminModerationServiceTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminAffinityGraphServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminAffinityGraphLayoutWorkerServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.integrations.config.AdminClientAuthenticationFilterTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.AccountSupportCaseCounterServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminMenuCounterServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.notifications.service.AdminNotificationServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.DomainServiceBoundaryTest",
+        "tests": 52,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.chat.service.ChatServiceTest",
+        "tests": 44,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminAudienceServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      }
+    ],
+    "classificationFollowup": [
+      {
+        "suite": "com.raxim.myscoutee.domain.content.controller.ContentModerationControllerTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminMenuCounterServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.DomainServiceBoundaryTest",
+        "tests": 52,
+        "failures": 0,
+        "errors": 0
+      }
+    ],
+    "embeddedChatPersistence": [
+      {
+        "suite": "com.raxim.myscoutee.domain.chat.service.ChatOwnershipPersistenceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      }
+    ]
+  },
+  "performance": {
+    "status": "KVM_MATCHED_READ_LOAD_PASSED",
+    "evidence": "MSC122_ADMIN_FEATURE_PERFORMANCE_20261012.json",
+    "queryEvidence": "Extraction bodies preserve queries and writes. Tests assert one batched actor lookup for telemetry, one support count read per workspace, unchanged submission boundary calls, two attention count calls, and no reads of omitted moderation data. Functional tests do not prove CPU/latency parity.",
+    "conclusion": "No slowdown observed in the bounded administrator read profile; +3.93% throughput, -3.81% p50, -7.98% p95, -0.84% VM CPU under load. This is not an all-flow performance claim."
+  },
+  "runtime": {
+    "kvm": {
+      "status": "PASSED",
+      "imageBuildRevision": "8d7497800",
+      "sourceCheckpoint": "dc97521d4",
+      "helmRevision": 150,
+      "checks": {
+        "sessionAndPublicDocuments": 19,
+        "adminIdentityAndApi": 25,
+        "supportInfrastructureAndTransportScopes": 18
+      },
+      "health": {
+        "allPodsReadyAt": "2026-10-11T23:02:43Z",
+        "pods": 18,
+        "restartCount": 0,
+        "services": {
+          "identity": {
+            "afterReadyErrorLines": 0
+          },
+          "community": {
+            "afterReadyErrorLines": 0
+          },
+          "communication": {
+            "afterReadyErrorLines": 0
+          },
+          "assets": {
+            "afterReadyErrorLines": 0
+          },
+          "payments": {
+            "afterReadyErrorLines": 0
+          },
+          "affinity": {
+            "afterReadyErrorLines": 0
+          },
+          "help": {
+            "afterReadyErrorLines": 0
+          },
+          "network": {
+            "afterReadyErrorLines": 0
+          }
+        },
+        "startupExceptions": "7 NotificationJobs configuredGroupIds calls before communication availability; no new error after all pods became Ready."
+      }
+    },
+    "monolith": {
+      "status": "PASSED",
+      "sourceCheckpoint": "dc97521d4",
+      "runtimeBuildRevision": "8d7497800",
+      "project": "msc122-monolith",
+      "serialAfterKvmShutdown": true,
+      "apiImage": "sha256:017da62ef4b5556445cdcde03f82887109fe35ad6deea0087c7ba167738655a1",
+      "mongoImage": "sha256:cfcadae33267dd3ec9af978dac7d5ed153c6c2c776c1cafc474996640ebb76c8",
+      "checks": [
+        {
+          "suite": "monolith-session-smoke",
+          "checks": 18,
+          "results": [
+            {
+              "assembly": "identity",
+              "path": "/api/auth/me",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "id",
+                "name",
+                "age",
+                "birthday",
+                "city",
+                "height",
+                "physique",
+                "languages",
+                "horoscope",
+                "initials",
+                "gender",
+                "statusText",
+                "hostTier",
+                "traitLabel",
+                "completion",
+                "profileFormVersion",
+                "headline",
+                "about",
+                "affinity",
+                "locationCoordinates",
+                "partitionKey",
+                "images",
+                "profileDetails",
+                "impressions",
+                "profileStatus",
+                "previousProfileStatus",
+                "deletedAtIso",
+                "admin",
+                "operator",
+                "activities",
+                "notificationPreferences",
+                "filterCount",
+                "filterPreferences",
+                "counterOverrides"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "identity",
+              "path": "/api/auth/me/profile-ext",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "profileExt",
+                "filterCount",
+                "filterPreferences",
+                "counterOverrides",
+                "workspace",
+                "accountProfile"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "community",
+              "path": "/api/activities/events",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "records",
+                "total",
+                "nextCursor",
+                "sortKeys"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "communication",
+              "path": "/api/notifications",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "records",
+                "total",
+                "nextCursor",
+                "unreadCount",
+                "muted"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "assets",
+              "path": "/api/assets",
+              "status": 200,
+              "passed": true,
+              "responseShape": "list",
+              "code": null
+            },
+            {
+              "assembly": "payments",
+              "path": "/api/payment-methods",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "items",
+                "total",
+                "nextCursor",
+                "canAdd",
+                "pendingRegistration",
+                "currentProvider"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "affinity",
+              "path": "/api/activities/rates",
+              "status": 200,
+              "passed": true,
+              "responseShape": "list",
+              "code": null
+            },
+            {
+              "path": "/api/auth/me/logout",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/help/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/help/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/auth/me",
+              "context": "revoked-session",
+              "status": 401,
+              "passed": true
+            },
+            {
+              "path": "/api/privacy/consents",
+              "context": "revoked-session",
+              "status": 401,
+              "passed": true
+            }
+          ]
+        },
+        {
+          "suite": "monolith-admin-identity",
+          "checks": 25,
+          "results": [
+            {
+              "check": "dashboard accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 456.05
+            },
+            {
+              "check": "help accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 141.99
+            },
+            {
+              "check": "privacy accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 81.66
+            },
+            {
+              "check": "terms accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 80.5
+            },
+            {
+              "check": "explanation accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 135.18
+            },
+            {
+              "check": "notifications accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 188.75
+            },
+            {
+              "check": "params accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 280.26
+            },
+            {
+              "check": "dashboard denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 63.83
+            },
+            {
+              "check": "help denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 37.73
+            },
+            {
+              "check": "privacy denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 35.41
+            },
+            {
+              "check": "terms denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 34.74
+            },
+            {
+              "check": "explanation denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 41.28
+            },
+            {
+              "check": "notifications denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 29.04
+            },
+            {
+              "check": "params denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 33.06
+            },
+            {
+              "check": "administrator API settings accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 99.44
+            },
+            {
+              "check": "admin session revoked",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": null
+            },
+            {
+              "check": "dashboard denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 32.96
+            },
+            {
+              "check": "help denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 26.13
+            },
+            {
+              "check": "privacy denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 35.46
+            },
+            {
+              "check": "terms denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 30.15
+            },
+            {
+              "check": "explanation denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 33.35
+            },
+            {
+              "check": "notifications denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 27.47
+            },
+            {
+              "check": "params denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 24.61
+            },
+            {
+              "check": "administrator API settings denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 37.5
+            },
+            {
+              "check": "member session revoked",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": null
+            }
+          ]
+        }
+      ],
+      "applicationErrors": 0,
+      "resources": {
+        "seconds": 25.089962092999485,
+        "cpuCores": 0.07317535965956143,
+        "memoryMiB": 834.2421875,
+        "cpuMax": "max 100000",
+        "throttledSeconds": 0.0,
+        "note": "Short idle observation after functional checks; not a matched monolith load benchmark."
+      },
+      "priorIdleCpuCores": 0.055084580667225866,
+      "idleComparisonLimit": "Idle increased by 0.0181 of one core; these are short post-check observations, not matched load.",
+      "startupRepair": "Compose default Mongo image was stale (2026-10-07) and lacked replica-entrypoint. Rebuilt current versioned Dockerfile to an explicit task tag; no product code change needed."
+    },
+    "assemblyPackaging": {
+      "status": "PASSED",
+      "services": 8,
+      "transportTestSuites": 52,
+      "transportTests": 239,
+      "transportFailures": 0,
+      "log": "/tmp/msc122-admin-feature-assemblies.log"
+    },
+    "templateRemoval": "PENDING"
+  },
+  "limits": [
+    "Native four outstanding manual QA campaigns have not been run.",
+    "Template Java/services remain unchanged until source runtime qualification.",
+    "The matched KVM read profile and focused runtime checks do not replace the four pending manual QA campaigns or every mutation flow."
+  ],
+  "logs": [
+    "/tmp/msc122-admin-feature-batch-junit.log",
+    "/tmp/msc122-admin-classification-junit.log",
+    "/tmp/msc122-admin-chat-persistence.log"
+  ],
+  "sourceCheckpoint": "dc97521d4",
+  "wireContracts": {
+    "administrativeActors": "13 actual HTTP responses validated; all required statuses present",
+    "administrativeAccess": "Request/response schemas compile; retained operation behavior still requires runtime evidence",
+    "wholeInventory": "Incomplete: existing affinity/recompute-metrics-v1 has no real HTTP evidence files; this unrelated inventory gap is not claimed passed."
+  }
+}

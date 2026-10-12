@@ -74,6 +74,19 @@ class ConfigurationCatalogHttpTest {
         var known=remote.find("known");assertEquals(23,known.jobs().getBatchSize());assertEquals(7,known.notifications().getMaxWorkers());
         assertNull(remote.find("unset").key());
     }
+    @Test void genericSchedulingReaderUsesTheExistingRemoteCatalogAndKeepsBothDatabaseModes() {
+        com.raxim.myscoutee.domain.platform.api.SchedulingParameters values = remote;
+        var reader = new com.raxim.myscoutee.common.config.PlatformParametersService(values);
+        for (var mode : List.of(MongoSessionMode.REAL, MongoSessionMode.DEMO)) {
+            MongoSessionModeContext.set(mode);
+            com.raxim.myscoutee.domain.platform.api.JobGroupContext.run("active", () -> {
+                assertEquals(mode.name() + "-active", reader.activeConfig().getKey());
+                assertEquals(7, reader.notificationMaxWorkers(4));
+                assertEquals(23, reader.jobBatchSize(100));
+            });
+        }
+        assertFalse(com.raxim.myscoutee.domain.platform.api.JobGroupContext.isActive());
+    }
     @Test void credentialsModesMethodsAndBoundsAreEnforced() throws Exception {
         for(var path:ConfigurationCatalogProtocol.paths()) {
             assertEquals(401,request(path,"",null,"REAL","GET").statusCode());

@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import grp
 from pathlib import Path
 import re
 import subprocess
@@ -40,15 +41,24 @@ def main():
     parser.add_argument('action', choices=['stage', 'status', 'reset'])
     parser.add_argument('--origin')
     parser.add_argument('--certificate', type=Path)
+    parser.add_argument('--package', choices=['myscoutee', 'myscoutee-template'], default='myscoutee')
+    parser.add_argument('--expected-stable-version', help='Explicit installed stable version on the delegated qualification guest only')
     args = parser.parse_args()
     os.umask(0o077)
-    version = subprocess.check_output(['dpkg-query', '-W', '-f=${Version}', 'myscoutee'], text=True)
+    global ENV, CA, STATE
+    ENV = Path(f'/etc/{args.package}/{args.package}.env')
+    CA = Path(f'/etc/{args.package}/update/qa-release-source-ca.pem')
+    STATE = Path(f'/var/lib/{args.package}/qa-fixtures/update/release-source.json')
+    runtime_gid = grp.getgrnam(args.package + '-runtime').gr_gid
+    version = subprocess.check_output(['dpkg-query', '-W', '-f=${Version}', args.package], text=True)
     qa_version = re.fullmatch(r'\d+\.\d+\.\d+~qa\.[1-9]\d*', version)
     # A successful QA-to-stable upgrade must still be able to restore the
     # original release source using the existing fixture ownership checks.
     upgraded_stable = args.action in ('status', 'reset') and re.fullmatch(r'\d+\.\d+\.\d+', version)
-    if os.geteuid() != 0 or not (qa_version or upgraded_stable):
-        parser.error('Run as root on a QA prerelease VM, or reset/status after a stable upgrade.')
+    delegated_stable = (args.action == 'stage' and args.expected_stable_version == version
+                        and re.fullmatch(r'\d+\.\d+\.\d+', version))
+    if os.geteuid() != 0 or not (qa_version or upgraded_stable or delegated_stable):
+        parser.error('Run as root on a QA prerelease VM, explicitly name the installed stable qualification version, or reset/status after upgrading.')
     if any(path.is_symlink() for path in [ENV, CA, STATE]) or not ENV.is_file():
         parser.error('Unsafe fixture path.')
     text = ENV.read_text()
@@ -73,12 +83,12 @@ def main():
         saved = {key: matches(text, key) for key in KEYS}
         if any(len(lines) > 1 for lines in saved.values()):
             parser.error('Duplicate configuration key.')
-        values = dict(zip(KEYS, [args.origin.rstrip('/'), args.origin.rstrip('/'), str(CA)]))
+        values = dict(zip(KEYS, [args.origin.rstrip('/'), args.origin.rstrip('/'), '/etc/myscoutee/update/qa-release-source-ca.pem']))
         record = {'phase': 'preparing', 'previousLines': saved, 'values': values,
                   'certificateSha256': hashlib.sha256(public).hexdigest()}
         STATE.parent.mkdir(parents=True, exist_ok=True)
         atomic(STATE, json.dumps(record).encode())
-        atomic(CA, public, 0o640, 10001)
+        atomic(CA, public, 0o640, runtime_gid)
         for key, value in values.items():
             text = setline(text, key, key + '=' + value)
         atomic(ENV, text.encode(), ENV.stat().st_mode & 0o777, ENV.stat().st_gid)

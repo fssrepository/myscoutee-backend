@@ -1,35 +1,18 @@
 package com.raxim.myscoutee.domain.affinity.api;
-public interface ConfigurationCatalog {
-    Settings active(String key);
+
+import com.raxim.myscoutee.domain.platform.api.SchedulingParameters;
+
+/** MyScoutee configuration source, including explicit affinity configuration lookup. */
+public interface ConfigurationCatalog extends SchedulingParameters,
+        com.raxim.myscoutee.domain.platform.api.JobTargetResolver {
     Settings find(String id);
-    interface Settings {
-        String getKey();
-        NotificationParameters getNotifications();
-        JobParameters getJobs();
-    }
-    interface NotificationParameters {
-        Integer getFirebaseWindowStartHour();
-        Integer getFirebaseWindowEndHour();
-        Integer getMaxWorkers();
-        Integer getMaxRetries();
-        Integer getInitialBackoffSeconds();
-        Integer getCollapseWindowSeconds();
-        Integer getMulticastThreshold();
-        Integer getTopicThreshold();
-    }
-    interface JobParameters {
-        Integer getUserChangedDebounceSeconds();
-        Integer getEventChangedDebounceSeconds();
-        Integer getEventMembersChangedDebounceSeconds();
-        Integer getAssetChangedDebounceSeconds();
-        Integer getAssetRequestsChangedDebounceSeconds();
-        Integer getConfigChangedDebounceSeconds();
-        Integer getWorkerPollDelayMs();
-        Integer getBatchSize();
-        Integer getLeaseDurationSeconds();
-        Integer getEventSchedulerPollDelayMs();
-        Integer getAutoInviterCadenceMs();
-        Integer getNotificationOutboxPollDelayMs();
-        Integer getAccountPurgeWindowDays();
+
+    @Override default String jobTargetType() { return "config"; }
+    @Override
+    default String jobGroupForTarget(String id, java.util.function.Function<String, String> workspaceGroup,
+            java.util.function.Function<String, String> userGroup) {
+        var config = find(id);
+        return config == null ? com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId()
+                : "default".equals(config.getKey()) ? null : config.getKey();
     }
 }

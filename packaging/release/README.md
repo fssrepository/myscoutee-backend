@@ -15,7 +15,10 @@ sign production release artifacts:
 - `sign-release-artifacts.sh` validates and signs release artifacts with an
   approved, pre-existing private key;
 - `sign-update-manifest.py` signs the complete standalone update manifest for
-  the `myscoutee-update.json` GitHub release asset.
+  the `myscoutee-update.json` GitHub release asset. Its adjacent
+  `update-compatibility-policy.json` owns product-specific installed-worker
+  requirements; missing or malformed policy stops signing. The MyScoutee policy
+  retains the existing 1.3.0 seven-image restriction unchanged.
 
 They are deliberately outside `packaging/scripts`. Everything under
 `packaging/scripts` is runtime material copied into the Debian package, while
@@ -58,7 +61,12 @@ without a Registry connection. The repository and inclusion of prereleases are
 configured by `MYSCOUTEE_UPDATE_GITHUB_REPOSITORY` and
 `MYSCOUTEE_UPDATE_INCLUDE_PRERELEASES` (default false).
 
-Publish `myscoutee-update.json` alongside the Debian asset. Prepare the existing
+Publish `myscoutee-update.json` alongside the Debian asset. A DEB upload is not
+complete until its separately signed catalog is present and the canonical Java
+release discovery verifies it from GitHub. Signing `myscoutee-release_<version>.json`
+alone does not produce this catalog. If the owner uploads the DEB later, retain
+this check as an explicit open release step; do not close it after checksum or
+client-installer verification alone. Prepare the existing
 `update_manifest` JSON fields with the real package version, channel, HTTPS asset
 URL, byte size, SHA-256, package signing key ID and package signature from
 `sign-release-artifacts.sh`; declare the actual minimum/maximum compatible

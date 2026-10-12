@@ -11,50 +11,8 @@ const repositoryRoot = path.resolve(scriptDirectory, '..', '..');
 const frontendPackage = path.join(repositoryRoot, 'frontend', 'package.json');
 const requireFromFrontend = createRequire(frontendPackage);
 
-const manuals = [
-  {
-    source: 'myscoutee-operations-manual-en.html',
-    output: 'MyScoutee_Operations_Manual_v1.0.0_EN.pdf',
-    title: 'Operations Manual',
-    documentId: 'MSC-OM-001'
-  },
-  {
-    source: 'myscoutee-administrator-manual-en.html',
-    output: 'MyScoutee_Administrator_Manual_v1.0.0_EN.pdf',
-    title: 'Administrator Manual',
-    documentId: 'MSC-AM-001'
-  },
-  {
-    source: 'myscoutee-user-manual-en.html',
-    output: 'MyScoutee_User_Manual_v1.0.0_EN.pdf',
-    title: 'User Manual',
-    documentId: 'MSC-UM-001'
-  },
-  {
-    source: 'myscoutee-integration-api-guide-en.html',
-    output: 'MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf',
-    title: 'Integration API Guide',
-    documentId: 'MSC-API-001',
-    documentVersion: '1.0.1',
-    releaseDate: '2026-09-20'
-  },
-  {
-    source: 'myscoutee-microservices-guide-en.html',
-    output: 'MyScoutee_Microservices_Guide_v0.1.0_EN.pdf',
-    title: 'Microservices Guide',
-    documentId: 'MSC-MS-001',
-    documentVersion: '0.1.0',
-    releaseDate: '2026-10-09'
-  },
-  {
-    source: 'myscoutee-mcp-user-guide-en.html',
-    output: 'MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf',
-    title: 'MCP User Guide',
-    documentId: 'MSC-MCP-001',
-    documentVersion: '1.0.0',
-    releaseDate: '2026-10-07'
-  }
-];
+const catalog = JSON.parse(await fs.readFile(path.join(scriptDirectory, 'manuals.json'), 'utf8'));
+const manuals = catalog.manuals;
 const selectedDocumentId = process.argv[2]?.trim();
 const manualsToBuild = selectedDocumentId
   ? manuals.filter(manual => manual.documentId === selectedDocumentId)
@@ -173,7 +131,7 @@ try {
       headerTemplate: `
         <div style="box-sizing:border-box;color:#5b6773;font-family:Arial,sans-serif;
                     font-size:7.5px;padding:0 16mm;width:100%;">
-          <span style="float:left;">MyScoutee · ${escapeHtml(manual.title)}</span>
+          <span style="float:left;">${escapeHtml(catalog.brandName)} · ${escapeHtml(manual.title)}</span>
           <span style="float:right;">${manual.documentId} · document version ${manual.documentVersion ?? '1.0.0'}</span>
         </div>`,
       footerTemplate: `
@@ -201,8 +159,8 @@ try {
 }
 
 const publicManualDirectory = path.join(repositoryRoot, 'frontend', 'guides', 'manuals');
-await fs.mkdir(publicManualDirectory, { recursive: true });
-for (const manual of generatedManuals) {
+if (catalog.publishToFrontend) await fs.mkdir(publicManualDirectory, { recursive: true });
+for (const manual of catalog.publishToFrontend ? generatedManuals : []) {
   const publicPath = path.join(publicManualDirectory, manual.output);
   await fs.copyFile(manual.outputPath, publicPath);
   process.stdout.write(`Published: ${path.relative(repositoryRoot, publicPath)}\n`);

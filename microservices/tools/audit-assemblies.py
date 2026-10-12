@@ -69,6 +69,16 @@ def audit_jar(name, assembly):
         assert f"domains={','.join(assembly['domains'])}\n" in metadata
         # Verify imports in the executable configuration, not only packaged adapter classes.
         configuration_bytes = jar.read('BOOT-INF/classes/com/raxim/myscoutee/microservices/bootstrap/AssemblyConfiguration.class')
+        websocket_config = 'com/raxim/myscoutee/common/config/ChatWebSocketConfig'
+        owns_chat = 'chat' in assembly['domains']
+        socket_transport = 'com/raxim/myscoutee/microservices/bootstrap/ChatWebSocketTransportConfiguration'
+        needs_socket_transport = owns_chat and 'accounts' not in assembly['domains']
+        assert (socket_transport.encode() in configuration_bytes) == needs_socket_transport, f'{name}: incorrect socket authorization binding'
+        assert (f'BOOT-INF/classes/{socket_transport}.class' in jar.namelist()) == needs_socket_transport, f'{name}: incorrect socket transport ownership'
+        assert (websocket_config.encode() in configuration_bytes) == owns_chat, f'{name}: incorrect chat WebSocket configuration import'
+        assert (f'BOOT-INF/classes/{websocket_config}.class' in jar.namelist()) == owns_chat, f'{name}: incorrect chat WebSocket configuration ownership'
+        for shared_import in json.loads((SHELL / 'assemblies.json').read_text())['sharedConfigurationImports']:
+            assert shared_import.replace('.', '/').encode() in configuration_bytes, f'{name}: missing configured shared import {shared_import}'
         for binding in json.loads((SHELL / 'transport/bindings.json').read_text())['bindings']:
             domain, contract = binding['domain'], binding['api']
             transport, prefix = binding['package'], binding['configuration']
@@ -193,7 +203,7 @@ def main():
     parser.add_argument('--artifacts', action='store_true')
     args = parser.parse_args()
     services, owners = configuration()
-    report = {'issue': 'MSC-121', 'runtimeVerified': False, 'services': {}}
+    report = {'issue': json.loads((SHELL / 'assemblies.json').read_text())['issue'], 'runtimeVerified': False, 'services': {}}
     for name, assembly in services.items():
         details = {'domains': assembly['domains'], 'candidateRemoteContracts': inventory(assembly, owners),
                    'unboundInjectedApiCandidates': injected_inventory(assembly, owners)}

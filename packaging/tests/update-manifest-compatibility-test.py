@@ -3,6 +3,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import json
+import tempfile
 spec = importlib.util.spec_from_file_location('sign_update', Path(__file__).parents[1] / 'release/sign-update-manifest.py')
 signing = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(signing)
@@ -22,4 +24,26 @@ class Compatibility(unittest.TestCase):
     def test_malformed_and_inverted_ranges_fail(self):
         for minimum, maximum in [('1.3', '1.3.0'), ('1.3.1','1.3.0'), ('01.3.0','1.3.0')]:
             with self.assertRaises(ValueError): self.check('1.3.1',minimum,maximum)
+    def test_independent_project_uses_its_own_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            policy = Path(directory) / 'policy.json'
+            policy.write_text(json.dumps({'schemaVersion': 1, 'requirements': []}))
+            signing.validate_compatibility(dict(release_version='1.3.0',
+                minimum_compatible_version='1.0.0', maximum_compatible_version='1.2.0'), policy)
+    def test_missing_policy_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(FileNotFoundError):
+                signing.validate_compatibility(dict(release_version='1.0.1',
+                    minimum_compatible_version='1.0.0', maximum_compatible_version='1.0.0'),
+                    Path(directory) / 'missing.json')
+    def test_invalid_policy_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            policy = Path(directory) / 'policy.json'
+            for value in [{}, {'schemaVersion': True, 'requirements': []},
+                          {'schemaVersion': 1, 'requirements': [{}]},
+                          {'schemaVersion': 1, 'requirements': [{'releaseAtLeast': '1.3', 'installedAtLeast': '1.0.0', 'reason': 'Invalid'}]}]:
+                policy.write_text(json.dumps(value))
+                with self.assertRaises(ValueError):
+                    signing.validate_compatibility(dict(release_version='1.0.1',
+                        minimum_compatible_version='1.0.0', maximum_compatible_version='1.0.0'), policy)
 if __name__ == '__main__': unittest.main()

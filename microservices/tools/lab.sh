@@ -3,9 +3,19 @@ set -euo pipefail
 shell_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 backend_root="$(realpath -- "${MYSCOUTEE_BACKEND_SOURCE:-${shell_root}/..}")"
 export MYSCOUTEE_BACKEND_SOURCE="${backend_root}"
-state_root="${XDG_STATE_HOME:-${HOME}/.local/state}/myscoutee-microservices/msc121"
+state_root="$(python3 "${shell_root}/tools/runtime_config.py" state)"
 # Public convenience credential for this loopback-only developer lab.
-grafana_lab_password='msc121-local-only'
+config() { python3 "${shell_root}/tools/runtime_config.py" "$1"; }
+grafana_lab_password="$(config lab.grafanaPassword)"
+image_prefix="$(config images.prefix)"
+image_tag="$(config images.buildTag)"
+immutable_version="$(config images.immutableVersion)"
+frontend_base="$(config images.frontendBase)"
+monitoring_project="$(config lab.monitoringProject)"
+export LAB_PROMETHEUS_PORT="$(config lab.prometheusPort)"
+export LAB_GRAFANA_PORT="$(config lab.grafanaPort)"
+export LAB_MONITORING_PROJECT="${monitoring_project}"
+export LAB_ISSUE="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["issue"])' "${shell_root}/assemblies.json")"
 
 preflight() {
   python3 - <<'PY'
@@ -66,16 +76,16 @@ package_frontend_image() {
   test -f "${backend_root}/frontend/prod/index.html"
   docker build --network=none --pull=false --file "${backend_root}/server/docker/images/nginx/prod/Dockerfile" \
     --build-context "frontend-prod=${backend_root}/frontend/prod" \
-    --build-arg "NGINX_BASE_IMAGE=${NGINX_BASE_IMAGE:-myscoutee-nginx:1.3.0-base}" \
-    --label com.myscoutee.task=MSC-121 --tag myscoutee-frontend-runtime-base:msc121 \
+    --build-arg "NGINX_BASE_IMAGE=${NGINX_BASE_IMAGE:-$(config images.nginxBase)}" \
+    --label "com.myscoutee.task=${LAB_ISSUE}" --tag "${frontend_base}" \
     "${backend_root}/server/docker"
-  record_image myscoutee-frontend-runtime-base:msc121
+  record_image "${frontend_base}"
   docker build --network=none --pull=false --file "${shell_root}/runtime-status/Dockerfile" \
-    --build-arg FRONTEND_BASE_IMAGE=myscoutee-frontend-runtime-base:msc121 \
+    --build-arg "FRONTEND_BASE_IMAGE=${frontend_base}" \
     --build-context "runtime-common=${backend_root}/server/docker/images/nginx/runtime-status" \
-    --label com.myscoutee.task=MSC-121 --tag myscoutee-service-frontend:msc121 \
+    --label "com.myscoutee.task=${LAB_ISSUE}" --tag "${image_prefix}frontend:${image_tag}" \
     "${shell_root}/runtime-status"
-  record_image myscoutee-service-frontend:msc121
+  record_image "${image_prefix}frontend:${image_tag}"
 }
 
 record_image() {
@@ -91,9 +101,26 @@ build_minio_image() {
   chmod 0600 "${state_root}/images.tsv"
   # Reuse the production image and seed startup; startup never calls this build.
   docker build --file "${backend_root}/server/docker/images/minio/Dockerfile" \
-    --label com.myscoutee.task=MSC-121 --tag myscoutee-service-minio:msc121 \
+    --label "com.myscoutee.task=${LAB_ISSUE}" --tag "${image_prefix}minio:${image_tag}" \
     "${backend_root}/server"
-  record_image myscoutee-service-minio:msc121
+  record_image "${image_prefix}minio:${image_tag}"
+}
+
+build_release_simulator_image() {
+  require_idle_build_owner
+  install -d -m 0700 "${state_root}"
+  touch "${state_root}/images.tsv"
+  chmod 0600 "${state_root}/images.tsv"
+  mkdir -p "${shell_root}/build/runtime-context"
+  docker build --file "${backend_root}/server/docker/images/release-simulator/Dockerfile" \
+    --label "com.myscoutee.task=${LAB_ISSUE}" --tag "${image_prefix}release-simulator-base:${image_tag}" \
+    "${shell_root}/build/runtime-context"
+  record_image "${image_prefix}release-simulator-base:${image_tag}"
+  docker build --network=none --pull=false --file "${shell_root}/deploy/release-simulator.Dockerfile" \
+    --build-arg "RELEASE_SIMULATOR_BASE_IMAGE=${image_prefix}release-simulator-base:${image_tag}" \
+    --build-context "backend-source=${backend_root}" --label "com.myscoutee.task=${LAB_ISSUE}" \
+    --tag "${image_prefix}release-simulator:${image_tag}" "${shell_root}/build/runtime-context"
+  record_image "${image_prefix}release-simulator:${image_tag}"
 }
 
 build_support_images() {
@@ -104,14 +131,21 @@ build_support_images() {
   local service source image_ref
   # Production Dockerfiles own these optimized Go binaries. Build serially;
   # never overwrite the monolith's tags or start a second dev/watch process.
-  for service in mcp registry payment-simulator; do
-    source="$(dirname -- "${backend_root}")/myscoutee-${service}"
+  while IFS=$'\t' read -r service source; do
+    source="$(realpath -- "${backend_root}/${source}")"
     [[ -f "${source}/Dockerfile" ]] || { echo "Missing canonical source: ${source}" >&2; return 2; }
-    image_ref="myscoutee-service-${service}:msc121"
-    docker build --file "${source}/Dockerfile" --label com.myscoutee.task=MSC-121 \
+    image_ref="${image_prefix}${service}:${image_tag}"
+    docker build --file "${source}/Dockerfile" --label "com.myscoutee.task=${LAB_ISSUE}" \
       --tag "${image_ref}" "${source}"
     record_image "${image_ref}"
-  done
+  done < <(python3 - "${shell_root}/deploy/runtime.json" <<'CONFIG'
+import json, sys
+config = json.load(open(sys.argv[1]))
+for name, source in config['images']['supportSources'].items():
+    if name in config['dependencies']:
+        print(name + '\t' + source)
+CONFIG
+  )
 }
 
 build_images() {
@@ -126,14 +160,14 @@ build_images() {
   [[ -z "$(git -C "${backend_root}" status --porcelain --untracked-files=normal)" ]] || dirty=true
   mkdir -p "${shell_root}/build/runtime-context"
   for stage in jre-runtime media-runtime; do
-    image_ref="myscoutee-service-${stage}:msc121"
-    docker build --target "${stage}" --label com.myscoutee.task=MSC-121 \
+    image_ref="${image_prefix}${stage}:${image_tag}"
+    docker build --target "${stage}" --label "com.myscoutee.task=${LAB_ISSUE}" \
       --file "${backend_root}/server/docker/images/profilemanagement/prod/Dockerfile" \
       --tag "${image_ref}" "${shell_root}/build/runtime-context"
     record_image "${image_ref}"
   done
   while IFS= read -r service; do
-    image_ref="myscoutee-service-${service}:msc121"
+    image_ref="${image_prefix}${service}:${image_tag}"
     docker build --file "${shell_root}/build/deployment/${service}.Dockerfile" \
       --build-arg BACKEND_REVISION="${revision}" --build-arg BACKEND_DIRTY="${dirty}" \
       --tag "${image_ref}" "${shell_root}/build/${service}/libs"
@@ -147,9 +181,18 @@ clean_images() {
   # Only task-recorded tags still pointing to the recorded image are removable.
   # No force, container removal, global prune, or build-cache removal.
   while IFS=$'\t' read -r image_ref expected; do
-    [[ "${image_ref}" =~ ^myscoutee-service-[a-z0-9-]+:(msc121|0\.1\.0-[a-f0-9]{12})$ && "${expected}" =~ ^sha256:[a-f0-9]{64}$ ]] || {
+    if ! { [[ "${expected}" =~ ^sha256:[a-f0-9]{64}$ ]] && python3 - "${image_ref}" "${shell_root}" <<'IDENTITY'
+import re, sys
+sys.path.insert(0, sys.argv[2] + '/tools')
+from runtime_config import CONFIG
+images = CONFIG['images']
+pattern = re.escape(images['prefix']) + r'[a-z0-9-]+:(?:' + re.escape(images['buildTag']) + '|' + re.escape(images['immutableVersion']) + r'-[a-f0-9]{12})'
+if sys.argv[1] != images['frontendBase'] and not re.fullmatch(pattern, sys.argv[1]):
+    raise SystemExit(1)
+IDENTITY
+    }; then
       echo 'Invalid image inventory; stopped.' >&2; return 2;
-    }
+    fi
     actual="$(docker image inspect --format '{{.Id}}' "${image_ref}" 2>/dev/null || true)"
     [[ -n "${actual}" ]] || continue
     if [[ "${actual}" != "${expected}" ]]; then
@@ -174,18 +217,18 @@ monitoring() {
     fi
   fi
   [[ -f "${environment_file}" ]] || { echo 'Monitoring has no local state.'; return 0; }
-  local -a compose=(docker compose --project-name msc121-observability --env-file "${environment_file}" -f "${shell_root}/observability/compose.yaml")
+  local -a compose=(docker compose --project-name "${monitoring_project}" --env-file "${environment_file}" -f "${shell_root}/observability/compose.yaml")
   case "${action}" in
     up)
       "${compose[@]}" up -d
       # A newly created Prometheus has no signal handler yet: early SIGHUP
       # terminates it (exit 129). Reload only after its HTTP readiness gate.
       python3 - <<'PY'
-import time, urllib.error, urllib.request
+import os, time, urllib.error, urllib.request
 deadline = time.monotonic() + 60
 while time.monotonic() < deadline:
     try:
-        with urllib.request.urlopen('http://127.0.0.1:19090/-/ready', timeout=2) as response:
+        with urllib.request.urlopen('http://127.0.0.1:' + os.environ['LAB_PROMETHEUS_PORT'] + '/-/ready', timeout=2) as response:
             if response.status == 200:
                 break
     except (OSError, urllib.error.URLError):
@@ -200,13 +243,13 @@ PY
     reset-password)
       # Explicitly reconcile an existing lab volume to the documented login.
       python3 - "${environment_file}" "${grafana_lab_password}" <<'PY'
-import base64, json, sys, urllib.request
+import base64, json, os, sys, urllib.request
 from pathlib import Path
 path = Path(sys.argv[1])
 previous = path.read_text().strip().split('=', 1)[1]
 password = sys.argv[2]
 authorization = base64.b64encode(('lab:' + previous).encode()).decode()
-request = urllib.request.Request('http://127.0.0.1:13000/api/user/password',
+request = urllib.request.Request('http://127.0.0.1:' + os.environ['LAB_GRAFANA_PORT'] + '/api/user/password',
     method='PUT', headers={'Authorization': 'Basic ' + authorization, 'Content-Type': 'application/json'},
     data=json.dumps({'oldPassword': previous, 'newPassword': password, 'confirmNew': password}).encode())
 if previous != password:
@@ -234,6 +277,7 @@ case "${1:-preflight}" in
   frontend-package) package_frontend_image ;;
   minio-image) build_minio_image ;;
   support-images) build_support_images ;;
+  release-simulator-image) build_release_simulator_image ;;
   render) python3 "${shell_root}/tools/render-deployment.py" ;;
   monitoring-up) monitoring up ;;
   monitoring-stop) monitoring stop ;;
@@ -241,12 +285,12 @@ case "${1:-preflight}" in
   monitoring-reset-password) monitoring reset-password ;;
   clean-images) clean_images ;;
   clean-build)
-    if [[ -n "$(docker ps -q --filter label=com.docker.compose.project=msc121-observability)" ]]; then
+    if [[ -n "$(docker ps -q --filter "label=com.docker.compose.project=${monitoring_project}")" ]]; then
       echo 'Stop the task monitoring stack before removing its generated configuration.' >&2
       exit 2
     fi
     [[ ! -L "${shell_root}/build" && ! -L "${shell_root}/.gradle" ]] || { echo 'Refusing symlinked build paths.' >&2; exit 2; }
     rm -rf -- "${shell_root}/build" "${shell_root}/.gradle"
     ;;
-  *) echo 'Usage: lab.sh [preflight|build|jars|images|frontend-image|frontend-package|minio-image|support-images|render|monitoring-up|monitoring-stop|monitoring-destroy|monitoring-reset-password|clean-images|clean-build]' >&2; exit 2 ;;
+  *) echo 'Usage: lab.sh [preflight|build|jars|images|frontend-image|frontend-package|minio-image|support-images|release-simulator-image|render|monitoring-up|monitoring-stop|monitoring-destroy|monitoring-reset-password|clean-images|clean-build]' >&2; exit 2 ;;
 esac

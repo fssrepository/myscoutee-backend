@@ -24,4 +24,5 @@ public class AccountChatCounterService implements ChatCounters {
         if (StringUtils.hasText(change.context())) update.inc("activities.chat." + change.context(), change.delta());
         return update;
     }
+
 }

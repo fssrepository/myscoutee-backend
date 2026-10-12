@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.platform.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import jakarta.servlet.http.Cookie;
 

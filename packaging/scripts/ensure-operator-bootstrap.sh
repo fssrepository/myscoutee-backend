@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
+
 # This helper is deliberately parameterized so its state transitions can be
 # tested without executing Debian maintainer scripts against the host /etc.
-ENV_FILE="${MYSCOUTEE_BOOTSTRAP_ENV_FILE:-/etc/myscoutee/myscoutee.env}"
-SECRETS_FILE="${MYSCOUTEE_BOOTSTRAP_SECRETS_FILE:-/etc/myscoutee/myscoutee.secrets.env}"
+ENV_FILE="${MYSCOUTEE_BOOTSTRAP_ENV_FILE:-/etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.env}"
+SECRETS_FILE="${MYSCOUTEE_BOOTSTRAP_SECRETS_FILE:-/etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.secrets.env}"
 OWNER_UID="${MYSCOUTEE_BOOTSTRAP_OWNER_UID:-0}"
 OWNER_GID="${MYSCOUTEE_BOOTSTRAP_OWNER_GID:-0}"
 OPERATOR_KEY="OPERATOR_USER"

@@ -6,6 +6,15 @@ This shell builds independently packaged services from the canonical source in
 `server/projects/profile`. It contains no copy of that business source and has
 no dependency on the monolith's executable JAR or compiled output.
 
+The chat assembly includes the canonical WebSocket configuration. Its transport
+decorator renews the 30-second actor delegation through the original authenticated
+session when a frame arrives within five seconds of expiry. Frames between
+renewals reuse the verified grant; there is no periodic renewal thread or
+authentication request per frame. Renewal cannot change actor, role or REAL/DEMO
+mode, and revoked sessions close before business handling. The monolith does not
+install this decorator. Public chat and native admin-notification sockets retain
+the production one-hour proxy timeout, independently of ordinary HTTP timeouts.
+
 **Verified lab snapshot (2026-10-09):** Helm revision 101; all six independent
 backends and nine support deployments are Ready. All 21 domains are included.
 The VM is 8 GiB / 4 vCPU with host-boot autostart disabled. The source-batch
@@ -17,6 +26,26 @@ Native DEMO login, reads through every assembly and logout pass through
 `http://localhost:18080`. All three landing catalogs/images and the disposable
 two-identity contact mutation/replay sample pass. The bounded stress result and
 qualification limits are recorded in [PROGRESS.md](PROGRESS.md).
+
+### MSC-122 preparation — 2026-10-10, KVM gate passed
+
+Generic bootstrap/configuration/TLS/update source now belongs to platform.
+Help and MyScoutee operator/Registry have separate `help` and `network` assemblies;
+content stays in community. Eight Java processes cover all 21 domains. The
+virtual-company network is excluded from the template; retained minimal models
+stay unchanged, including localization and location.
+
+Helm revision 129 is Ready. Native KVM reads/consent and all 15 delegated headless
+browser checks pass, including editable operator configuration and HTTP 200
+release discovery. Warmed read load completed 4,498 requests with zero errors at
+74.9 requests/s. The persistent configuration key and existing Compose release
+simulator are now wired into the lab. The independently found public release
+catalog defect was also repaired, without weakening signature verification.
+
+Final regression: 228 transport, 359 targeted canonical JUnit and 65 infrastructure
+checks pass. The monolith native login/seven reads/logout and the same 15 browser checks also
+pass. KVM is stopped and the existing dev stack is running; never run both together. See [progress/evidence](PROGRESS.md) and
+[the complete template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
 
 ### Latest delegated qualification
 
@@ -113,7 +142,7 @@ Never turn the flag off against replica-set data as an implicit rollback.
 
 Native recovery and HTTP adapter changes are verified by the accumulated suite.
 The [English guide](../guides/manuals/myscoutee-microservices-guide-en.html) and
-[branded PDF](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.0_EN.pdf) describe
+[branded PDF](../guides/manuals/MyScoutee_Microservices_Guide_EN.pdf) describe
 the actual deployment, operations, measurements and limits.
 
 `assets`, `events` and `eventFeedbackStates` now use optimistic document versions.
@@ -212,12 +241,14 @@ Spring starters and initial memory budgets. It currently defines:
 
 | Service | Domains | Heap / proposed container limit |
 | --- | --- | --- |
-| identity | accounts, access, administration, platform, operator, registry, integrations | 512 / 1024 MiB |
-| community | groups, community, events, campaigns, content, help | 512 / 1024 MiB |
+| identity | accounts, access, administration, platform, integrations | 512 / 1024 MiB |
+| community | groups, community, events, campaigns, content | 512 / 1024 MiB |
 | communication | chat, notifications, email, localization | 384 / 768 MiB |
 | assets | assets, media | 384 / 768 MiB |
 | payments | payments | 384 / 768 MiB |
 | affinity | affinity | 384 / 768 MiB |
+| help | help | 256 / 512 MiB |
+| network | operator, registry | 384 / 768 MiB |
 
 The number of deployments is not fixed. Splitting a group means adding an entry
 and reassigning its domains, dependencies and memory budget. Settings generate
@@ -311,6 +342,17 @@ no-op and allows the same interrupted import to resume. Changed seed/namespace
 identity is rejected; updating existing application data requires a separate
 explicit migration. Temporary import files are removed after the attempt.
 
+For an explicitly requested refresh of disposable lab test data, the same
+bootstrap owner also supports `--reset-lab --from-fingerprint <recorded hash>`.
+Stop the owned backends with `workloads.py backends-stop` first. This action
+verifies namespace, database names, previous seed fingerprint and Mongo image,
+then uses the existing Mongo backup/receipt before replacing both configured
+lab databases with the current canonical seed. The backup stays private under
+the lab VM state directory. It does not reset an installed/production deployment
+and is never invoked by startup. Restart with `workloads.py up` after verification.
+An interrupted reset resumes with the same command; repeating a completed reset
+to the same seed leaves data and indexes unchanged.
+
 Verified import: REAL has zero synthetic users, DEMO has 125 users; each has 26
 articles, 14,992 translation messages and 50 policy definitions. Repeating the
 bootstrap leaves its completion record unchanged. Wrong fingerprint and foreign
@@ -348,6 +390,22 @@ python3 microservices/tools/workloads.py lock-images
 python3 microservices/tools/workloads.py frontend-up
 python3 microservices/tools/check-support.py
 ```
+
+The developer lab also packages the existing Compose release simulator, including
+its canonical startup wrapper and HTTPS catalog server. Build this image explicitly:
+
+```bash
+bash microservices/tools/lab.sh release-simulator-image
+python3 microservices/tools/workloads.py lock-images
+```
+
+On first deployment, `workloads.py up` starts support services with backend replicas
+at zero, copies only the simulator's public TLS certificate into a ConfigMap, then
+starts the backends. The private TLS volume remains simulator-owned. Only the
+platform owner receives the HTTPS release origins and public CA. An empty local
+catalog is explicit and never falls back to GitHub; it proves discovery, not a
+package upgrade. Signed upgrade/interruption/rollback qualification uses the
+existing release fixture and remains a separate gate.
 
 The check passed all four image healthchecks, STUN Binding Responses over host-to-VM
 UDP and TCP, the localhost MCP private endpoint's 401/OAuth challenge, the simulator
@@ -758,7 +816,7 @@ Do not launch the harness documentation's monolith Compose example for this lab.
 Preserve the user's browser control under the repository QA rules. These remain
 unfinished acceptance criteria, not claims implied by a ready k3s API.
 
-The English [Microservices Guide](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.0_EN.pdf)
+The English [Microservices Guide](../guides/manuals/MyScoutee_Microservices_Guide_EN.pdf)
 uses the existing M logo, shared manual stylesheet and PDF generator. Version
 0.1.0 is an implementation preview. Update it with the final application/stress
 results; it is listed in the backend/frontend README documentation tables.
@@ -823,3 +881,17 @@ requirements and follow-up boundaries. Affinity task discovery now uses one
 change stream per configured database with fallback polling disabled. Normal
 Compose replica defaults and isolated bootstrap verification are documented in
 [the packaging guide](../packaging/README.md#default-mongo-replica-set-and-change-streams).
+
+
+### Project configuration reuse (MSC-122)
+
+`deploy/runtime.json` now owns the lab display/state/VM/network identity,
+monitoring ports, image naming/support source locations, isolated databases,
+runtime environment and ordered public routes. The existing lifecycle tools,
+Helm chart and monitoring renderer consume these values. Native configured
+identities are unchanged; never edit them to adopt another project's resources.
+The root host package inventory is shared and remains at its existing location;
+foreign-resource guards still protect other labs, even when they are stopped.
+Selected dependencies control optional support workloads and credentials.
+See `MSC122_LAB_CONFIGURATION_20261012.json` for the source comparison and the
+separate runtime qualification boundary.

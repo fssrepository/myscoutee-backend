@@ -33,6 +33,12 @@ public final class CampaignCatalogEndpoint {
         return read(request, CampaignCatalogProtocol.OwnedQuery.class, CampaignCatalogProtocol::valid,
                 query -> new CampaignCatalogProtocol.Decision(owner.ownedExists(query.ownerUserId(), query.id())));
     }
+    @PostMapping(value = CampaignCatalogProtocol.ORGANIZER_CONTACT, produces = "application/json")
+    public ResponseEntity<?> organizerContact(HttpServletRequest request) throws java.io.IOException {
+        return read(request, CampaignCatalogProtocol.OrganizerContactQuery.class, CampaignCatalogProtocol::valid,
+                query -> new CampaignCatalogProtocol.OrganizerContactResult(true,
+                        owner.organizerContact(query.id(), query.viewerId(), query.workspaceGroupId())));
+    }
     private <T> ResponseEntity<?> read(HttpServletRequest request, Class<T> type, Predicate<T> valid, Function<T, Object> action)
             throws java.io.IOException {
         try {

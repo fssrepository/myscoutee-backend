@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-10",
+  "release": "v1.3.0",
+  "defect": "Published Debian asset omitted the standalone signed update catalog; discovery returned HTTP 412.",
+  "cause": "Release preparation signed DEB/client tools but deferred the separate update catalog until owner DEB upload; the later upload was not followed by catalog publication.",
+  "correction": {
+    "id": 627844966,
+    "name": "myscoutee-update.json",
+    "size": 1360,
+    "digest": "sha256:5fa184e002d6b7f282e2c6b338e9b40ebe23ed7b35286be035aeca95f3557424",
+    "browser_download_url": "https://github.com/fssrepository/myscoutee/releases/download/v1.3.0/myscoutee-update.json"
+  },
+  "packageSha256": "sha256:04f93c705149d7195287a3575056a0d3c03f22cdb661ca9c97eab2eb79def051",
+  "signingKeyId": "pkey_cb936e5e3af21c7f3e72e569277ec00b",
+  "minimumCompatibleVersion": "1.3.0",
+  "maximumCompatibleVersion": "1.3.0",
+  "scope": "Catalog discovery only. No forward upgrade range is advertised; pre-1.3.0 hosts retain the signed client installer path.",
+  "verification": {
+    "publishedDebMatchesRetainedSignedArtifact": true,
+    "canonicalJavaVerifierOffline": "PASS",
+    "canonicalJavaDiscoveryFromGithub": "PASS",
+    "rejectedBeforeJobOrDownload": [
+      "1.0.0",
+      "1.0.2",
+      "1.3.0-qa.1",
+      "1.3.0",
+      "1.3.1"
+    ],
+    "existingReleaseAssetsUnchanged": true,
+    "gitTagsChanged": false,
+    "packageInstalled": false
+  },
+  "remainingHistoricalRelease": "v1.0.2 has no update catalog; not modified or claimed as a qualified in-app rollback target."
+}

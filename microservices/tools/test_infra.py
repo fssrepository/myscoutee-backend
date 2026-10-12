@@ -31,6 +31,38 @@ seed_mongo = module('seed-mongo')
 mongo_replica = module('mongo_replica')
 
 
+class PerformanceEvidenceTest(unittest.TestCase):
+    def setUp(self):
+        self.measure = module('measure-stress')
+        self.before = {'containers': [{'id': 'first', 'pod': 'identity-pod', 'container': 'identity',
+            'at': 10, 'cpu': {'usage_usec': 1_000_000, 'throttled_usec': 100_000},
+            'cpuMax': '200000 100000', 'memoryBytes': 100 * 1024 ** 2}],
+            'host': {'at': 10, 'cpuTotal': 1000, 'cpuIdle': 200, 'logicalCpus': 8, 'qemuCpuNs': 2_000_000_000}}
+        self.after = json.loads(json.dumps(self.before))
+        self.after['containers'][0].update(at=20, cpu={'usage_usec': 16_000_000, 'throttled_usec': 800_000})
+        self.after['host'].update(at=20, cpuTotal=2000, cpuIdle=600, qemuCpuNs=12_000_000_000)
+
+    def test_cpu_units_distinguish_one_core_from_host_percentage(self):
+        row, = self.measure.resource_deltas(self.before, self.after)
+        self.assertEqual(1.5, row['cpuCores'])
+        self.assertEqual(.7, row['throttledSeconds'])
+        host = self.measure.host_delta(self.before, self.after)
+        self.assertEqual(60, host['busyPercent'])
+        self.assertEqual(1, host['qemuCpuCores'])
+
+    def test_container_replacement_or_removal_invalidates_a_comparable_sample(self):
+        self.after['containers'][0]['id'] = 'replacement'
+        self.assertTrue(all(row['replacedDuringRun'] for row in self.measure.resource_deltas(self.before, self.after)))
+        self.after['containers'] = []
+        row, = self.measure.resource_deltas(self.before, self.after)
+        self.assertTrue(row['replacedDuringRun'])
+
+    def test_counter_reset_is_not_reported_as_negative_cpu(self):
+        self.after['containers'][0]['cpu']['usage_usec'] = 0
+        with self.assertRaisesRegex(ValueError, 'counter interval'):
+            self.measure.resource_deltas(self.before, self.after)
+
+
 class MongoStatefulMigrationTest(unittest.TestCase):
     def row(self):
         return {'target': 'data-mongodb-0', 'claim': {'metadata': {'name': 'mongodb', 'uid': 'claim-uid'}},
@@ -206,6 +238,27 @@ class MongoConversionSafetyTest(unittest.TestCase):
                 mongo_replica.configured()
 
 
+class ReleaseSimulatorSafetyTest(unittest.TestCase):
+    def test_only_one_public_certificate_can_enter_backend_config(self):
+        from types import SimpleNamespace
+        for value in ('-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----',
+                      '-----BEGIN CERTIFICATE-----\npublic\n-----END CERTIFICATE-----\n'
+                      '-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----', 'x' * 8193):
+            with patch.object(workloads, 'kube', return_value=SimpleNamespace(stdout=value)):
+                with self.assertRaisesRegex(RuntimeError, 'public TLS certificate'):
+                    workloads.release_simulator_certificate()
+        value = '-----BEGIN CERTIFICATE-----\npublic\n-----END CERTIFICATE-----\n'
+        with patch.object(workloads, 'kube', return_value=SimpleNamespace(stdout=value)):
+            self.assertEqual(value, workloads.release_simulator_certificate())
+
+    def test_ready_foreign_deployment_cannot_supply_lab_trust(self):
+        from types import SimpleNamespace
+        deployment = {'metadata': {'labels': {}}, 'status': {'availableReplicas': 1}}
+        with patch.object(workloads, 'kube', return_value=SimpleNamespace(stdout=json.dumps(deployment))):
+            with self.assertRaisesRegex(RuntimeError, 'Unowned'):
+                workloads.release_simulator_ready()
+
+
 class BackendUpgradeSafetyTest(unittest.TestCase):
     def deployment(self, image, replicas):
         return {'metadata': {'name': 'identity'}, 'spec': {'replicas': replicas,
@@ -242,7 +295,11 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
     def catalog_files(self, directory):
         path = Path(directory) / 'landingSlides.json'
         path.write_text('[{"_id":"slide-1","title":"Canonical slide"}]')
-        return {'mongo_import.sh': Path(directory) / 'mongo_import.sh',
+        importer = Path(directory) / 'mongo_import.sh'
+        importer.write_text('# shared import engine\n')
+        policy = Path(directory) / 'mongo-seed-policy.inc'
+        policy.write_text('# project policy\n')
+        return {'mongo_import.sh': importer, 'mongo-seed-policy.inc': policy,
                 'myscoutee_db/landingSlides.json': path, 'demo_db/landingSlides.json': path}
 
     def test_catalog_migration_imports_only_missing_catalog_and_database(self):
@@ -257,6 +314,7 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
                                    'new', 'owned', 'landingSlides', 'old')
             importer.assert_called_once_with(
                 {'mongo_import.sh': files['mongo_import.sh'],
+                 'mongo-seed-policy.inc': files['mongo-seed-policy.inc'],
                  'myscoutee_db/landingSlides.json': files['myscoutee_db/landingSlides.json']},
                 'msc121_real:landingSlides', 'new', {'msc121_real': 'myscoutee_db'}, catalog='landingSlides')
 
@@ -291,7 +349,7 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
              patch.object(seed_mongo, 'mongo') as mongo, \
              patch.object(seed_mongo, 'import_files') as importer:
             files = self.catalog_files(directory)
-            files['mongo_import.sh'].write_text(
+            files['mongo-seed-policy.inc'].write_text(
                 'allowed_collections_by_db="myscoutee_db:appSettings,landingSlides,other;production_db:appSettings,landingSlides,other"\n')
             allowlist = 'msc121_real:appSettings,landingSlides,other;msc121_demo:*'
             before = seed_mongo.catalog_baseline_fingerprint(files, allowlist, 'landingSlides')
@@ -300,6 +358,20 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
                 seed_mongo.add_catalog(files, allowlist, 'new', 'owned', 'landingSlides', before)
             mongo.assert_not_called()
             importer.assert_not_called()
+
+    def test_engine_and_policy_changes_invalidate_catalog_migration(self):
+        for filename in seed_mongo.IMPORT_FILES:
+            with self.subTest(filename=filename), tempfile.TemporaryDirectory() as directory, \
+                 patch.object(seed_mongo, 'mongo') as mongo:
+                files = self.catalog_files(directory)
+                files['mongo-seed-policy.inc'].write_text(
+                    'allowed_collections_by_db="myscoutee_db:appSettings,landingSlides,other;production_db:appSettings,landingSlides,other"\n')
+                allowlist = 'msc121_real:appSettings,landingSlides,other;msc121_demo:*'
+                before = seed_mongo.catalog_baseline_fingerprint(files, allowlist, 'landingSlides')
+                files[filename].write_text(files[filename].read_text() + '# changed\n')
+                with self.assertRaisesRegex(RuntimeError, 'Source changes exceed'):
+                    seed_mongo.add_catalog(files, allowlist, 'new', 'owned', 'landingSlides', before)
+                mongo.assert_not_called()
 
     def test_live_backends_prevent_any_seed_mutation(self):
         with tempfile.TemporaryDirectory() as directory, \
@@ -343,6 +415,16 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
 
 
 class WorkloadCredentialsTest(unittest.TestCase):
+    def test_current_assembly_consumers_have_authorized_producer_scopes(self):
+        # Exercise the real composition: synthetic bindings alone cannot detect
+        # a canonical service moving to another domain with a stale allowlist.
+        scoped = workloads.transport_credentials_by_service(workloads.SERVICES, workloads.SHELL.parent)
+        self.assertEqual(set(workloads.SERVICES), set(scoped))
+        role_key = 'MYSCOUTEE_REMOTE_ROLE_NOTIFICATIONS_COMMAND_TOKEN'
+        self.assertIn(role_key, scoped['identity'])
+        self.assertIn(role_key, scoped['communication'])
+        self.assertNotIn(role_key, scoped['network'])
+
     def test_constants_and_nested_dtos_do_not_grant_a_remote_capability(self):
         from transport_usage import uses_api
         api = 'com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation'
@@ -516,6 +598,16 @@ class WorkloadCredentialsTest(unittest.TestCase):
                     workloads.secrets_data()
             self.assertEqual(original,secret_file.read_text())
 
+    def test_invalid_configuration_key_is_not_silently_replaced(self):
+        with tempfile.TemporaryDirectory() as directory:
+            secret_file = Path(directory) / 'workload-secrets.json'
+            original = '{"configurationMasterKey":"invalid"}\n'
+            secret_file.write_text(original)
+            with patch.object(workloads, 'SECRET_FILE', secret_file):
+                with self.assertRaisesRegex(RuntimeError, 'Invalid configuration master key'):
+                    workloads.secrets_data()
+            self.assertEqual(original, secret_file.read_text())
+
     def test_new_transport_tokens_preserve_existing_credentials_and_repeat_without_rewrite(self):
         with tempfile.TemporaryDirectory() as directory:
             secret_file = Path(directory) / 'workload-secrets.json'
@@ -530,6 +622,7 @@ class WorkloadCredentialsTest(unittest.TestCase):
                 second = workloads.secrets_data()
             self.assertEqual(original, {key: first[key] for key in original})
             self.assertRegex(first['minioRootPassword'], r'^[A-Za-z0-9_-]{43}$')
+            self.assertRegex(first['configurationMasterKey'], r'^[0-9a-f]{64}$')
             self.assertRegex(first['paymentSimulatorApiKey'], r'^sk_test_[A-Za-z0-9_-]{43}$')
             self.assertRegex(first['paymentSimulatorWebhookSecret'], r'^whsec_[A-Za-z0-9_-]{43}$')
             self.assertEqual(36, len(first['paymentSimulatorPosKey']))

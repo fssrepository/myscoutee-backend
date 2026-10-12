@@ -5,7 +5,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.chat.websocket.ChatHandshakeInterceptor;
 import com.raxim.myscoutee.domain.chat.websocket.ChatWebSocketHandler;
 import com.raxim.myscoutee.domain.notifications.websocket.AdminNotificationWebSocketHandler;
@@ -16,30 +18,46 @@ public class ChatWebSocketConfig implements WebSocketConfigurer {
     private final ChatWebSocketHandler chatWebSocketHandler;
     private final AdminNotificationWebSocketHandler adminNotificationWebSocketHandler;
     private final ChatHandshakeInterceptor chatHandshakeInterceptor;
-    private final ConfigProperties configProperties;
+    private final String[] allowedOrigins;
+    private org.springframework.web.socket.server.HandshakeInterceptor transportInterceptor;
+    private org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory transportDecorator;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void transportInterceptor(@org.springframework.beans.factory.annotation.Qualifier("chatTransportHandshakeInterceptor")
+            org.springframework.web.socket.server.HandshakeInterceptor value) { transportInterceptor = value; }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void transportDecorator(@org.springframework.beans.factory.annotation.Qualifier("chatTransportHandlerDecorator")
+            org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory value) { transportDecorator = value; }
+
 
     public ChatWebSocketConfig(
             ChatWebSocketHandler chatWebSocketHandler,
             AdminNotificationWebSocketHandler adminNotificationWebSocketHandler,
             ChatHandshakeInterceptor chatHandshakeInterceptor,
-            ConfigProperties configProperties) {
+            @Value("${config.websocket-allowed-origin-patterns:http://localhost,http://localhost:4200,https://localhost,https://localhost:4200}")
+            String allowedOriginPatterns) {
         this.chatWebSocketHandler = chatWebSocketHandler;
         this.adminNotificationWebSocketHandler = adminNotificationWebSocketHandler;
         this.chatHandshakeInterceptor = chatHandshakeInterceptor;
-        this.configProperties = configProperties;
+        this.allowedOrigins = Arrays.stream(allowedOriginPatterns.split("[,;]"))
+                .map(String::trim).filter(StringUtils::hasText).distinct().toArray(String[]::new);
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(chatWebSocketHandler, "/activities/chats/ws")
+        register(registry, chatWebSocketHandler, "/activities/chats/ws");
+        register(registry, adminNotificationWebSocketHandler, "/admin/notifications/ws");
+    }
+
+    private void register(WebSocketHandlerRegistry registry, org.springframework.web.socket.WebSocketHandler handler, String path) {
+        var registration = registry.addHandler(transportDecorator == null ? handler : transportDecorator.decorate(handler), path)
                 .addInterceptors(chatHandshakeInterceptor)
                 .setAllowedOriginPatterns(allowedOriginPatterns());
-        registry.addHandler(adminNotificationWebSocketHandler, "/admin/notifications/ws")
-                .addInterceptors(chatHandshakeInterceptor)
-                .setAllowedOriginPatterns(allowedOriginPatterns());
+        if (transportInterceptor != null) registration.addInterceptors(transportInterceptor);
     }
 
     private String[] allowedOriginPatterns() {
-        return configProperties.getWebsocketAllowedOriginPatternList().toArray(String[]::new);
+        return allowedOrigins;
     }
 }

@@ -67,7 +67,7 @@ class IdeaPostsServiceTest {
     void setUp() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new IdeaPostsService(
-                org.mockito.Mockito.mock(com.raxim.myscoutee.domain.content.service.AdminModerationService.class),
+                org.mockito.Mockito.mock(com.raxim.myscoutee.domain.administration.api.AdministrativeActors.class),
                 configProperties,
                 ideaPostsRepository,
                 mongoTemplate,

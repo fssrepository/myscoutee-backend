@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.help.service;
 
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
@@ -51,7 +51,7 @@ import com.raxim.myscoutee.domain.access.api.ConsentAuthorization;
 @Service
 public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.HelpCenter {
     @org.springframework.beans.factory.annotation.Autowired
-    private AdministrativeAccess adminModerationService;
+    private AdministrativeActors adminModerationService;
     private static final String DOCUMENT_HELP = "help";
     private static final String DOCUMENT_PRIVACY = "privacy";
     private static final String DOCUMENT_TERMS = "terms";

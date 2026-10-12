@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-11",
+  "status": "PASS for native and template E2E nginx builds",
+  "sourceBackendBaseRevision": "f46163d7b",
+  "sourceFrontendRevision": "30649a62ad719895806e46c9eaa4d67ceff618d2",
+  "problem": "The native E2E builder copied only application sources; after the frontend split, npm/with-components also requires the selected workspace manifest, sources, styles, build configuration and scripts. The existing Docker context allowlist excluded them.",
+  "change": "Include the required workspace inputs in the existing builder and Docker allowlist. No application code, test expectations or production behavior changed.",
+  "checks": [
+    {
+      "command": "docker compose --parallel 1 -f server/docker-compose.e2e.yml build nginx",
+      "repository": "myscoutee-backend",
+      "result": "PASS",
+      "log": "/tmp/msc122-native-e2e-nginx-build.log"
+    },
+    {
+      "command": "docker compose --parallel 1 -f server/docker-compose.e2e.yml build nginx",
+      "repository": "myscoutee-template",
+      "result": "PASS",
+      "log": "/tmp/msc122-template-e2e-nginx-build.log"
+    }
+  ],
+  "sha256": {
+    "server/docker/images/nginx/e2e/Dockerfile": "d70474b61f4855dd30eed5fb0095e5cc843349096a2c16d9410f50f312eb8980",
+    "frontend/.dockerignore": "64309280a755e64e0658daa972a7c5ae770dfd78e3d9c6d982b5a26d1673cd42"
+  },
+  "limitations": [
+    "Existing stylesheet budget and CommonJS warnings remain warnings; no limits relaxed.",
+    "This verifies the build inputs/artifacts, not a new native application runtime qualification."
+  ]
+}

@@ -3,12 +3,7 @@ import java.util.Collection;
 import java.util.Set;
 import com.raxim.myscoutee.domain.events.api.EventChatContext;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
-public interface EventConversations {
-    String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
-    String RANDOM_ROOM_WELCOME_MESSAGE_ID = "system:" + RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
-    String RANDOM_ROOM_WELCOME_MESSAGE = "Welcome! We matched you here by affinity and past interactions. Leave anytime. "
-            + "Set visibility to non-public in Global Settings to stop future Random Rooms.";
-    String TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE = "tournament-room-welcome";
+public interface EventConversations extends SystemChatMessages {
     String ensureMainEventChat(EventChatContext event, Collection<String> participants);
     PublishedMainEventChatResult ensurePublishedMainEventChat(EventChatContext event, Collection<String> participants);
     long updateEventChatOwnerStatus(String eventId, String status);

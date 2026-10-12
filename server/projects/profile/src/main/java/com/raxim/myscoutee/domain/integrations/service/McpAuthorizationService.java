@@ -1,8 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
-import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
-import com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationTokensRepository;
 import com.raxim.myscoutee.domain.integrations.repository.McpAuthorizationRepository;
 import com.raxim.myscoutee.domain.integrations.repository.McpOAuthClientsRepository;
@@ -19,6 +17,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import com.raxim.myscoutee.domain.integrations.document.McpOAuthClient;
 import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
@@ -43,20 +42,19 @@ public class McpAuthorizationService {
     private final IntegrationTokensRepository tokens;
     private final McpAuthorizationRepository grants;
     private final ProfileDirectory users;
-    private final GroupDirectory groups;
+    private final Optional<McpWorkspaceAccess> workspaces;
     private final IntegrationPublicEndpointResolver endpoint;
     private final McpOAuthClientsRepository registrations;
-    private final AccountWorkspaces profiles;
     private final RuntimeConfiguration config;
     private final SecureRandom random = new SecureRandom();
 
     public McpAuthorizationService(IntegrationTokenService keys, IntegrationTokensRepository tokens,
-            McpAuthorizationRepository grants, ProfileDirectory users, GroupDirectory groups,
+            McpAuthorizationRepository grants, ProfileDirectory users, Optional<McpWorkspaceAccess> workspaces,
             IntegrationPublicEndpointResolver endpoint, McpOAuthClientsRepository registrations,
-            AccountWorkspaces profiles, RuntimeConfiguration config) {
+            RuntimeConfiguration config) {
         this.keys = keys; this.tokens = tokens; this.grants = grants; this.users = users;
-        this.groups = groups; this.endpoint = endpoint;
-        this.registrations = registrations; this.profiles = profiles; this.config = config;
+        this.workspaces = workspaces; this.endpoint = endpoint;
+        this.registrations = registrations; this.config = config;
     }
     public String origin() {
         URI api = URI.create(endpoint.resolve());
@@ -137,7 +135,7 @@ public class McpAuthorizationService {
         requireProfile(actor, owner);
         var profile = users.findByUserId(owner).orElseThrow(() -> error("access_denied"));
         String group = profile.getWorkspaceGroupId() == null || profile.getWorkspaceGroupId().isBlank() ? null
-                : groups.findById(profile.getWorkspaceGroupId()).orElseThrow(() -> error("access_denied")).name();
+                : workspaces.orElseThrow(() -> error("access_denied")).name(profile.getWorkspaceGroupId());
         String tokenId = client.owner() == null ? existingConnection(owner, client.id()).map(IntegrationToken::getId).orElse("") : client.id();
         var permissions = profile.getIntegrationAccess() == null ? IntegrationAccess.initial() : profile.getIntegrationAccess();
         return new McpDtos.Context(client.name(), profile.getName(), group, request.redirectUri(), owner, permissions.effective(tokenId, true));
@@ -284,8 +282,7 @@ public class McpAuthorizationService {
         requireAccount(actor, owner);
         var profile = users.findByUserId(owner).orElseThrow(() -> error("access_denied"));
         if (profile.getWorkspaceGroupId() != null && !profile.getWorkspaceGroupId().isBlank()) {
-            if (!profiles.select(profile.getAccountUserId(), profile.getWorkspaceGroupId()).getUserId().equals(owner))
-                throw error("access_denied");
+            workspaces.orElseThrow(() -> error("access_denied")).requireProfile(owner, profile);
         }
     }
     private IntegrationToken requireClient(String id) {
@@ -322,5 +319,5 @@ public class McpAuthorizationService {
         return value;
     }
     private static String encode(String value) { return URLEncoder.encode(value, StandardCharsets.UTF_8); }
-    private static ResponseStatusException error(String value) { return new ResponseStatusException(HttpStatus.BAD_REQUEST, value); }
+    static ResponseStatusException error(String value) { return new ResponseStatusException(HttpStatus.BAD_REQUEST, value); }
 }

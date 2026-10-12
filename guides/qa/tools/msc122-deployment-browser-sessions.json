@@ -1,0 +1,174 @@
+{
+  "defaults": {
+    "storageScope": "http",
+    "bootstrapEntryConsent": false,
+    "ignoreCertificateErrors": true,
+    "screenWidth": 1400,
+    "screenHeight": 950
+  },
+  "checkpoints": {
+    "MSC122-NATIVE-VMWARE": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "native-vmware",
+          "expectedName": "Native vmware entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "native-vmware-peer",
+          "expectedName": "Native vmware entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ],
+      "hostResolverRules": "MAP localhost 192.168.153.129"
+    },
+    "MSC122-NATIVE-MONOLITH": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "native-monolith",
+          "expectedName": "Native monolith entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "native-monolith-peer",
+          "expectedName": "Native monolith entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ]
+    },
+    "MSC122-NATIVE-KVM": {
+      "entryUrl": "http://localhost:18080/entry",
+      "targetUrl": "http://localhost:18080/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "native-kvm",
+          "expectedName": "Native kvm entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "native-kvm-peer",
+          "expectedName": "Native kvm entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ]
+    },
+    "MSC122-TEMPLATE-VMWARE": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "template-vmware",
+          "expectedName": "Template vmware entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-vmware-peer",
+          "expectedName": "Template vmware entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ],
+      "hostResolverRules": "MAP localhost 192.168.153.129"
+    },
+    "MSC122-TEMPLATE-MONOLITH": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "template-monolith",
+          "expectedName": "Template monolith entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-monolith-peer",
+          "expectedName": "Template monolith entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ]
+    },
+    "MSC122-TEMPLATE-KVM": {
+      "entryUrl": "http://localhost:18080/entry",
+      "targetUrl": "http://localhost:18080/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "template-kvm",
+          "expectedName": "Template kvm entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-kvm-peer",
+          "expectedName": "Template kvm entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ]
+    },
+    "MSC122-TEMPLATE-DEV": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "template-dev",
+          "expectedName": "Template dev entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-dev-peer",
+          "expectedName": "Template dev entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ]
+    }
+  }
+}

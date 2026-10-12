@@ -1,22 +1,16 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.groups.api.IntegrationGroups;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationConnectDto;
-import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationGroupScopeDto;
-import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
-import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
@@ -24,16 +18,15 @@ import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 /** Describes the authenticated integration, without probing any write endpoint. */
 @Service
 public class IntegrationCapabilitiesService {
-    private final IntegrationGroups groups;
-    private final GroupDirectory groupRepository;
-    private final AccessPermissions access;
+    static final List<String> PERSONAL_READ_OPERATIONS = List.of(
+            "listChats", "chatDetails", "chatMessages", "listNotifications");
+    private final java.util.Optional<IntegrationProductCapabilities> products;
     private final IntegrationRoleAccessService roles;
 
-    public IntegrationCapabilitiesService(IntegrationGroups groups,
-            GroupDirectory groupRepository, AccessPermissions access, IntegrationRoleAccessService roles) {
-        this.groups = groups;
-        this.groupRepository = groupRepository;
-        this.access = access; this.roles = roles;
+    public IntegrationCapabilitiesService(java.util.Optional<IntegrationProductCapabilities> products,
+            IntegrationRoleAccessService roles) {
+        this.products = products;
+        this.roles = roles;
     }
 
     public IntegrationConnectDto describe(Authentication authentication) {
@@ -49,35 +42,11 @@ public class IntegrationCapabilitiesService {
             return new IntegrationConnectDto(true, IntegrationTokenService.MAX_BATCH_SIZE,
                     profileId, profile.getName(), null, null, List.copyOf(operations), List.of(), client.accessMode());
         }
-        String groupId = StringUtils.hasText(profile.getWorkspaceGroupId()) ? profile.getWorkspaceGroupId() : null;
-        var group = groupId == null ? null : groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
-        String groupName = group == null ? null : group.name();
-        var inviteGroups = groups.administeredGroups(groups.actor(profileId)).stream()
-                .map(inviteGroup -> new IntegrationGroupScopeDto(inviteGroup.id(), inviteGroup.name()))
-                .sorted(Comparator.comparing(IntegrationGroupScopeDto::id)).toList();
-        var operations = new ArrayList<>(List.of("event", "encounters", "inviteParticipants"));
-        // Per-resource restrictions and lifecycle preconditions remain with their domain owners.
-        if (access.canCurrentActorCreateEvent(profileId, "*")) operations.add("createEvents");
-        if (groupId == null && access.canCurrentActorCreateAsset(profileId, "*")) operations.add("createAssets");
-        if (group != null && "work".equals(group.effectiveType()))
-            operations.addAll(List.of("createCampaigns", "updateCampaign", "campaignAction"));
-        if (group != null && "community".equals(group.effectiveType()))
-            operations.addAll(List.of("saveCase", "caseAction", "saveAnnouncement", "announcementAction",
-                    "saveScheduledTask", "scheduledTaskAction", "serviceAction"));
-        if (!inviteGroups.isEmpty()) operations.add("inviteGroupParticipants");
-        if (client.accessMode().allowsRead()) {
-            operations.addAll(List.of("listEvents", "eventDetails", "listGroups", "groupDetails",
-                    "listChats", "chatDetails", "chatMessages", "listNotifications", "listRatings"));
-            if (groupId == null) operations.addAll(List.of("listAssets", "assetDetails"));
-            if (group != null && "work".equals(group.effectiveType()))
-                operations.addAll(List.of("listCampaigns", "campaignDetails", "campaignHistory"));
-            if (group != null && "community".equals(group.effectiveType()))
-                operations.addAll(List.of("listServices", "serviceDetails", "listCases", "caseDetails",
-                        "listAnnouncements", "announcementDetails", "listScheduledTasks"));
-        }
+        if (products.isPresent()) return products.get().describe(profile, client.accessMode());
         return new IntegrationConnectDto(true, IntegrationTokenService.MAX_BATCH_SIZE,
-                profileId, profile.getName(), groupId, groupName, List.copyOf(operations), inviteGroups, client.accessMode());
+                profileId, profile.getName(), org.springframework.util.StringUtils.hasText(profile.getWorkspaceGroupId())
+                        ? profile.getWorkspaceGroupId() : null, null,
+                client.accessMode().allowsRead() ? PERSONAL_READ_OPERATIONS : List.of(), List.of(), client.accessMode());
     }
 
     public String requireRead(Authentication authentication, String domain) {
@@ -91,9 +60,7 @@ public class IntegrationCapabilitiesService {
         var profile = profile(authentication);
         if (roles.privileged(profile)) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Role integrations are read-only.");
         if (domain != null) {
-            String groupId = profile.getWorkspaceGroupId();
-            var group = groupId == null ? null : groupRepository.findById(groupId).orElse(null);
-            if (group == null || !domain.equals(group.effectiveType())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            products.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN)).requireDomain(profile, domain);
         }
         return profile.getUserId();
     }
@@ -109,6 +76,26 @@ public class IntegrationCapabilitiesService {
         if (!client.accessMode().allowsRead() || !("admin".equals(role) ? roles.admin(profile) : roles.operator(profile)))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return profile.getUserId();
+    }
+
+    /** Scope the checked report permission to this call; the existing signer carries it across HTTP. */
+    public <T> T withOperatorReportRead(Authentication authentication, java.util.function.Supplier<T> read) {
+        requireRoleRead(authentication, "operator");
+        var previous = org.springframework.security.core.context.SecurityContextHolder.getContext();
+        var scoped = org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
+        var authorities = new ArrayList<org.springframework.security.core.GrantedAuthority>(authentication.getAuthorities());
+        authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                com.raxim.myscoutee.domain.operator.api.MeasurementReports.INTEGRATION_READ_AUTHORITY));
+        var checked = org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated(
+                authentication.getPrincipal(), null, authorities);
+        checked.setDetails(authentication.getDetails());
+        scoped.setAuthentication(checked);
+        try {
+            org.springframework.security.core.context.SecurityContextHolder.setContext(scoped);
+            return read.get();
+        } finally {
+            org.springframework.security.core.context.SecurityContextHolder.setContext(previous);
+        }
     }
 
     private WorkspaceProfile profile(Authentication authentication) {

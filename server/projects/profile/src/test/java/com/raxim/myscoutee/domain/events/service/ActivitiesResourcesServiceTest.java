@@ -133,7 +133,7 @@ class ActivitiesResourcesServiceTest {
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
                 new MemberPolicyFacts(new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository), new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository), new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
-                new ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class))));
+                new ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, java.util.List.of(new com.raxim.myscoutee.domain.access.security.CaseChatPolicyRestriction(new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)))));
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,

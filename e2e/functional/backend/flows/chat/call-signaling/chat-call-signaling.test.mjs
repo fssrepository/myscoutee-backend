@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
-import { ChatCallMls } from '../../../../../../frontend/src/app/shared/core/base/services/chat-call-mls.ts';
+import { ChatCallMls } from '../../../../../../frontend/src/app/shared/core/base/services/chat/chat-call-mls.ts';
 
 const root = new URL('../../../../../../', import.meta.url).pathname;
 const baseline = JSON.parse(execFileSync('bash', [`${root}server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh`, 'ready', 'chat-call', 'CHAT-CALL-001'], { encoding: 'utf8' }));

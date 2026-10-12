@@ -46,6 +46,10 @@ verifies and installs the selected artifact through its normal HTTP/UI path.
    as root. It snapshots only the three affected configuration lines, writes a
    public CA file and sets the normal production release-source settings. It
    neither installs packages nor creates update jobs/success state.
+   For the template guest, pass `--package myscoutee-template`; the fixture uses
+   that package's runtime group and host paths while retaining the container's
+   existing certificate mount. A delegated test of an installed stable baseline
+   requires `--expected-stable-version` matching its exact installed version.
 6. Install the newly built QA1 baseline through the signed client installer.
    The installer records the actual installed package version/hash after host
    qualification. Do not fake a prior-package receipt for a historical install.

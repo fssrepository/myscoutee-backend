@@ -22,7 +22,7 @@ services:
       - myscoutee
 
   mcp:
-    image: ${MCP_IMAGE:-myscoutee-mcp:1.6.0-prod}
+    image: ${MCP_IMAGE:-myscoutee-mcp:1.4.0-prod}
     build:
       context: ../../myscoutee-mcp
       dockerfile: Dockerfile
@@ -66,7 +66,7 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.3.0-prod}
+    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.4.0-prod}
     pull_policy: build
     restart: unless-stopped
     build:
@@ -75,7 +75,7 @@ services:
       additional_contexts:
         frontend-prod: ../frontend/prod
       args:
-        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.3.0-base}
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.4.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
@@ -94,7 +94,6 @@ services:
       - ./docker/conf/nginx/keys:/etc/nginx/keys
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -133,7 +132,6 @@ services:
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
       - ./data/mongodb/data-v8-0:/data/db
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -155,7 +153,6 @@ services:
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -168,7 +165,7 @@ services:
       start_interval: 2s
       start_period: 10s
   minio:
-    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.3.0-prod}
+    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.4.0-prod}
     pull_policy: build
     build:
       context: .
@@ -187,7 +184,6 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./data/minio:/data
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -203,16 +199,19 @@ services:
     extends:
       file: docker-compose.replicaset.yml
       service: profilemanagement
-    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.3.0-prod}
+    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.4.0-prod}
     pull_policy: build
     restart: unless-stopped
     build:
-       # Deliberately expose only the compiled JAR to BuildKit. Runtime Mongo,
-       # registry, key, and secret directories must never enter this context.
-       context: projects/profile/build/libs
-       dockerfile: ../../../../docker/images/profilemanagement/prod/Dockerfile
-       args:
-         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+      # Deliberately expose only compiled JARs to BuildKit; select the release
+      # version explicitly. Runtime data and secrets never enter this context.
+      context: projects/profile/build/libs
+      dockerfile: ../../../../docker/images/profilemanagement/prod/Dockerfile
+      args:
+        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.4.0}
+        MYSCOUTEE_API_UID: ${MYSCOUTEE_API_UID:-10001}
+        MYSCOUTEE_API_GID: ${MYSCOUTEE_API_GID:-10001}
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
     hostname: myscoutee
     env_file:
@@ -226,7 +225,7 @@ services:
       CHAT_CALL_STUN_URLS: "${CHAT_CALL_STUN_URLS:-}"
       CHAT_CALL_STUN_PORT: "${CHAT_CALL_STUN_PORT:-3478}"
       SPRING_PROFILES_ACTIVE: "prod"
-      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.3.0}"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.4.0}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_REAL_DATABASE}"
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE}"
@@ -281,8 +280,13 @@ services:
       PAYMENT_BARION_API_BASE_URL: "http://payment-simulator:18082"
       PAYMENT_BARION_TEST_GATEWAY_ENABLED: "true"
       OPERATOR_UPDATE_ENABLED: "${MYSCOUTEE_UPDATE_ENABLED:-false}"
+      OPERATOR_UPDATE_TLS_CA_CERTIFICATE: "${MYSCOUTEE_UPDATE_TLS_CA_CERTIFICATE:-}"
+      OPERATOR_UPDATE_RELEASE_API_ORIGIN: "${MYSCOUTEE_UPDATE_RELEASE_API_ORIGIN:-https://api.github.com}"
+      OPERATOR_UPDATE_RELEASE_DOWNLOAD_ORIGIN: "${MYSCOUTEE_UPDATE_RELEASE_DOWNLOAD_ORIGIN:-https://github.com}"
+      OPERATOR_UPDATE_GITHUB_REPOSITORY: "${MYSCOUTEE_UPDATE_GITHUB_REPOSITORY:-fssrepository/myscoutee}"
+      OPERATOR_UPDATE_INCLUDE_PRERELEASES: "${MYSCOUTEE_UPDATE_INCLUDE_PRERELEASES:-false}"
       OPERATOR_UPDATE_STATE_DIR: "/var/lib/myscoutee/update"
-      OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "/etc/myscoutee/update/release-public-key.pem"
+      OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
       OPERATOR_UPDATE_MAX_ARTIFACT_BYTES: "${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
       OPERATOR_UPDATE_STAGING_SAFETY_RESERVE_BYTES: "${MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES:-536870912}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -300,7 +304,6 @@ services:
       - "${MYSCOUTEE_UPDATE_STATE_DIR_HOST:-./data/update}/inbox/requests:/var/lib/myscoutee/update/requests:rw"
       - "${MYSCOUTEE_UPDATE_STATE_DIR_HOST:-./data/update}/runtime/jobs:/var/lib/myscoutee/update/jobs:ro"
       - "${MYSCOUTEE_UPDATE_CONFIG_DIR_HOST:-./data/update-config}:/etc/myscoutee/update:ro"
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -329,12 +332,12 @@ services:
   registry:
     container_name: registry-demo
     hostname: registry
-    image: ${REGISTRY_DEMO_IMAGE:-myscoutee-registry:1.3.0-prod}
+    image: ${REGISTRY_DEMO_IMAGE:-myscoutee-registry:1.4.0-prod}
     pull_policy: build
     build:
       context: ../../myscoutee-registry
       args:
-        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.3.0}
+        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.4.0}
       dockerfile: Dockerfile
     restart: unless-stopped
     command: ["start-demo"]
@@ -373,7 +376,7 @@ services:
   payment-simulator:
     container_name: payment-simulator
     hostname: payment-simulator
-    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.3.0-prod}
+    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.4.0-prod}
     pull_policy: build
     build:
       context: ../../myscoutee-payment-simulator

@@ -99,10 +99,10 @@ class ScheduledMessageTaskServiceIntegrationTest {
             payment.setUserId(owner); payment.setStatus("pending"); payment.setCreatedDate(owner);
             mongoTemplate.save(payment);
         }
-        var scope = new JobGroupScopeService();
         var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongoTemplate);
-        org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
+        var scope = new JobGroupScopeService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class),
+                java.util.Optional.of(directory), java.util.List.of());
         var query = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("status").is("pending"))
                 .with(org.springframework.data.domain.Sort.by("createdDate")).limit(1);
         var result = JobGroupContext.call("myscoutee-work", () -> com.raxim.myscoutee.domain.payments.service.PaymentTestSupport.scopedPayments(mongoTemplate, scope, query));

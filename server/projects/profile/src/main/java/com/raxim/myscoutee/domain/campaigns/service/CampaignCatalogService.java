@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.campaigns.service;
 
+import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
+import com.raxim.myscoutee.domain.campaigns.dto.CampaignOrganizerContactDto;
+import com.raxim.myscoutee.domain.campaigns.dto.CampaignSummaryDto;
+import java.util.Objects;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +20,20 @@ import com.raxim.myscoutee.domain.campaigns.document.Campaign;
 @Service
 public class CampaignCatalogService implements CampaignCatalog, com.raxim.myscoutee.domain.campaigns.api.CampaignMediaVisibility {
     private final MongoTemplate mongo;
-    public CampaignCatalogService(MongoTemplate mongo) { this.mongo = mongo; }
+    private final RatingDirectory ratings;
+    public CampaignCatalogService(MongoTemplate mongo, RatingDirectory ratings) {
+        this.mongo = mongo;
+        this.ratings = ratings;
+    }
+    @Override public CampaignOrganizerContactDto organizerContact(
+            String id, String viewerId, String workspaceGroupId) {
+        var campaign = find(id);
+        if (campaign == null || !Objects.equals(workspaceGroupId, campaign.workspaceGroupId())
+                || !"published".equals(campaign.status()) || viewerId.equals(campaign.ownerUserId())) return null;
+        return new CampaignOrganizerContactDto(
+                CampaignSummaryDto.from(campaign),
+                ratings.hasPositiveCampaignRating(campaign.id(), viewerId, campaign.ownerUserId()));
+    }
     @Override public Campaign find(String id) { return mongo.findById(id, Campaign.class); }
     @Override public Map<String, Campaign> findByIds(Collection<String> ids) {
         if (ids.isEmpty()) return Map.of();

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.domain.payments.document.PaymentProvider;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.domain.payments.repository.PaymentProviderRepository;
 import com.raxim.myscoutee.domain.payments.service.BarionPaymentProcessor;
 import com.raxim.myscoutee.domain.payments.service.PaymentProcessor;

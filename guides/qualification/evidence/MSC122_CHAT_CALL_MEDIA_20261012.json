@@ -1,0 +1,126 @@
+{
+  "scope": "Native call-owner fixes verified through identical selected template implementation",
+  "sourceFrontendBase": "639a73a2",
+  "correctedDefects": [
+    {
+      "owner": "ChatCallService",
+      "before": "Browser SDP answerer had two unassociated pre-created transceivers and two recvonly offered transceivers; only the offerer transmitted RTP.",
+      "after": "Only the elected offerer creates media sections. The answerer attaches local tracks to the offered transceivers before creating its sendrecv answer.",
+      "reference": "https://w3c.github.io/webrtc-pc/#rtp-media-api"
+    },
+    {
+      "owner": "ChatCallMls",
+      "before": "Rejected/cancelled signaling commit threw an ordinary JS Error across UniFFI, causing a WASM panic during call teardown.",
+      "after": "Return the installed SDK declared MlsTransportError.MessageRejected through the callback. Rejection still fails and leaves membership unmerged; no retry/fallback or swallowed success."
+    }
+  ],
+  "tests": {
+    "template": {
+      "files": 35,
+      "passed": 297
+    },
+    "nativeMessageMenu": {
+      "passed": 4
+    },
+    "nativeMlsAndVoice": {
+      "passed": 7,
+      "newRegressions": [
+        "Rejected commit is not merged, subsequent valid encrypted exchange works",
+        "Leave during pending membership commit does not trap WASM; new engine remains usable"
+      ]
+    }
+  },
+  "pairedBrowser": {
+    "result": "PASS",
+    "fixture": "Owned disposable template E2E actor pair; cleanup verified zero remaining users/chats/messages",
+    "command": "E2E_SERVER_BASE_URL=http://127.0.0.1 E2E_MONGO_CONTAINER=myscoutee-template-e2e-mongodb E2E_DATABASE=e2e_db node e2e/functional/ui/chat/run.mjs",
+    "results": [
+      {
+        "sent": true,
+        "edited": true,
+        "peerReceived": true,
+        "readReceipt": true,
+        "noDuplicateEcho": true,
+        "reconnected": true,
+        "replyAfterReconnect": true,
+        "replyReference": true,
+        "pinReactionAndReplyReload": true,
+        "unpin": true,
+        "chronologicalOrder": true,
+        "deleted": true,
+        "reloadPersisted": true
+      },
+      {
+        "call": 1,
+        "twoPartyAudio": true,
+        "twoPartyVideo": true,
+        "directMedia": true,
+        "mute": true,
+        "cameraOff": true,
+        "mediaReleased": true,
+        "received": [
+          {
+            "audioBytes": 556,
+            "videoFrames": 1,
+            "connected": 1,
+            "relay": false
+          },
+          {
+            "audioBytes": 676,
+            "videoFrames": 2,
+            "connected": 1,
+            "relay": false
+          }
+        ],
+        "elapsedMs": 1525
+      },
+      {
+        "call": 2,
+        "twoPartyAudio": true,
+        "twoPartyVideo": true,
+        "directMedia": true,
+        "mute": true,
+        "cameraOff": true,
+        "mediaReleased": true,
+        "received": [
+          {
+            "audioBytes": 486,
+            "videoFrames": 2,
+            "connected": 1,
+            "relay": false
+          },
+          {
+            "audioBytes": 573,
+            "videoFrames": 3,
+            "connected": 1,
+            "relay": false
+          }
+        ],
+        "elapsedMs": 762
+      }
+    ],
+    "checks": [
+      "No page fetch for pin, reaction or message details",
+      "Exactly two negotiated sendrecv media transceivers per peer",
+      "Two consecutive calls in the same sessions",
+      "No browser runtime/console errors or failed HTTP resources"
+    ]
+  },
+  "sourceFiles": {
+    "frontend/src/app/shared/core/base/services/chat/chat-call.service.ts": "f38f67e3f5c41521fce202443e00e70393655328e604719ef3d296a930bf5601",
+    "frontend/src/app/shared/core/base/services/chat/chat-call-mls.ts": "4e93481f6d55ad7e7cd27faa1396d2bbb8484ffaa8be53b1f4ef58aca5045bc8",
+    "frontend/src/app/shared/core/base/services/chat/chat-call-voice-activity.ts": "9ce20ff994c9ff2a8bc84047d3dc121a7b57847bd07406e3b1d93d6fd9244b4a",
+    "frontend/src/app/shared/ui/components/chat-call-popup/chat-call-popup.component.ts": "796a4810a10332e307cca9820b4aa5a2db30d285a3536460e841b2483de28af9",
+    "frontend/src/app/shared/ui/converters/chat/chat-message-menu.converter.ts": "76d1dbb87366f170d8746618057bc3bf262af31cdabbc6dc1d15b182b0957eea"
+  },
+  "performance": "No backend query or signaling authorization changes. Menu mutations update the existing SmartList without another message-page fetch. Runtime CPU is a post-flow observation, not matched stress evidence or a speed parity claim. Video/audio encoding remains browser-to-browser.",
+  "notProven": [
+    "Physical microphone/camera quality or playback assessment",
+    "Cross-network/NAT interoperability",
+    "Native full CHAT-CALL-001 manual checklist",
+    "Template KVM call flow (step 25)",
+    "Three-party browser media (MLS/group signaling unit coverage is separate)"
+  ],
+  "sourceFrontendRevision": "d6cd39c15ba6735dfc3714bef72f106e1d661dc1",
+  "productionBuild": "PASS: native and template production builds, serially with application stacks stopped."
+}

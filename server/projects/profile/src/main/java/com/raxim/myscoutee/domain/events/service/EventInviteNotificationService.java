@@ -17,8 +17,6 @@ import com.raxim.myscoutee.domain.notifications.api.EventInvitationNotifications
 
 @Service
 public class EventInviteNotificationService {
-    private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
-    private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
     private final NotificationDelivery notificationOutboxService;
@@ -84,7 +82,7 @@ public class EventInviteNotificationService {
                 body,
                 clickUrl,
                 imageUrl,
-                APP_BADGE_URL,
+                null,
                 notificationTag,
                 payload,
                 StringUtils.hasText(senderUserId) ? senderUserId : null));
@@ -148,7 +146,7 @@ public class EventInviteNotificationService {
                 memberName + " accepted the invitation to " + eventTitle + ".",
                 DEFAULT_CLICK_URL,
                 resolveImageUrl(event),
-                APP_BADGE_URL,
+                null,
                 "event-invitation-accepted-" + eventId + "-" + memberUserId,
                 payload,
                 memberUserId));
@@ -207,7 +205,7 @@ public class EventInviteNotificationService {
                 memberName + " joined " + eventTitle + ".",
                 DEFAULT_CLICK_URL,
                 resolveImageUrl(event),
-                APP_BADGE_URL,
+                null,
                 "event-member-joined-" + eventId + "-" + memberUserId + "-" + occurrenceId,
                 payload,
                 memberUserId));
@@ -256,7 +254,7 @@ public class EventInviteNotificationService {
                 "Your request to join " + eventTitle + " was approved.",
                 DEFAULT_CLICK_URL,
                 resolveImageUrl(event),
-                APP_BADGE_URL,
+                null,
                 "event-member-approved-" + eventId + "-" + memberUserId,
                 payload,
                 StringUtils.hasText(senderUserId) ? senderUserId : null));
@@ -314,7 +312,7 @@ public class EventInviteNotificationService {
                     "You were removed from " + eventTitle + ".",
                     DEFAULT_CLICK_URL,
                     resolveImageUrl(event),
-                    APP_BADGE_URL,
+                    null,
                     "event-member-removed-" + eventId + "-" + memberUserId,
                     targetPayload,
                     StringUtils.hasText(senderUserId) ? senderUserId : null));
@@ -344,7 +342,7 @@ public class EventInviteNotificationService {
                             : memberName + " was removed from " + eventTitle + ".",
                     DEFAULT_CLICK_URL,
                     resolveImageUrl(event),
-                    APP_BADGE_URL,
+                    null,
                     (voluntaryLeave ? "event-member-left-" : "event-member-removed-")
                             + eventId + "-" + memberUserId + "-" + occurrenceId,
                     participantPayload,
@@ -412,7 +410,7 @@ public class EventInviteNotificationService {
                     "You were " + actionText + " " + eventTitle + ".",
                     DEFAULT_CLICK_URL,
                     resolveImageUrl(event),
-                    APP_BADGE_URL,
+                    null,
                     kind + "-" + eventId + "-" + targetUserId,
                     targetPayload,
                     StringUtils.hasText(senderUserId) ? senderUserId : null));
@@ -440,7 +438,7 @@ public class EventInviteNotificationService {
                     memberName + " was " + actionText + " " + eventTitle + ".",
                     DEFAULT_CLICK_URL,
                     resolveImageUrl(event),
-                    APP_BADGE_URL,
+                    null,
                     kind + "-" + eventId + "-" + targetUserId,
                     participantPayload,
                     StringUtils.hasText(senderUserId) ? senderUserId : null));
@@ -550,7 +548,7 @@ public class EventInviteNotificationService {
                 cancelled ? "Join request cancelled." : "Join request received.",
                 DEFAULT_CLICK_URL,
                 resolveImageUrl(event),
-                APP_BADGE_URL,
+                null,
                 notificationKind + "-" + eventId + "-" + memberUserId,
                 payload,
                 memberUserId));
@@ -571,7 +569,7 @@ public class EventInviteNotificationService {
 
     private String resolveImageUrl(ActivityEvent event) {
         String imageUrl = safeText(event.getImageUrl());
-        return StringUtils.hasText(imageUrl) ? imageUrl : APP_FALLBACK_ICON_URL;
+        return StringUtils.hasText(imageUrl) ? imageUrl : null;
     }
 
     private long resolveTimestampMillis(String updatedDate, String createdDate, String startAtIso) {

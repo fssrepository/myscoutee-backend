@@ -5,6 +5,7 @@ import com.raxim.myscoutee.common.security.policy.RequiresPolicyAdvisor;
 import com.raxim.myscoutee.common.security.policy.RequiresPolicyMethodInterceptor;
 
 import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,7 +26,7 @@ class RequiresPolicyRegistrationTest {
     @Test
     void methodSecurityRegistersThePolicyAdvisorAndEnforcesDecisions() {
         try (var context = new AnnotationConfigApplicationContext(SecurityConfiguration.class)) {
-            var access = context.getBean(AccessControlService.class);
+            var access = context.getBean(AccessPermissions.class);
             var protectedBean = context.getBean(ProtectedBean.class);
             when(access.resolveActorUserId(null)).thenReturn("viewer");
 
@@ -47,7 +48,7 @@ class RequiresPolicyRegistrationTest {
     @EnableMethodSecurity
     @Import({RequiresPolicyAdvisor.class, RequiresPolicyMethodInterceptor.class, PolicyExpressionEvaluator.class})
     static class SecurityConfiguration {
-        @Bean AccessControlService accessControlService() { return mock(AccessControlService.class); }
+        @Bean AccessPermissions accessControlService() { return mock(AccessPermissions.class); }
         @Bean ProtectedBean protectedBean() { return new ProtectedBean(); }
     }
 

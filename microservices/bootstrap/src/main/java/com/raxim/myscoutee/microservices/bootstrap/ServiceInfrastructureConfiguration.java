@@ -16,6 +16,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 // classpath. Enabling both explicitly registers duplicate pageable resolvers.
 @Import({com.raxim.myscoutee.common.runtime.RuntimeStatusPublisher.class, MongoRoutingConfig.class, MongoConverterConfig.class, JsonConfig.class,
         CachingConfig.class, ScheduledMongoSessionRunner.class,
-        com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class,
-        com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler.class})
+        com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class})
 public class ServiceInfrastructureConfiguration {}

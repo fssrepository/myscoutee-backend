@@ -11,7 +11,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
 import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
-import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.notifications.service.AdminNotificationSocketSessionRegistry;
 
 @Component

@@ -6,6 +6,7 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd -P)"
 SIGNER="${REPO_ROOT}/packaging/release/sign-release-artifacts.sh"
 VERIFIER="${REPO_ROOT}/packaging/client-tools/verify-release.sh"
 TEST_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/myscoutee-release-signing-test.XXXXXX")"
+PROJECT_NAME="$(jq -r .packageName "${REPO_ROOT}/packaging/scripts/release-project.json")"
 VERSION="1.2.3"
 ARCHITECTURE="amd64"
 CHANNEL="stable"
@@ -37,7 +38,7 @@ make_deb() {
   local package_root
 
   package_root="$(mktemp -d "${TEST_ROOT}/deb-root.XXXXXX")"
-  mkdir -p "${package_root}/DEBIAN" "${package_root}/opt/myscoutee/packaging"
+  mkdir -p "${package_root}/DEBIAN" "${package_root}/opt/${PROJECT_NAME}/packaging"
   cat > "${package_root}/DEBIAN/control" <<EOF
 Package: ${package_name}
 Version: ${package_version}
@@ -48,7 +49,7 @@ Maintainer: MyScoutee Release Test <release-test@example.invalid>
 Description: Minimal release-signing fixture
 EOF
   printf '%s\n' "${package_version}" \
-    > "${package_root}/opt/myscoutee/packaging/VERSION"
+    > "${package_root}/opt/${PROJECT_NAME}/packaging/VERSION"
   dpkg-deb --root-owner-group --build \
     "${package_root}" \
     "${output_path}" >/dev/null
@@ -74,6 +75,9 @@ make_client_tools() {
     printf '%s\n' '#!/bin/sh' 'exit 0' > "${client_root}/remote-transport.sh"
   fi
   cp "${VERIFIER}" "${client_root}/verify-release.sh"
+  for helper in release-project.sh release-project.json; do
+    install -m 0644 "${REPO_ROOT}/packaging/scripts/${helper}" "${client_root}/${helper}"
+  done
   chmod 0755 "${client_root}/verify-release.sh"
   printf '%s\n' 'process.exit(0);' > "${client_root}/verify-deployment/run.mjs"
   if [[ "${include_secret}" == "true" ]]; then
@@ -92,13 +96,13 @@ done
 release_dir="${TEST_ROOT}/release"
 output_dir="${TEST_ROOT}/output"
 mkdir -p "${release_dir}" "${output_dir}"
-deb_path="${release_dir}/myscoutee_${VERSION}_${ARCHITECTURE}.deb"
-client_tools_path="${release_dir}/myscoutee-client-tools_${VERSION}.tar.gz"
+deb_path="${release_dir}/${PROJECT_NAME}_${VERSION}_${ARCHITECTURE}.deb"
+client_tools_path="${release_dir}/${PROJECT_NAME}-client-tools_${VERSION}.tar.gz"
 private_key="${TEST_ROOT}/release-private-key.pem"
 wrong_private_key="${TEST_ROOT}/wrong-private-key.pem"
 rsa_private_key="${TEST_ROOT}/rsa-private-key.pem"
 
-make_deb "${deb_path}" "myscoutee" "${VERSION}" "${ARCHITECTURE}"
+make_deb "${deb_path}" "${PROJECT_NAME}" "${VERSION}" "${ARCHITECTURE}"
 make_client_tools "${client_tools_path}" "${VERSION}"
 openssl genpkey -algorithm Ed25519 -out "${private_key}" 2>/dev/null
 openssl genpkey -algorithm Ed25519 -out "${wrong_private_key}" 2>/dev/null
@@ -115,7 +119,7 @@ chmod 0600 "${private_key}" "${wrong_private_key}" "${rsa_private_key}"
   --channel "${CHANNEL}" \
   --output-dir "${output_dir}" > "${TEST_ROOT}/signer.stdout"
 
-manifest="${output_dir}/myscoutee-release_${VERSION}.json"
+manifest="${output_dir}/${PROJECT_NAME}-release_${VERSION}.json"
 [[ -f "${manifest}" && ! -L "${manifest}" ]] \
   || fail "The signed release manifest was not created."
 [[ "$(stat -c '%a' "${manifest}")" == "644" ]] \
@@ -337,7 +341,7 @@ expect_failure "non-Ed25519 private key" \
 
 wrong_filename_dir="${TEST_ROOT}/wrong-deb-filename"
 mkdir -p "${wrong_filename_dir}"
-wrong_filename_deb="${wrong_filename_dir}/myscoutee_9.9.9_${ARCHITECTURE}.deb"
+wrong_filename_deb="${wrong_filename_dir}/${PROJECT_NAME}_9.9.9_${ARCHITECTURE}.deb"
 cp "${deb_path}" "${wrong_filename_deb}"
 expect_failure "Debian filename and metadata version mismatch" \
   "${SIGNER}" \
@@ -349,7 +353,7 @@ expect_failure "Debian filename and metadata version mismatch" \
 
 wrong_package_dir="${TEST_ROOT}/wrong-package"
 mkdir -p "${wrong_package_dir}"
-wrong_package_deb="${wrong_package_dir}/myscoutee_${VERSION}_${ARCHITECTURE}.deb"
+wrong_package_deb="${wrong_package_dir}/${PROJECT_NAME}_${VERSION}_${ARCHITECTURE}.deb"
 make_deb "${wrong_package_deb}" "not-myscoutee" "${VERSION}" "${ARCHITECTURE}"
 expect_failure "Debian Package mismatch" \
   "${SIGNER}" \
@@ -361,8 +365,8 @@ expect_failure "Debian Package mismatch" \
 
 wrong_architecture_dir="${TEST_ROOT}/wrong-architecture"
 mkdir -p "${wrong_architecture_dir}"
-wrong_architecture_deb="${wrong_architecture_dir}/myscoutee_${VERSION}_${ARCHITECTURE}.deb"
-make_deb "${wrong_architecture_deb}" "myscoutee" "${VERSION}" "arm64"
+wrong_architecture_deb="${wrong_architecture_dir}/${PROJECT_NAME}_${VERSION}_${ARCHITECTURE}.deb"
+make_deb "${wrong_architecture_deb}" "${PROJECT_NAME}" "${VERSION}" "arm64"
 expect_failure "Debian Architecture and filename mismatch" \
   "${SIGNER}" \
     --private-key "${private_key}" \
@@ -371,7 +375,7 @@ expect_failure "Debian Architecture and filename mismatch" \
     --channel "${CHANNEL}" \
     --output-dir "${output_dir}"
 
-wrong_client_filename="${release_dir}/myscoutee-client-tools_9.9.9.tar.gz"
+wrong_client_filename="${release_dir}/${PROJECT_NAME}-client-tools_9.9.9.tar.gz"
 cp "${client_tools_path}" "${wrong_client_filename}"
 expect_failure "client-tools filename mismatch" \
   "${SIGNER}" \
@@ -383,7 +387,7 @@ expect_failure "client-tools filename mismatch" \
 
 wrong_version_dir="${TEST_ROOT}/wrong-client-version"
 mkdir -p "${wrong_version_dir}"
-wrong_version_archive="${wrong_version_dir}/myscoutee-client-tools_${VERSION}.tar.gz"
+wrong_version_archive="${wrong_version_dir}/${PROJECT_NAME}-client-tools_${VERSION}.tar.gz"
 make_client_tools "${wrong_version_archive}" "9.9.9"
 expect_failure "client-tools VERSION mismatch" \
   "${SIGNER}" \
@@ -395,7 +399,7 @@ expect_failure "client-tools VERSION mismatch" \
 
 secret_archive_dir="${TEST_ROOT}/secret-client-tools"
 mkdir -p "${secret_archive_dir}"
-secret_archive="${secret_archive_dir}/myscoutee-client-tools_${VERSION}.tar.gz"
+secret_archive="${secret_archive_dir}/${PROJECT_NAME}-client-tools_${VERSION}.tar.gz"
 make_client_tools "${secret_archive}" "${VERSION}" true
 expect_failure "client-tools local install.env inclusion" \
   "${SIGNER}" \
@@ -407,7 +411,7 @@ expect_failure "client-tools local install.env inclusion" \
 
 incomplete_archive_dir="${TEST_ROOT}/incomplete-client-tools"
 mkdir -p "${incomplete_archive_dir}"
-incomplete_archive="${incomplete_archive_dir}/myscoutee-client-tools_${VERSION}.tar.gz"
+incomplete_archive="${incomplete_archive_dir}/${PROJECT_NAME}-client-tools_${VERSION}.tar.gz"
 make_client_tools "${incomplete_archive}" "${VERSION}" false true
 expect_failure "client-tools canonical member omission" \
   "${SIGNER}" \

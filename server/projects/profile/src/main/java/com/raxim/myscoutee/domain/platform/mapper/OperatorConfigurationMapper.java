@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentBrandingDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentSocialLinkDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebaseConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.IntegrationConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.OperatorConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentBrandingDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentSocialLinkDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.FirebaseConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.IntegrationConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.OperatorConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentProviderDto;
 
 @Component
 public class OperatorConfigurationMapper {

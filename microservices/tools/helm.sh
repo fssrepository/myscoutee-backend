@@ -3,7 +3,7 @@
 set -euo pipefail
 umask 077
 shell_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-state_root="${XDG_STATE_HOME:-${HOME}/.local/state}/myscoutee-microservices/msc121"
+state_root="$(python3 "${shell_root}/tools/runtime_config.py" state)"
 python3 - "${shell_root}" "${state_root}" <<'PY'
 import hashlib, json, os, sys, tarfile, urllib.request
 from pathlib import Path

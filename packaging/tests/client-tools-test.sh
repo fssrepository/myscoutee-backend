@@ -30,7 +30,7 @@ cat > "${FAKE_BIN}/dpkg-deb" <<'SCRIPT'
 #!/usr/bin/env bash
 case "${3:-}" in
   Package)
-    printf 'myscoutee\n'
+    printf '%s\n' "${OPERATOR_CLIENT_TEST_PACKAGE_NAME:-myscoutee}"
     ;;
   Version)
     printf '1.0.0\n'
@@ -166,11 +166,15 @@ BUNDLE_DIR="${TEST_ROOT}/client-tools-bundle"
 install -d "${BUNDLE_DIR}"
 for bundle_helper in \
   install.sh \
+  purge.sh \
   remote-transport.sh \
   verify-release.sh; do
   install -m 0755 \
     "${CLIENT_TOOLS_DIR}/${bundle_helper}" \
     "${BUNDLE_DIR}/${bundle_helper}"
+done
+for policy_file in release-project.sh release-project.json; do
+  install -m 0644 "${REPO_ROOT}/packaging/scripts/${policy_file}" "${BUNDLE_DIR}/${policy_file}"
 done
 cp -a "${REPO_ROOT}/packaging/verify-deployment" \
   "${BUNDLE_DIR}/verify-deployment"
@@ -321,5 +325,31 @@ if grep -Fq 'REMOTE_SCRIPT' "${CLIENT_TOOLS_DIR}/install.sh" \
     || grep -Fq 'REMOTE_SCRIPT' "${CLIENT_TOOLS_DIR}/purge.sh"; then
   fail "Operator wrapper still embeds a remote host program"
 fi
+
+# Independent project identity must route only to its own host package/paths.
+jq '.packageName = "sample-template"' "${BUNDLE_DIR}/release-project.json" > "${BUNDLE_DIR}/selected.json"
+install -m 0644 "${BUNDLE_DIR}/selected.json" "${BUNDLE_DIR}/release-project.json"
+: > "${COMMAND_LOG}"
+PATH="${FAKE_BIN}:/usr/bin:/bin" CONFIG_FILE="${CONFIG_FILE}" \
+OPERATOR_CLIENT_TEST_PACKAGE_NAME=sample-template \
+OPERATOR_CLIENT_TEST_LOG="${COMMAND_LOG}" OPERATOR_CLIENT_TEST_SUDO_SECRET="${SUDO_SECRET}" \
+  "${BUNDLE_DIR}/install.sh" "${DEB_FILE}" >/dev/null
+grep -Fq "'/opt/sample-template/packaging/scripts/qualify-deployment.sh'" "${COMMAND_LOG}" \
+  || fail "selected project did not use its own qualification path"
+grep -Fq "'/opt/sample-template/packaging/scripts/record-installed-package.sh'" "${COMMAND_LOG}" \
+  || fail "selected project did not record its own package"
+: > "${COMMAND_LOG}"
+PATH="${FAKE_BIN}:/usr/bin:/bin" CONFIG_FILE="${CONFIG_FILE}" \
+OPERATOR_CLIENT_TEST_LOG="${COMMAND_LOG}" OPERATOR_CLIENT_TEST_SUDO_SECRET="${SUDO_SECRET}" \
+  "${BUNDLE_DIR}/purge.sh" >/dev/null
+grep -Fq "'apt-get' 'purge' '-y' 'sample-template'" "${COMMAND_LOG}" \
+  || fail "selected project purge selected another package"
+: > "${COMMAND_LOG}"
+if PATH="${FAKE_BIN}:/usr/bin:/bin" CONFIG_FILE="${CONFIG_FILE}" \
+OPERATOR_CLIENT_TEST_LOG="${COMMAND_LOG}" OPERATOR_CLIENT_TEST_SUDO_SECRET="${SUDO_SECRET}" \
+  "${BUNDLE_DIR}/install.sh" "${DEB_FILE}" >/dev/null 2>&1; then
+  fail "selected project accepted another package"
+fi
+[[ ! -s "${COMMAND_LOG}" ]] || fail "wrong package reached the remote transport"
 
 echo "Client-tools tests passed."

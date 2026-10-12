@@ -109,11 +109,27 @@ assert_admin_job_seed_defaults() {
       "account-purge",
       "content-auto-approve",
       "account-deletion-warning",
-      "payment-exchange-rates"
+      "payment-exchange-rates",
+      "event-mingle-advance",
+      "event-watchlist",
+      "event-cancellation",
+      "affiliate-revenue",
+      "integration-encounters",
+      "integration-webhooks",
+      "promotional-email-planning",
+      "promotional-email-delivery",
+      "admin-telemetry"
     ] as $expected
+    | ($expected - ["event-random-groups"]) as $groupExpected
     | type == "array"
-    and length == ($expected | length)
-    and ((map(.ruleKey) | sort) == ($expected | sort))
+    and ([.[] | ._id] | length == (unique | length))
+    and ([.[] | [(.baseGroupId // ""), .ruleKey]] | length == (unique | length))
+    and ((map(.baseGroupId // "") | unique | sort)
+      == ["", "myscoutee-community", "myscoutee-work"])
+    and ((map(select((.baseGroupId // "") == "") | .ruleKey) | sort) == ($expected | sort))
+    and ((map(select(.baseGroupId == "myscoutee-work") | .ruleKey) | sort) == ($groupExpected | sort))
+    and ((map(select(.baseGroupId == "myscoutee-community") | .ruleKey) | sort)
+      == (($groupExpected + ["community-scheduled-cases", "community-voting-close"]) | sort))
     and all(.[];
       .enabled == true
       and .triggerKind == "scheduled_process"
@@ -171,8 +187,8 @@ grep -Eq '^[[:space:]]+context: projects/profile/build/libs$' "${PRODUCTION_COMP
   || fail "production API build context is not restricted to the compiled JAR directory"
 grep -Eq '^[[:space:]]+dockerfile: \.\./\.\./\.\./\.\./docker/images/profilemanagement/prod/Dockerfile$' "${PRODUCTION_COMPOSE}" \
   || fail "production API Dockerfile is not resolved from the restricted JAR context"
-grep -Eq '^COPY --chown=myscoutee:myscoutee \*\.jar /app/spring-boot-application\.jar$' "${PRODUCTION_API_DOCKERFILE}" \
-  || fail "production API image does not copy exclusively from the restricted JAR context"
+grep -Fqx 'COPY --chown=myscoutee:myscoutee profile-${MYSCOUTEE_VERSION}.jar /app/spring-boot-application.jar' "${PRODUCTION_API_DOCKERFILE}" \
+  || fail "production API image does not select the exact release JAR from the restricted build context"
 
 for pattern in \
   'conf/nginx/keys/' \
@@ -295,6 +311,16 @@ EXTRACTED="${TEST_ROOT}/extracted"
 CONTROL_EXTRACTED="${TEST_ROOT}/control"
 dpkg-deb -x "${DEB_PATH}" "${EXTRACTED}"
 dpkg-deb -e "${DEB_PATH}" "${CONTROL_EXTRACTED}"
+
+for migration_input in \
+  008-default-help-v3.js \
+  013-default-help-v5.js \
+  seeds/008-default-help-v3/helpCenterRevisions.json \
+  seeds/013-default-help-v5/helpCenterRevisions.json; do
+  cmp "${REPO_ROOT}/packaging/migrations/${migration_input}" \
+    "${EXTRACTED}/opt/myscoutee/packaging/migrations/${migration_input}" \
+    || fail "packaged help migration input differs: ${migration_input}"
+done
 [[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh" ]] \
   || fail "portable managed-image fingerprint helper is not executable"
 CLIENT_TOOLS_ARCHIVE="${TEST_ROOT}/dist/myscoutee-client-tools_1.0.0.tar.gz"
@@ -356,11 +382,11 @@ grep -Fxq \
   "${EXTRACTED}/lib/systemd/system/myscoutee.service" \
   || fail "production service does not synchronize the authoritative backend bundle before start"
 grep -Fq \
-  'systemctl is-active --quiet myscoutee.service' \
+  'systemctl is-active --quiet ${PACKAGE_NAME}.service' \
   "${CONTROL_EXTRACTED}/postinst" \
   || fail "an active deployment upgrade does not detect the running service"
 grep -Fq \
-  '/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
+  '${PACKAGE_ROOT}/packaging/scripts/sync-i18n-seeds.sh' \
   "${CONTROL_EXTRACTED}/postinst" \
   || fail "an active deployment upgrade does not synchronize the backend bundle"
 assert_admin_job_seed_defaults "${PACKAGED_PRODUCTION_SEED}/notificationRuleConfigs.json"
@@ -374,6 +400,9 @@ for forbidden_seed in \
   [[ ! -e "${PACKAGED_PRODUCTION_SEED}/${forbidden_seed}.json" ]] \
     || fail "private/runtime production seed was embedded: ${forbidden_seed}"
 done
+jq -e 'type == "array" and length > 0 and all(.[]; .screenKey and .id)' \
+  "${PACKAGED_PRODUCTION_SEED}/helpCenterGuideFields.json" >/dev/null \
+  || fail "guide migrations require the packaged production field catalog"
 jq -e '
   type == "array"
   and all(.[];
@@ -428,9 +457,13 @@ jq -e '
 jq -e 'length == 2 and all(.[]; .configured == false)' \
   "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" >/dev/null \
   || fail "production built-in community catalog is missing or preconfigured"
-if grep -RIEiq \
-    -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' \
-    "${PACKAGED_PRODUCTION_SEED}"; then
+# Apply the same exact public product-page exceptions as the release auditor.
+if find "${PACKAGED_PRODUCTION_SEED}" -maxdepth 1 -type f -name '*.json' -print0 \
+    | xargs -0 cat \
+    | sed -e 's#"https://www\.instagram\.com/myscoutee"#""#g' \
+          -e 's#"https://www\.facebook\.com/myscoutee"#""#g' \
+          -e 's#"https://www\.youtube\.com/@myscoutee"#""#g' \
+    | grep -Ei -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' >/dev/null; then
   fail "a deployment-specific social-page URL was embedded in the production seed"
 fi
 consumer_email_pattern='[[:alnum:]._%+-]+@(gmail\.com|googlemail\.com|outlook\.com|hotmail\.com|live\.com|yahoo\.[[:alpha:].]+|icloud\.com|me\.com|proton(mail)?\.com)'
@@ -575,7 +608,7 @@ if MYSCOUTEE_OPERATOR_CONFIGURATION_KEY_DIR="${INVALID_KEY_DIR}" \
   fail "operator configuration helper accepted an embedded newline"
 fi
 grep -Fq \
-  '/opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh' \
+  '${PACKAGE_ROOT}/packaging/scripts/ensure-operator-configuration-key.sh' \
   "${REPO_ROOT}/packaging/debian/postinst" \
   || fail "postinst does not run the persistent key initializer"
 for collection in \
@@ -621,7 +654,9 @@ for generated_internal_key in \
   )"
   [[ -z "${generated_value}" ]] \
     || fail "${generated_internal_key} must be generated during installation"
-  grep -Fq "${generated_internal_key}" "${CONTROL_EXTRACTED}/postinst" \
+  jq -e --arg key "${generated_internal_key}" \
+    'any(.freshSecrets[]; .key == $key) and any(.ensureSecrets[]; .key == $key)' \
+    "${EXTRACTED}/opt/myscoutee/packaging/templates/install-policy.json" >/dev/null \
     || fail "postinst does not provision ${generated_internal_key}"
 done
 if grep -RIl \

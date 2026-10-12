@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-11",
+  "scope": "Native frontend document route rendering after asynchronous load; no backend changes.",
+  "defect": "In a fresh zoneless browser the route document finished loading but the visible page retained its loading state. Popup input rendering was unaffected.",
+  "fix": "Keep the existing route config in an Angular signal so async success and failure notify the rendered view.",
+  "validation": {
+    "command": "npm test -- --watch=false --include=**/document-viewer.component.spec.ts",
+    "result": "PASS",
+    "tests": 6,
+    "existingChecks": 4,
+    "addedChecks": [
+      "Async success renders without user interaction",
+      "Async failure removes loading and renders unavailable state"
+    ]
+  },
+  "performance": "No query, polling, timer or extra request added. Rendering is notified once at each existing route-state transition. No matched performance run for this UI-only fix."
+}

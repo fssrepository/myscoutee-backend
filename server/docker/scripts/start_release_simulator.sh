@@ -14,11 +14,14 @@ fi
 if [ ! -f /data/catalog/index.json ]; then
   # A clean checkout has no locally built releases. Never fall back to GitHub.
   python3 - <<'PY'
-import json
+import json, os, re
 from pathlib import Path
+repository = os.environ.get('RELEASE_SIMULATOR_REPOSITORY', 'fssrepository/myscoutee')
+if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repository):
+    raise SystemExit('Invalid release simulator repository')
 Path('/data/catalog/index.json').write_text(json.dumps({
     'origin': 'https://release-simulator:18445',
-    'repository': 'fssrepository/myscoutee', 'paths': {}, 'releases': []}) + '\n')
+    'repository': repository, 'paths': {}, 'releases': []}) + '\n')
 PY
 fi
 set -- python3 /workspace/guides/qa/tools/operator-update-release-server.py serve \

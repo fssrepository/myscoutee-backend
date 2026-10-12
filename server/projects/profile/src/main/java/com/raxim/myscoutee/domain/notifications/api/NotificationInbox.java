@@ -18,5 +18,4 @@ public interface NotificationInbox extends NotificationReads, EventInvitationNot
     int markChatMessagesRead(String recipientUserId, String chatId, List<String> messageIds);
     int markChatRead(String recipientUserId, String chatId);
     UserNotificationPreferenceDto updateMutedPreference(String recipientUserId, Boolean muted);
-    int currentUnreadCount(String recipientUserId);
 }

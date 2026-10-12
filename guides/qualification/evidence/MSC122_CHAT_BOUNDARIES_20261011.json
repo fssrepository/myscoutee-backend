@@ -1,0 +1,1350 @@
+{
+  "sourceBaseRevision": "4d493ba38e038ac027bb106ef32c12f87ff71a96",
+  "sourceSha256": {
+    "microservices/bootstrap-tests/src/test/java/com/raxim/myscoutee/microservices/transport/groups/GroupDirectoryHttpTest.java": "93ea8138a1e150a66638bf228008059c8b53184cc5c0581ca434f1c3c89368ca",
+    "microservices/transport/bindings.json": "4cbc6864fc056725fa738835a29610ab1c0b92a703f01f31c3929ed2646750e9",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/CaseChatPolicyRestriction.java": "084319aae88ea1b36a6ff6f6ccdde0c6269d537ea9306e63303f6af66896c3d7",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/ChatPolicyFacts.java": "c7b6fd1be7de68991309407dede55fc28af19fd5c6e7ec0176e9e34d16d389f5",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/ChatPolicyRestriction.java": "1d69d8db1871e8ab47d6519ca1b2af87fec87f5c6d48d313c5cc39e5ebfe61c4",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/EventConversations.java": "04542016abe2fc69a029453b4d0b2e4348977030326889bb36583ae402ef5c58",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/SupportWorkspaceDirectory.java": "d7acb744df531faf099500c1e44ad2375e0f44167f81321d2cd6ec615513d032",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/SystemChatMessages.java": "c908915eea63f897a90f7da00d59efd8c8150cfc87851cdffe09ad9a199db837",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/controller/ChatsController.java": "22a7a8da2bc89aae77868e78a20d66657dc19f24c68677a1342b0b88b7f76c04",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/controller/ResourceConversationsController.java": "011e2579fa51ce4b55790e2b748e8f2de1cf4a7aac203598ca6a11acd87a2ccc",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/mapper/ChatMessageMapper.java": "71b3994cdaf1b188a019de545ec611cab2606feef56b378e5ddf284aba1df7aa",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/CaseChatAccessRestriction.java": "cc12141ca3167b15067bafeb827545135a555bd796c71fe2a81064419859e8f6",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/CaseChatBroadcastAudience.java": "67666359c2e22428462bdfe0200d83d7f6837c0b6fd61f07b3aaacdd18d00df4",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatAccessRestriction.java": "0046219e3f50f6c97c57bc6341f97ef73bdea2c5e06c2254e13ab859383ad40b",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatActivityContext.java": "58e635ac37a482d6846ab3ae96fc2f11224dc2eb7a285e660d86e29253180433",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatActivityPresentation.java": "e89bee5e14ae534e4a9020d7c342cbeb5663873e01e1e2c561a0536995876511",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatBroadcastAudience.java": "1976448c9271fa92a52ae7d4584a6a0ef6bfd0bec84bf4b1cf3393dd8d51bfa6",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatMemberPages.java": "0b78cdac280157afd88b0801294b8e54616ecf087872feb22021ca88069b7411",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatRecordContext.java": "a2e2bbff26db237b338df1762830e95d1dab48e317c17de60701339fc9f357b2",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java": "5f580720e22f6f6f34015a83bff83268b08a7d219f87187a8934e2b66d5ca9f8",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatWebSocketSessionRegistry.java": "80e053e4746599bc3afc43e6bcdbeb7956b45f9b32be2e26e4429ef30fe67bdd",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ResourceChatMemberPages.java": "fcbdf6f2ac3329aebc61fc94e91170ed2912cc9e027a814ca905f69d944f40b1",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ResourceConversationService.java": "dca822308d034e61651c9c11b01b3c076e670e36e7603871823a6edda369101c",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupDirectory.java": "830db54b5417742166c3d64991407001042c3e604214646fa29cbe297eb5471e",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java": "19eec66e6db16f7a62b02060da8878d6958aca834b72dc83dcac09b026e3c9eb",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/AccessControlServiceTest.java": "5122effdf94951cf7232ed42b4d9f03f056981a416cb7aad930c58eb9f2f398d",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java": "9641f2835808066283b4fb783ee5145662e772a62f077de53db664ae9349e5d7",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatWebSocketSessionRegistryTest.java": "bf72b4e8f2bc45ddc15afa308cb44ef0d43c738b1d6e22e3f83dcfb5a34993c5",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityCasesServiceTest.java": "3f9d730ee5d03a56b764370792118831b1f23044c4b948fb4481aa3aee48c48c",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsServiceTest.java": "004a95993a9e6e77bae4196689d3426dfbd86d609c9c459ee4e759220126c69b",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersServiceTest.java": "5a9274d1e3e4e121841a79a84cce05d0a18939aa5b0f8c82cab1cf65e16e9506",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesResourcesServiceTest.java": "f68482b59a9912917013e5936b2f05637cc5137e257665bf9f43b96b9cdef2a8",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventSchedulerTest.java": "796e087166c104c7a9b5a1806e1ba6af508c8b6de296f5f0d2f5c126312dd801",
+    "microservices/deploy/images.lock.json": "d7eb36019a27c0e1381ea8861f9afbfaf868951806e5f4515f802517b1d2c3f2"
+  },
+  "checkpoint": "MSC-122 generic chat and product conversation boundaries",
+  "date": "2026-10-11",
+  "status": "Qualified on KVM Helm 141 and monolith; original dev environment restored; KVM stopped",
+  "changes": [
+    "Existing event, asset, campaign, announcement and case conversation creation moved unchanged from ChatService to ResourceConversationService. Existing EventConversations and CaseConversations contracts and the POST /activities/chats/service route are retained.",
+    "Case access predicates and per-session-mode WebSocket audience lookup are separate installed providers. Full MyScoutee retains the same participant checks, owner reads, exceptions and mode restoration; generic chat requires no community owner and does not filter stored channel types.",
+    "Resource chat member pagination remains one owner page/count and one batched profile read. Personal chat uses its existing stored member-ID pagination.",
+    "SupportWorkspaceDirectory reuses GroupDirectory.findById locally/remotely, with the same single lookup, base-ID and absent/present-null-name behavior.",
+    "Existing system-message constants and activity-only context helpers are separated from generic message mapping. No persisted model, Mongo query, HTTP path or installed authorization rule changed."
+  ],
+  "validation": {
+    "canonicalJUnit": {
+      "com.raxim.myscoutee.domain.events.service.ActivitiesEventsServiceTest": {
+        "tests": 68,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.events.service.ActivitiesMembersServiceTest": {
+        "tests": 79,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.events.service.EventSchedulerTest": {
+        "tests": 36,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistryTest": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.access.security.AccessControlServiceTest": {
+        "tests": 89,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.events.service.ActivitiesResourcesServiceTest": {
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.DomainServiceBoundaryTest": {
+        "tests": 51,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.chat.service.ChatServiceTest": {
+        "tests": 44,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.community.service.CommunityCasesServiceTest": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "httpTransport": {
+      "com.raxim.myscoutee.microservices.transport.chat.ChatDirectoryHttpTest": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.microservices.transport.groups.GroupDirectoryHttpTest": {
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.microservices.transport.chat.ChatReviewHttpTest": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "sourceMethodComparison": "Moved creation methods match their prior bodies exactly after qualifying shared helper calls.",
+    "initialTestCorrections": [
+      "New WebSocket fixture needed an unambiguous ObjectMapper supplier and wildcard-compatible Mockito answer.",
+      "New minimal Spring fixture needed interface mocks instead of services carrying unrelated injected fields."
+    ],
+    "serviceJars": 8,
+    "artifactOwnershipAudit": "passed",
+    "nativeHotDeploy": "passed",
+    "kvmHelmRevision": 141,
+    "kvmRuntimeChecks": {
+      "session-smoke.json": [
+        {
+          "assembly": "identity",
+          "path": "/api/auth/me",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "id",
+            "name",
+            "age",
+            "birthday",
+            "city",
+            "height",
+            "physique",
+            "languages",
+            "horoscope",
+            "initials",
+            "gender",
+            "statusText",
+            "hostTier",
+            "traitLabel",
+            "completion",
+            "profileFormVersion",
+            "headline",
+            "about",
+            "affinity",
+            "locationCoordinates",
+            "partitionKey",
+            "images",
+            "profileDetails",
+            "impressions",
+            "profileStatus",
+            "previousProfileStatus",
+            "deletedAtIso",
+            "admin",
+            "operator",
+            "activities",
+            "notificationPreferences",
+            "filterCount",
+            "filterPreferences",
+            "counterOverrides"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "identity",
+          "path": "/api/auth/me/profile-ext",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "profileExt",
+            "filterCount",
+            "filterPreferences",
+            "counterOverrides",
+            "workspace",
+            "accountProfile"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "community",
+          "path": "/api/activities/events",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "records",
+            "total",
+            "nextCursor",
+            "sortKeys"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "communication",
+          "path": "/api/notifications",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "records",
+            "total",
+            "nextCursor",
+            "unreadCount",
+            "muted"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "assets",
+          "path": "/api/assets",
+          "status": 200,
+          "passed": true,
+          "responseShape": "list",
+          "code": null
+        },
+        {
+          "assembly": "payments",
+          "path": "/api/payment-methods",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "items",
+            "total",
+            "nextCursor",
+            "canAdd",
+            "pendingRegistration",
+            "currentProvider"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "affinity",
+          "path": "/api/activities/rates",
+          "status": 200,
+          "passed": true,
+          "responseShape": "list",
+          "code": null
+        },
+        {
+          "path": "/api/auth/me/logout",
+          "status": 200,
+          "passed": true
+        }
+      ],
+      "kvm-profile-selection.json": [
+        {
+          "check": "native DEMO login",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": null
+        },
+        {
+          "check": "native identity",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 49.28
+        },
+        {
+          "check": "native identity ignores caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 32.34
+        },
+        {
+          "check": "communication selection",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 349.75
+        },
+        {
+          "check": "communication selection ignores caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 210.4
+        },
+        {
+          "check": "community selection",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 165.88
+        },
+        {
+          "check": "community selection ignores caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 138.18
+        },
+        {
+          "check": "MCP client settings",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 24.27
+        },
+        {
+          "check": "MCP metadata",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 10.47
+        },
+        {
+          "check": "chat header counters",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 151.5
+        },
+        {
+          "check": "chat header counters ignore caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 76.14
+        },
+        {
+          "check": "native session revoked",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": null
+        }
+      ],
+      "kvm-campaign-chat.json": [
+        {
+          "check": "native Work profile login",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        },
+        {
+          "check": "existing chat list",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 104.35
+        },
+        {
+          "check": "missing campaign",
+          "status": 404,
+          "passed": true,
+          "elapsedMs": 195.93
+        },
+        {
+          "check": "draft campaign",
+          "status": 404,
+          "passed": true,
+          "elapsedMs": 109.25
+        },
+        {
+          "check": "own campaign",
+          "status": 404,
+          "passed": true,
+          "elapsedMs": 65.38
+        },
+        {
+          "check": "campaign without positive rating",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 86.11
+        },
+        {
+          "check": "native session revoked",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        }
+      ],
+      "kvm-admin-identity.json": [
+        {
+          "check": "dashboard accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 314.18
+        },
+        {
+          "check": "help accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 517.77
+        },
+        {
+          "check": "privacy accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 155.49
+        },
+        {
+          "check": "terms accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 116.72
+        },
+        {
+          "check": "explanation accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 274.1
+        },
+        {
+          "check": "notifications accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 160.96
+        },
+        {
+          "check": "params accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 107.58
+        },
+        {
+          "check": "dashboard denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 107.0
+        },
+        {
+          "check": "help denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 109.2
+        },
+        {
+          "check": "privacy denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 97.13
+        },
+        {
+          "check": "terms denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 85.67
+        },
+        {
+          "check": "explanation denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 104.64
+        },
+        {
+          "check": "notifications denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 71.03
+        },
+        {
+          "check": "params denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 50.02
+        },
+        {
+          "check": "admin session revoked",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        },
+        {
+          "check": "dashboard denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 15.46
+        },
+        {
+          "check": "help denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 61.03
+        },
+        {
+          "check": "privacy denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 51.94
+        },
+        {
+          "check": "terms denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 58.14
+        },
+        {
+          "check": "explanation denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 16.18
+        },
+        {
+          "check": "notifications denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 10.47
+        },
+        {
+          "check": "params denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 9.2
+        },
+        {
+          "check": "member session revoked",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        }
+      ]
+    },
+    "kvmLogs": {
+      "since": "2026-10-11T10:19:32.638943+00:00",
+      "services": {
+        "identity": {
+          "lines": 1,
+          "warningsAndErrors": 0
+        },
+        "community": {
+          "lines": 6,
+          "warningsAndErrors": 0
+        },
+        "communication": {
+          "lines": 0,
+          "warningsAndErrors": 0
+        },
+        "assets": {
+          "lines": 0,
+          "warningsAndErrors": 0
+        },
+        "payments": {
+          "lines": 0,
+          "warningsAndErrors": 0
+        },
+        "affinity": {
+          "lines": 0,
+          "warningsAndErrors": 0
+        },
+        "help": {
+          "lines": 0,
+          "warningsAndErrors": 0
+        },
+        "network": {
+          "lines": 0,
+          "warningsAndErrors": 0
+        }
+      }
+    },
+    "monolithRuntimeChecks": {
+      "monolith-session-smoke.json": [
+        {
+          "assembly": "identity",
+          "path": "/api/auth/me",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "id",
+            "name",
+            "age",
+            "birthday",
+            "city",
+            "height",
+            "physique",
+            "languages",
+            "horoscope",
+            "initials",
+            "gender",
+            "statusText",
+            "hostTier",
+            "traitLabel",
+            "completion",
+            "profileFormVersion",
+            "headline",
+            "about",
+            "affinity",
+            "locationCoordinates",
+            "partitionKey",
+            "images",
+            "profileDetails",
+            "impressions",
+            "profileStatus",
+            "previousProfileStatus",
+            "deletedAtIso",
+            "admin",
+            "operator",
+            "activities",
+            "notificationPreferences",
+            "filterCount",
+            "filterPreferences",
+            "counterOverrides"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "identity",
+          "path": "/api/auth/me/profile-ext",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "profileExt",
+            "filterCount",
+            "filterPreferences",
+            "counterOverrides",
+            "workspace",
+            "accountProfile"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "community",
+          "path": "/api/activities/events",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "records",
+            "total",
+            "nextCursor",
+            "sortKeys"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "communication",
+          "path": "/api/notifications",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "records",
+            "total",
+            "nextCursor",
+            "unreadCount",
+            "muted"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "assets",
+          "path": "/api/assets",
+          "status": 200,
+          "passed": true,
+          "responseShape": "list",
+          "code": null
+        },
+        {
+          "assembly": "payments",
+          "path": "/api/payment-methods",
+          "status": 200,
+          "passed": true,
+          "responseShape": [
+            "items",
+            "total",
+            "nextCursor",
+            "canAdd",
+            "pendingRegistration",
+            "currentProvider"
+          ],
+          "code": null
+        },
+        {
+          "assembly": "affinity",
+          "path": "/api/activities/rates",
+          "status": 200,
+          "passed": true,
+          "responseShape": "list",
+          "code": null
+        },
+        {
+          "path": "/api/auth/me/logout",
+          "status": 200,
+          "passed": true
+        }
+      ],
+      "monolith-profile-selection.json": [
+        {
+          "check": "native DEMO login",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": null
+        },
+        {
+          "check": "native identity",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 32.12
+        },
+        {
+          "check": "native identity ignores caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 28.77
+        },
+        {
+          "check": "communication selection",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 166.0
+        },
+        {
+          "check": "communication selection ignores caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 135.96
+        },
+        {
+          "check": "community selection",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 92.18
+        },
+        {
+          "check": "community selection ignores caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 106.8
+        },
+        {
+          "check": "MCP client settings",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 66.79
+        },
+        {
+          "check": "MCP metadata",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 14.46
+        },
+        {
+          "check": "chat header counters",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 25.22
+        },
+        {
+          "check": "chat header counters ignore caller-selected profile",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": 21.14
+        },
+        {
+          "check": "native session revoked",
+          "passed": true,
+          "status": 200,
+          "elapsedMs": null
+        }
+      ],
+      "monolith-campaign-chat.json": [
+        {
+          "check": "native Work profile login",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        },
+        {
+          "check": "existing chat list",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 45.2
+        },
+        {
+          "check": "missing campaign",
+          "status": 404,
+          "passed": true,
+          "elapsedMs": 154.96
+        },
+        {
+          "check": "draft campaign",
+          "status": 404,
+          "passed": true,
+          "elapsedMs": 18.63
+        },
+        {
+          "check": "own campaign",
+          "status": 404,
+          "passed": true,
+          "elapsedMs": 22.69
+        },
+        {
+          "check": "campaign without positive rating",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 22.44
+        },
+        {
+          "check": "native session revoked",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        }
+      ],
+      "monolith-admin-identity.json": [
+        {
+          "check": "dashboard accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 170.77
+        },
+        {
+          "check": "help accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 211.21
+        },
+        {
+          "check": "privacy accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 158.15
+        },
+        {
+          "check": "terms accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 154.32
+        },
+        {
+          "check": "explanation accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 172.43
+        },
+        {
+          "check": "notifications accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 56.8
+        },
+        {
+          "check": "params accepted",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": 55.08
+        },
+        {
+          "check": "dashboard denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 18.68
+        },
+        {
+          "check": "help denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 13.55
+        },
+        {
+          "check": "privacy denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 15.16
+        },
+        {
+          "check": "terms denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 18.76
+        },
+        {
+          "check": "explanation denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 15.05
+        },
+        {
+          "check": "notifications denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 14.79
+        },
+        {
+          "check": "params denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 14.35
+        },
+        {
+          "check": "admin session revoked",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        },
+        {
+          "check": "dashboard denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 15.99
+        },
+        {
+          "check": "help denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 10.95
+        },
+        {
+          "check": "privacy denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 12.76
+        },
+        {
+          "check": "terms denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 18.18
+        },
+        {
+          "check": "explanation denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 16.54
+        },
+        {
+          "check": "notifications denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 10.78
+        },
+        {
+          "check": "params denied",
+          "status": 403,
+          "passed": true,
+          "elapsedMs": 11.85
+        },
+        {
+          "check": "member session revoked",
+          "status": 200,
+          "passed": true,
+          "elapsedMs": null
+        }
+      ]
+    },
+    "monolithEnvironmentRestored": true,
+    "monolithSettledLogErrors": 0
+  },
+  "remaining": [
+    "Personal profile/API product dependencies and actual minimal composition remain open.",
+    "Template implementation remains paused."
+  ],
+  "performance": {
+    "kind": "Low-load observations and runtime probe timings; not a matched benchmark or proof of performance parity",
+    "baselineRevision": "4d493ba38e038ac027bb106ef32c12f87ff71a96",
+    "candidateRevision": "4d493ba38e038ac027bb106ef32c12f87ff71a96 plus sourceSha256 changes recorded above",
+    "kvm": {
+      "previousHost": {
+        "seconds": 31.70489663599983,
+        "logicalCpus": 12,
+        "busyPercent": 11.37316701834985,
+        "qemuCpuCores": 0.6900455551448944
+      },
+      "initialHost": {
+        "seconds": 31.878248594999604,
+        "logicalCpus": 12,
+        "busyPercent": 14.512089013104124,
+        "qemuCpuCores": 0.9946079661657897
+      },
+      "settledHost": {
+        "seconds": 31.832451719998062,
+        "logicalCpus": 12,
+        "busyPercent": 12.481063122923587,
+        "qemuCpuCores": 0.8069373426195386
+      },
+      "initialContainers": [
+        {
+          "pod": "affinity-686cbddd7-tp7t9",
+          "container": "affinity",
+          "seconds": 31.85470485687256,
+          "cpuCores": 0.11210356573840807,
+          "throttledSeconds": 0.0104,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 324.26953125
+        },
+        {
+          "pod": "payments-ddfb8bcfb-b452t",
+          "container": "payments",
+          "seconds": 31.858062982559204,
+          "cpuCores": 0.02011148638731615,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 221.4140625
+        },
+        {
+          "pod": "network-55ddcf6867-hxk66",
+          "container": "network",
+          "seconds": 31.855791330337524,
+          "cpuCores": 0.01637397717077755,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 212.5
+        },
+        {
+          "pod": "identity-66d44f97bf-m4js2",
+          "container": "identity",
+          "seconds": 31.85331439971924,
+          "cpuCores": 0.081027768966571,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 378.6328125
+        },
+        {
+          "pod": "help-744c8f7d5b-b4hkp",
+          "container": "help",
+          "seconds": 31.85565996170044,
+          "cpuCores": 0.008294726912507367,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 217.03515625
+        },
+        {
+          "pod": "community-544bc45646-zz6xm",
+          "container": "community",
+          "seconds": 31.853268146514893,
+          "cpuCores": 0.08133686590910978,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 336.05078125
+        },
+        {
+          "pod": "communication-54bd7fc8b4-mzb4l",
+          "container": "communication",
+          "seconds": 31.848604679107666,
+          "cpuCores": 0.1298971192516278,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 378.8203125
+        },
+        {
+          "pod": "assets-67b764c8b4-vsnr2",
+          "container": "assets",
+          "seconds": 31.856358528137207,
+          "cpuCores": 0.010381161415794059,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 234.73828125
+        },
+        {
+          "pod": "mongodb-1",
+          "container": "mongodb",
+          "seconds": 31.855350971221924,
+          "cpuCores": 0.027091304088271876,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 302.48828125
+        },
+        {
+          "pod": "mongodb-0",
+          "container": "mongodb",
+          "seconds": 31.865729093551636,
+          "cpuCores": 0.046273380272299734,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 470.0078125
+        },
+        {
+          "pod": "registry-6f857b4b6-t8dg7",
+          "container": "registry",
+          "seconds": 31.86640191078186,
+          "cpuCores": 0.005824284791224056,
+          "throttledSeconds": 0.046121,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 25.2421875
+        },
+        {
+          "pod": "minio-6c7d8948f7-zfmtb",
+          "container": "minio",
+          "seconds": 31.860437631607056,
+          "cpuCores": 0.0011143914722871655,
+          "throttledSeconds": 0.0,
+          "cpuMax": "100000 100000",
+          "memoryMiB": 347.98828125
+        },
+        {
+          "pod": "mcp-776779bc-8sgbq",
+          "container": "mcp",
+          "seconds": 31.853840112686157,
+          "cpuCores": 0.00016707561729364156,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 10.77734375
+        },
+        {
+          "pod": "payment-simulator-6b8c96f5c5-bv55k",
+          "container": "payment-simulator",
+          "seconds": 31.85331082344055,
+          "cpuCores": 0.00011678534833065099,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 14.3046875
+        },
+        {
+          "pod": "stun-779977cbdf-rrfnb",
+          "container": "stun",
+          "seconds": 31.845093727111816,
+          "cpuCores": 0.004400709296097589,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 20.453125
+        },
+        {
+          "pod": "frontend-66bf57f9c-mkck2",
+          "container": "frontend",
+          "seconds": 31.84649419784546,
+          "cpuCores": 0.0008152231714647081,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 15.4609375
+        },
+        {
+          "pod": "release-simulator-7f5b9f8f96-jtxbq",
+          "container": "release-simulator",
+          "seconds": 31.875314235687256,
+          "cpuCores": 0.0008316467032761299,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 37.00390625
+        },
+        {
+          "pod": "redis-66d974cbf4-wprq8",
+          "container": "redis",
+          "seconds": 31.879822731018066,
+          "cpuCores": 0.004137413219417479,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 15.1953125
+        }
+      ],
+      "settledContainers": [
+        {
+          "pod": "affinity-686cbddd7-tp7t9",
+          "container": "affinity",
+          "seconds": 31.806711435317993,
+          "cpuCores": 0.059798480074492635,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 345.015625
+        },
+        {
+          "pod": "payments-ddfb8bcfb-b452t",
+          "container": "payments",
+          "seconds": 31.8062744140625,
+          "cpuCores": 0.019896388736437707,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 225.42578125
+        },
+        {
+          "pod": "network-55ddcf6867-hxk66",
+          "container": "network",
+          "seconds": 31.780242681503296,
+          "cpuCores": 0.011126567016613905,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 213.81640625
+        },
+        {
+          "pod": "identity-66d44f97bf-m4js2",
+          "container": "identity",
+          "seconds": 31.763952255249023,
+          "cpuCores": 0.0381887615952938,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 377.8515625
+        },
+        {
+          "pod": "help-744c8f7d5b-b4hkp",
+          "container": "help",
+          "seconds": 31.757104873657227,
+          "cpuCores": 0.010781492877331347,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 217.13671875
+        },
+        {
+          "pod": "community-544bc45646-zz6xm",
+          "container": "community",
+          "seconds": 31.760857105255127,
+          "cpuCores": 0.03749713038452441,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 336.31640625
+        },
+        {
+          "pod": "communication-54bd7fc8b4-mzb4l",
+          "container": "communication",
+          "seconds": 31.764004468917847,
+          "cpuCores": 0.044670847511952286,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 376.59765625
+        },
+        {
+          "pod": "assets-67b764c8b4-vsnr2",
+          "container": "assets",
+          "seconds": 31.754284143447876,
+          "cpuCores": 0.01050985745710353,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 235.33203125
+        },
+        {
+          "pod": "mongodb-1",
+          "container": "mongodb",
+          "seconds": 31.774219512939453,
+          "cpuCores": 0.023077105000215502,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 306.93359375
+        },
+        {
+          "pod": "mongodb-0",
+          "container": "mongodb",
+          "seconds": 31.771004676818848,
+          "cpuCores": 0.030741678141284198,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 472.43359375
+        },
+        {
+          "pod": "registry-6f857b4b6-t8dg7",
+          "container": "registry",
+          "seconds": 31.77729630470276,
+          "cpuCores": 0.006831292313810665,
+          "throttledSeconds": 0.014678,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 25.23828125
+        },
+        {
+          "pod": "minio-6c7d8948f7-zfmtb",
+          "container": "minio",
+          "seconds": 31.767592668533325,
+          "cpuCores": 0.0027236876556184695,
+          "throttledSeconds": 0.0,
+          "cpuMax": "100000 100000",
+          "memoryMiB": 312.76953125
+        },
+        {
+          "pod": "mcp-776779bc-8sgbq",
+          "container": "mcp",
+          "seconds": 31.776501417160034,
+          "cpuCores": 0.00012392805451746144,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 10.80859375
+        },
+        {
+          "pod": "payment-simulator-6b8c96f5c5-bv55k",
+          "container": "payment-simulator",
+          "seconds": 31.79089856147766,
+          "cpuCores": 0.00016602235982079378,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 14.3671875
+        },
+        {
+          "pod": "stun-779977cbdf-rrfnb",
+          "container": "stun",
+          "seconds": 31.80557107925415,
+          "cpuCores": 0.004924891919396193,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 20.55859375
+        },
+        {
+          "pod": "frontend-66bf57f9c-mkck2",
+          "container": "frontend",
+          "seconds": 31.80876660346985,
+          "cpuCores": 0.0009796670329430724,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 15.57421875
+        },
+        {
+          "pod": "release-simulator-7f5b9f8f96-jtxbq",
+          "container": "release-simulator",
+          "seconds": 31.798030376434326,
+          "cpuCores": 0.0007231894468860702,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 37.0078125
+        },
+        {
+          "pod": "redis-66d974cbf4-wprq8",
+          "container": "redis",
+          "seconds": 31.81733226776123,
+          "cpuCores": 0.003826185016879982,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 15.1953125
+        }
+      ]
+    },
+    "monolith": {
+      "previousContainers": {
+        "myscoutee": {
+          "cpuCores": 0.11279368211385551,
+          "memoryMiB": 1741.25390625,
+          "throttledSeconds": 0.0
+        },
+        "mongodb": {
+          "cpuCores": 0.0545108562299968,
+          "memoryMiB": 897.37890625,
+          "throttledSeconds": 0.0
+        },
+        "frontend-sync": {
+          "cpuCores": 0.05167087988130293,
+          "memoryMiB": 4130.69921875,
+          "throttledSeconds": 0.0
+        }
+      },
+      "kind": "Low-load observation, not a matched benchmark",
+      "startedAt": "2026-10-11T10:25:54.413480+00:00",
+      "seconds": 30.45250603200111,
+      "environmentRestored": true,
+      "hostBusyPercent": 8.00244179916202,
+      "containers": {
+        "myscoutee": {
+          "cpuCores": 0.12071850494461356,
+          "memoryMiB": 1884.56640625,
+          "throttledSeconds": 0.0
+        },
+        "mongodb": {
+          "cpuCores": 0.05956600084386558,
+          "memoryMiB": 887.3984375,
+          "throttledSeconds": 0.0
+        },
+        "frontend-sync": {
+          "cpuCores": 0.05681341949926576,
+          "memoryMiB": 4067.76171875,
+          "throttledSeconds": 0.0
+        }
+      },
+      "health": {
+        "myscoutee": "running healthy",
+        "mongodb": "running healthy",
+        "frontend-sync": "running healthy"
+      }
+    },
+    "interpretation": [
+      "KVM total CPU was 0.995 cores immediately after probes and 0.807 in the follow-up, versus 0.690 previously. Communication settled at 0.0447 cores versus 0.0374; identity at 0.0382 versus 0.0230. These short samples do not isolate the source change from background work or startup/JIT effects.",
+      "Monolith backend CPU was 0.1207 versus 0.1128; Mongo 0.0596 versus 0.0545. No sampled monolith or settled KVM backend throttling or container replacement. The supporting registry had 0.0147 seconds of throttling during the 31.8-second settled KVM interval.",
+      "All 51 runtime assertions passed in each deployment; per-request timings are preserved in the validation rows. No query or network round trip was added to the moved full-application paths.",
+      "Initial startup logs include owner-unavailable scheduled payment calls and notification-outbox wakeups while peer services started. No warnings/errors were present after the runtime checks in the sampled settled backend logs. No throughput or speedup claim is made."
+    ]
+  }
+}

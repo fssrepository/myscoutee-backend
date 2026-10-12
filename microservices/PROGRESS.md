@@ -1,10 +1,421 @@
 # MSC-121 — numbered delivery progress
 
-Updated: 2026-10-10. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
+Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **123**; six backend and seven supporting Deployments Ready, plus one Mongo StatefulSet **2/2 Ready**. Its original two data volumes, REAL/DEMO document counts, collection hashes and indexes were preserved. Majority-write/secondary-read and idempotent migration rerun pass. The headless VM remains **8192 MiB / 4 vCPU**, host-boot autostart disabled.
+**Last verified lab state:** Helm revision **142**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+
+## MSC-122 account operations and API settings — 2026-10-11
+
+Account logout/deletion initiation and location/region operations are independent
+of the product profile reader. The existing operations, owner reads, targeted
+writes, purge counters, audit order and post-response demo cache eviction are
+preserved. Facebook deletion uses the same account lifecycle owner. Shared status
+interpretation does not change persisted fields. API/MCP settings accept an
+optional business-summary owner; full MyScoutee still uses its existing affiliate
+calls, while administrator settings still skip them.
+
+**173 focused canonical JUnit tests**, all eight service artifacts/images and
+ownership audits passed. KVM Helm **142** and the serial monolith each passed
+**55 runtime assertions**, now including region eligibility, invalid-coordinate
+rejection and administrator API settings allow/deny. The original dev environment
+is restored and healthy; KVM is stopped. Unchanged transport suites were not
+repeated for the inherited API alias.
+
+KVM used **0.667 CPU cores** versus **0.807** previously. Monolith backend used
+**0.1465** versus **0.1207**; Mongo used **0.0587** versus **0.0596**. Both increases
+and decreases are recorded, with no sampled throttling/replacement or settled
+backend errors. These are low-load observations, not proof of load-performance
+parity. [Evidence](../guides/qualification/evidence/MSC122_ACCOUNT_OPERATIONS_20261011.json)
+contains exact source hashes, source-method comparisons and runtime timings.
+
+The shared source preparations for resuming template composition are qualified.
+The template keeps its already selected small profile DTO/mapper; the full
+product profile presentation remains in MyScoutee. Standalone template startup,
+minimal seed, frontend and deployment remain the next implementation work.
+
+## MSC-122 generic chat and product conversations — 2026-10-11
+
+Product conversation creation now lives separately from generic chat storage and
+messaging. Existing event/case contracts and the service-chat HTTP route remain
+unchanged. Case participant checks, resource member pagination and the WebSocket
+case audience are installed providers; full MyScoutee keeps the same predicates,
+queries, batching and error propagation. Personal chat starts without those
+providers and stored channels are not hidden. Support workspace metadata uses
+the existing single native/remote group lookup.
+
+**406 focused canonical JUnit tests**, **15 HTTP transport tests** and all eight
+service artifacts/images and ownership audits passed. KVM Helm **141** and the
+serial monolith each passed **51 runtime assertions**. The original dev
+configuration is restored and healthy; KVM is stopped.
+
+KVM CPU was **0.995 cores** just after probes and **0.807** in the follow-up,
+versus **0.690** previously. Communication settled at **0.0447** versus **0.0374**;
+monolith backend CPU was **0.1207** versus **0.1128**. These low-load observations
+include increases and do not prove performance parity. Settled backend logs have
+no new errors and no backend CPU throttling; the supporting registry had 0.0147
+seconds of throttling. Initial owner-unavailable startup messages are recorded.
+[Evidence](../guides/qualification/evidence/MSC122_CHAT_BOUNDARIES_20261011.json)
+contains source hashes, checks, timings and resource samples.
+
+Personal profile/API product dependencies and actual minimal composition remain
+open. Template work remains paused.
+
+## MSC-122 profile status and personal API boundaries — 2026-10-11
+
+Profile status propagation now uses the account-owned `ProfileStatusObserver`;
+the installed native/remote affinity owner still receives exactly its existing
+status signal. Durable markers, scoped support messages and retry order remain
+unchanged. MCP workspace selection/name reads and product API operation discovery
+are separate from personal authorization. Four existing integration chat and
+notification read routes now have their own controller, with the same URLs,
+permission checks, pagination bounds and read-only message calls. No model or
+Mongo query changed.
+
+Validation: **194 focused JUnit tests**, **11 HTTP transport tests**, all eight
+service artifacts/images and ownership audits pass. KVM Helm **140** and the
+serial monolith each pass **51 runtime assertions**, including MCP settings and
+metadata. The normal dev environment was restored; KVM is stopped. The general
+API settings GET is excluded from this read-only probe because its existing
+affiliate summary may create a link.
+
+Settled KVM CPU measured **0.690 cores** (previous **0.708**; initial post-check
+sample **0.830**). Monolith backend CPU measured **0.113 cores** (previous
+**0.103**). No sampled throttling, replacement or settled log errors. These short
+low-load samples do not establish throughput/latency parity. Exact source
+hashes, checks and both directions of CPU change are recorded in
+[the evidence](../guides/qualification/evidence/MSC122_PROFILE_STATUS_API_BOUNDARIES_20261011.json).
+
+Chat resource/access dependencies, remaining profile/API product dependencies
+and actual community-free composition are still open. Template work remains
+paused until those source boundaries are ready.
+
+## MSC-122 account read and support counter batch — 2026-10-11
+
+Support inbox counters now live in the existing account chat-counter service,
+independent of event/feed counters. The selected-profile menu counter read and
+shared DTO mapping are separate from profile discovery. The existing community
+calculation and cache invalidation remain installed in MyScoutee. Notification
+workspace names use the same native/remote group lookup through a narrow optional
+contract. Stored models, query predicates, HTTP routes and authorization are
+unchanged; no extra owner lookup or network hop was added.
+
+**298 distinct focused canonical JUnit tests**, **25 transport tests** and all
+**eight assembly/image audits** passed. KVM Helm **139** and the serial monolith
+each passed **49 native checks**, including chat header counters and rejection of
+a caller-selected different profile. Component Spring tests also prove support
+counters, menu reads and notification delivery without product-owner beans.
+
+QEMU CPU was **0.815 cores** initially and **0.708** in a second settled sample,
+versus 0.665 previously. Identity used 0.0156 cores (previously 0.0158), communication
+0.0305 (0.0292). Monolith used **0.103 backend**, **0.052 MongoDB** and **0.066
+frontend-watcher cores** (previously 0.167, 0.058, 0.063). These short observations
+include increases and decreases; they do not prove load-performance parity.
+Settled logs contain no new errors; all backends stayed ready without restarts.
+
+[Evidence](../guides/qualification/evidence/MSC122_ACCOUNT_READ_BOUNDARIES_20261011.json)
+records the frozen source hashes, staged tests, route timings and both CPU samples.
+The original dev environment is restored, Mongo remains healthy and KVM is off.
+Core chat/profile/API dependency closure and community-free composition remain
+open. Template implementation stays paused until that source gate is complete.
+
+## MSC-122 core dependency batch — 2026-10-11
+
+Notification storage now receives the existing community counter as an optional
+observer. Account purge accepts installed product cleanup operations while
+preserving its stage order, durable state and retry behavior. Chat activity
+presentation is separate from chat-list storage/access, retaining the same
+batched reads. Shared job scope resolution uses the existing owners through
+generic target/workspace contracts. No persisted model, query predicate,
+chat-membership rule or HTTP path changed.
+
+**150 canonical JUnit tests**, **22 transport tests** and all **eight assembly/image
+audits** passed. KVM Helm **138** and the serial monolith each passed **47 native
+session, profile-selection, chat and administrator checks**. Existing source hashes
+were frozen through qualification. No new stress run was needed for this block.
+
+The KVM low-load sample used **0.665 QEMU cores** (previously 0.679/0.685).
+Monolith used **0.167 backend**, **0.058 MongoDB** and **0.063 frontend-watcher cores**;
+the prior profile-selection samples were 0.137, 0.056 and 0.049 respectively.
+These observations include small increases and do not prove load-performance
+parity. All backends stayed ready without restarts; settled logs contain no new
+errors. The dev Mongo startup fault caused by retained root credentials is fixed
+using the existing credential in a separate ignored local override, without
+changing database users or data. The earlier 0.296 Mongo sample was affected by
+that startup failure and is not a valid settled comparison.
+
+[Batch evidence](../guides/qualification/evidence/MSC122_CORE_BOUNDARIES_20261011.json)
+records source hashes, timings, CPU and limits. Community omission and remaining
+core chat/profile/API dependencies are still open. Template work stays paused.
+
+## MSC-122 shared scheduling values — 2026-10-11
+
+The existing shared parameter reader now consumes `platform.SchedulingParameters`.
+MyScoutee's native and remote `affinity.ConfigurationCatalog` both implement that
+contract. Value selection, limits, defaults, persisted configuration, HTTP routes
+and query count are unchanged; there is no added adapter or network hop.
+
+**72 focused canonical JUnit tests**, **11 transport tests**, **68 infrastructure
+tests** and all eight assembly/image audits passed. KVM Helm **137** and the
+monolith each passed **32 native session/admin assertions**. KVM was stopped before
+monolith startup, and the original dev environment was restored and verified.
+
+The settled KVM sample used **0.679 QEMU CPU cores**, following an initial
+**0.959-core** sample. Monolith used **0.106 backend**, **0.296 MongoDB** and
+**0.055 frontend-watcher cores**. The earlier profile-selection checkpoint's MongoDB
+sample was 0.056 cores: this sample is higher. These low-load observations are not
+matched benchmarks and do not establish general performance parity or speedup.
+Recent backend logs contained no errors. Initial KVM notification-owner startup
+errors and an interrupted, discarded measurement attempt are recorded in
+[the evidence](../guides/qualification/evidence/MSC122_SCHEDULING_PARAMETERS_20261011.json).
+
+**Still open:** community omission from composition, remaining chat and account
+cleanup dependencies. Template implementation is paused at its tested component
+commits until those MyScoutee boundaries are complete. This checkpoint is not
+completion of the originally estimated 3–5-hour MyScoutee cleanup.
+
+## MSC-122 account selection and administrator profile view — 2026-10-11
+
+`SelectedProfileService` now owns the existing native/Firebase/delegated profile
+selection using only `UsersRepository`. `HomeUserProfileService` delegates to it;
+its other profile/product behavior is unchanged. Signed account/workspace checks,
+authenticated-user precedence and the repository lookup are preserved. There is
+no new query, transport route or chat/membership filter.
+
+The redundant three-getter `AdministratorCandidate` interface is removed.
+`ProfileSummary` no longer depends on administration; administrator classification
+reads the existing `ProfileSummary` instead. The actual administrator predicates
+and persisted member model are unchanged.
+
+Verification was staged: **299 existing canonical tests**, **eight selection
+tests**, **232 transport tests** and all eight assemblies first passed. After the
+final interface correction, **17 focused canonical tests**, **seven actor
+delegation transport tests**, **nine media-policy transport tests** and all eight
+final assemblies/images passed. KVM Helm **136** and the monolith each passed
+**40 native session, profile-selection and admin-access checks**. Both positive
+admin reads and member/missing-profile rejection were verified. No browser was
+operated. The monolith's original dev environment was restored and verified after
+temporarily disabling its development admin-gate bypass.
+
+The 32-second KVM low-load sample used **0.685 QEMU CPU cores**; identity used
+0.029, community 0.026 and communication 0.058 cores. All 18 pods were Ready;
+the eight new backend pods had zero restarts, while retained supporting pods had
+historical restart counters. Affected-service recent logs contained no errors. After KVM was
+stopped, a 30-second monolith observation used **0.137 backend CPU cores**, Mongo
+0.056 and the settled frontend watcher 0.049. Recent backend logs contained no
+errors. These are observations, not matched before/after load results; individual
+functional request timings include warming and cannot establish a speedup.
+
+[Retained evidence](../guides/qualification/evidence/MSC122_PROFILE_SELECTION_20261011.json)
+contains final source hashes, image identities, route results/timings and CPU
+samples. The template now has selected account/session/consent foundations and
+its own Gradle build; its initial **26 tests** pass. It remains unfinished and is
+not yet a runnable or install-qualified template.
+
+## MSC-122 campaign organizer contact — 2026-10-11
+
+`CampaignCatalogService` now owns the existing campaign availability and positive
+rating checks used before contacting a campaign organizer. `ChatService` consumes
+that result through the existing `CampaignCatalog` API and retains chat creation.
+The campaign/workspace/status/owner rules and public 404/403 responses are preserved.
+No persisted model, query predicate, index, chat-list filter or personal-chat rule
+changed. For an eligible profile the same profile read, campaign read and rating
+existence query remain; the rating read is now requested by campaigns.
+
+The existing typed catalog transport gained one bounded read operation. Service
+credentials, REAL/DEMO routing and fail-closed transport handling are reused.
+Communication no longer imports `RatingDirectoryClientConfiguration` or receives
+its credential; the live KVM Secret confirms removal. This is one dependency
+removed, not a claim that community/events can already be omitted from the template.
+
+Validation: **76 focused canonical JUnit tests** pass. The **232-test** transport
+run passed 228 existing tests and three of four new tests; a malformed test request
+was corrected, then all four new tests passed on the focused rerun. **17 actual
+HTTP responses** validate against the updated OpenAPI contract. All **eight** JAR
+ownership audits pass. Helm **134** starts all backends without restarts. KVM and
+monolith each pass **seven** native session/chat-list/campaign rejection checks.
+Four additional KVM owner reads cover a positive rating, no rating, wrong workspace
+and REAL/DEMO isolation. These runtime probes do not create chat messages; positive
+chat construction remains covered by the focused ChatService unit test.
+
+Response timings and short CPU observations are recorded in
+[the evidence](../guides/qualification/evidence/MSC122_CAMPAIGN_CHAT_20261011.json).
+They are not a matched before/after benchmark; no speed or CPU parity claim follows.
+No new stress run was needed for this batch. Two startup-only EventScheduler calls
+ran before the notification owner was available; the later 60-second log sample
+contains no errors in community, communication or affinity.
+
+Restarting dev exposed a frontend startup race: Angular logged completion before
+its output directory existed, and initial nginx synchronization exited. The
+existing wait now also requires the generated `index.html`. Only the stopped
+frontend watcher was restarted. Its normal build/sync completes, both dev health
+checks pass, and the landing HTML and current JavaScript bundle return HTTP 200.
+
+## MSC-122 administrator identity — 2026-10-10
+
+The existing administrator/profile resolution now belongs to `administration`
+(`AdministrativeActorService` and its `AdministrativeActors` API). Its checks,
+profile queries and DTOs are preserved. Content moderation delegates to that
+owner. Help uses the same narrow API as notifications, affinity and payment
+administration. Moderation and its telemetry helpers remain in content.
+
+The existing typed HTTP adapter now routes to identity. Its wire paths, signed
+actor requirement and rejection mapping are unchanged. The profile-summary
+caller allowlist includes the new administration owner. No optional-domain
+framework, chat filtering or template copy is part of this step; community
+cannot yet be omitted from the full application.
+
+Verification:
+
+- **37 focused canonical JUnit tests**, **228 transport/bootstrap tests** and
+  **15 workload-credential tests** pass. The focused tests cover standalone
+  administrator resolution, stored profile data, existing query counts, wrong
+  account/workspace selection, member-profile rejection and DEMO/REAL separation.
+- All **eight JARs/images** pass the assembly audit. KVM revision **130** runs
+  those images from `deploy/images.lock.json`; all eight backends became Ready.
+- `python3 microservices/tools/check-admin-identity.py` passes **23 checks**:
+  seven administrator reads (moderation dashboard, help, privacy, terms, guide,
+  notifications and parameters), rejection of a missing admin profile and of
+  a member actor on those routes, and cleanup of both test sessions.
+- The existing native session check passes login, seven domain reads and logout.
+  A bounded KVM read sample completes **1,199 requests / 30.06 seconds**, four
+  clients, **zero errors**; guest available memory remains about 3.8 GiB. This
+  sample is not a before/after database-performance comparison.
+- After stopping KVM, the same **23 administrator checks** and **nine native
+  session checks** pass on the monolith. Its existing dev `MEMBER_USER` fallback
+  deliberately bypasses the admin route gate, so the member-rejection test was
+  run with that fallback temporarily disabled through a Compose override. Only
+  the existing backend container was stopped/recreated for this check. The
+  original environment was then restored and its equality and health verified.
+
+Reports: `build/reports/{kvm,monolith}-admin-identity.json`,
+`build/reports/{session-smoke,monolith-session-smoke,read-load}.json`.
+The new check's `--origin http://localhost` option requires the monolith's admin
+role gate to be enabled. No browser window or checklist automation was used.
+This verifies administrator identity reads and rejection behavior; it does not
+qualify community-free deployment, every moderation mutation or Firebase login.
+
+### Administrator identity performance and focused validation
+
+The exact parent `fad15dced` was rebuilt from a clean detached checkout for the
+baseline. The initial candidate is `d6413a84b`; the final candidate adds only
+removal of the dashboard's redundant profile lookup before asking the existing
+counter owner whether support counters exist. That owner already reads the
+profile and handles its absence. This saves one database read and one HTTP call
+for a stored administrator in the split deployment, without changing the
+counter initialization or authorization rules.
+
+Each variant ran three serial KVM rounds against the same retained DEMO data:
+four clients, seven validated admin GET routes, 30 seconds warmup, 10 seconds
+quiet, then 30 seconds measured load. The dev stack was stopped throughout.
+All **4,551 baseline**, **4,962 initial-candidate** and **5,198 final-candidate**
+requests succeeded; containers were stable and test sessions were revoked.
+
+Medians across the three rounds:
+
+| Measurement | Baseline | Final candidate | Change |
+| --- | ---: | ---: | ---: |
+| Requests/second | 53.94 | 57.28 | +6.2% |
+| Overall p95 response time | 114.62 ms | 109.31 ms | -4.6% |
+| Dashboard p95 response time | 95.16 ms | 104.01 ms | +9.3% |
+| QEMU CPU under load | 3.126 cores | 3.135 cores | +0.3% |
+| QEMU CPU time/request | 61.13 ms | 57.56 ms | -5.8% |
+| QEMU CPU during the short quiet interval | 0.852 cores | 0.749 cores | -12.1% |
+
+The initial candidate's dashboard median was **109.00 ms**; it remains in the
+evidence. Dashboard p95 by matched round was **148.17 / 95.16 / 78.11 ms** before
+and **135.61 / 104.01 / 75.45 ms** after the final change. JVM warming is still
+visible, so these results establish neither a universal speedup nor performance
+parity. The quiet samples are post-warmup intervals, not settled idle. CPU
+snapshots include the same inspection overhead in all variants; these are HTTP
+timings, not isolated Mongo query benchmarks.
+
+The final change passes **26 focused canonical JUnit tests**, including stored
+and absent administrator profiles, and **three CPU-evidence unit tests**. All
+eight assemblies pass packaging/ownership checks; the unchanged transport test
+task retains its **228 passing tests** and was up-to-date in this build. KVM
+revision **133** and the monolith each pass **23 admin checks and nine native
+session checks**. The monolith's existing dev fallback was temporarily disabled
+for role rejection checks, then its original environment was restored and
+verified. No browser automation was needed.
+
+The [retained evidence](../guides/qualification/evidence/MSC122_ADMIN_IDENTITY_PERFORMANCE_20261010.json)
+contains source identities, the exact final source patch, immutable image IDs,
+harness hashes, all rounds, route timings and per-container/host CPU results.
+Raw reports are under `build/reports/admin-performance/`.
+
+Per the user's validation cadence: use focused JUnit tests for small steps and
+verify completed backend batches on both KVM and monolith, one stack at a time.
+Reserve repeated load/stress measurements for a coherent batch or a concrete
+performance concern. Continue checking speed and CPU impact without rerunning
+the whole stress campaign after every edit.
+
+## MSC-122 qualification — 2026-10-10
+
+Generic bootstrap/configuration/TLS/update source is owned by platform. `help`
+and the MyScoutee-specific `network` (operator/Registry) are separate assemblies;
+content remains in community. No help/content regrouping or rename was made.
+The template will retain its required models unchanged, including i18n and
+geographic location, and omit product screens where appropriate. Template
+application extraction has not started.
+
+Eight JARs/images and all 21 domain owners pass the retained packaging audit.
+The final source regression passes **228 transport tests** and **359 canonical
+backend tests** (340 standard, 10 embedded update HTTP/download tests, 9 signed
+release-discovery integration tests), with zero failures/errors/skips. Logs:
+`/tmp/msc122-final-transports.log`, `/tmp/msc122-final-backend-junit.log`,
+`/tmp/msc122-final-release-embedded.log`, `/tmp/msc122-final-release-junit.log`.
+Infrastructure safety checks pass **65 tests**. These supersede the earlier
+271-test, seven-service checkpoint.
+
+KVM evidence:
+
+- Revision 125: native session/read/logout, published help/privacy/terms/guide,
+  consent save → logout → fresh login/version check; owned fixture cleaned up.
+  Integration report READ denial (403) and native unenrolled network response
+  (409) pass; the owned token/fixture was revoked and removed.
+- Warm read load: **4,498 requests, zero errors, 74.9 requests/s**, 60.05 seconds;
+  both selected assets served; no application restart; temporary scaling restored.
+  The cold 47.4 requests/s result recovered after JVM warm-up. Post-load QEMU
+  averaged 0.639 core (5.32% of 12 host CPUs), total host CPU 12.45%, over 40 seconds.
+- Revisions 127/129: fixed missing platform configuration master key, retained in
+  existing private workload state. Before provisioning, persisted REAL/DEMO
+  configuration had no ciphertext; no prior encryption key/data was overwritten.
+- Revision 129: added the canonical Compose release simulator to the lab. First
+  bootstrap starts support workloads before Java and transfers only the public
+  TLS CA to the platform owner. The simulator's private TLS volume is not shared.
+  The local empty catalog is explicit; discovery never falls back to GitHub.
+- **15 managed headless browser checks pass**: member/operator native login,
+  profile/image-editor entry, help/privacy/terms documents, guide completion,
+  persisted chat messages, events, Work/Dating switches, editable operator
+  configuration and logout. No configuration was saved. The release-discovery
+  request returns **HTTP 200**, with no special 412 exception in the harness.
+  Report: `build/reports/browser/kvm/qualification.json`.
+
+The browser discovered a separate public release defect: 1.3.0's DEB had been
+uploaded without the separately signed update catalog. On 2026-10-10, the missing
+asset was added using the retained key and unchanged, verified package. The
+canonical Java verifier passes against GitHub; old versions and same-version
+reinstallation are rejected before any job/download. The exact 1.3.0–1.3.0 range
+advertises no unqualified forward upgrade. Existing release assets/tags are
+unchanged. See the [repair evidence](../guides/qualification/evidence/RELEASE_1.3.0_CATALOG_REPAIR_20261010.json).
+
+The serial monolith gate also passes: native DEMO login, seven domain reads and
+logout; the same **15 browser checks**, including HTTP 200 release discovery.
+The existing backend/frontend owner processes compiled and became healthy; no
+parallel build/server was introduced. Reports: `build/reports/monolith-session-smoke.json`
+and `build/reports/browser/monolith/qualification.json`. KVM/dev were never run
+together. The existing observer terminal remains available; no new visible
+browser or question window was opened.
+
+Limits: no full image edit, Firebase provider login, registered-network/Registry
+persistence, durable global-identity purge, package installation/interruption/
+rollback or new-template installation is claimed. Existing wire evidence covers
+24 public-help, 12 eligibility, 11 privacy and 49 report responses; whole-inventory
+wire validation still lacks the pre-existing affinity recompute response sample.
+Full extraction decisions and next steps are in the [template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
 
 ## Administrative closeout — 2026-10-10
 

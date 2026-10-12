@@ -1,0 +1,337 @@
+{
+  "sourceRevision": "3829e886d",
+  "scope": "Use the stored event inviter for the existing internal EventScheduler invitation call. Retain canInviteEventMembers and existing persistence/capacity logic. Public inviteEventMembers still resolves the authenticated selected profile. No change to RemoteSelectedProfile authentication. No template event/community code selected.",
+  "observedDefect": "Native KVM community log at 2026-10-12T00:18:13.109Z: scheduled EventScheduler -> ActivitiesMembersService.inviteUsers -> RemoteSelectedProfile requires an authenticated request profile, which background workers do not have.",
+  "verification": {
+    "focusedJUnit": {
+      "tests": 116,
+      "failures": 0,
+      "suites": [
+        "ActivitiesMembersServiceTest",
+        "EventSchedulerTest"
+      ],
+      "includes": [
+        "scheduled persistence without selected-profile lookup",
+        "policy denial and capacity limits",
+        "public request cannot substitute its actor ID for the authenticated profile"
+      ]
+    },
+    "kvm": {
+      "checks": [
+        {
+          "check": "check-session",
+          "exitCode": 0,
+          "elapsedSeconds": 5.617
+        },
+        {
+          "check": "check-admin-identity",
+          "exitCode": 0,
+          "elapsedSeconds": 4.372
+        },
+        {
+          "check": "missing-event invitation with another actor ID denied",
+          "status": 403,
+          "exitCode": 0,
+          "elapsedSeconds": 0.289
+        },
+        {
+          "check": "own session revoked",
+          "exitCode": 0
+        }
+      ],
+      "runtime": {
+        "sourceRevision": "3829e886d",
+        "pods": [
+          {
+            "name": "affinity-d8c48c64c-hwkll",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "assets-8c64c4557-kzjrp",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "communication-5d6958f48-zv47z",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "community-bdbb8cbd8-bfgt7",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "frontend-6f4ff8db5c-ks9t9",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "help-cd78b68fd-pr6dr",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "identity-7474bd4f8f-ctsnz",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "mcp-776779bc-sg4sb",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "minio-6c7d8948f7-zw9kg",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "mongodb-0",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "mongodb-1",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "network-55c5854b8-zn7tx",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "payment-simulator-6b8c96f5c5-vc24x",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "payments-dc469bb84-pgrs7",
+            "ready": true,
+            "restarts": 0
+          },
+          {
+            "name": "redis-66d974cbf4-h8zqk",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "registry-6f857b4b6-lhnnq",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "release-simulator-7f5b9f8f96-7vvzg",
+            "ready": true,
+            "restarts": 2
+          },
+          {
+            "name": "stun-779977cbdf-kjmxm",
+            "ready": true,
+            "restarts": 2
+          }
+        ],
+        "qemuSampleSeconds": 15.015,
+        "qemuCpuCores": 0.9264,
+        "recentLogErrors": {
+          "identity": [],
+          "community": [],
+          "communication": [],
+          "assets": [],
+          "payments": [],
+          "affinity": [],
+          "help": [],
+          "network": []
+        }
+      }
+    },
+    "monolith": {
+      "checks": [
+        {
+          "check": "check-session",
+          "exitCode": 0,
+          "elapsedSeconds": 1.528
+        },
+        {
+          "check": "check-admin-identity",
+          "exitCode": 0,
+          "elapsedSeconds": 1.041
+        },
+        {
+          "check": "missing-event invitation with another actor ID denied",
+          "status": 403,
+          "exitCode": 0,
+          "elapsedSeconds": 0.045
+        },
+        {
+          "check": "own session revoked",
+          "exitCode": 0
+        }
+      ],
+      "runtime": {
+        "resources": [
+          {
+            "BlockIO": "73.3MB / 0B",
+            "CPUPerc": "11.75%",
+            "Container": "msc122-monolith-profilemanagement",
+            "ID": "ab152fbe72db",
+            "MemPerc": "4.82%",
+            "MemUsage": "753.3MiB / 15.27GiB",
+            "Name": "msc122-monolith-profilemanagement",
+            "NetIO": "54.6MB / 2.43MB",
+            "PIDs": "83"
+          },
+          {
+            "BlockIO": "13MB / 4.1kB",
+            "CPUPerc": "2.42%",
+            "Container": "msc122-monolith-nginx",
+            "ID": "6ae259e037b6",
+            "MemPerc": "0.29%",
+            "MemUsage": "44.82MiB / 15.27GiB",
+            "Name": "msc122-monolith-nginx",
+            "NetIO": "1.58MB / 1.66MB",
+            "PIDs": "18"
+          },
+          {
+            "BlockIO": "234MB / 77.8MB",
+            "CPUPerc": "0.07%",
+            "Container": "msc122-monolith-minio",
+            "ID": "813de8b77e23",
+            "MemPerc": "1.98%",
+            "MemUsage": "309.8MiB / 15.27GiB",
+            "Name": "msc122-monolith-minio",
+            "NetIO": "10.1kB / 3.02kB",
+            "PIDs": "18"
+          },
+          {
+            "BlockIO": "233MB / 1.19MB",
+            "CPUPerc": "41.16%",
+            "Container": "msc122-monolith-mongodb",
+            "ID": "476a5e6622d2",
+            "MemPerc": "2.29%",
+            "MemUsage": "358.1MiB / 15.27GiB",
+            "Name": "msc122-monolith-mongodb",
+            "NetIO": "897kB / 53.6MB",
+            "PIDs": "91"
+          },
+          {
+            "BlockIO": "16.1MB / 0B",
+            "CPUPerc": "0.07%",
+            "Container": "msc122-monolith-stun",
+            "ID": "9335bd737d34",
+            "MemPerc": "30.86%",
+            "MemUsage": "19.75MiB / 64MiB",
+            "Name": "msc122-monolith-stun",
+            "NetIO": "5.65kB / 960B",
+            "PIDs": "10"
+          },
+          {
+            "BlockIO": "12.6MB / 0B",
+            "CPUPerc": "3.83%",
+            "Container": "msc122-monolith-payment-simulator",
+            "ID": "f2ceb484d04d",
+            "MemPerc": "0.10%",
+            "MemUsage": "15.01MiB / 15.27GiB",
+            "Name": "msc122-monolith-payment-simulator",
+            "NetIO": "5.83kB / 1.41kB",
+            "PIDs": "8"
+          },
+          {
+            "BlockIO": "8.78MB / 0B",
+            "CPUPerc": "0.00%",
+            "Container": "msc122-monolith-mcp",
+            "ID": "589f173711b7",
+            "MemPerc": "8.58%",
+            "MemUsage": "10.98MiB / 128MiB",
+            "Name": "msc122-monolith-mcp",
+            "NetIO": "4.88kB / 126B",
+            "PIDs": "7"
+          },
+          {
+            "BlockIO": "27.5MB / 0B",
+            "CPUPerc": "0.36%",
+            "Container": "msc122-monolith-redis",
+            "ID": "21f6d01574a7",
+            "MemPerc": "0.20%",
+            "MemUsage": "31.09MiB / 15.27GiB",
+            "Name": "msc122-monolith-redis",
+            "NetIO": "13kB / 23.5kB",
+            "PIDs": "6"
+          },
+          {
+            "BlockIO": "15.1MB / 32.8kB",
+            "CPUPerc": "0.00%",
+            "Container": "msc122-monolith-registry",
+            "ID": "0d36a99c879c",
+            "MemPerc": "0.16%",
+            "MemUsage": "25.53MiB / 15.27GiB",
+            "Name": "msc122-monolith-registry",
+            "NetIO": "4.66kB / 126B",
+            "PIDs": "16"
+          }
+        ],
+        "recentLogErrors": [],
+        "containers": [
+          {
+            "name": "/msc122-monolith-profilemanagement",
+            "restarts": 0,
+            "imageId": "sha256:9a0ef2a7beb70e9ab3d5aad1a16ecf106923cdb8ecfe329c723fddd845054206",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-nginx",
+            "restarts": 0,
+            "imageId": "sha256:053856afbf6043ffba5122fea4e0b7458e06ca8acc6f033159e2d78f36ebf5cb",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-minio",
+            "restarts": 0,
+            "imageId": "sha256:297d792fd9f259f83ef14b89a7f66ab4037863ecf094e205699db64ebdf57550",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-mongodb",
+            "restarts": 0,
+            "imageId": "sha256:cfcadae33267dd3ec9af978dac7d5ed153c6c2c776c1cafc474996640ebb76c8",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-stun",
+            "restarts": 0,
+            "imageId": "sha256:e3edb90547874dadcea80c7bd47bb4160f37caf2e606500583405dc2939b19da",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-payment-simulator",
+            "restarts": 0,
+            "imageId": "sha256:9fbcbd44e96fcbe0528bd267ea536e26c80d90293b4cd63257adeb6c9dadf90f",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-mcp",
+            "restarts": 0,
+            "imageId": "sha256:c8c57e960df2d6283c6b817d0b2dd512bb2e7018b9e5298e094944fa4e640b45",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-redis",
+            "restarts": 0,
+            "imageId": "sha256:47ee395bd02d37907b34c2d503d6a5e8de1d2704cbe9b4db54c75d9757410311",
+            "health": "healthy"
+          },
+          {
+            "name": "/msc122-monolith-registry",
+            "restarts": 0,
+            "imageId": "sha256:9b3e000ba532915b0eb4f194929588a73ec1f028faa2ac2f5565d831c439e8e0",
+            "health": "healthy"
+          }
+        ]
+      }
+    }
+  },
+  "performanceBoundary": "The scheduler removes one account-selection lookup per invitation batch; access policy and persistence queries are unchanged. CPU and request timings are bounded runtime observations, not a matched throughput/latency comparison.",
+  "coverageBoundary": "Focused tests cover the positive scheduler persistence path. Runtime checks cover login, owner reads, administrator authorization and request-side invitation rejection. The complete timer-driven invitation/notification lifecycle has not been replayed in this qualification; retain the existing JOB-AUTO acceptance flow."
+}

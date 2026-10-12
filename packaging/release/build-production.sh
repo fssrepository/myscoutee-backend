@@ -12,20 +12,19 @@ read_version() {
 }
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
-VERSION="${VERSION:-1.3.0}"
+VERSION="${VERSION:-1.4.0}"
 if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]]; then
   echo "MYSCOUTEE_VERSION must be a SemVer core or QA prerelease such as 1.0.0-qa.1." >&2
   exit 1
 fi
 
 export MYSCOUTEE_VERSION="${VERSION}"
-export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
-export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
-export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
-export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
-export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
-export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
-export MCP_IMAGE="${MCP_IMAGE:-myscoutee-mcp:${VERSION}-prod}"
+source "${REPO_ROOT}/packaging/scripts/release-project.sh"
+release_project_load "${REPO_ROOT}/packaging/scripts" "$(id -u)" || {
+  echo 'Invalid release project policy.' >&2; exit 1;
+}
+release_project_export_images "${VERSION}" false
+export MYSCOUTEE_API_UID="$RELEASE_PROJECT_UID" MYSCOUTEE_API_GID="$RELEASE_PROJECT_GID"
 
 BUILD_FRONTEND="${BUILD_FRONTEND:-true}"
 BUILD_BACKEND="${BUILD_BACKEND:-true}"
@@ -51,4 +50,4 @@ if [[ "${BUILD_IMAGES}" == "true" ]]; then
   (cd "${SERVER_DIR}" && docker compose -f docker-compose-prod.yml build)
 fi
 
-echo "Built MyScoutee production artifacts for version ${VERSION}."
+echo "Built ${RELEASE_PROJECT_NAME} production artifacts for version ${VERSION}."

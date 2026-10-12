@@ -3,7 +3,7 @@
 set -euo pipefail
 umask 077
 shell_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-state_root="${XDG_STATE_HOME:-${HOME}/.local/state}/myscoutee-microservices/msc121"
+state_root="$(python3 "${shell_root}/tools/runtime_config.py" state)"
 for directory in "${state_root}" "${state_root}/tools" "${state_root}/terraform" "${state_root}/tmp"; do
   [[ ! -L "${directory}" ]] || { echo 'Refusing symlinked lab state.' >&2; exit 2; }
 done

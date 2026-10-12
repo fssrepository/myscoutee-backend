@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.microservices.transport.payments;
 
 import java.util.List;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentProviderDto;
 
 public final class PaymentProvidersProtocol {
     public static final String CATALOG = "/_internal/v1/payments/providers";

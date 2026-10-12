@@ -3,7 +3,7 @@
   "info": {
     "title": "Authenticated administrator and base-workspace resolution",
     "version": "1.0.0",
-    "description": "Content-owned administrator and base-workspace reads. Require service capability and identity-issued A authority. The native owner still verifies admin email and base-profile membership. No moderation writes are exposed."
+    "description": "Administration-owned administrator and base-workspace reads. Require service capability and identity-issued A authority. The native owner still verifies admin email and base-profile membership. No moderation writes are exposed."
   },
   "paths": {
     "/_internal/v1/content/administrative-actors/actor": {

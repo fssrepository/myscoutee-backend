@@ -4,7 +4,7 @@ import com.raxim.myscoutee.domain.groups.dto.GroupPolicy;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
@@ -33,7 +33,7 @@ class CommunityGroupInviteClaimTest {
             "friends", "invitation", true, new GroupPolicy(true, false, List.of()),
             "now", "now", 0L, "accepted", 0L);
     private final CommunityGroupsService service = new CommunityGroupsService(groups, new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
-            mock(HomeUserProfileService.class), mock(HomeUserProfileService.class), profiles, mock(ContentModerationService.class),
+            mock(SelectedProfile.class), mock(com.raxim.myscoutee.domain.accounts.api.ProfileCards.class), profiles, mock(ContentModerationService.class),
             mock(com.raxim.myscoutee.domain.content.api.CommunityReports.class), mock(AdminTelemetryService.class), mock(com.raxim.myscoutee.domain.groups.api.GroupCounters.class),
             mock(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.class));
 

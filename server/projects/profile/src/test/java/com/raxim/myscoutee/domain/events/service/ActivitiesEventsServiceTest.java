@@ -1,13 +1,13 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.CurrentProfile;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.campaigns.service.CampaignsService;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.email.service.ScheduledMessageTaskService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
@@ -116,7 +116,7 @@ class ActivitiesEventsServiceTest {
     @Mock
     private UserAffinityEdgesRepository userAffinityEdgesRepository;
     @Mock
-    private HomeUserProfileService homeUserProfileService;
+    private CurrentProfile homeUserProfileService;
     @Mock
     private ActivitiesMembersService activitiesMembersService;
     @Mock
@@ -148,7 +148,7 @@ class ActivitiesEventsServiceTest {
     @Mock
     private EventScheduler eventScheduler;
     @Mock
-    private ChatService chatService;
+    private EventConversations chatService;
     @Mock
     private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     @Mock
@@ -536,7 +536,7 @@ class ActivitiesEventsServiceTest {
         when(activitiesMembersService.buildBatchOwnerSnapshots("event", Set.of("event-1")))
                 .thenReturn(Map.of("event-1", membersSnapshot));
         when(chatService.ensurePublishedMainEventChat(any(ActivityEvent.class), eq(List.of("host"))))
-                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
+                .thenReturn(new EventConversations.PublishedMainEventChatResult("event-1", Set.of("host")));
         var lifecycleChats = (com.raxim.myscoutee.domain.chat.api.ChatDirectory)
                 org.springframework.test.util.ReflectionTestUtils.getField(service, "lifecycleChats");
         org.mockito.Mockito.doReturn(java.util.Optional.empty()).when(lifecycleChats)
@@ -623,7 +623,7 @@ class ActivitiesEventsServiceTest {
         when(activitiesMembersService.buildBatchOwnerSnapshots("event", Set.of("event-1")))
                 .thenReturn(Map.of("event-1", membersSnapshot));
         when(chatService.ensurePublishedMainEventChat(any(ActivityEvent.class), eq(List.of("host"))))
-                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of()));
+                .thenReturn(new EventConversations.PublishedMainEventChatResult("event-1", Set.of()));
 
         EventParticipationActionResultDto result = service.publish(new EventActionRequestDto(
                 "host",
@@ -690,7 +690,7 @@ class ActivitiesEventsServiceTest {
         when(chatService.ensurePublishedMainEventChat(
                 any(ActivityEvent.class),
                 eq(List.of("host", "accepted-member"))))
-                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
+                .thenReturn(new EventConversations.PublishedMainEventChatResult("event-1", Set.of("host")));
         var lifecycleChats = (com.raxim.myscoutee.domain.chat.api.ChatDirectory)
                 org.springframework.test.util.ReflectionTestUtils.getField(service, "lifecycleChats");
         org.mockito.Mockito.doReturn(java.util.Optional.empty()).when(lifecycleChats)
@@ -763,7 +763,7 @@ class ActivitiesEventsServiceTest {
         when(chatService.ensurePublishedMainEventChat(
                 any(ActivityEvent.class),
                 eq(List.of("host", "accepted-member"))))
-                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of()));
+                .thenReturn(new EventConversations.PublishedMainEventChatResult("event-1", Set.of()));
         when(eventWatchSubscriptionsRepository.findByEventId("event-1"))
                 .thenReturn(List.of(outsideWatcher, staleMemberWatcher));
 

@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
 
@@ -218,7 +219,7 @@ public final class RegistryHttpClient implements com.raxim.myscoutee.domain.regi
     }
 
     public URI endpoint(String path) {
-        RegistryProtocol.requireCanonical(path, "registry request path");
+        CanonicalValues.requireCanonical(path, "registry request path");
         URI baseUri;
         try {
             baseUri = URI.create(properties.getBaseUrl());

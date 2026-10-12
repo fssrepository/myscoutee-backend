@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 set -u
 
-SERVICE_NAME="${MYSCOUTEE_SERVICE_NAME:-myscoutee.service}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
+
+SERVICE_NAME="${MYSCOUTEE_SERVICE_NAME:-${RELEASE_PROJECT_NAME}.service}"
 COMPOSE_PROJECT="${MYSCOUTEE_COMPOSE_PROJECT:-server}"
-COMPOSE_SCRIPT="${MYSCOUTEE_COMPOSE_SCRIPT:-/opt/myscoutee/packaging/scripts/myscoutee-compose.sh}"
+COMPOSE_SCRIPT="${MYSCOUTEE_COMPOSE_SCRIPT:-${RELEASE_PROJECT_ROOT}/packaging/scripts/myscoutee-compose.sh}"
 JOURNAL_LINES="${MYSCOUTEE_DIAGNOSTIC_JOURNAL_LINES:-120}"
 
 if [[ ! "${COMPOSE_PROJECT}" =~ ^[a-zA-Z0-9_.-]+$ ]]; then

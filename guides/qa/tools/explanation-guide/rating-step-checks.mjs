@@ -2,9 +2,9 @@
 process.env.CHECKPOINT = 'EXPLANATION-GUIDE-FEEDBACK-001';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {ratingAverage, shiftRatingCriteria} from '../../../../frontend/src/app/shared/core/contracts/rating-snapshot.ts';
+import {ratingAverage, shiftRatingCriteria} from '../../../../frontend/src/app/shared/core/contracts/affinity/rating-snapshot.ts';
 import {activityRateRelevanceScore} from '../../../../frontend/src/app/shared/core/base/activity-rate-order.ts';
-import {BaseUserRatesMapper as Mapper} from '../../../../frontend/src/app/shared/core/base/mappers/rate.mapper.ts';
+import {BaseUserRatesMapper as Mapper} from '../../../../frontend/src/app/shared/core/base/mappers/affinity/rate.mapper.ts';
 const {p, browser, home} = await import('./session.mjs');
 const checks = [];
 try {

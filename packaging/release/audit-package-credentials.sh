@@ -10,8 +10,13 @@ fi
 STAGING_DIR="$(cd -- "${STAGING_DIR}" && pwd -P)"
 AUDIT_TMP="$(mktemp -d /tmp/myscoutee-package-credential-audit.XXXXXX)"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../scripts/release-project.sh"
+release_project_load "${SCRIPT_DIR}/../scripts" "$(id -u)" || {
+  echo 'Invalid release project policy.' >&2; exit 1;
+}
 NESTED_ARCHIVE_AUDIT="${SCRIPT_DIR}/audit-nested-archive.py"
 PRIVATE_KEY_AUDIT="${SCRIPT_DIR}/private_key_material.py"
+source "${SCRIPT_DIR}/audit-project-seeds.sh"
 
 cleanup() {
   rm -rf "${AUDIT_TMP}"
@@ -65,7 +70,7 @@ if [[ -n "${forbidden_file}" ]]; then
   exit 1
 fi
 
-secret_template="${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.secrets.env"
+secret_template="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.secrets.env"
 if [[ ! -f "${secret_template}" ]]; then
   echo "Package credential template is missing." >&2
   exit 1
@@ -152,11 +157,11 @@ audit_mongo_seed_privacy() {
   local seed_root production_seed demo_seed packaged_env seed_rule
   local actual_collections expected_collections
 
-  seed_root="${STAGING_DIR}/opt/myscoutee/server/docker/conf/mongodb"
+  seed_root="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/conf/mongodb"
   [[ -d "${seed_root}" ]] || return 0
   production_seed="${seed_root}/myscoutee_db"
   demo_seed="${seed_root}/demo_db"
-  packaged_env="${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+  packaged_env="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env"
 
   if [[ -d "${seed_root}/e2e_db" ]]; then
     echo "E2E Mongo fixtures must not be embedded in the production package." >&2
@@ -212,24 +217,15 @@ audit_mongo_seed_privacy() {
     echo "A private/runtime collection was embedded in the production Mongo seed." >&2
     exit 1
   fi
-  if [[ -f "${production_seed}/communityProviders.json" ]] && ! jq -e '
-      type == "array" and length == 2
-      and (map(._id) | sort) == ["discord", "discourse"]
-      and all(.[];
-        .configured == false and .available == true and .enabled == true
-        and (keys | sort) == (["_id", "name", "purpose", "url", "configured", "available", "enabled", "sortOrder"] | sort)
-        and .purpose == ("operator.community.provider." + ._id + ".purpose")
-        and (if ._id == "discord"
-          then .name == "Discord" and .url == "https://discord.com/" and .sortOrder == 10
-          else .name == "Discourse" and .url == "https://www.discourse.org/" and .sortOrder == 20
-          end))
-    ' "${production_seed}/communityProviders.json" >/dev/null; then
-    echo "Production community providers must contain only unconfigured built-in catalog definitions." >&2
-    exit 1
-  fi
-  if grep -RIEiq \
-      -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' \
-      "${production_seed}"; then
+  # Product-owned public pages have been intentional defaults since MSC-115.
+  # Remove only those exact JSON string values; suffixes and other URLs remain
+  # subject to the deployment-specific social-link rejection below.
+  if find "${production_seed}" -maxdepth 1 -type f -name '*.json' -print0 \
+      | xargs -0 cat \
+      | sed -e 's#"https://www\.instagram\.com/myscoutee"#""#g' \
+            -e 's#"https://www\.facebook\.com/myscoutee"#""#g' \
+            -e 's#"https://www\.youtube\.com/@myscoutee"#""#g' \
+      | grep -Ei -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' >/dev/null; then
     echo "A deployment-specific social-page URL was embedded in the production Mongo seed." >&2
     exit 1
   fi
@@ -248,32 +244,7 @@ audit_mongo_seed_privacy() {
     echo "Production deployment configuration must be schema v5 with privacy and Integration URL unconfigured." >&2
     exit 1
   fi
-  if ! jq -e '
-      [
-        .[]
-        | select(.documentType == "privacy" and .active == true)
-      ] as $documents
-      | ($documents | length == 2)
-      and all($documents[];
-        ([.sections[] | select(.id == "contact-details")] | length == 1)
-        and (
-          [.sections[] | select(.id == "contact-details")][0].contentHtml
-          == "{{deployment.privacy.contactDetails}}"
-        )
-        and ([.sections[] | select(.id == "account-data-deletion")] | length == 1)
-        and (
-          [.sections[] | select(.id == "account-data-deletion")][0].contentHtml
-          | contains("{{deployment.privacy.deletionEmailRoute}}")
-        )
-        and (
-          [.sections[] | .contentHtml // ""] | join(" ")
-          | test("DPO|privacy@myscoutee|myscoutee1@gmail"; "i")
-          | not
-        ))
-    ' "${production_seed}/helpCenterRevisions.json" >/dev/null; then
-    echo "Production privacy help content must use runtime contact tokens without fixed privacy identities." >&2
-    exit 1
-  fi
+  audit_project_seeds "${production_seed}"
 
   if ! jq -e '
       type == "array"
@@ -444,7 +415,7 @@ audit_image_archive() {
 while IFS= read -r image_archive; do
   audit_image_archive "${image_archive}"
 done < <(
-  find "${STAGING_DIR}/opt/myscoutee/images" \
+  find "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/images" \
     -maxdepth 1 -type f -name '*.tar' -print 2>/dev/null \
     | sort
 )

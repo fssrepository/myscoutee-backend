@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.platform.api.ReleaseProtocol;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocolException;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
@@ -47,7 +49,7 @@ import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLink
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLocalization;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementPage;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementSnapshot;
-import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.platform.api.ReleaseProtocol.UpdateManifest;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -177,11 +179,11 @@ public final class RegistryOperatorNetworkService {
         String timestamp = now.toString();
         String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
         String clientTokenHash = RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(command.action())
-                ? RegistryProtocol.sha256(command.clientToken().getBytes(StandardCharsets.UTF_8))
+                ? CanonicalValues.sha256(command.clientToken().getBytes(StandardCharsets.UTF_8))
                 : "";
         long ttl = command.tokenTtlSeconds() == null ? 0L : command.tokenTtlSeconds();
         ClaimVerification claimVerification = command.claimVerification();
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 claimVerification == null
                         ? RegistryProtocol.operatorActionPayload(
                                 command.action(),
@@ -315,7 +317,7 @@ public final class RegistryOperatorNetworkService {
         if (StringUtils.hasText(activeMatchingKey)) {
             return RegistryProtocol.requireToken(activeMatchingKey, "idempotency_key");
         }
-        String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+        String digest = CanonicalValues.sha256(CanonicalValues.canonical(
                 "myscoutee-registry-operator-claim-idempotency-v1",
                 trusted.state().registryScope(),
                 trusted.state().deploymentId(),
@@ -333,7 +335,7 @@ public final class RegistryOperatorNetworkService {
             case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM ->
                     latestClaimGenerationReference(trusted);
             case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN ->
-                    RegistryProtocol.requireHash(clientTokenHash, "client_token_hash");
+                    CanonicalValues.requireHash(clientTokenHash, "client_token_hash");
             case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK ->
                     RegistryProtocol.requireOperatorLinkId(command.linkId());
             case RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN ->
@@ -365,7 +367,7 @@ public final class RegistryOperatorNetworkService {
                     activeWithdrawalKey,
                     "idempotency_key");
         }
-        String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+        String digest = CanonicalValues.sha256(CanonicalValues.canonical(
                 "myscoutee-registry-operator-reference-idempotency-v1",
                 trusted.state().registryScope(),
                 trusted.state().deploymentId(),
@@ -412,7 +414,7 @@ public final class RegistryOperatorNetworkService {
                     activeMatchingKey,
                     "idempotency_key");
         }
-        String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+        String digest = CanonicalValues.sha256(CanonicalValues.canonical(
                 "myscoutee-registry-operator-lifecycle-idempotency-v1",
                 trusted.state().registryScope(),
                 trusted.state().deploymentId(),
@@ -437,7 +439,7 @@ public final class RegistryOperatorNetworkService {
         if (latestClaim == null) {
             return RegistryProtocol.ZERO_HASH;
         }
-        return RegistryProtocol.sha256(RegistryProtocol.canonical(
+        return CanonicalValues.sha256(CanonicalValues.canonical(
                 latestClaim.receipt().actionId(),
                 Long.toString(latestClaim.receipt().auditIndex()),
                 latestClaim.receipt().auditHash()));
@@ -835,22 +837,22 @@ public final class RegistryOperatorNetworkService {
                 || !state.publicKeyFingerprint().equals(registration.publicKeyFingerprint())) {
             throw new IllegalStateException("Persisted registry registration receipt is inconsistent.");
         }
-        RegistryProtocol.requireUtcTimestamp(registration.registeredAt(), "registered_at");
+        CanonicalValues.requireUtcTimestamp(registration.registeredAt(), "registered_at");
         if (registration.duplicate() == null) {
             throw new IllegalStateException("Persisted registry registration receipt is incomplete.");
         }
-        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(
+        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistryProtocol.parseRegistryPublicKey(
                 registration.registryPublicKey());
         String registryFingerprint =
-                RegistryProtocol.publicKeyFingerprint(registryPublicKey.getEncoded());
+                CanonicalValues.publicKeyFingerprint(registryPublicKey.getEncoded());
         String registryKeyId = RegistryProtocol.registryKeyId(registryFingerprint);
         if (!registryKeyId.equals(registration.registryKeyId())) {
             throw new IllegalStateException("Persisted registry key ID is inconsistent.");
         }
-        String storedFingerprint = RegistryProtocol.requireHash(
+        String storedFingerprint = CanonicalValues.requireHash(
                 state.trustedRegistryKeyFingerprint(),
                 "trusted registry public-key fingerprint");
-        String configuredFingerprint = RegistryProtocol.requireHash(
+        String configuredFingerprint = CanonicalValues.requireHash(
                 properties.getExpectedRegistryKeyFingerprint(),
                 "configured registry public-key fingerprint");
         if (!registryFingerprint.equals(storedFingerprint)
@@ -858,7 +860,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalStateException(
                     "Registry key differs from the explicitly pinned registration key.");
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 registryPublicKey,
                 RegistryProtocol.registrationReceipt(registration),
                 registration.receiptSignature())) {
@@ -964,15 +966,15 @@ public final class RegistryOperatorNetworkService {
                 || !Objects.equals(entry.action(), entry.receipt().action())) {
             throw new IllegalStateException("Registry operator receipt journal is inconsistent.");
         }
-        RegistryProtocol.requireUtcTimestamp(entry.requestTimestamp(), "request_timestamp");
+        CanonicalValues.requireUtcTimestamp(entry.requestTimestamp(), "request_timestamp");
         RegistryProtocol.requireToken(entry.nonce(), "nonce");
         RegistryProtocol.requireToken(entry.idempotencyKey(), "idempotency_key");
         long ttl = entry.tokenTtlSeconds() == null ? 0L : entry.tokenTtlSeconds();
         String clientTokenHash = safeText(entry.clientTokenHash());
         if (!clientTokenHash.isEmpty()) {
-            RegistryProtocol.requireHash(clientTokenHash, "client_token_hash");
+            CanonicalValues.requireHash(clientTokenHash, "client_token_hash");
         }
-        String expectedPayloadHash = RegistryProtocol.sha256(
+        String expectedPayloadHash = CanonicalValues.sha256(
                 isStructuredClaim(entry)
                         ? RegistryProtocol.operatorClaimPayload(
                                 safeText(entry.legalName()),
@@ -997,7 +999,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalStateException(
                     "Registry operator journal payload hash is invalid.");
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 trusted.deploymentCrypto().deploymentPublicKey(),
                 RegistryProtocol.signedRequest(
                         "POST",
@@ -1071,15 +1073,15 @@ public final class RegistryOperatorNetworkService {
         if (receipt.auditIndex() == null || receipt.auditIndex() <= 0L) {
             throw new IllegalArgumentException("Registry operator audit index must be positive.");
         }
-        RegistryProtocol.requireHash(receipt.auditHash(), "audit_hash");
-        RegistryProtocol.requireHash(receipt.previousAuditHash(), "previous_audit_hash");
+        CanonicalValues.requireHash(receipt.auditHash(), "audit_hash");
+        CanonicalValues.requireHash(receipt.previousAuditHash(), "previous_audit_hash");
         RegistryProtocol.requireOperatorActionId(receipt.actionId());
         RegistryProtocol.requireDeploymentId(receipt.deploymentId());
         RegistryProtocol.requireDeploymentId(receipt.subjectDeploymentId());
         if (StringUtils.hasText(receipt.relatedDeploymentId())) {
             RegistryProtocol.requireDeploymentId(receipt.relatedDeploymentId());
         }
-        RegistryProtocol.requireUtcTimestamp(receipt.acceptedAt(), "accepted_at");
+        CanonicalValues.requireUtcTimestamp(receipt.acceptedAt(), "accepted_at");
         if (!trusted.state().deploymentId().equals(receipt.deploymentId())
                 || !request.action().equals(receipt.action())
                 || !trusted.state().registryScope().equals(receipt.registryScope())
@@ -1104,17 +1106,17 @@ public final class RegistryOperatorNetworkService {
                     "Deployment deactivation receipt has an inconsistent claim withdrawal boundary.");
         }
         if (StringUtils.hasText(receipt.tokenExpiresAt())) {
-            RegistryProtocol.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
+            CanonicalValues.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
         }
         if (StringUtils.hasText(receipt.clientTokenHash())) {
-            RegistryProtocol.requireHash(receipt.clientTokenHash(), "client_token_hash");
+            CanonicalValues.requireHash(receipt.clientTokenHash(), "client_token_hash");
         }
-        String expectedAuditHash = RegistryProtocol.sha256(
+        String expectedAuditHash = CanonicalValues.sha256(
                 RegistryProtocol.operatorAudit(receipt, request.payloadHash()));
         if (!RegistryProtocol.hashEquals(expectedAuditHash, receipt.auditHash())) {
             throw new IllegalArgumentException("Registry operator audit hash is invalid.");
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.operatorActionReceipt(receipt),
                 receipt.signature())) {
@@ -1129,11 +1131,11 @@ public final class RegistryOperatorNetworkService {
         }
         if (RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN.equals(request.action())) {
             RegistryProtocol.requireOperatorTokenId(receipt.tokenId());
-            RegistryProtocol.requireHash(receipt.clientTokenHash(), "client_token_hash");
-            RegistryProtocol.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
+            CanonicalValues.requireHash(receipt.clientTokenHash(), "client_token_hash");
+            CanonicalValues.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
             if (!response.duplicate()) {
                 RegistryProtocol.requireToken(plaintextToken, "client_token");
-                String actualHash = RegistryProtocol.sha256(
+                String actualHash = CanonicalValues.sha256(
                         plaintextToken.getBytes(StandardCharsets.UTF_8));
                 if (!RegistryProtocol.hashEquals(actualHash, receipt.clientTokenHash())) {
                     throw new IllegalArgumentException(
@@ -1204,11 +1206,11 @@ public final class RegistryOperatorNetworkService {
         if (status.claimAuditIndex() == null || status.claimAuditIndex() <= 0L) {
             throw new IllegalArgumentException("claim_audit_index must be positive.");
         }
-        RegistryProtocol.requireHash(status.claimAuditHash(), "claim_audit_hash");
+        CanonicalValues.requireHash(status.claimAuditHash(), "claim_audit_hash");
         RegistryProtocol.requireOperatorGroupId(status.groupId());
         requireText(status.legalName(), "legal_name", 160);
-        RegistryProtocol.requireUtcTimestamp(status.submittedAt(), "submitted_at");
-        RegistryProtocol.requireHash(status.reviewHash(), "review_hash");
+        CanonicalValues.requireUtcTimestamp(status.submittedAt(), "submitted_at");
+        CanonicalValues.requireHash(status.reviewHash(), "review_hash");
         if (status.verificationStatus() == null
                 || !Set.of(
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW,
@@ -1228,7 +1230,7 @@ public final class RegistryOperatorNetworkService {
                         "Registry operator claim review boundary is incomplete.");
             }
             if (StringUtils.hasText(status.approvedAt())) {
-                RegistryProtocol.requireUtcTimestamp(
+                CanonicalValues.requireUtcTimestamp(
                         status.approvedAt(),
                         "approved_at");
             }
@@ -1295,7 +1297,7 @@ public final class RegistryOperatorNetworkService {
         } else {
             verifyClaimEligibilityBoundary(status);
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 trusted.registryPublicKey(),
                 legacyEvidence
                         ? RegistryProtocol.legacyOperatorClaimStatusReceipt(
@@ -1370,7 +1372,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry operator claim eligibility status is unsupported.");
         }
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 status.eligibilityHash(),
                 "eligibility_hash");
         long eligibilityIndex = status.eligibilityIndex() == null
@@ -1554,10 +1556,10 @@ public final class RegistryOperatorNetworkService {
             if (row == null || !expectedView.equals(row.view())) {
                 throw new IllegalArgumentException("Registry leaderboard row has a mismatched view.");
             }
-            RegistryProtocol.requireCanonical(row.rowId(), "leaderboard row_id");
-            RegistryProtocol.requireCanonical(row.label(), "leaderboard label");
+            CanonicalValues.requireCanonical(row.rowId(), "leaderboard row_id");
+            CanonicalValues.requireCanonical(row.label(), "leaderboard label");
             requireCanonicalOptional(row.avatarUrl(), "leaderboard avatar_url");
-            RegistryProtocol.requireCanonical(row.claimState(), "leaderboard claim_state");
+            CanonicalValues.requireCanonical(row.claimState(), "leaderboard claim_state");
             requireLeaderboardRowEligibility(expectedView, row);
             if (row.deploymentCount() == null || row.deploymentCount() < 0L) {
                 throw new IllegalArgumentException("leaderboard deployment_count must be non-negative.");
@@ -1598,9 +1600,9 @@ public final class RegistryOperatorNetworkService {
                         "Registry leaderboard deployment has a mismatched group.");
             }
             RegistryProtocol.requireOperatorGroupId(deployment.groupId());
-            RegistryProtocol.requireCanonical(deployment.claimState(), "leaderboard claim_state");
+            CanonicalValues.requireCanonical(deployment.claimState(), "leaderboard claim_state");
             requireLeaderboardDeploymentEligibility(deployment);
-            RegistryProtocol.requireCanonical(
+            CanonicalValues.requireCanonical(
                     deployment.membershipState(),
                     "leaderboard membership_state");
             requireRational(
@@ -1702,13 +1704,13 @@ public final class RegistryOperatorNetworkService {
         requireNonNegative(
                 snapshot.throughTransferEventIndex(),
                 "through_transfer_event_index");
-        RegistryProtocol.requireHash(snapshot.ledgerHeadHash(), "ledger_head_hash");
-        RegistryProtocol.requireHash(snapshot.auditHeadHash(), "audit_head_hash");
-        RegistryProtocol.requireHash(snapshot.reviewHeadHash(), "review_head_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(snapshot.ledgerHeadHash(), "ledger_head_hash");
+        CanonicalValues.requireHash(snapshot.auditHeadHash(), "audit_head_hash");
+        CanonicalValues.requireHash(snapshot.reviewHeadHash(), "review_head_hash");
+        CanonicalValues.requireHash(
                 snapshot.eligibilityHeadHash(),
                 "eligibility_head_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 snapshot.transferEventHeadHash(),
                 "transfer_event_head_hash");
         requireHeadBoundary(
@@ -1739,19 +1741,19 @@ public final class RegistryOperatorNetworkService {
                 snapshot.claimedWeightNumerator(),
                 snapshot.claimedWeightDenominator(),
                 "claimed weight");
-        RegistryProtocol.requireUtcTimestamp(snapshot.createdAt(), "snapshot created_at");
-        RegistryProtocol.requireHash(snapshot.snapshotHash(), "snapshot_hash");
+        CanonicalValues.requireUtcTimestamp(snapshot.createdAt(), "snapshot created_at");
+        CanonicalValues.requireHash(snapshot.snapshotHash(), "snapshot_hash");
         if (!trusted.state().registryScope().equals(snapshot.registryScope())
                 || !trusted.registryKeyId().equals(snapshot.registryKeyId())) {
             throw new IllegalArgumentException(
                     "Registry leaderboard snapshot does not match the pinned registry.");
         }
-        String expectedHash = RegistryProtocol.sha256(
+        String expectedHash = CanonicalValues.sha256(
                 RegistryProtocol.leaderboardSnapshotHash(snapshot));
         if (!RegistryProtocol.hashEquals(expectedHash, snapshot.snapshotHash())) {
             throw new IllegalArgumentException("Registry leaderboard snapshot hash is invalid.");
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.leaderboardSnapshotReceipt(snapshot),
                 snapshot.signature())) {
@@ -1784,9 +1786,9 @@ public final class RegistryOperatorNetworkService {
         }
         AnnouncementSnapshot snapshot = page.snapshot();
         RegistryProtocol.requireAnnouncementSnapshotId(snapshot.snapshotId());
-        RegistryProtocol.requireUtcTimestamp(snapshot.asOf(), "announcement snapshot as_of");
+        CanonicalValues.requireUtcTimestamp(snapshot.asOf(), "announcement snapshot as_of");
         requireNonNegative(snapshot.throughSequence(), "announcement through_sequence");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 snapshot.announcementHeadHash(),
                 "announcement_head_hash");
         if (!expectedKind.equals(safeText(snapshot.kind()))
@@ -1799,11 +1801,11 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry announcement snapshot does not match the requested filters or pinned registry.");
         }
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 snapshot.createdAt(),
                 "announcement snapshot created_at");
-        RegistryProtocol.requireHash(snapshot.snapshotHash(), "announcement snapshot_hash");
-        String expectedSnapshotHash = RegistryProtocol.sha256(
+        CanonicalValues.requireHash(snapshot.snapshotHash(), "announcement snapshot_hash");
+        String expectedSnapshotHash = CanonicalValues.sha256(
                 RegistryProtocol.announcementSnapshotHash(snapshot));
         if (!RegistryProtocol.hashEquals(
                 expectedSnapshotHash,
@@ -1811,7 +1813,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry announcement snapshot hash is invalid.");
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.announcementSnapshotReceipt(snapshot),
                 snapshot.signature())) {
@@ -1823,7 +1825,7 @@ public final class RegistryOperatorNetworkService {
         PublicKey packageSigningKey = loadPackageSigningKey();
         String configuredPackageKeyId = packageSigningKey == null
                 ? ""
-                : RegistryProtocol.packageSigningKeyId(packageSigningKey.getEncoded());
+                : ReleaseProtocol.packageSigningKeyId(packageSigningKey.getEncoded());
         java.util.ArrayList<PackageVerification> verifications =
                 new java.util.ArrayList<>();
         long previousSequence = Long.MAX_VALUE;
@@ -1838,9 +1840,9 @@ public final class RegistryOperatorNetworkService {
                 UpdateManifest manifest = entry.updateManifest();
                 boolean keyMatches = packageSigningKey != null
                         && manifest.packageSigningKeyId().equals(configuredPackageKeyId);
-                boolean signatureVerified = keyMatches && com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                boolean signatureVerified = keyMatches && com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         packageSigningKey,
-                        RegistryProtocol.releasePackage(manifest),
+                        ReleaseProtocol.releasePackage(manifest),
                         manifest.packageSignature());
                 verifications.add(new PackageVerification(
                         entry.announcementId(),
@@ -1874,25 +1876,25 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry announcement does not match the pinned registry.");
         }
-        RegistryProtocol.requireAnnouncementId(entry.announcementId());
+        ReleaseProtocol.requireAnnouncementId(entry.announcementId());
         RegistryProtocol.requireToken(entry.publicationId(), "publication_id");
         requireAnnouncementKind(entry.kind());
         requireAnnouncementSeverity(entry.severity());
-        RegistryProtocol.requireUtcTimestamp(entry.publishedAt(), "announcement published_at");
+        CanonicalValues.requireUtcTimestamp(entry.publishedAt(), "announcement published_at");
         if (StringUtils.hasText(entry.expiresAt())) {
-            RegistryProtocol.requireUtcTimestamp(entry.expiresAt(), "announcement expires_at");
+            CanonicalValues.requireUtcTimestamp(entry.expiresAt(), "announcement expires_at");
         }
-        RegistryProtocol.requireUtcTimestamp(entry.acceptedAt(), "announcement accepted_at");
+        CanonicalValues.requireUtcTimestamp(entry.acceptedAt(), "announcement accepted_at");
         List<AnnouncementLocalization> localizations =
                 entry.localizations() == null ? List.of() : entry.localizations();
         List<AnnouncementLink> links =
                 entry.links() == null ? List.of() : entry.links();
-        String expectedContentHash = RegistryProtocol.sha256(
+        String expectedContentHash = CanonicalValues.sha256(
                 RegistryProtocol.announcementContent(
                         entry.titleKey(),
                         entry.bodyKey(),
                         localizations));
-        String expectedLinksHash = RegistryProtocol.sha256(
+        String expectedLinksHash = CanonicalValues.sha256(
                 RegistryProtocol.announcementLinks(links));
         String expectedManifestHash = RegistryProtocol.ZERO_HASH;
         if (entry.updateManifest() != null) {
@@ -1901,8 +1903,8 @@ public final class RegistryOperatorNetworkService {
                         "Only UPDATE announcements may contain an update manifest.");
             }
             validateUpdateManifest(entry.updateManifest(), entry.publishedAt());
-            expectedManifestHash = RegistryProtocol.sha256(
-                    RegistryProtocol.updateManifest(entry.updateManifest()));
+            expectedManifestHash = CanonicalValues.sha256(
+                    ReleaseProtocol.updateManifest(entry.updateManifest()));
         } else if ("UPDATE".equals(entry.kind())) {
             throw new IllegalArgumentException(
                     "UPDATE announcement is missing its update manifest.");
@@ -1915,18 +1917,18 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry announcement nested content hash is invalid.");
         }
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 entry.previousAnnouncementHash(),
                 "previous_announcement_hash");
-        RegistryProtocol.requireHash(entry.announcementHash(), "announcement_hash");
-        String expectedAnnouncementHash = RegistryProtocol.sha256(
+        CanonicalValues.requireHash(entry.announcementHash(), "announcement_hash");
+        String expectedAnnouncementHash = CanonicalValues.sha256(
                 RegistryProtocol.announcementEntry(entry));
         if (!RegistryProtocol.hashEquals(
                 expectedAnnouncementHash,
                 entry.announcementHash())) {
             throw new IllegalArgumentException("Registry announcement hash is invalid.");
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.announcementReceipt(entry),
                 entry.signature())) {
@@ -1938,24 +1940,24 @@ public final class RegistryOperatorNetworkService {
     private void validateUpdateManifest(
             UpdateManifest manifest,
             String announcementPublishedAt) {
-        if (!RegistryProtocol.UPDATE_MANIFEST_VERSION.equals(
+        if (!ReleaseProtocol.UPDATE_MANIFEST_VERSION.equals(
                 manifest.manifestVersion())) {
             throw new IllegalArgumentException(
                     "Update manifest version is unsupported.");
         }
-        RegistryProtocol.SemanticVersion release =
-                RegistryProtocol.requireSemanticVersion(
+        ReleaseProtocol.SemanticVersion release =
+                ReleaseProtocol.requireSemanticVersion(
                         manifest.releaseVersion(),
                         "release_version");
-        RegistryProtocol.SemanticVersion minimum =
-                RegistryProtocol.requireSemanticVersion(
+        ReleaseProtocol.SemanticVersion minimum =
+                ReleaseProtocol.requireSemanticVersion(
                         manifest.minimumCompatibleVersion(),
                         "minimum_compatible_version");
-        RegistryProtocol.SemanticVersion maximum =
-                RegistryProtocol.requireSemanticVersion(
+        ReleaseProtocol.SemanticVersion maximum =
+                ReleaseProtocol.requireSemanticVersion(
                         manifest.maximumCompatibleVersion(),
                         "maximum_compatible_version");
-        if (RegistryProtocol.compareSemanticVersions(minimum, maximum) > 0) {
+        if (ReleaseProtocol.compareSemanticVersions(minimum, maximum) > 0) {
             throw new IllegalArgumentException(
                     "Minimum compatible version exceeds maximum compatible version.");
         }
@@ -1967,7 +1969,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Update manifest publication time differs from its announcement.");
         }
-        RegistryProtocol.requireUtcTimestamp(manifest.publishedAt(), "update published_at");
+        CanonicalValues.requireUtcTimestamp(manifest.publishedAt(), "update published_at");
         requireHttpsUrl(manifest.artifactUrl(), "artifact_url");
         if (!URI.create(manifest.artifactUrl()).getPath().toLowerCase().endsWith(".deb")) {
             throw new IllegalArgumentException(
@@ -1979,9 +1981,9 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Update artifact size must be between 1 byte and 16 GiB.");
         }
-        RegistryProtocol.requireHash(manifest.artifactSha256(), "artifact_sha256");
-        RegistryProtocol.requirePackageSigningKeyId(manifest.packageSigningKeyId());
-        byte[] packageSignature = RegistryProtocol.decodeStandardBase64(
+        CanonicalValues.requireHash(manifest.artifactSha256(), "artifact_sha256");
+        ReleaseProtocol.requirePackageSigningKeyId(manifest.packageSigningKeyId());
+        byte[] packageSignature = CanonicalValues.decodeStandardBase64(
                 manifest.packageSignature(),
                 "package_signature");
         if (packageSignature.length != 64) {
@@ -2005,11 +2007,11 @@ public final class RegistryOperatorNetworkService {
                             "Available update manifest has invalid status metadata.");
                 }
                 if (!supersedes.isEmpty()) {
-                    RegistryProtocol.SemanticVersion previous =
-                            RegistryProtocol.requireSemanticVersion(
+                    ReleaseProtocol.SemanticVersion previous =
+                            ReleaseProtocol.requireSemanticVersion(
                                     supersedes,
                                     "supersedes_version");
-                    if (RegistryProtocol.compareSemanticVersions(
+                    if (ReleaseProtocol.compareSemanticVersions(
                             release,
                             previous) == 0) {
                         throw new IllegalArgumentException(
@@ -2035,11 +2037,11 @@ public final class RegistryOperatorNetworkService {
                     throw new IllegalArgumentException(
                             "Superseded update manifest has invalid status metadata.");
                 }
-                RegistryProtocol.SemanticVersion replacement =
-                        RegistryProtocol.requireSemanticVersion(
+                ReleaseProtocol.SemanticVersion replacement =
+                        ReleaseProtocol.requireSemanticVersion(
                                 supersededBy,
                                 "superseded_by_version");
-                if (RegistryProtocol.compareSemanticVersions(
+                if (ReleaseProtocol.compareSemanticVersions(
                         release,
                         replacement) == 0) {
                     throw new IllegalArgumentException(
@@ -2071,7 +2073,7 @@ public final class RegistryOperatorNetworkService {
                 throw new IllegalStateException(
                         "Package-signing public key file has an invalid size.");
             }
-            return com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parsePublicKeyPemOrDer(
+            return com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.parsePublicKeyPemOrDer(
                     Files.readAllBytes(normalized),
                     "package-signing public key");
         } catch (IOException exception) {
@@ -2107,7 +2109,7 @@ public final class RegistryOperatorNetworkService {
         byte[] signature = decodeCanonicalUrlBase64(
                 cursor.substring(separator + 1),
                 "announcement cursor signature");
-        if (signature.length != 64 || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verify(
+        if (signature.length != 64 || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verify(
                 trusted.registryPublicKey(),
                 RegistryProtocol.announcementCursor(payload),
                 signature)) {
@@ -2137,12 +2139,12 @@ public final class RegistryOperatorNetworkService {
                     "Announcement cursor does not belong to this request.");
         }
         RegistryProtocol.requireAnnouncementSnapshotId(claims.snapshotId());
-        RegistryProtocol.requireUtcTimestamp(claims.asOf(), "announcement cursor as_of");
+        CanonicalValues.requireUtcTimestamp(claims.asOf(), "announcement cursor as_of");
         requireNonNegative(claims.throughSequence(), "announcement cursor through_sequence");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 claims.announcementHeadHash(),
                 "announcement cursor head hash");
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 claims.createdAt(),
                 "announcement cursor created_at");
         if (snapshot != null) {
@@ -2179,7 +2181,7 @@ public final class RegistryOperatorNetworkService {
             requireAnnouncementSeverity(severity);
         }
         if (!channel.isEmpty()) {
-            RegistryProtocol.requireCanonical(channel, "announcement channel");
+            CanonicalValues.requireCanonical(channel, "announcement channel");
             if (!kind.isEmpty() && !"UPDATE".equals(kind)) {
                 throw new IllegalArgumentException(
                         "Announcement channel may be combined only with kind UPDATE.");
@@ -2236,7 +2238,7 @@ public final class RegistryOperatorNetworkService {
         }
         int version = node.path("version").asInt(-1);
         requireLeaderboardCursorFields(node, version);
-        if (signature.length != 64 || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verify(
+        if (signature.length != 64 || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verify(
                 trusted.registryPublicKey(),
                 RegistryProtocol.leaderboardCursor(version, payload),
                 signature)) {
@@ -2289,13 +2291,13 @@ public final class RegistryOperatorNetworkService {
         requireNonNegative(
                 claims.throughTransferEventIndex(),
                 "cursor through_transfer_event_index");
-        RegistryProtocol.requireHash(claims.ledgerHeadHash(), "cursor ledger_head_hash");
-        RegistryProtocol.requireHash(claims.auditHeadHash(), "cursor audit_head_hash");
-        RegistryProtocol.requireHash(claims.reviewHeadHash(), "cursor review_head_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(claims.ledgerHeadHash(), "cursor ledger_head_hash");
+        CanonicalValues.requireHash(claims.auditHeadHash(), "cursor audit_head_hash");
+        CanonicalValues.requireHash(claims.reviewHeadHash(), "cursor review_head_hash");
+        CanonicalValues.requireHash(
                 claims.eligibilityHeadHash(),
                 "cursor eligibility_head_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 claims.transferEventHeadHash(),
                 "cursor transfer_event_head_hash");
         requireHeadBoundary(
@@ -2310,7 +2312,7 @@ public final class RegistryOperatorNetworkService {
                 claims.throughTransferEventIndex(),
                 claims.transferEventHeadHash(),
                 "cursor transfer event");
-        RegistryProtocol.requireUtcTimestamp(claims.createdAt(), "cursor created_at");
+        CanonicalValues.requireUtcTimestamp(claims.createdAt(), "cursor created_at");
         if (snapshot != null) {
             requireCursorSnapshot(claims, snapshot);
         }
@@ -2397,7 +2399,7 @@ public final class RegistryOperatorNetworkService {
         if (hasSourceClaimActionId) {
             RegistryProtocol.requireOperatorActionId(
                     receipt.sourceClaimActionId());
-            RegistryProtocol.requireHash(
+            CanonicalValues.requireHash(
                     receipt.sourcePrivateRecordHash(),
                     "source_private_record_hash");
             if (!tokenDerivedPendingClaim
@@ -2574,7 +2576,7 @@ public final class RegistryOperatorNetworkService {
     }
 
     private static void requireText(String value, String fieldName, int maxUtf8Bytes) {
-        RegistryProtocol.requireCanonical(value, fieldName);
+        CanonicalValues.requireCanonical(value, fieldName);
         if (value.getBytes(StandardCharsets.UTF_8).length > maxUtf8Bytes) {
             throw new IllegalArgumentException(fieldName + " is too long.");
         }

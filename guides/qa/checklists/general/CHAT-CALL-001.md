@@ -5,6 +5,20 @@ bizonyítékok a QA-mátrixba és az evidence könyvtárba kerülnek; ez stabil
 ellenőrzőlista. A böngészőket a verziózott launcher készíti elő, utána a tesztelő
 végzi a kattintásokat. A megnyitás önmagában nem PASS. Alice a dedikált fixture adminja; Bob és Carol normál tagok.
 
+## Template regression and fix propagation — MSC-122
+
+Assess shared chat, WebSocket/signaling and retained call-backend corrections
+against the template, and run the applicable backend/transport and personal-chat
+regressions there. The template retains the native audio/video call service and
+window as a basic chat capability. Run the applicable call-window steps there
+as well; omit only product-specific invite/report/context actions. Its frontend-local
+adapter has no call transport, matching the source. Do not claim physical audio/video
+or cross-network evidence from a backend test or a synthetic-media browser test.
+
+Follow the [shared template regression requirements](../README.md#template-regression-and-fix-propagation--msc-122).
+Record template impact, propagated revisions and its own targeted result for
+each defect; source PASS alone does not close the template follow-up.
+
 ## Előkészítés
 
 A meglévő dev stack és a `myscoutee-stun` konténer fusson. A fixture saját

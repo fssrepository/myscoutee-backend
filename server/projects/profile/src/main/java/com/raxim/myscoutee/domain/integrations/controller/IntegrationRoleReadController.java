@@ -34,15 +34,13 @@ public class IntegrationRoleReadController {
     public OperatorMeasurementReportPageDto measurements(Authentication authentication,
             @RequestParam(required = false) String status, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size) {
-        access.requireRoleRead(authentication, "operator");
-        return measurements.reports(status, page, size);
+        return access.withOperatorReportRead(authentication, () -> measurements.reports(status, page, size));
     }
 
     @GetMapping("/operator/revenue-reports")
     public OperatorRevenueReportPageDto revenue(Authentication authentication,
             @RequestParam(required = false) String status, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size) {
-        access.requireRoleRead(authentication, "operator");
-        return revenue.reports(status, page, size);
+        return access.withOperatorReportRead(authentication, () -> revenue.reports(status, page, size));
     }
 }

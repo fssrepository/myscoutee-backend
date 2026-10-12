@@ -244,7 +244,7 @@ class BoundaryPolicyAnnotationTest {
                 "#userId ?: #actorUserId",
                 "#chatId");
         assertMethodPolicy(
-                ChatsController.class,
+                com.raxim.myscoutee.domain.chat.controller.SupportChatsController.class,
                 "updateSupportCase",
                 new Class<?>[] { String.class, ChatSupportCaseMutationRequestDto.class, String.class },
                 AccessPolicyKeys.CHAT_SUPPORT_MANAGE,

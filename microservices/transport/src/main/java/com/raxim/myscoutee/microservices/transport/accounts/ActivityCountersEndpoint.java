@@ -12,12 +12,14 @@ import tools.jackson.databind.*;
 @RestController
 public final class ActivityCountersEndpoint {
     private final ActivityCounters owner;
+    private final com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters;
     private final ObjectMapper mapper;
     private final com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters feedback;
     private final com.raxim.myscoutee.domain.accounts.api.FeedCounts feed;
     public ActivityCountersEndpoint(ActivityCounters owner, ObjectMapper mapper,
+            com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters,
             com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters feedback, com.raxim.myscoutee.domain.accounts.api.FeedCounts feed) {
-        this.owner = owner; this.mapper = mapper; this.feedback = feedback; this.feed = feed;
+        this.owner = owner; this.mapper = mapper; this.supportCounters = supportCounters; this.feedback = feedback; this.feed = feed;
     }
     @PostMapping(value = ActivityCountersProtocol.FEEDBACK_RECEIPT, produces = "application/json")
     public ResponseEntity<?> feedbackReceipt(HttpServletRequest request) throws java.io.IOException {
@@ -28,12 +30,12 @@ public final class ActivityCountersEndpoint {
     @PostMapping(value = ActivityCountersProtocol.SUPPORT_PRESENT, produces = "application/json")
     public ResponseEntity<?> hasSupportCaseCounters(HttpServletRequest request) throws java.io.IOException {
         return read(request, ActivityCountersProtocol.IdQuery.class, ActivityCountersProtocol::valid,
-                query -> com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(query.scope().active(), query.scope().groupId(), () -> new ActivityCountersProtocol.Decision(owner.hasSupportCaseCounters(query.userId()))));
+                query -> com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(query.scope().active(), query.scope().groupId(), () -> new ActivityCountersProtocol.Decision(supportCounters.hasSupportCaseCounters(query.userId()))));
     }
     @PostMapping(value = ActivityCountersProtocol.SUPPORT_REFRESH, produces = "application/json")
     public ResponseEntity<?> refreshSupportCaseCountersForAdmins(HttpServletRequest request) throws java.io.IOException {
         return read(request, ActivityCountersProtocol.ScopeQuery.class, ActivityCountersProtocol::valid,
-                query -> com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(query.scope().active(), query.scope().groupId(), () -> { owner.refreshSupportCaseCountersForAdmins(); return new ActivityCountersProtocol.Receipt(true); }));
+                query -> com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(query.scope().active(), query.scope().groupId(), () -> { supportCounters.refreshSupportCaseCountersForAdmins(); return new ActivityCountersProtocol.Receipt(true); }));
     }
     @PostMapping(value = ActivityCountersProtocol.FEED_REFRESH, produces = "application/json")
     public ResponseEntity<?> refreshFeedCountersForUser(HttpServletRequest request) throws java.io.IOException {

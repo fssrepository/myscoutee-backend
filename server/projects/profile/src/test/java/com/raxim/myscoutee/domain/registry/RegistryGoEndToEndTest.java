@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +62,7 @@ class RegistryGoEndToEndTest {
                 : null;
         String fingerprintBeforePreflight = publicKeyBeforePreflight == null
                 ? null
-                : RegistryProtocol.publicKeyFingerprint(publicKeyBeforePreflight);
+                : CanonicalValues.publicKeyFingerprint(publicKeyBeforePreflight);
         List<String> stateEntriesBeforePreflight = directoryEntries(stateDirectory);
 
         RegistryConfiguration properties = new RegistryConfiguration();

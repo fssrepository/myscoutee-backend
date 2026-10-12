@@ -12,7 +12,7 @@ read_version() {
 }
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
-VERSION="${VERSION:-1.3.0}"
+VERSION="${VERSION:-1.4.0}"
 ARCHITECTURE="${DEB_ARCHITECTURE:-amd64}"
 DEBIAN_VERSION="${VERSION/-/\~}"
 if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
@@ -24,30 +24,17 @@ if [[ ! "${ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]]; then
   echo "DEB_ARCHITECTURE is invalid." >&2
   exit 1
 fi
-PACKAGE_NAME="myscoutee_${VERSION}_${ARCHITECTURE}"
+export MYSCOUTEE_VERSION="${VERSION}"
+source "${REPO_ROOT}/packaging/scripts/release-project.sh"
+release_project_load "${REPO_ROOT}/packaging/scripts" "$(id -u)" || {
+  echo 'Invalid release project policy.' >&2; exit 1;
+}
+release_project_export_images "${VERSION}" true
+PACKAGE_NAME="${RELEASE_PROJECT_NAME}_${VERSION}_${ARCHITECTURE}"
 DEB_PATH="${DIST_DIR}/${PACKAGE_NAME}.deb"
 DEB_PARTIAL_PATH="${DIST_DIR}/${PACKAGE_NAME}.partial.deb"
-CLIENT_TOOLS_ARCHIVE="${DIST_DIR}/myscoutee-client-tools_${VERSION}.tar.gz"
+CLIENT_TOOLS_ARCHIVE="${DIST_DIR}/${RELEASE_PROJECT_NAME}-client-tools_${VERSION}.tar.gz"
 IMAGE_FINGERPRINT_HELPER="${REPO_ROOT}/packaging/scripts/image-content-fingerprint.sh"
-
-export MYSCOUTEE_VERSION="${VERSION}"
-export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
-export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
-export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
-export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
-export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
-export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
-export MCP_IMAGE="${MCP_IMAGE:-myscoutee-mcp:${VERSION}-prod}"
-if [[ "${NGINX_BASE_IMAGE}" != "myscoutee-nginx:${VERSION}-base" \
-  || "${NGINX_PRODUCTION_IMAGE}" != "myscoutee-nginx:${VERSION}-prod" \
-  || "${MYSCOUTEE_PRODUCTION_IMAGE}" != "myscoutee-api:${VERSION}-prod" \
-  || "${MINIO_PRODUCTION_IMAGE}" != "myscoutee-minio:${VERSION}-prod" \
-  || "${REGISTRY_DEMO_IMAGE}" != "myscoutee-registry:${VERSION}-prod" \
-  || "${PAYMENT_SIMULATOR_IMAGE}" != "myscoutee-payment-simulator:${VERSION}-prod" \
-  || "${MCP_IMAGE}" != "myscoutee-mcp:${VERSION}-prod" ]]; then
-  echo "Release packages require the canonical version-derived managed image tags." >&2
-  exit 1
-fi
 
 if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
@@ -55,36 +42,43 @@ fi
 
 rm -rf "${STAGING_DIR}" "${DEB_PARTIAL_PATH}"
 install -d "${STAGING_DIR}/DEBIAN"
-install -d "${STAGING_DIR}/opt/myscoutee/server/docker/conf"
-install -d "${STAGING_DIR}/opt/myscoutee/server/docker/scripts"
-install -d "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets"
-install -d "${STAGING_DIR}/opt/myscoutee/packaging"
-install -d "${STAGING_DIR}/opt/myscoutee/packaging/update"
-install -d "${STAGING_DIR}/opt/myscoutee/images"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/conf"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/scripts"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/projects/profile/secrets"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/update"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/images"
 install -d "${STAGING_DIR}/lib/systemd/system"
-install -d "${STAGING_DIR}/usr/share/myscoutee"
+install -d "${STAGING_DIR}/usr/share/${RELEASE_PROJECT_NAME}"
 
 sed \
   -e "s/^Version:.*/Version: ${DEBIAN_VERSION}/" \
   -e "s/^Architecture:.*/Architecture: ${ARCHITECTURE}/" \
   "${REPO_ROOT}/packaging/debian/control" > "${STAGING_DIR}/DEBIAN/control"
+[[ "$(sed -n 's/^Package: //p' "${STAGING_DIR}/DEBIAN/control")" == "$RELEASE_PROJECT_NAME" ]] || {
+  echo 'Debian control identity does not match the release project.' >&2; exit 1;
+}
+sed -e "s/@RUNTIME_UID@/${RELEASE_PROJECT_UID}/g" -e "s/@RUNTIME_GID@/${RELEASE_PROJECT_GID}/g" \
+  "${REPO_ROOT}/packaging/debian/preinst" > "${STAGING_DIR}/DEBIAN/preinst"
 install -m 0755 "${REPO_ROOT}/packaging/debian/postinst" "${STAGING_DIR}/DEBIAN/postinst"
 install -m 0755 "${REPO_ROOT}/packaging/debian/prerm" "${STAGING_DIR}/DEBIAN/prerm"
-install -m 0755 "${REPO_ROOT}/packaging/debian/postrm" "${STAGING_DIR}/DEBIAN/postrm"
+python3 "${SCRIPT_DIR}/render-postrm.py" "${REPO_ROOT}/packaging" "${STAGING_DIR}/DEBIAN/postrm"
+chmod 0755 "${STAGING_DIR}/DEBIAN/postrm"
 
 sed 's/docker-compose.production-replicaset.yml/docker-compose.replicaset.yml/g' \
-  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" > "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
-chmod 0644 "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
-install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose.replicaset.yml"
-install -m 0644 "${SERVER_DIR}/projects/profile/secrets/README.md" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/README.md"
-install -m 0644 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json.example" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json.example"
+  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml"
+chmod 0644 "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml"
+install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose.replicaset.yml"
+install -m 0644 "${SERVER_DIR}/docker-compose-stun.yml" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose-stun.yml"
+install -m 0644 "${SERVER_DIR}/projects/profile/secrets/README.md" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/projects/profile/secrets/README.md"
+install -m 0644 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json.example" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/projects/profile/secrets/firebase-service-account.json.example"
 # Credentials are deployment input, never package content. The operator
 # provisions the real service-account file after installation through the
 # protected deployment configuration path.
 
 stage_mongo_configuration() {
   local source_root="${SERVER_DIR}/docker/conf/mongodb"
-  local target_root="${STAGING_DIR}/opt/myscoutee/server/docker/conf/mongodb"
+  local target_root="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/conf/mongodb"
   local demo_source="${source_root}/demo_db"
   local demo_target="${target_root}/demo_db"
   local production_source="${source_root}/myscoutee_db"
@@ -105,7 +99,7 @@ stage_mongo_configuration() {
   for production_identity_seed in \
     "${production_source}/adminUsers.json" \
     "${production_source}/users.json"; do
-    if ! jq -e 'type == "array" and length == 0' \
+    if [[ -e "${production_identity_seed}" ]] && ! jq -e 'type == "array" and length == 0' \
         "${production_identity_seed}" >/dev/null; then
       echo "Production identity seeds must remain empty; operators are provisioned after installation." >&2
       exit 1
@@ -119,9 +113,7 @@ stage_mongo_configuration() {
     jq -c '
       [
         .[]
-        | select(
-            (._id | type) == "string"
-            and (._id | startswith("admin-demo-")))
+        | select(.hostTier == "Admin")
         | (.email // "")
         | select(test("@[^@]+\\.(local|invalid)$"; "i"))
       ]
@@ -154,7 +146,7 @@ stage_mongo_configuration() {
   # from the .deb even though a developer checkout may contain fixtures.
   seed_rule="$(
     sed -n 's/^MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=//p' \
-      "${REPO_ROOT}/packaging/templates/myscoutee.env" \
+      "${REPO_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env" \
       | tr ';' '\n' \
       | sed -n 's/^production_db://p' \
       | tail -n 1
@@ -194,48 +186,49 @@ stage_mongo_configuration() {
 python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py"
 node "${REPO_ROOT}/frontend/scripts/audit-i18n-mongo-seed.js"
 stage_mongo_configuration
-while IFS= read -r runtime_script_path; do
-  cp -a "${runtime_script_path}" "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
-done < <(
-  find "${SERVER_DIR}/docker/scripts" \
-    -mindepth 1 \
-    -maxdepth 1 \
-    ! -name "admin-job-fixtures" \
-    ! -name "manual-qa-checkpoints" \
-    ! -name "start_profilemanagement_dev.sh" \
-    ! -name "frontend_auto_watch.sh" \
-    -print \
-    | sort
-)
+python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py" \
+  --packaged-root "${STAGING_DIR}${RELEASE_PROJECT_ROOT}"
+# Host runtime scripts are project-selected build inputs. Dev/E2E helpers can
+# remain in the source tree without becoming installed host commands.
+runtime_manifest="${REPO_ROOT}/packaging/release/runtime-scripts.json"
+jq -e 'type=="array" and length==(unique|length)
+  and all(.[]; type=="string" and test("^[A-Za-z][A-Za-z0-9_.-]*$"))' "$runtime_manifest" >/dev/null
+while IFS= read -r runtime_name; do
+  runtime_script_path="${SERVER_DIR}/docker/scripts/${runtime_name}"
+  [[ -e "$runtime_script_path" && ! -L "$runtime_script_path" ]] || {
+    echo "Selected host runtime script is missing or symbolic: ${runtime_name}" >&2; exit 1;
+  }
+  cp -a "$runtime_script_path" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/scripts/"
+done < <(jq -r '.[]' "$runtime_manifest")
 # Only deployment-host runtime scripts are installed. Everything in
 # packaging/release and repository developer helpers stays source-only.
-cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
-cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}/opt/myscoutee/packaging/"
-cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.path"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.socket" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.socket"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.service"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts"
+while IFS= read -r runtime_script_path; do
+  cp -a "${runtime_script_path}" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts/"
+done < <(find "${REPO_ROOT}/packaging/scripts" -maxdepth 1 -type f \
+  \( -name '*.sh' -o -name '*.py' -o -name '*.js' -o -name '*.jq' -o -name '*.json' \) | sort)
+cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/"
+cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update.path" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update.path"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update-status.socket" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update-status.socket"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update-status.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update-status.service"
 install -d "${STAGING_DIR}/usr/lib/sysusers.d"
-install -m 0644 "${REPO_ROOT}/packaging/sysusers/myscoutee.conf" "${STAGING_DIR}/usr/lib/sysusers.d/myscoutee.conf"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.path"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.timer" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.timer"
-install -m 0644 "${REPO_ROOT}/packaging/templates/update-release-key.README" "${STAGING_DIR}/opt/myscoutee/packaging/update/README"
-printf '%s\n' "${VERSION}" > "${STAGING_DIR}/opt/myscoutee/packaging/VERSION"
+install -m 0644 "${REPO_ROOT}/packaging/sysusers/${RELEASE_PROJECT_NAME}.conf" "${STAGING_DIR}/usr/lib/sysusers.d/${RELEASE_PROJECT_NAME}.conf"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls.path" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls.path"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls-renew.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls-renew.timer" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls-renew.timer"
+install -m 0644 "${REPO_ROOT}/packaging/templates/update-release-key.README" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/update/README"
+printf '%s\n' "${VERSION}" > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/VERSION"
 
-sed \
-  -e "s/^MYSCOUTEE_VERSION=.*/MYSCOUTEE_VERSION=${VERSION}/" \
-  -e "s/^NGINX_BASE_IMAGE=.*/NGINX_BASE_IMAGE=myscoutee-nginx:${VERSION}-base/" \
-  -e "s/^NGINX_PRODUCTION_IMAGE=.*/NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${VERSION}-prod/" \
-  -e "s/^MYSCOUTEE_PRODUCTION_IMAGE=.*/MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${VERSION}-prod/" \
-  -e "s/^MINIO_PRODUCTION_IMAGE=.*/MINIO_PRODUCTION_IMAGE=myscoutee-minio:${VERSION}-prod/" \
-  -e "s/^REGISTRY_DEMO_IMAGE=.*/REGISTRY_DEMO_IMAGE=myscoutee-registry:${VERSION}-prod/" \
-  -e "s/^PAYMENT_SIMULATOR_IMAGE=.*/PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:${VERSION}-prod/" \
-  -e "s/^MCP_IMAGE=.*/MCP_IMAGE=myscoutee-mcp:${VERSION}-prod/" \
-  -i "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+sed -i "s/^MYSCOUTEE_VERSION=.*/MYSCOUTEE_VERSION=${VERSION}/" \
+  "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env"
+while IFS=$'\t' read -r name reference; do
+  sed -i "s/^${name}=.*/${name}=${reference}/" \
+    "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env"
+done < <(release_project_images "${VERSION}" | jq -r '.[] | [.environment,.reference] | @tsv')
 
 save_image() {
   local image_name="$1"
@@ -254,7 +247,7 @@ save_image() {
     exit 1
   fi
 
-  docker save -o "${STAGING_DIR}/opt/myscoutee/images/${archive_name}.tar" "${image_name}"
+  docker save -o "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/images/${archive_name}.tar" "${image_name}"
 }
 
 image_id() {
@@ -282,92 +275,22 @@ image_content_fingerprint() {
 }
 
 if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
-  save_image "${NGINX_BASE_IMAGE}" "myscoutee-nginx-${VERSION}-base"
-  save_image "${NGINX_PRODUCTION_IMAGE}" "myscoutee-nginx-${VERSION}-prod"
-  save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}-prod"
-  save_image "${MINIO_PRODUCTION_IMAGE}" "myscoutee-minio-${VERSION}-prod"
-  save_image "${REGISTRY_DEMO_IMAGE}" "myscoutee-registry-${VERSION}-prod"
-  save_image "${PAYMENT_SIMULATOR_IMAGE}" "myscoutee-payment-simulator-${VERSION}-prod"
-  save_image "${MCP_IMAGE}" "myscoutee-mcp-${VERSION}-prod"
-  jq -n \
-    --arg releaseVersion "${VERSION}" \
-    --arg nginxBaseReference "${NGINX_BASE_IMAGE}" \
-    --arg nginxBaseId "$(image_id "${NGINX_BASE_IMAGE}")" \
-    --arg nginxBaseFingerprint "$(image_content_fingerprint "${NGINX_BASE_IMAGE}")" \
-    --arg nginxReference "${NGINX_PRODUCTION_IMAGE}" \
-    --arg nginxId "$(image_id "${NGINX_PRODUCTION_IMAGE}")" \
-    --arg nginxFingerprint "$(image_content_fingerprint "${NGINX_PRODUCTION_IMAGE}")" \
-    --arg apiReference "${MYSCOUTEE_PRODUCTION_IMAGE}" \
-    --arg apiId "$(image_id "${MYSCOUTEE_PRODUCTION_IMAGE}")" \
-    --arg apiFingerprint "$(image_content_fingerprint "${MYSCOUTEE_PRODUCTION_IMAGE}")" \
-    --arg minioReference "${MINIO_PRODUCTION_IMAGE}" \
-    --arg minioId "$(image_id "${MINIO_PRODUCTION_IMAGE}")" \
-    --arg minioFingerprint "$(image_content_fingerprint "${MINIO_PRODUCTION_IMAGE}")" \
-    --arg registryDemoReference "${REGISTRY_DEMO_IMAGE}" \
-    --arg registryDemoId "$(image_id "${REGISTRY_DEMO_IMAGE}")" \
-    --arg registryDemoFingerprint "$(image_content_fingerprint "${REGISTRY_DEMO_IMAGE}")" \
-    --arg paymentSimulatorReference "${PAYMENT_SIMULATOR_IMAGE}" \
-    --arg mcpReference "${MCP_IMAGE}" \
-    --arg paymentSimulatorId "$(image_id "${PAYMENT_SIMULATOR_IMAGE}")" \
-    --arg mcpId "$(image_id "${MCP_IMAGE}")" \
-    --arg paymentSimulatorFingerprint "$(image_content_fingerprint "${PAYMENT_SIMULATOR_IMAGE}")" \
-    --arg mcpFingerprint "$(image_content_fingerprint "${MCP_IMAGE}")" \
-    '{
-      schemaVersion: 1,
-      releaseVersion: $releaseVersion,
-      bundled: true,
-      images: [
-        {
-          service: "nginx-base",
-          container: null,
-          reference: $nginxBaseReference,
-          imageId: $nginxBaseId,
-          contentFingerprint: $nginxBaseFingerprint
-        },
-        {
-          service: "nginx",
-          container: "nginx",
-          reference: $nginxReference,
-          imageId: $nginxId,
-          contentFingerprint: $nginxFingerprint
-        },
-        {
-          service: "profilemanagement",
-          container: "myscoutee",
-          reference: $apiReference,
-          imageId: $apiId,
-          contentFingerprint: $apiFingerprint
-        },
-        {
-          service: "minio",
-          container: "minio",
-          reference: $minioReference,
-          imageId: $minioId,
-          contentFingerprint: $minioFingerprint
-        },
-        {
-          service: "registry-demo",
-          container: "registry-demo",
-          reference: $registryDemoReference,
-          imageId: $registryDemoId,
-          contentFingerprint: $registryDemoFingerprint
-        },
-        {
-          service: "payment-simulator",
-          container: "payment-simulator",
-          reference: $paymentSimulatorReference,
-          imageId: $paymentSimulatorId,
-          contentFingerprint: $paymentSimulatorFingerprint
-        },
-        {
-          service: "mcp",
-          container: "mcp",
-          reference: $mcpReference,
-          imageId: $mcpId,
-          contentFingerprint: $mcpFingerprint
-        }
-      ]
-    }' > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+  image_rows="$(release_project_images "${VERSION}")"
+  manifest_rows="${DIST_DIR}/.image-manifest-rows.jsonl"
+  : > "${manifest_rows}"
+  while IFS= read -r image_row; do
+    reference="$(jq -r '.reference' <<< "${image_row}")"
+    save_image "${reference}" "${reference/:/-}"
+    jq --arg imageId "$(image_id "${reference}")" \
+      --arg fingerprint "$(image_content_fingerprint "${reference}")" \
+      -c '{service,container,reference,imageId:$imageId,contentFingerprint:$fingerprint}' \
+      <<< "${image_row}" >> "${manifest_rows}"
+  done < <(jq -c '.[]' <<< "${image_rows}")
+  jq -s --arg releaseVersion "${VERSION}" \
+    '{schemaVersion:1,releaseVersion:$releaseVersion,bundled:true,images:.}' \
+    "${manifest_rows}" > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json"
+  rm -- "${manifest_rows}"
+  release_project_validate_manifest "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json" "${VERSION}"
 elif [[ "${ALLOW_UNBUNDLED_IMAGES_FOR_TESTS:-false}" == "true" ]]; then
   jq -n \
     --arg releaseVersion "${VERSION}" \
@@ -376,7 +299,7 @@ elif [[ "${ALLOW_UNBUNDLED_IMAGES_FOR_TESTS:-false}" == "true" ]]; then
       releaseVersion: $releaseVersion,
       bundled: false,
       images: []
-    }' > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+    }' > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json"
 else
   echo "Release packages must bundle their managed images." >&2
   echo "Set ALLOW_UNBUNDLED_IMAGES_FOR_TESTS=true only for package-content tests." >&2
@@ -396,12 +319,13 @@ fi
 find "${STAGING_DIR}" -type d -exec chmod 0755 {} +
 find "${STAGING_DIR}" -type f -exec chmod 0644 {} +
 chmod 0755 \
+  "${STAGING_DIR}/DEBIAN/preinst" \
   "${STAGING_DIR}/DEBIAN/postinst" \
   "${STAGING_DIR}/DEBIAN/prerm" \
   "${STAGING_DIR}/DEBIAN/postrm"
-find "${STAGING_DIR}/opt/myscoutee/packaging/scripts" \
+find "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts" \
   -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod 0755 {} +
-find "${STAGING_DIR}/opt/myscoutee/server/docker" \
+find "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker" \
   -type f -name "*.sh" -exec chmod 0755 {} +
 # The same standalone builder is used for helper-only releases and full DEBs.
 MYSCOUTEE_VERSION="${VERSION}" MYSCOUTEE_DIST_DIR="${DIST_DIR}" \
@@ -409,9 +333,15 @@ MYSCOUTEE_VERSION="${VERSION}" MYSCOUTEE_DIST_DIR="${DIST_DIR}" \
 
 install -m 0644 \
   "${CLIENT_TOOLS_ARCHIVE}" \
-  "${STAGING_DIR}/usr/share/myscoutee/$(basename "${CLIENT_TOOLS_ARCHIVE}")"
+  "${STAGING_DIR}/usr/share/${RELEASE_PROJECT_NAME}/$(basename "${CLIENT_TOOLS_ARCHIVE}")"
 
 bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
+input_checks=()
+if [[ "${PACKAGE_IMAGES:-true}" == true ]]; then
+  input_checks+=(--images)
+fi
+python3 "${REPO_ROOT}/packaging/tests/deployment-input-parity-test.py" \
+  "${STAGING_DIR}" "${input_checks[@]}"
 
 dpkg-deb --root-owner-group --build \
   "${STAGING_DIR}" \

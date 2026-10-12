@@ -19,7 +19,7 @@ const USER_NOTIFICATIONS_PATH = path.join(DEMO_DB, 'userNotifications.json');
 const USER_REPORTS_PATH = path.join(DEMO_DB, 'userReports.json');
 const FRONTEND_HELPER_PATH = path.join(
   ROOT,
-  'frontend/src/app/shared/core/local/seed/builders/demo-image-pool.ts'
+  'frontend/src/app/shared/core/local/seed/builders/media/demo-image-pool.ts'
 );
 const MANIFEST_PATH = path.join(ROOT, 'tools/seeds/demo-image-pool-manifest.json');
 

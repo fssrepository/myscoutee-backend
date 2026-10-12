@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.campaigns.service;
 
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.campaigns.repository.CampaignsRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
@@ -34,7 +34,7 @@ class CampaignsServiceTest {
                 new com.raxim.myscoutee.domain.chat.service.CampaignConversationService(chats), repository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
                 new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)),
-                mock(CommunityGroupProfilesService.class), mock(HomeUserProfileService.class));
+                mock(CommunityGroupProfilesService.class), mock(SelectedProfile.class));
         when(repository.findById(anyString())).thenAnswer(call -> Optional.ofNullable(records.get(call.getArgument(0))));
         when(repository.save(any())).thenAnswer(call -> {
             Campaign c = call.getArgument(0);

@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.accounts.api;
 
 /** Identity, lifecycle and display facts; excludes private devices, finances and integration configuration. */
-public interface ProfileSummary extends WorkspaceIdentity, com.raxim.myscoutee.domain.administration.api.AdministratorCandidate {
+public interface ProfileSummary extends WorkspaceIdentity {
     String getUserId();
     String getAccountUserId();
     String getWorkspaceGroupId();

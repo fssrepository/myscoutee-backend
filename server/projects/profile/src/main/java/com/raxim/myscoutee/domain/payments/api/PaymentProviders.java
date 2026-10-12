@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.payments.api;
 
 import java.util.List;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentProviderDto;
 
 public interface PaymentProviders {
     List<PaymentProviderDto> availableProviders();

@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.content.service;
 
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.SupportMessages;
 
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 class ContentModerationServiceTest {
     final ContentModerationRepository repository = mock(ContentModerationRepository.class);
     final MongoTemplate mongo = mock(MongoTemplate.class);
-    final ChatService chat = mock(ChatService.class);
+    final SupportMessages chat = mock(SupportMessages.class);
     final ContentModerationService service = new ContentModerationService(repository, mongo, chat, mock(UserActivityCountersService.class));
     final Map<String, Item> items = new HashMap<>();
     final Map<String, State> groupStates = new HashMap<>();

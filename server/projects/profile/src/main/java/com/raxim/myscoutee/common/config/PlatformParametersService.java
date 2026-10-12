@@ -6,27 +6,27 @@ import java.time.Duration;
 
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog;
+import com.raxim.myscoutee.domain.platform.api.SchedulingParameters;
 
 
 @Service
 public class PlatformParametersService implements com.raxim.myscoutee.domain.platform.api.SchedulingPolicy {
 
-    private final ConfigurationCatalog affinityConfigsRepository;
+    private final SchedulingParameters parameters;
 
-    public PlatformParametersService(ConfigurationCatalog affinityConfigsRepository) {
-        this.affinityConfigsRepository = affinityConfigsRepository;
+    public PlatformParametersService(SchedulingParameters parameters) {
+        this.parameters = parameters;
     }
 
-    public ConfigurationCatalog.Settings activeConfig() {
-        return affinityConfigsRepository.active(JobGroupContext.key());
+    public SchedulingParameters.Settings activeConfig() {
+        return parameters.active(JobGroupContext.key());
     }
 
-    public ConfigurationCatalog.NotificationParameters notifications() {
+    public SchedulingParameters.NotificationParameters notifications() {
         return activeConfig().getNotifications();
     }
 
-    public ConfigurationCatalog.JobParameters jobs() {
+    public SchedulingParameters.JobParameters jobs() {
         return activeConfig().getJobs();
     }
 

@@ -22,7 +22,8 @@ class IntegrationSettingsServiceTest {
     final UsersRepository users = mock(UsersRepository.class);
     final AffiliateService affiliates = mock(AffiliateService.class);
     final IntegrationPublicEndpointResolver endpoint = mock(IntegrationPublicEndpointResolver.class);
-    final IntegrationSettingsService service = new IntegrationSettingsService(tokens,  mcp, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  affiliates,  endpoint);
+    final IntegrationSettingsService service = new IntegrationSettingsService(tokens, mcp,
+            new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users), Optional.of(affiliates), endpoint);
 
     Users owner(long revision) {
         var owner = new Users(); owner.setUserId("owner");
@@ -80,6 +81,73 @@ class IntegrationSettingsServiceTest {
             assertThat(access.effective("key", false)).isEqualTo(client);
         }
         assertThat(IntegrationAccess.initial().effective("new", true)).isEqualTo(IntegrationAccess.Mode.BLOCKED);
+    }
+
+    @Test void personalSettingsStartWithoutBusinessSummariesAndKeepRevisionedClientAccess() {
+        var owner = owner(3);
+        var active = List.of(token("api", "integration"));
+        when(tokens.activeTokens("owner")).thenReturn(active);
+        when(endpoint.resolve()).thenReturn("https://example.test/api/integrations/v1");
+        when(tokens.settings("owner", "https://example.test/api/integrations/v1", "integration", active))
+                .thenReturn(new IntegrationSettingsDto("https://example.test/api/integrations/v1", 3, 1000, List.of()));
+        var mcpSettings = new com.raxim.myscoutee.domain.integrations.dto.McpDtos.Settings(
+                "https://example.test/api/mcp", 3, true, List.of(), IntegrationAccess.Mode.WRITE);
+        when(mcp.settings(eq(active), any())).thenReturn(mcpSettings);
+        when(users.updateIntegrationAccess(eq("owner"), eq(3L), any())).thenAnswer(call -> {
+            owner.setIntegrationAccess(call.getArgument(2)); return 1L;
+        });
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            var beans = context.getBeanFactory();
+            beans.registerSingleton("tokens", tokens);
+            beans.registerSingleton("mcp", mcp);
+            beans.registerSingleton("profiles", new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users));
+            beans.registerSingleton("endpoint", endpoint);
+            beans.registerSingleton("access", new com.raxim.myscoutee.domain.accounts.service.AccountIntegrationAccessService(users));
+            context.register(IntegrationSettingsService.class);
+            context.refresh();
+            var personal = context.getBean(IntegrationSettingsService.class);
+            var loaded = personal.load("owner");
+            assertThat(loaded.affiliate()).isNull();
+            assertThat(loaded.participants()).isNull();
+            assertThat(loaded.mcp()).isSameAs(mcpSettings);
+            assertThat(loaded.accessRevision()).isEqualTo(3);
+            var saved = personal.save("owner", request(3, "api"));
+            assertThat(saved.accessRevision()).isEqualTo(4);
+            verify(users).updateIntegrationAccess(eq("owner"), eq(3L), any());
+            verifyNoInteractions(affiliates);
+        }
+    }
+
+    @Test void installedBusinessSummariesKeepTheirCallOrderAndFailuresAreNotHidden() {
+        owner(3);
+        var active = List.of(token("api", "integration"));
+        when(tokens.activeTokens("owner")).thenReturn(active);
+        when(endpoint.resolve()).thenReturn("https://example.test/api/integrations/v1");
+        when(tokens.settings(anyString(), anyString(), anyString(), anyList()))
+                .thenReturn(new IntegrationSettingsDto("base", 3, 1000, List.of()));
+        service.load("owner");
+        var order = inOrder(users, tokens, affiliates, mcp);
+        order.verify(users).findByUserId("owner");
+        order.verify(tokens).activeTokens("owner");
+        order.verify(tokens).settings("owner", "https://example.test/api/integrations/v1", "integration", active);
+        order.verify(affiliates).summary("owner");
+        order.verify(affiliates).participantSummary("owner");
+        order.verify(mcp).settings(eq(active), any());
+        order.verifyNoMoreInteractions();
+        clearInvocations(affiliates, mcp);
+        when(affiliates.summary("owner")).thenThrow(new IllegalStateException("owner unavailable"));
+        assertThatThrownBy(() -> service.load("owner")).isInstanceOf(IllegalStateException.class).hasMessage("owner unavailable");
+        verify(affiliates, never()).participantSummary(anyString());
+        verifyNoInteractions(mcp);
+    }
+
+    @Test void administratorSettingsStillSkipBusinessSummaries() {
+        owner(3);
+        when(tokens.activeTokens("owner")).thenReturn(List.of());
+        when(tokens.settings("owner", "/api/admin-client/v1", "admin-client", List.of()))
+                .thenReturn(new IntegrationSettingsDto("/api/admin-client/v1", 3, 1000, List.of()));
+        assertThat(service.load("owner", true).baseUrl()).isEqualTo("/api/admin-client/v1");
+        verifyNoInteractions(affiliates, endpoint);
     }
     @Test void readPackCapsFullClientAndKeepsApiDefaultWrite() {
         var access = new IntegrationAccess(1, IntegrationAccess.Mode.READ, Map.of("mcp", IntegrationAccess.Mode.FULL));

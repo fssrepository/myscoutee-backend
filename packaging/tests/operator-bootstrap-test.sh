@@ -255,19 +255,19 @@ fi
 [[ -z "$(read_value OPERATOR_USER "${INVALID_FIXTURE}/myscoutee.env")" ]] \
   || fail "malformed digest caused identity rotation"
 
-grep -Fq 'MYSCOUTEE_BOOTSTRAP_ENV_FILE=/etc/myscoutee/myscoutee.env \' \
+grep -Fq 'MYSCOUTEE_BOOTSTRAP_ENV_FILE=${PACKAGE_ETC}/${PACKAGE_NAME}.env \' \
   "${POSTINST}" \
   || fail "postinst does not invoke bootstrap against the installed environment"
-grep -Fq 'MYSCOUTEE_BOOTSTRAP_SECRETS_FILE=/etc/myscoutee/myscoutee.secrets.env \' \
+grep -Fq 'MYSCOUTEE_BOOTSTRAP_SECRETS_FILE=${PACKAGE_ETC}/${PACKAGE_NAME}.secrets.env \' \
   "${POSTINST}" \
   || fail "postinst does not invoke bootstrap against the installed secrets"
 grep -Fq 'MYSCOUTEE_BOOTSTRAP_OWNER_UID=0 \' "${POSTINST}" \
   || fail "postinst does not enforce root ownership for bootstrap files"
 grep -Fq 'MYSCOUTEE_BOOTSTRAP_OWNER_GID=0 \' "${POSTINST}" \
   || fail "postinst does not enforce the root group for bootstrap files"
-grep -Fq 'shown-once deployment-local Operator credential' "${POSTINST}" \
+grep -Fq 'shown-once deployment-local Operator credential' "${REPO_ROOT}/packaging/templates/install-policy.json" \
   || fail "postinst does not distinguish shown-once from single-use"
-grep -Fq 'The password itself is not single-use' "${POSTINST}" \
+grep -Fq 'The password itself is not single-use' "${REPO_ROOT}/packaging/templates/install-policy.json" \
   || fail "postinst does not explain ongoing Operator bootstrap login"
 if grep -Fq \
   'Add /etc/myscoutee/firebase-service-account.json' \
@@ -287,6 +287,8 @@ render_and_assert_bootstrap() {
 
   mkdir -p "${stage}/projects/profile/secrets"
   cp "${compose_source}" "${stage}/docker-compose-prod.yml"
+  cp "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${stage}/"
+  cp "${REPO_ROOT}/server/"docker-compose{.replicaset,-stun}.yml "${stage}/"
   cp "${FIRST_FIXTURE}/myscoutee.secrets.env" "${stage}/.env.secrets"
   cp "${REPO_ROOT}/packaging/templates/myscoutee.env" \
     "${stage}/runtime.env"

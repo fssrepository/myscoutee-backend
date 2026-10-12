@@ -39,7 +39,7 @@ class IntegrationCapabilitiesServiceTest {
     private final CommunityGroupsRepository repository = mock(CommunityGroupsRepository.class);
     private final AccessControlService access = mock(AccessControlService.class);
     private final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
-    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(groups, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(repository), access, roles);
+    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(Optional.of(new GroupIntegrationCapabilities(groups, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(repository), access)), roles);
 
     private UsernamePasswordAuthenticationToken authentication(Users profile) {
         var auth = new UsernamePasswordAuthenticationToken(new FirebasePrincipal(profile.getUserId(), null, "INTEGRATION", profile), null, List.of());
@@ -110,6 +110,90 @@ class IntegrationCapabilitiesServiceTest {
         when(roles.operator(profile)).thenReturn(false);
         assertThatThrownBy(() -> service.requireRoleRead(auth, "operator")).isInstanceOf(ResponseStatusException.class);
         verifyNoInteractions(groups, repository, access);
+    }
+
+    @Test void operatorReportPermissionIsScopedAndRestoredEvenWhenTheOwnerFails() {
+        var profile = new Users(); profile.setUserId("operator");
+        var auth = authentication(profile);
+        auth.setDetails(new AuthenticatedIntegrationClient("operator", "key", "client").withAccess(
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.READ));
+        when(roles.operator(profile)).thenReturn(true);
+        var previous = org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
+        previous.setAuthentication(auth);
+        org.springframework.security.core.context.SecurityContextHolder.setContext(previous);
+        try {
+            assertThatThrownBy(() -> service.withOperatorReportRead(auth, () -> {
+                var checked = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+                assertThat(checked.getPrincipal()).isSameAs(auth.getPrincipal());
+                assertThat(checked.getDetails()).isSameAs(auth.getDetails());
+                assertThat(checked.getAuthorities()).extracting(org.springframework.security.core.GrantedAuthority::getAuthority)
+                        .contains(com.raxim.myscoutee.domain.operator.api.MeasurementReports.INTEGRATION_READ_AUTHORITY);
+                throw new IllegalStateException("owner failed");
+            })).isInstanceOf(IllegalStateException.class).hasMessage("owner failed");
+            assertThat(org.springframework.security.core.context.SecurityContextHolder.getContext()).isSameAs(previous);
+            when(roles.operator(profile)).thenReturn(false);
+            assertThatThrownBy(() -> service.withOperatorReportRead(auth, () -> { throw new AssertionError("unauthorized read"); }))
+                    .isInstanceOf(ResponseStatusException.class);
+            when(roles.operator(profile)).thenReturn(true);
+            auth.setDetails(new AuthenticatedIntegrationClient("operator", "key", "client"));
+            assertThatThrownBy(() -> service.withOperatorReportRead(auth, () -> { throw new AssertionError("write-only integration"); }))
+                    .isInstanceOf(ResponseStatusException.class);
+        } finally { org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
+    }
+
+    @Test void personalApiStartsWithoutProductOwnersAndKeepsIdentityAndAccessChecks() {
+        var profile = new Users(); profile.setUserId("personal"); profile.setName("Personal");
+        var auth = authentication(profile);
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            context.registerBean(IntegrationRoleAccessService.class, () -> roles);
+            context.register(IntegrationCapabilitiesService.class);
+            context.refresh();
+            var personal = context.getBean(IntegrationCapabilitiesService.class);
+            assertThat(personal.describe(auth).operations()).isEmpty();
+            assertThat(personal.requireWrite(auth, null)).isEqualTo("personal");
+            auth.setDetails(new AuthenticatedIntegrationClient("personal", "key", "client").withAccess(
+                    com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.READ));
+            var read = personal.describe(auth);
+            assertThat(read.operations()).containsExactly("listChats", "chatDetails", "chatMessages", "listNotifications");
+            assertThat(read.inviteGroups()).isEmpty();
+            assertThat(read.groupId()).isNull();
+            assertThat(personal.requireRead(auth, null)).isEqualTo("personal");
+            assertThatThrownBy(() -> personal.requireRead(auth, "community")).isInstanceOf(ResponseStatusException.class);
+            auth.setDetails(new AuthenticatedIntegrationClient("foreign", "key", "client"));
+            assertThatThrownBy(() -> personal.describe(auth)).isInstanceOf(ResponseStatusException.class);
+            auth.setDetails(new AuthenticatedIntegrationClient("personal", "key", "client").withAccess(
+                    com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.BLOCKED));
+            assertThatThrownBy(() -> personal.describe(auth)).isInstanceOf(ResponseStatusException.class);
+        }
+        verifyNoInteractions(groups, repository, access);
+    }
+
+    @Test void productDiscoveryKeepsTheExactOperationOrderAndOneReadPerOwner() {
+        var profile = new Users(); profile.setUserId("base");
+        when(groups.actor("base")).thenReturn(profile);
+        when(groups.administeredGroups(profile)).thenReturn(List.of());
+        when(access.canCurrentActorCreateEvent("base", "*")).thenReturn(true);
+        when(access.canCurrentActorCreateAsset("base", "*")).thenReturn(true);
+        var auth = authentication(profile);
+        auth.setDetails(new AuthenticatedIntegrationClient("base", "key", "client").withAccess(
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.FULL));
+        assertThat(service.describe(auth).operations()).containsExactly("event", "encounters", "inviteParticipants",
+                "createEvents", "createAssets", "listEvents", "eventDetails", "listGroups", "groupDetails",
+                "listChats", "chatDetails", "chatMessages", "listNotifications", "listRatings", "listAssets", "assetDetails");
+        var order = inOrder(groups, access);
+        order.verify(groups).actor("base");
+        order.verify(groups).administeredGroups(profile);
+        order.verify(access).canCurrentActorCreateEvent("base", "*");
+        order.verify(access).canCurrentActorCreateAsset("base", "*");
+        verifyNoMoreInteractions(groups, access);
+        verifyNoInteractions(repository);
+    }
+
+    @Test void installedProductOwnerFailureIsNotReplacedByPersonalOperations() {
+        var profile = new Users(); profile.setUserId("base");
+        when(groups.actor("base")).thenThrow(new IllegalStateException("groups unavailable"));
+        assertThatThrownBy(() -> service.describe(authentication(profile))).hasMessage("groups unavailable");
+        verifyNoInteractions(repository, access);
     }
 
 }

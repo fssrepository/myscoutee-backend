@@ -34,7 +34,7 @@ public final class ActorDelegationBrokerProtocol {
     public static boolean valid(Operation operation) {
         return operation != null && operation.audience() != null && !operation.audience().isBlank()
                 && operation.audience().length() <= 256 && "POST".equals(operation.method())
-                && operation.path() != null && operation.path().matches("/_internal/v1/[a-z0-9/-]{1,256}");
+                && operation.path() != null && operation.path().matches("/_internal/v1/[a-z0-9/_-]{1,256}");
     }
     public static boolean valid(Request request) {
         return request != null && request.parent() != null && request.parent().length() <= 8192

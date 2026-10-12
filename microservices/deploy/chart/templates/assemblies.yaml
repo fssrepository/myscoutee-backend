@@ -10,7 +10,7 @@ metadata:
   name: {{ $name }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/part-of: myscoutee-msc121
+    app.kubernetes.io/part-of: {{ $.Release.Namespace }}
     app.kubernetes.io/name: {{ $name }}
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -24,18 +24,22 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/part-of: myscoutee-msc121
+        app.kubernetes.io/part-of: {{ $.Release.Namespace }}
         app.kubernetes.io/name: {{ $name }}
       annotations:
         myscoutee/transport-scope-version: '2'
         checksum/runtime: {{ toJson $.Values.runtime | sha256sum }}
         checksum/mongodb: {{ toJson $.Values.mongodb | sha256sum }}
         checksum/transport-credentials: {{ toJson $transportValues | sha256sum }}
+        {{- if has "platform" $service.domains }}
+        checksum/configuration-key: {{ $.Values.credentials.configurationMasterKey | sha256sum }}
+        checksum/release-simulator-ca: {{ $.Values.releaseSimulatorCertificate | sha256sum }}
+        {{- end }}
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:
-        {{- if has "registry" $service.domains }}
+        {{- if or (has "registry" $service.domains) (has "platform" $service.domains) }}
         fsGroup: 10001
         fsGroupChangePolicy: OnRootMismatch
         {{- end }}
@@ -110,6 +114,13 @@ spec:
         # Kubernetes already probes /health; the gateway watches EndpointSlices.
         - name: MYSCOUTEE_RUNTIME_STATUS_ENABLED
           value: "false"
+        {{- if has "platform" $service.domains }}
+        # Match Compose: the developer lab never queries the public release catalog.
+        - {name: OPERATOR_UPDATE_RELEASE_API_ORIGIN, value: "https://release-simulator:18445"}
+        - {name: OPERATOR_UPDATE_RELEASE_DOWNLOAD_ORIGIN, value: "https://release-simulator:18445"}
+        - {name: OPERATOR_UPDATE_TLS_CA_CERTIFICATE, value: /etc/myscoutee/update/release-simulator-ca.pem}
+        - {name: OPERATOR_UPDATE_INCLUDE_PRERELEASES, value: "true"}
+        {{- end }}
         {{- if has "affinity" $service.domains }}
         # Match the production replica-set override: reconnect reconciles the
         # durable queue; no periodic affinity polling in stream mode.
@@ -119,6 +130,18 @@ spec:
           value: "false"
         {{- end }}
         volumeMounts:
+        {{- if has "platform" $service.domains }}
+        # subPath exposes a regular file; the canonical crypto owner rejects symlinks.
+        - name: deployment-configuration
+          mountPath: {{ $.Values.configurationKeyPath | quote }}
+          subPath: deployment-master-key
+          readOnly: true
+        # Only the public certificate is exposed, never the simulator's TLS volume.
+        - name: release-simulator
+          mountPath: /etc/myscoutee/update/release-simulator-ca.pem
+          subPath: certificate.pem
+          readOnly: true
+        {{- end }}
         {{- if has "registry" $service.domains }}
         - name: registry-client
           mountPath: /var/lib/myscoutee/registry-demo
@@ -137,6 +160,15 @@ spec:
             port: 8081
           periodSeconds: 5
       volumes:
+      {{- if has "platform" $service.domains }}
+      - name: deployment-configuration
+        secret:
+          secretName: deployment-configuration
+          defaultMode: 0440
+      - name: release-simulator
+        configMap:
+          name: release-simulator-ca
+      {{- end }}
       {{- if has "registry" $service.domains }}
       - name: registry-client
         persistentVolumeClaim:
@@ -152,7 +184,7 @@ metadata:
   name: {{ $name }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/part-of: myscoutee-msc121
+    app.kubernetes.io/part-of: {{ $.Release.Namespace }}
     app.kubernetes.io/name: {{ $name }}
     app.kubernetes.io/managed-by: Helm
 spec:

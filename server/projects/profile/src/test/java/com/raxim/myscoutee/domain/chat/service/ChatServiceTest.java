@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.chat.service;
 import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
+import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
+import com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters;
 import com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 
@@ -92,9 +92,11 @@ class ChatServiceTest {
     @Mock
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
-    private HomeUserProfileService homeUserProfileService;
+    private ProfileReadState homeUserProfileService;
     @Mock
-    private UserActivityCountersService userActivityCountersService;
+    private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
+    @Mock
+    private SupportCaseCounters supportCaseCounters;
     @Mock
     private ChatStreamPublisher chatStreamPublisher;
     @Mock
@@ -109,20 +111,19 @@ class ChatServiceTest {
     private AccessControlService accessControlService;
 
     private ChatService service;
+    private SupportConversationService support;
+    private ResourceConversationService resources;
 
     @BeforeEach
     void setUp() {
         org.mockito.Mockito.lenient().when(accessControlService.resolveChatActorUserId(any(), any()))
                 .thenAnswer(call -> call.getArgument(1));
-        service = campaignAware(new ChatService(
+        service = new ChatService(
                 chatsRepository,
                 chatMessagesRepository,
                 mongoTemplate,
                 profileDirectory(),
-                memberDirectory(),
-                new com.raxim.myscoutee.domain.events.service.EventResourceDirectoryService(activitySubEventResourcesRepository, activitySubEventStageRuntimeRepository),
                 homeUserProfileService,
-                userActivityCountersService,
                 chatStreamPublisher,
                 chatPushNotificationService,
                 userNotificationService,
@@ -130,13 +131,22 @@ class ChatServiceTest {
                 adminMenuCounterService,
                 accessControlService,
                 new ChatMapper(),
-                new ChatMessageMapper(profileDirectory())), mongoTemplate);
+                new ChatMessageMapper(profileDirectory()));
+        support = new SupportConversationService(service, chatsRepository, chatMessagesRepository,
+                supportCaseCounters, new ChatMessageMapper(profileDirectory()), chatPushNotificationService,
+                accessControlService, adminTelemetryService);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "accountDevices", new com.raxim.myscoutee.domain.accounts.service.AccountDeviceService(usersRepository));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "chatCounters", new com.raxim.myscoutee.domain.accounts.service.AccountChatCounterService(mongoTemplate));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", homeUserProfileService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", selectedProfile);
         var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
         org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);
+        configureResources(eventOwner);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "pagePresentation",
+                new ChatActivityPresentation(profileDirectory(), memberDirectory(),
+                        new com.raxim.myscoutee.domain.events.service.EventResourceDirectoryService(
+                                activitySubEventResourcesRepository, activitySubEventStageRuntimeRepository),
+                        eventOwner, com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongoTemplate),
+                        new ChatMapper()));
     }
 
     @AfterEach
@@ -145,26 +155,84 @@ class ChatServiceTest {
     }
 
     @Test
+    void chatStartsWithoutProductProvidersAndRetainsStoredMembershipAccess() {
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            context.registerBean(ChatsRepository.class, () -> chatsRepository);
+            context.registerBean(ChatMessagesRepository.class, () -> chatMessagesRepository);
+            context.registerBean(MongoTemplate.class, () -> mongoTemplate);
+            context.registerBean(com.raxim.myscoutee.domain.accounts.api.ProfileSummaries.class, this::profileDirectory);
+            context.registerBean(ProfileReadState.class, () -> homeUserProfileService);
+            context.registerBean(ChatStreamPublisher.class, () -> chatStreamPublisher);
+            context.registerBean(ChatPushNotificationService.class, () -> chatPushNotificationService);
+            context.registerBean(com.raxim.myscoutee.domain.notifications.api.NotificationInbox.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.notifications.api.NotificationInbox.class));
+            context.registerBean(com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.class));
+            context.registerBean(com.raxim.myscoutee.domain.administration.api.AdministratorClassification.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.administration.api.AdministratorClassification.class));
+            context.registerBean(com.raxim.myscoutee.domain.access.api.AccessPermissions.class,
+                    () -> {
+                        var permissions = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.access.api.AccessPermissions.class);
+                        when(permissions.resolveChatActorUserId(any(), any())).thenAnswer(call -> call.getArgument(1));
+                        return permissions;
+                    });
+            context.registerBean(ChatMapper.class);
+            context.registerBean(ChatMessageMapper.class);
+            context.registerBean(com.raxim.myscoutee.domain.accounts.api.AccountDevices.class,
+                    () -> new com.raxim.myscoutee.domain.accounts.service.AccountDeviceService(usersRepository));
+            context.registerBean(com.raxim.myscoutee.domain.accounts.api.ChatCounters.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ChatCounters.class));
+            context.registerBean(com.raxim.myscoutee.domain.accounts.api.SelectedProfile.class, () -> selectedProfile);
+            context.register(ChatService.class);
+            context.refresh();
+            ChatService minimal = context.getBean(ChatService.class);
+            for (String channel : List.of("contact", "mainEvent", "optionalSubEvent", "groupSubEvent", "case", "campaign")) {
+                Chat record = chat(channel, "viewer", 0, "now", channel);
+                when(chatsRepository.findByOwnerUserIdAndChatId("viewer", channel)).thenReturn(Optional.of(record));
+                assertThat(minimal.hasChatAccess(channel, "viewer")).as(channel).isTrue();
+            }
+            verify(mongoTemplate, never()).findById(any(), eq(com.raxim.myscoutee.domain.community.document.ServiceCase.class));
+        }
+    }
+
+    @Test
     void campaignQuestionRequiresAPersistedRatingInTheCampaignWorkspace() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         Users viewer = user("viewer", "Viewer", "V"); viewer.setWorkspaceGroupId("myscoutee-work");
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
         var campaign = new com.raxim.myscoutee.domain.campaigns.document.Campaign("campaign", "myscoutee-work", "organizer",
                 "Idea", "Description", "business", "technology", List.of(), List.of(), "published", "now", "now", 1L);
         when(mongoTemplate.findById("campaign", com.raxim.myscoutee.domain.campaigns.document.Campaign.class)).thenReturn(campaign);
         var request = new ChatServiceEnsureRequestDto("campaign", null, null, null, "forged-target", "Fake title", "", "campaign", null);
-        assertThatThrownBy(() -> service.ensureServiceChat(request, "viewer"))
-                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> resources.ensureServiceChat(request, "viewer"))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class,
+                        failure -> assertThat(failure.getStatusCode().value()).isEqualTo(403));
         verify(mongoTemplate, never()).bulkOps(any(), eq(Chat.class));
         when(mongoTemplate.exists(any(Query.class), eq(com.raxim.myscoutee.domain.affinity.document.UserRate.class))).thenReturn(true);
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
-        var chat = service.ensureServiceChat(request, "viewer");
+        var chat = resources.ensureServiceChat(request, "viewer");
         assertThat(chat.channelType()).isEqualTo("campaign");
         assertThat(chat.title()).isEqualTo("Idea");
         assertThat(chat.memberIds()).containsExactly("viewer", "organizer");
         assertThat(chat.eventId()).isEmpty();
         verify(bulkOperations, times(2)).upsert(any(Query.class), any(Update.class));
         verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any());
+    }
+
+    @Test
+    void unavailableCampaignRemainsNotFoundWithoutWritingChatCopies() {
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        Users viewer = user("viewer", "Viewer", "V"); viewer.setWorkspaceGroupId("other");
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
+        var campaign = new com.raxim.myscoutee.domain.campaigns.document.Campaign("campaign", "work", "organizer",
+                "Idea", "Description", "business", "technology", List.of(), List.of(), "published", "now", "now", 1L);
+        when(mongoTemplate.findById("campaign", com.raxim.myscoutee.domain.campaigns.document.Campaign.class)).thenReturn(campaign);
+        var request = new ChatServiceEnsureRequestDto("campaign", null, null, null, "forged-target", "Fake title", "", "campaign", null);
+        assertThatThrownBy(() -> resources.ensureServiceChat(request, "viewer"))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class,
+                        failure -> assertThat(failure.getStatusCode().value()).isEqualTo(404));
+        verify(mongoTemplate, never()).exists(any(Query.class), eq(com.raxim.myscoutee.domain.affinity.document.UserRate.class));
+        verify(mongoTemplate, never()).bulkOps(any(), eq(Chat.class));
     }
 
     @Test
@@ -182,7 +250,7 @@ class ChatServiceTest {
 
     @Test
     void retriedShareReturnsThePersistedMessageWithoutAnotherUnreadIncrement() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(true);
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "V")));
@@ -199,7 +267,7 @@ class ChatServiceTest {
 
     @Test
     void contactChatRejectsPeopleOutsideTheCallersContactsWithoutWriting() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         assertThatThrownBy(() -> service.ensureContactChat("viewer", "stranger"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
@@ -207,7 +275,7 @@ class ChatServiceTest {
 
     @Test
     void contactInvitationRejectsCrossWorkspaceTargetsEvenWhenSavedAsContacts() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         var contacts = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile();
         var contact = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile.NavigatorContactRecord();
         contact.setUserId("target"); contacts.setContacts(List.of(contact));
@@ -223,7 +291,7 @@ class ChatServiceTest {
 
     @Test
     void savedContactCannotOpenDirectChatWithoutAcceptedPermission() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         var contacts = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile();
         var contact = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile.NavigatorContactRecord();
         contact.setUserId("target"); contacts.setContacts(List.of(contact));
@@ -237,7 +305,7 @@ class ChatServiceTest {
 
     @Test
     void contactMemberCommandCannotAddPeopleToSupportChats() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         for (String channel : List.of("appSupport", "groupSupport")) {
             when(chatsRepository.findByChatId(channel)).thenReturn(List.of(chat(channel, "viewer", 0,
                     "2026-09-25T10:00:00Z", channel)));
@@ -251,7 +319,7 @@ class ChatServiceTest {
 
     @Test
     void contactInvitationCannotWriteIntoAnotherAccountsConversation() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         Chat foreign = chat("foreign", "other", 7, "2026-09-25T10:00:00Z", "contact");
         foreign.setMemberIds(List.of("other", "peer"));
         when(chatsRepository.findByChatId("foreign")).thenReturn(List.of(foreign));
@@ -267,7 +335,7 @@ class ChatServiceTest {
 
     @Test
     void existingContactChatRejectsAnInviteOutsideTheActorsOwnContacts() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("contact")).thenReturn(List.of(chat("contact", "viewer", 0,
                 "2026-09-25T10:00:00Z", "contact")));
         assertThatThrownBy(() -> service.addContactChatMembers("contact", "viewer", List.of("stranger")))
@@ -278,7 +346,7 @@ class ChatServiceTest {
 
     @Test
     void contactInvitationRequiresEverySavedTargetToHaveApprovedBeforeAnyWrite() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("contact")).thenReturn(List.of(chat("contact", "viewer", 0,
                 "2026-09-25T10:00:00Z", "contact")));
         var contacts = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile();
@@ -308,7 +376,7 @@ class ChatServiceTest {
     @Test
     void contactInviteReturnsAllMembersAndPreservesExistingUnreadState() {
         when(mongoTemplate.count(any(Query.class), eq(ContactChatAccess.class))).thenReturn(1L);
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         var current = chat("contact", "viewer", 7, "2026-09-25T10:00:00Z", "contact");
         var other = chat("contact", "sender", 3, current.getDateIso(), "contact");
         when(chatsRepository.findByChatId("contact")).thenReturn(List.of(current, other));
@@ -350,7 +418,7 @@ class ChatServiceTest {
     @Test
     void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("viewer", "Viewer", "VU")));
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));
         when(chatMessagesRepository.findActiveSharesBySender("chat-1", "viewer", "event"))
                 .thenReturn(List.of(message("old-share", "viewer", "viewer", "2026-05-26T08:00:01Z")));
@@ -364,7 +432,7 @@ class ChatServiceTest {
 
     @Test
     void sharedMessagesRejectActorsOutsideTheChat() {
-        when(homeUserProfileService.resolveSelectedUserId("outsider")).thenReturn("outsider");
+        when(selectedProfile.resolveSelectedUserId("outsider")).thenReturn("outsider");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
         assertThatThrownBy(() -> service.querySharedMessages("chat-1", "outsider", "event"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
@@ -381,7 +449,7 @@ class ChatServiceTest {
                 message("m2", "sender", "viewer", "2026-05-26T08:00:02Z"),
                 message("m3", "sender", "viewer", "2026-05-26T08:00:03Z"));
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(3L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class))).thenReturn(messages);
@@ -409,7 +477,7 @@ class ChatServiceTest {
         viewerChat.setContextStartAtIso("2026-08-30T06:00:00Z");
         viewerChat.setContextEndAtIso("2026-08-30T07:30:00Z");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(homeUserProfileService.queryMenuCounters("viewer")).thenReturn(new UserMenuCountersDto(
                 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 new UserChatCountersDto(3, 0, 0, 3, 0, 0),
@@ -451,7 +519,7 @@ class ChatServiceTest {
             return saved;
         });
 
-        String chatId = service.ensureMainEventChat(room, List.of("user-2", "user-1", "user-2"));
+        String chatId = resources.ensureMainEventChat(room, List.of("user-2", "user-1", "user-2"));
 
         assertThat(chatId).isEqualTo(room.getSourceId());
         assertThat(persisted).hasSize(2).allSatisfy(chat -> {
@@ -501,7 +569,7 @@ class ChatServiceTest {
         previousOwnerChat.setContextStartAtIso(event.getStartAtIso());
         previousOwnerChat.setContextEndAtIso(event.getEndAtIso());
 
-        when(homeUserProfileService.resolveSelectedUserId(requesterUserId)).thenReturn(requesterUserId);
+        when(selectedProfile.resolveSelectedUserId(requesterUserId)).thenReturn(requesterUserId);
         when(mongoTemplate.findOne(any(Query.class), eq(ActivityEvent.class))).thenReturn(event);
         when(mongoTemplate.findOne(any(Query.class), eq(Asset.class))).thenReturn(asset);
         when(usersRepository.findByUserId(currentOwnerUserId))
@@ -513,7 +581,7 @@ class ChatServiceTest {
         when(chatsRepository.findByChatId(chatId)).thenReturn(List.of(requesterChat, previousOwnerChat));
         when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        var result = service.ensureServiceChat(new ChatServiceEnsureRequestDto(
+        var result = resources.ensureServiceChat(new ChatServiceEnsureRequestDto(
                 "asset",
                 eventId,
                 subEventId,
@@ -558,7 +626,7 @@ class ChatServiceTest {
         when(chatsRepository.findByChatId(room.getSourceId())).thenReturn(List.of());
         when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.ensureMainEventChat(room, List.of("user-1"));
+        resources.ensureMainEventChat(room, List.of("user-1"));
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<Chat>> chatsCaptor = ArgumentCaptor.forClass(List.class);
@@ -584,10 +652,10 @@ class ChatServiceTest {
             persisted.addAll(saved);
             return saved;
         });
-        ChatService.PublishedMainEventChatResult firstResult =
-                service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
-        ChatService.PublishedMainEventChatResult repeatedResult =
-                service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
+        com.raxim.myscoutee.domain.chat.api.EventConversations.PublishedMainEventChatResult firstResult =
+                resources.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
+        com.raxim.myscoutee.domain.chat.api.EventConversations.PublishedMainEventChatResult repeatedResult =
+                resources.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
 
         assertThat(firstResult.createdOwnerUserIds()).containsExactlyInAnyOrder("user-1", "user-2");
         assertThat(repeatedResult.createdOwnerUserIds()).isEmpty();
@@ -612,7 +680,7 @@ class ChatServiceTest {
         when(mongoTemplate.updateMulti(any(Query.class), any(Update.class), eq(Chat.class)))
                 .thenReturn(UpdateResult.acknowledged(2L, 2L, null));
 
-        long modified = service.updateEventChatOwnerStatus("event-1", ActivityEvent.STATUS_DRAFT);
+        long modified = resources.updateEventChatOwnerStatus("event-1", ActivityEvent.STATUS_DRAFT);
 
         assertThat(modified).isEqualTo(2L);
         ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
@@ -690,7 +758,7 @@ class ChatServiceTest {
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
@@ -727,7 +795,7 @@ class ChatServiceTest {
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage target = message("target", "sender", "someone-else", "2026-05-26T08:00:02Z");
         ChatMessage previous = message("previous", "sender", "someone-else", "2026-05-26T08:00:01Z");
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.findByChatIdAndMessageId("chat-1", "target")).thenReturn(Optional.of(target));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(2L);
@@ -755,7 +823,7 @@ class ChatServiceTest {
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(16L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
@@ -787,7 +855,7 @@ class ChatServiceTest {
         deletedMessage.setReadBy(List.of());
         deletedMessage.refreshMessageSearchFields();
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
@@ -805,10 +873,11 @@ class ChatServiceTest {
 
     @Test
     void queryMembersPageUsesLogicalChatIdAndPaginatesTheMongoUsersQuery() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "memberPages", null);
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat otherOwnerChat = chat("chat-1", "sender", 0);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(otherOwnerChat, viewerChat));
         when(mongoTemplate.count(any(Query.class), eq(Users.class))).thenReturn(2L);
         when(mongoTemplate.find(any(Query.class), eq(Users.class)))
@@ -837,7 +906,7 @@ class ChatServiceTest {
         pendingMember.setUserId("sender");
         pendingMember.setStatus("pending");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat));
         when(mongoTemplate.count(any(Query.class), eq(ActivityMember.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(ActivityMember.class)))
@@ -852,13 +921,15 @@ class ChatServiceTest {
                 .containsExactly("sender");
         assertThat(result.total()).isEqualTo(1);
         verify(mongoTemplate).count(any(Query.class), eq(ActivityMember.class));
+        verify(mongoTemplate).find(any(Query.class), eq(ActivityMember.class));
+        verify(usersRepository).findByUserIdIn(java.util.Set.of("sender"));
     }
 
     @Test
     void queryChatsReadsOwnerCopiesWithoutRepairingMemberCopies() {
         Chat viewerChat = chat("chat-1", "viewer", 0);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(viewerChat));
@@ -879,7 +950,7 @@ class ChatServiceTest {
         Chat newChat = chat("aa-new", "viewer", 0, "2026-03-01T14:03:00");
         Chat midChat = chat("mm-mid", "viewer", 0, "2026-02-28T17:48:00");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(3L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(newChat, oldChat, midChat));
@@ -903,13 +974,75 @@ class ChatServiceTest {
     }
 
     @Test
+    void pageWithoutActivityPresentationKeepsEveryStoredChannelAndItsMembers() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "pagePresentation", null);
+        List<Chat> records = new ArrayList<>();
+        for (String channel : List.of("contact", "mainEvent", "optionalSubEvent", "groupSubEvent", "case", "campaign")) {
+            Chat record = chat(channel, "viewer", 3, "2026-10-11T10:00:00Z", channel);
+            record.setMemberIds(List.of("viewer", "other"));
+            records.add(record);
+        }
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
+        when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(6L);
+        when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(records);
+
+        var result = service.queryChatPage("viewer", "all", "date", "desc", null, null, 10, null, null, false, null);
+
+        assertThat(result.items()).extracting(item -> item.id())
+                .containsExactly("contact", "mainEvent", "optionalSubEvent", "groupSubEvent", "case", "campaign");
+        assertThat(result.items()).allSatisfy(item -> {
+            assertThat(item.memberIds()).containsExactly("viewer", "other");
+            assertThat(item.unread()).isEqualTo(3);
+        });
+        org.mockito.Mockito.verifyNoInteractions(activityMembersRepository, activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository);
+        verify(mongoTemplate, never()).find(any(Query.class), eq(ActivityEvent.class));
+    }
+
+    @Test
+    void configuredActivityPresentationFailureIsNotHiddenByReturningIncompleteData() {
+        Chat record = chat("main", "viewer", 0, "2026-10-11T10:00:00Z", "mainEvent");
+        ChatPagePresentation unavailable = (records, profiles) -> { throw new IllegalStateException("owner unavailable"); };
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "pagePresentation", unavailable);
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(record));
+
+        assertThatThrownBy(() -> service.queryChatPage("viewer", "all", "date", "desc", null, null, 10,
+                null, null, false, null)).isInstanceOf(IllegalStateException.class).hasMessage("owner unavailable");
+    }
+
+    @Test
+    void activityPresentationKeepsOneBatchedMembershipReadForTwentyChats() {
+        var profiles = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ProfileSummaries.class);
+        var members = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.api.MemberDirectory.class);
+        var resources = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.api.EventResourceDirectory.class);
+        var events = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.api.EventOwnershipReads.class);
+        var assets = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads.class);
+        var presentation = new ChatActivityPresentation(profiles, members, resources, events, assets, new ChatMapper());
+        var records = new ArrayList<Chat>();
+        var ids = new java.util.LinkedHashSet<String>();
+        for (int i = 0; i < 20; i++) {
+            String id = "event-" + i; ids.add(id);
+            Chat record = chat(id, "viewer", 0, "2026-10-11T10:00:00Z", "mainEvent");
+            record.setOwnerId(id); records.add(record);
+        }
+
+        assertThat(presentation.present(records, Map.of())).hasSize(20);
+
+        verify(members).findByOwnerTypeAndOwnerIdIn("event", ids);
+        org.mockito.Mockito.verifyNoMoreInteractions(members);
+        org.mockito.Mockito.verifyNoInteractions(profiles, resources, events, assets);
+    }
+
+    @Test
     void queryChatPageFiltersChannelContextsOnServer() {
         Chat eventChat = chat("chat-event", "viewer", 0, "2026-03-01T07:48:00", "mainEvent");
         Chat subEventChat = chat("chat-sub-event", "viewer", 0, "2026-03-01T08:48:00", "optionalSubEvent");
         Chat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
         Chat serviceChat = chat("chat-service", "viewer", 0, "2026-03-01T10:48:00", "serviceEvent");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(4L, 1L, 1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(
@@ -967,7 +1100,7 @@ class ChatServiceTest {
 
     @Test
     void groupSupportFilterQueriesOnlyTheSelectedProfilesGroupSupportChannel() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         service.queryChatPage("viewer", "groupSupport", "date", "desc", null, null, 10, null, null, false, null);
         ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
@@ -994,7 +1127,7 @@ class ChatServiceTest {
         event.setPendingMembers(2);
         event.setSubEvents(List.of(subEvent("stage-1", "Qualifiers")));
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(groupChat));
@@ -1039,7 +1172,7 @@ class ChatServiceTest {
 
     @Test
     void sendMessageRejectsDeniedChatBeforeWrite() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.sendMessage("chat-1", "viewer", "hello"))
@@ -1063,7 +1196,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(call -> call.getArgument(0));
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class)).thenReturn(userCounterBulkOperations);
-        service.sendAdminSupportMessage("target", "admin", "Admin User", "AU", "Warning", "warned");
+        support.sendAdminSupportMessage("target", "admin", "Admin User", "AU", "Warning", "warned");
         ArgumentCaptor<List<Chat>> documents = ArgumentCaptor.forClass(List.class);
         verify(chatsRepository).saveAll(documents.capture());
         assertThat(documents.getValue()).allSatisfy(chat -> {
@@ -1072,7 +1205,7 @@ class ChatServiceTest {
             assertThat(chat.getSupportBaseGroupId()).isEqualTo("myscoutee-work");
         });
         admin.setWorkspaceGroupId(null);
-        assertThatThrownBy(() -> service.sendAdminSupportMessage("target", "admin", "Admin", "AU", "Warning", "warned"))
+        assertThatThrownBy(() -> support.sendAdminSupportMessage("target", "admin", "Admin", "AU", "Warning", "warned"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
     }
 
@@ -1091,7 +1224,7 @@ class ChatServiceTest {
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
                 .thenReturn(userCounterBulkOperations);
 
-        var result = service.sendAdminSupportMessage(
+        var result = support.sendAdminSupportMessage(
                 "target",
                 "admin",
                 "Admin User",
@@ -1143,7 +1276,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(call -> call.getArgument(0));
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class)).thenReturn(userCounterBulkOperations);
-        service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Please replace this image.", "warned");
+        support.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Please replace this image.", "warned");
         ArgumentCaptor<List<Chat>> definitions = ArgumentCaptor.forClass(List.class);
         verify(chatsRepository).saveAll(definitions.capture());
         assertThat(definitions.getValue()).allSatisfy(chat -> {
@@ -1153,7 +1286,7 @@ class ChatServiceTest {
             assertThat(chat.getOwnerId()).isNull();
             assertThat(chat.getMemberIds()).containsExactly("target", "moderator");
         });
-        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)));
+        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, java.util.List.of(new com.raxim.myscoutee.domain.access.security.CaseChatPolicyRestriction(new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository))));
         when(chatsRepository.findByChatId(chatId)).thenReturn(definitions.getValue());
         assertThat(access.canAccessChat(chatId, "app-admin")).isFalse();
         assertThat(access.canAccessChat(chatId, "other-group-profile")).isFalse();
@@ -1162,7 +1295,7 @@ class ChatServiceTest {
         verify(userCounterBulkOperations).updateOne(any(Query.class), updates.capture());
         assertThat(updates.getValue().getUpdateObject().get("$inc", Document.class))
                 .containsKey("activities.chat.all").containsEntry("activities.chat.groupSupport", 1).doesNotContainKey("activities.chat.appSupport");
-        verify(userActivityCountersService, never()).refreshSupportCaseCountersForAdmins();
+        verify(supportCaseCounters, never()).refreshSupportCaseCountersForAdmins();
     }
 
     @Test
@@ -1171,7 +1304,7 @@ class ChatServiceTest {
         target.setWorkspaceGroupId("A"); moderator.setWorkspaceGroupId("B");
         when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
         when(usersRepository.findByUserId("moderator")).thenReturn(Optional.of(moderator));
-        assertThatThrownBy(() -> service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Warning", "warned"))
+        assertThatThrownBy(() -> support.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Warning", "warned"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         verify(chatsRepository, never()).saveAll(anyList());
         verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
@@ -1179,7 +1312,7 @@ class ChatServiceTest {
 
     @Test
     void editMessageRejectsDeniedChatBeforeLoadingMessage() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorEditChatMessage("viewer", "chat-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.editMessage("chat-1", "viewer", "m1", "updated"))
@@ -1191,10 +1324,10 @@ class ChatServiceTest {
 
     @Test
     void updateSupportCaseRejectsDeniedChatBeforeSavingState() {
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, "admin", "admin", "chat-support")).thenReturn(false);
 
-        assertThatThrownBy(() -> service.updateSupportCase("chat-support", "admin", "pick"))
+        assertThatThrownBy(() -> support.updateSupportCase("chat-support", "admin", "pick"))
                 .hasMessageContaining("support chat");
 
         verify(chatsRepository, never()).findByChatId(anyString());
@@ -1371,21 +1504,25 @@ class ChatServiceTest {
         return user;
     }
 
-    private static ChatService campaignAware(ChatService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongo));
+    private void configureResources(com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwner) {
+        var assetOwner = com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongoTemplate);
         var ratings = new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class));
-        org.springframework.test.util.ReflectionTestUtils.setField(ratings, "mongo", mongo);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "ratings", ratings);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
-                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+        org.springframework.test.util.ReflectionTestUtils.setField(ratings, "mongo", mongoTemplate);
+        var campaigns = new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongoTemplate, ratings);
         var caseRepository = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class, call ->
                 "findById".equals(call.getMethod().getName())
-                        ? java.util.Optional.ofNullable(mongo.findById(call.getArgument(0), com.raxim.myscoutee.domain.community.document.ServiceCase.class))
+                        ? java.util.Optional.ofNullable(mongoTemplate.findById(call.getArgument(0), com.raxim.myscoutee.domain.community.document.ServiceCase.class))
                         : org.mockito.Answers.RETURNS_DEFAULTS.answer(call));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "cases", new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(caseRepository));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "announcements", new com.raxim.myscoutee.domain.community.service.AnnouncementDirectoryService(mongo));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
-        return service;
+        var cases = new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(caseRepository);
+        var announcements = new com.raxim.myscoutee.domain.community.service.AnnouncementDirectoryService(mongoTemplate);
+        var groups = com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongoTemplate);
+        resources = new ResourceConversationService(service, chatsRepository, mongoTemplate, profileDirectory(),
+                memberDirectory(), eventOwner, assetOwner, groups, cases, announcements, campaigns);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accessRestrictions",
+                List.of(new CaseChatAccessRestriction(cases, profileDirectory())));
+        org.springframework.test.util.ReflectionTestUtils.setField(support, "supportWorkspaces", groups);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "memberPages",
+                new ResourceChatMemberPages(memberDirectory(), profileDirectory(), new ChatMapper()));
     }
     private com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService profileDirectory() {
         var owner = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository);

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationService;
+import com.raxim.myscoutee.domain.platform.security.bootstrap.OperatorBootstrapAuthenticationService;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseService;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseTokenVerifier;

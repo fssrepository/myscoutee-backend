@@ -69,6 +69,30 @@ class GroupDirectoryHttpTest {
         if (meters != null) meters.close();
     }
     static final List<String> IDS=List.of("community-active","community-deleted","community-review","work", "unknown", BaseGroups.COMMUNITY_BASE_ID, BaseGroups.WORK_BASE_ID);
+    @Test void workspaceNameUsesTheExistingSingleOwnerLookup() {
+        var repository = server.getBean(CommunityGroupsRepository.class);
+        org.mockito.Mockito.clearInvocations(repository);
+        var names = new java.util.ArrayList<String>();
+        remote.withWorkspaceName("work", names::add);
+        assertEquals(1, names.size());
+        verify(repository).findById("work");
+        org.mockito.Mockito.verifyNoMoreInteractions(repository);
+    }
+
+    @Test void supportWorkspaceRetainsTheExistingSingleLookupAndAbsentGroupDistinction() {
+        var repository = server.getBean(CommunityGroupsRepository.class);
+        for (String id : List.of("work", "missing", BaseGroups.WORK_BASE_ID)) {
+            var expected = server.getBean(GroupDirectoryService.class).supportWorkspace(id);
+            clearInvocations(repository);
+            assertEquals(expected, remote.supportWorkspace(id));
+            verify(repository).findById(id);
+            verifyNoMoreInteractions(repository);
+        }
+        assertFalse(remote.supportWorkspace("missing").present());
+        assertEquals(BaseGroups.WORK_BASE_ID, remote.supportWorkspace(BaseGroups.WORK_BASE_ID).baseId());
+        assertEquals(503, assertThrows(RemoteReadException.class, () -> remote.supportWorkspace("fail")).status());
+    }
+
     @Test void allCanonicalDirectoryOperationsPreserveDerivedPolicyAndModes() throws Exception {
         var local=server.getBean(GroupDirectoryService.class);
         for (var mode:List.of(MongoSessionMode.REAL,MongoSessionMode.DEMO,MongoSessionMode.REAL)) {

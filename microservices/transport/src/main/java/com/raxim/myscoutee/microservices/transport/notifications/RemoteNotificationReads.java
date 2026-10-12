@@ -25,6 +25,13 @@ public final class RemoteNotificationReads extends RemoteReadTransport implement
                 "notification-reads.page", NotificationReadsProtocol.MAX_RESPONSE_BYTES, v -> true);
         return result;
     }
+    @Override public int currentUnreadCount(String userId) {
+        var query = new NotificationReadsProtocol.UnreadQuery(NotificationReadsProtocol.Scope.current(), userId);
+        if (!NotificationReadsProtocol.valid(query)) throw new IllegalArgumentException("Invalid notification unread-count request");
+        byte[] bytes = mapper.writeValueAsBytes(query);
+        return ownerExchange(NotificationReadsProtocol.UNREAD, bytes, new TypeReference<Integer>() {},
+                "notification-reads.unread", 16384, value -> value >= 0);
+    }
     private <T> T ownerExchange(String path, byte[] bytes, TypeReference<T> type, String operation, int limit,
             java.util.function.Predicate<T> valid) {
         try { return exchangeAuthorized(path, bytes, type, operation, limit, valid,

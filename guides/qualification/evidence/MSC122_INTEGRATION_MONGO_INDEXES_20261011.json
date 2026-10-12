@@ -1,0 +1,681 @@
+{
+  "recordedAt": "2026-10-11T13:36:02.613338+00:00",
+  "sourceBaseRevision": "2ab74dd8e8206652a42e52769e63db41aaae07ac",
+  "scope": "Remove the entire McpAuthorizationIndexInitializer Java class. Move its eleven indexes unchanged into existing Mongo initialization/seed policy/migration owners and add four model-declared token/client indexes. Extend existing account privacy cleanup to remove only the deleted owner's API tokens and OAuth grants.",
+  "files": {
+    "server/docker/conf/mongodb/db_init.js": "6ea98792cf130091dbd33807b8b052da9043459a9304280c8f5cf56ea69206a4",
+    "server/docker/conf/mongodb/mongo-seed-policy.inc": "209a73dc1740d2a79f65bd999e40baebf9cc13d709e6e7252862a4deae7911aa",
+    "packaging/migrations/012-integration-indexes.js": "13d7bd096bfedc203cc88eb6207cb3d2a3233e71d58578f9eed0510f35dec9f8",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationPrivacyService.java": "4a19b2f1419fa10629cb8af84e6979aae8c57e1a3311c9fbfe475571cf9971d9",
+    "packaging/tests/integration-indexes-test.py": "63446e382a080912bdb64f031051be0c988778fc4bb53333e4cc91b04b4954e4",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationStorageTest.java": "6286c9ab23797e27eb5b3928fb0898772fad87c4c3b4d253b3410a1cfe4cc1f0"
+  },
+  "removed": [
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/config/McpAuthorizationIndexInitializer.java"
+  ],
+  "verification": {
+    "standardTest": {
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "embeddedTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "assemblyBootstrap": {
+      "tests": 239,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "commands": [
+    "tools/run-backend-junit.sh standard --tests \"*IntegrationTokenServiceTest\" --tests \"*McpAuthorizationServiceTest\" --tests \"*DeletedAccountPurgeServiceTest\"",
+    "tools/run-backend-junit.sh embedded --tests \"*IntegrationStorageTest\"",
+    "microservices/tools/lab.sh build",
+    "MYSCOUTEE_TEST_MONGO_TARGET=kvm python3 packaging/tests/integration-indexes-test.py",
+    "python3 packaging/tests/integration-indexes-test.py",
+    "bash packaging/tests/mongo-import-entrypoint-test.sh"
+  ],
+  "mongoTests": {
+    "paths": [
+      "selected fresh-init statements",
+      "actual seed-policy index statements",
+      "migration012"
+    ],
+    "eachPath": [
+      "15 equivalent index definitions",
+      "existing document preservation",
+      "repeat execution",
+      "empty database",
+      "duplicate hash refusal without deleting data",
+      "same 128-row query examines 128 documents before and 1 after"
+    ],
+    "deployments": [
+      "KVM",
+      "monolith"
+    ],
+    "privacyEmbedded": "Repeated cleanup removes only deleted-owner token/grant documents; retained owner and shared public client registration remain."
+  },
+  "runtime": {
+    "kvm": {
+      "sessionChecksPassed": 19,
+      "sessionCommand": "python3 microservices/tools/check-session.py --public-documents",
+      "integrationReads": {
+        "deployment": "kvm",
+        "checks": [
+          {
+            "path": "/api/integrations/settings",
+            "status": 200,
+            "elapsedMs": 436.788
+          },
+          {
+            "path": "/api/mcp/oauth/metadata",
+            "status": 200,
+            "elapsedMs": 52.903
+          }
+        ],
+        "ownSessionRevoked": true
+      },
+      "indexes": {
+        "msc121_real": {
+          "integrationTokens": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "tokenHash": 1
+                },
+                "name": "integration_token_hash",
+                "unique": true
+              },
+              {
+                "v": 2,
+                "key": {
+                  "ownerUserId": 1,
+                  "createdAtIso": -1
+                },
+                "name": "integration_token_owner_created"
+              }
+            ]
+          },
+          "mcpOAuthClients": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "createdAt": 1
+                },
+                "name": "createdAt"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "expiresAt": 1
+                },
+                "name": "expiresAt",
+                "expireAfterSeconds": 0
+              }
+            ]
+          },
+          "mcpAuthorizations": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "clientId": 1
+                },
+                "name": "clientId"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "accessHash": 1
+                },
+                "name": "accessHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "refreshHash": 1
+                },
+                "name": "refreshHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "expiresAt": 1
+                },
+                "name": "expiresAt",
+                "expireAfterSeconds": 0
+              }
+            ]
+          },
+          "duplicateHashGroups": 0,
+          "lookup": {
+            "documentsExamined": 0,
+            "keysExamined": 0,
+            "indexUsed": true
+          }
+        },
+        "msc121_demo": {
+          "integrationTokens": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "tokenHash": 1
+                },
+                "name": "integration_token_hash",
+                "unique": true
+              },
+              {
+                "v": 2,
+                "key": {
+                  "ownerUserId": 1,
+                  "createdAtIso": -1
+                },
+                "name": "integration_token_owner_created"
+              }
+            ]
+          },
+          "mcpOAuthClients": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "createdAt": 1
+                },
+                "name": "createdAt"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "expiresAt": 1
+                },
+                "name": "expiresAt",
+                "expireAfterSeconds": 0
+              }
+            ]
+          },
+          "mcpAuthorizations": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "clientId": 1
+                },
+                "name": "clientId"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "accessHash": 1
+                },
+                "name": "accessHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "refreshHash": 1
+                },
+                "name": "refreshHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "expiresAt": 1
+                },
+                "name": "expiresAt",
+                "expireAfterSeconds": 0
+              }
+            ]
+          },
+          "duplicateHashGroups": 0,
+          "lookup": {
+            "documentsExamined": 0,
+            "keysExamined": 0,
+            "indexUsed": true
+          }
+        }
+      },
+      "publicDocumentTimings": {
+        "kind": "Three sequential warm public reads per document, one unrecorded warmup each; not a benchmark or speed comparison.",
+        "deployment": "kvm",
+        "requests": [
+          {
+            "path": "/api/help/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 30.839
+          },
+          {
+            "path": "/api/help/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 46.646
+          },
+          {
+            "path": "/api/help/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 50.545
+          },
+          {
+            "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 59.396
+          },
+          {
+            "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 86.384
+          },
+          {
+            "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 47.262
+          },
+          {
+            "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 40.658
+          },
+          {
+            "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 26.686
+          },
+          {
+            "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 34.661
+          },
+          {
+            "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 18.598
+          },
+          {
+            "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 14.235
+          },
+          {
+            "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 20.057
+          }
+        ]
+      },
+      "helmRevision": 145,
+      "migration012": "Existing ordered runner applied and recorded migration012 in both REAL/DEMO, then skipped an immediate repeat; original data and seed receipt retained."
+    },
+    "monolith": {
+      "sessionChecksPassed": 19,
+      "sessionCommand": "python3 microservices/tools/check-session.py --origin http://localhost --public-documents",
+      "integrationReads": {
+        "deployment": "monolith",
+        "checks": [
+          {
+            "path": "/api/integrations/settings",
+            "status": 200,
+            "elapsedMs": 43.571
+          },
+          {
+            "path": "/api/mcp/oauth/metadata",
+            "status": 200,
+            "elapsedMs": 5.274
+          }
+        ],
+        "ownSessionRevoked": true
+      },
+      "indexes": {
+        "demo_db": {
+          "integrationTokens": {
+            "count": 19,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "tokenHash": 1
+                },
+                "name": "integration_token_hash",
+                "unique": true
+              },
+              {
+                "v": 2,
+                "key": {
+                  "ownerUserId": 1,
+                  "createdAtIso": -1
+                },
+                "name": "integration_token_owner_created"
+              }
+            ]
+          },
+          "mcpOAuthClients": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "createdAt": 1
+                },
+                "name": "createdAt"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "expiresAt": 1
+                },
+                "name": "expiresAt",
+                "expireAfterSeconds": 0
+              }
+            ]
+          },
+          "mcpAuthorizations": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "clientId": 1
+                },
+                "name": "clientId"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "accessHash": 1
+                },
+                "name": "accessHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "refreshHash": 1
+                },
+                "name": "refreshHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "expiresAt": 1
+                },
+                "name": "expiresAt",
+                "expireAfterSeconds": 0
+              }
+            ]
+          },
+          "duplicateHashGroups": 0,
+          "lookup": {
+            "documentsExamined": 1,
+            "keysExamined": 1,
+            "indexUsed": true
+          }
+        }
+      },
+      "publicDocumentTimings": {
+        "kind": "Three sequential warm public reads per document, one unrecorded warmup each; not a benchmark or speed comparison.",
+        "deployment": "monolith",
+        "requests": [
+          {
+            "path": "/api/help/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 61.379
+          },
+          {
+            "path": "/api/help/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 58.829
+          },
+          {
+            "path": "/api/help/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 61.037
+          },
+          {
+            "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 44.609
+          },
+          {
+            "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 45.753
+          },
+          {
+            "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 54.56
+          },
+          {
+            "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 45.097
+          },
+          {
+            "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 104.02
+          },
+          {
+            "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 56.577
+          },
+          {
+            "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 13.84
+          },
+          {
+            "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 11.145
+          },
+          {
+            "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+            "status": 200,
+            "elapsedMs": 7.235
+          }
+        ]
+      },
+      "environmentRestored": true,
+      "health": {
+        "myscoutee": "running healthy",
+        "mongodb": "running healthy",
+        "frontend-sync": "running healthy"
+      },
+      "beforeIndexes": {
+        "demo_db": {
+          "integrationTokens": {
+            "count": 19,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              }
+            ]
+          },
+          "mcpOAuthClients": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              }
+            ]
+          },
+          "mcpAuthorizations": {
+            "count": 0,
+            "indexes": [
+              {
+                "v": 2,
+                "key": {
+                  "_id": 1
+                },
+                "name": "_id_"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "clientId": 1
+                },
+                "name": "clientId"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "accessHash": 1
+                },
+                "name": "accessHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "refreshHash": 1
+                },
+                "name": "refreshHash"
+              },
+              {
+                "v": 2,
+                "key": {
+                  "expiresAt": 1
+                },
+                "name": "expiresAt",
+                "expireAfterSeconds": 0
+              }
+            ]
+          },
+          "duplicateHashGroups": 0,
+          "lookup": {
+            "documentsExamined": 19,
+            "keysExamined": 0,
+            "indexUsed": false
+          }
+        }
+      }
+    }
+  },
+  "performance": {
+    "qualification": "Low-load observations, not matched load or a speed comparison. Startup/JIT and scheduled tasks affected first KVM sample; settled samples reported below. No stress rerun.",
+    "baselineRevision": "2ab74dd8e8206652a42e52769e63db41aaae07ac",
+    "candidateBaseRevision": "2ab74dd8e8206652a42e52769e63db41aaae07ac",
+    "kvm": {
+      "baselineJvmCores": 0.1447380117594841,
+      "candidateJvmCores": 0.15630582090542536,
+      "changePercent": 7.992239913564569,
+      "baselineQemuCores": 0.7004673318619536,
+      "candidateQemuCores": 0.7025081225134616,
+      "jvmThrottledSeconds": 0.0,
+      "firstSampleJvmCores": 0.767223291052076
+    },
+    "monolith": {
+      "myscoutee": {
+        "baselineCpuCores": 0.11216964795874994,
+        "cpuCores": 0.1092142573801728,
+        "memoryMiB": 2221.37109375,
+        "throttledSeconds": 0.0,
+        "changePercent": -2.6347506944694787
+      },
+      "mongodb": {
+        "baselineCpuCores": 0.05839358783654729,
+        "cpuCores": 0.058524008497116566,
+        "memoryMiB": 937.17578125,
+        "throttledSeconds": 0.0,
+        "changePercent": 0.22334757188469112
+      },
+      "frontend-sync": {
+        "baselineCpuCores": 0.06092580061492795,
+        "cpuCores": 0.05729692127976187,
+        "memoryMiB": 3470.63671875,
+        "throttledSeconds": 0.0,
+        "changePercent": -5.956227572784556
+      }
+    }
+  },
+  "limits": [
+    "The complete packaged migration chain currently FAILS at pre-existing migration008: current help v3 seeds are inactive after v5 superseded them. This batch qualifies migration012, not a complete release upgrade. Repair the historical input boundary next without rewriting a released migration checksum.",
+    "No template/KVM-template/VMware/browser/MCP-server round-trip or release installation qualification is claimed.",
+    "No stress throughput or general latency-parity claim.",
+    "Live user deletion was not triggered; privacy behavior is covered by isolated embedded MongoDB."
+  ],
+  "followUp": "The historical help input and missing forward v5 update are fixed and tested in MSC122_HELP_V5_UPGRADE_20261011.json. The failure recorded above describes the earlier checkpoint; it is not the current migration-chain status."
+}

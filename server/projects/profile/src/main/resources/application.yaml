@@ -61,6 +61,7 @@ operator:
   configuration:
     master-key-path: ${OPERATOR_CONFIGURATION_MASTER_KEY_PATH:/etc/myscoutee/configuration/deployment-master-key}
   update:
+    software-version: ${MYSCOUTEE_VERSION:unknown}
     monitor-enabled: ${OPERATOR_UPDATE_MONITOR_ENABLED:false}
     tls-ca-certificate: ${OPERATOR_UPDATE_TLS_CA_CERTIFICATE:}
     release-api-origin: ${OPERATOR_UPDATE_RELEASE_API_ORIGIN:https://api.github.com}

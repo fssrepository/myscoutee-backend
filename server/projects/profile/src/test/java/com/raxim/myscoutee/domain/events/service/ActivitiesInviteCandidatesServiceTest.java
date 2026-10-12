@@ -46,6 +46,8 @@ class ActivitiesInviteCandidatesServiceTest {
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
+    private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
+    @Mock
     private NavigatorContactsProfilesRepository navigatorContactsProfilesRepository;
     @Mock
     private CommunityGroupsService communityGroups;
@@ -60,7 +62,7 @@ class ActivitiesInviteCandidatesServiceTest {
                 activityMembersRepository,
                 activitiesMembersService,
                 homeUserProfileService,
-                homeUserProfileService,
+                selectedProfile,
                 homeUserProfileService,
                 new com.raxim.myscoutee.domain.accounts.service.ContactDirectoryService(navigatorContactsProfilesRepository));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "communityGroups", communityGroups);
@@ -74,7 +76,7 @@ class ActivitiesInviteCandidatesServiceTest {
     void paymentPickerUsesTheCurrentWorkspaceRosterWithoutMetOrContactGates() {
         Users active=user("work-alex","Alex");active.setWorkspaceGroupId("myscoutee-work");active.setAccountUserId("account-alex");
         Users other=user("work-maya","Maya");other.setWorkspaceGroupId("myscoutee-work");
-        when(homeUserProfileService.resolveSelectedIdentity("work-alex")).thenReturn(identity(active));
+        when(selectedProfile.resolveSelectedIdentity("work-alex")).thenReturn(identity(active));
         when(usersRepository.findPaymentMembers(eq("myscoutee-work"),eq("work-alex"),any(Pageable.class))).thenReturn(new PageImpl<>(List.of(other)));
         var page=service.queryCandidates(new ActivityInviteCandidatesRequestDto("work-alex","work-alex","asset",null,null,"recent",0,16,List.of(),List.of(),"payment"));
         assertThat(page.items()).extracting(item->item.userId()).containsExactly("work-maya");
@@ -104,7 +106,7 @@ class ActivitiesInviteCandidatesServiceTest {
     void assetCandidatesExcludeAlreadySavedContacts() {
         Users activeUser = user("active", "Active User");
         Users otherUser = user("other", "Other User");
-        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
+        when(selectedProfile.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         when(activitiesMembersService.queryOwnerSnapshot("asset", "asset-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "asset",
@@ -144,7 +146,7 @@ class ActivitiesInviteCandidatesServiceTest {
         Users activeUser = user("active", "Active User");
         Users pendingUser = user("pending-child", "Pending Child");
         Users parentMember = user("parent-member", "Parent Member");
-        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
+        when(selectedProfile.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         when(activitiesMembersService.queryOwnerSnapshot("asset", "asset-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "asset",
@@ -194,7 +196,7 @@ class ActivitiesInviteCandidatesServiceTest {
     void assetCandidatesUseImmediateGroupParentAndScopedExistingMembers() {
         Users activeUser = user("active", "Active User");
         Users groupMember = user("group-member", "Group Member");
-        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
+        when(selectedProfile.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         when(activitiesMembersService.queryOwnerSnapshot("asset", "asset-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "asset",
@@ -243,7 +245,7 @@ class ActivitiesInviteCandidatesServiceTest {
         Users activeUser = user("active", "Active User");
         Users pendingUser = user("pending-child", "Pending Child");
         Users parentMember = user("parent-member", "Parent Member");
-        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
+        when(selectedProfile.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         ActivityMember pendingMember = new ActivityMember();
         pendingMember.setOwnerType("asset");
         pendingMember.setOwnerId("asset-1");

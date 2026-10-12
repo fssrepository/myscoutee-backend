@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -211,7 +212,7 @@ class RegistryLocalStoreTest {
             RegistryLocalStore store) {
         OperatorActionReceipt receipt =
                 deactivationReceipt();
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 RegistryProtocol.operatorActionPayload(
                         RegistryProtocol
                                 .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,

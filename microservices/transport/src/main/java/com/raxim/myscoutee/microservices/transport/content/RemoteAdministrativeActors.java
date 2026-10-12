@@ -3,7 +3,7 @@ package com.raxim.myscoutee.microservices.transport.content;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
-import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.microservices.transport.common.RemoteReadTransport;
 import com.raxim.myscoutee.microservices.transport.security.ActorDelegation;

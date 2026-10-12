@@ -15,7 +15,7 @@ import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionReferenceRequestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionRequestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionResultDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementPageDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorAnnouncementPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorClaimMutationResultDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorClaimOverviewDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorClaimRequestDto;

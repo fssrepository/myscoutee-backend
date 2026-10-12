@@ -14,9 +14,6 @@ public class AdminClientRepository {
     private final AdministrativeStatistics statistics;
     public AdminClientRepository(MongoTemplate mongo, AdministrativeStatistics statistics) { this.mongo = mongo; this.statistics = statistics; }
     public AdministrativeStatistics.Summary stats() { return statistics.global(); }
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
-    public long unresolvedReports() { return contentStatistics.unresolvedReports(); }
-    public long unresolvedFeedback() { return contentStatistics.unresolvedFeedback(); }
     public String unreadVersion(String owner) {
         return chatDirectory.unreadVersion(owner);
     }

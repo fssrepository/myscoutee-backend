@@ -46,7 +46,7 @@ class McpAuthorizationServiceTest {
     final McpOAuthClientsRepository registrations = mock(McpOAuthClientsRepository.class);
     final CommunityGroupProfilesService profiles = mock(CommunityGroupProfilesService.class);
     final com.raxim.myscoutee.domain.platform.config.ConfigProperties config = new com.raxim.myscoutee.domain.platform.config.ConfigProperties();
-    final McpAuthorizationService service = new McpAuthorizationService(keys,  tokens,  grants, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups),  endpoint,  registrations,  profiles,  config);
+    final McpAuthorizationService service = new McpAuthorizationService(keys,  tokens,  grants, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  Optional.of(new GroupMcpWorkspaceAccess(profiles, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups))), endpoint, registrations, config);
     final String id = UUID.randomUUID().toString(), verifier = "x".repeat(43);
     IntegrationToken client;
     @BeforeEach void setup() {
@@ -291,6 +291,77 @@ class McpAuthorizationServiceTest {
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         verify(keys, never()).create(anyString(), any(), anyString());
         verify(grants, never()).save(any());
+    }
+
+    @Test void personalConsentStartsWithoutWorkspaceServicesAndKeepsExistingAccountReads() {
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            context.registerBean(IntegrationTokenService.class, () -> keys);
+            context.registerBean(IntegrationTokensRepository.class, () -> tokens);
+            context.registerBean(McpAuthorizationRepository.class, () -> grants);
+            context.registerBean(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class,
+                    () -> new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users));
+            context.registerBean(MongoTemplate.class, () -> mock(MongoTemplate.class));
+            context.registerBean(IntegrationPublicEndpointResolver.class, () -> endpoint);
+            context.registerBean(McpOAuthClientsRepository.class, () -> registrations);
+            context.registerBean(com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration.class, () -> config);
+            context.register(McpAuthorizationService.class);
+            context.refresh();
+            var personal = context.getBean(McpAuthorizationService.class);
+            assertThat(personal.context("owner", request()).groupName()).isNull();
+            verify(users, times(4)).findByUserId("owner");
+            clearInvocations(users);
+            assertThat(personal.authorize("owner", new McpDtos.Consent(request(), true)).url()).contains("?code=mcc_");
+            verify(users, times(4)).findByUserId("owner");
+            verifyNoInteractions(profiles, groups);
+            verify(grants).save(any());
+
+            var owner = users.findByUserId("owner").orElseThrow();
+            owner.setWorkspaceGroupId("workspace");
+            clearInvocations(grants);
+            assertThatThrownBy(() -> personal.authorize("owner", new McpDtos.Consent(request(), true)))
+                    .hasMessageContaining("access_denied");
+            verifyNoInteractions(grants);
+        }
+    }
+
+    @Test void workspaceConsentPreservesSelectionThenNameLookupIncludingAnUnnamedGroup() {
+        var owner = users.findByUserId("owner").orElseThrow();
+        owner.setAccountUserId("account"); owner.setWorkspaceGroupId("workspace");
+        var group = mock(com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
+        when(groups.findById("workspace")).thenReturn(Optional.of(group));
+        when(profiles.select("account", "workspace")).thenReturn(owner);
+        clearInvocations(users);
+        assertThat(service.context("owner", request()).groupName()).isNull();
+        var order = inOrder(profiles, groups);
+        order.verify(profiles).select("account", "workspace");
+        order.verify(groups).findById("workspace");
+        verify(users, times(4)).findByUserId("owner");
+        verifyNoMoreInteractions(profiles, groups, users);
+        when(group.name()).thenReturn("Workspace");
+        assertThat(service.context("owner", request()).groupName()).isEqualTo("Workspace");
+    }
+
+    @Test void workspaceSelectionMismatchAndOwnerFailureCannotIssueAuthorization() {
+        var owner = users.findByUserId("owner").orElseThrow();
+        owner.setAccountUserId("account"); owner.setWorkspaceGroupId("workspace");
+        var other = new Users(); other.setUserId("other");
+        when(profiles.select("account", "workspace")).thenReturn(other);
+        assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(request(), true)))
+                .hasMessageContaining("access_denied");
+        when(profiles.select("account", "workspace")).thenThrow(new IllegalStateException("workspace unavailable"));
+        assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(request(), true)))
+                .hasMessage("workspace unavailable");
+        verifyNoInteractions(grants, groups);
+    }
+
+    @Test void absentWorkspaceAndFailedNameLookupKeepTheirExistingErrors() {
+        var owner = users.findByUserId("owner").orElseThrow();
+        owner.setAccountUserId("account"); owner.setWorkspaceGroupId("workspace");
+        when(profiles.select("account", "workspace")).thenReturn(owner);
+        assertThatThrownBy(() -> service.context("owner", request())).hasMessageContaining("access_denied");
+        when(groups.findById("workspace")).thenThrow(new IllegalStateException("directory unavailable"));
+        assertThatThrownBy(() -> service.context("owner", request())).hasMessage("directory unavailable");
+        verifyNoInteractions(grants);
     }
 
 }

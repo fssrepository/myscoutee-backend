@@ -2,10 +2,14 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
 
 default_server_dir() {
-  if [[ "${SCRIPT_DIR}" == /opt/myscoutee/packaging/scripts && -f /opt/myscoutee/server/docker-compose-prod.yml ]]; then
-    printf '/opt/myscoutee/server'
+  if [[ "${SCRIPT_DIR}" == ${RELEASE_PROJECT_ROOT}/packaging/scripts && -f ${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml ]]; then
+    printf '%s/server' "${RELEASE_PROJECT_ROOT}"
     return
   fi
 
@@ -17,8 +21,8 @@ default_server_dir() {
 SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-$(default_server_dir)}"
 
 default_env_file() {
-  if [[ "${SERVER_DIR}" == /opt/myscoutee/server && -f /etc/myscoutee/myscoutee.env ]]; then
-    printf '/etc/myscoutee/myscoutee.env'
+  if [[ "${SERVER_DIR}" == ${RELEASE_PROJECT_ROOT}/server && -f /etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.env ]]; then
+    printf '/etc/%s/%s.env' "${RELEASE_PROJECT_NAME}" "${RELEASE_PROJECT_NAME}"
     return
   fi
 
@@ -26,8 +30,8 @@ default_env_file() {
 }
 
 default_secrets_file() {
-  if [[ "${SERVER_DIR}" == /opt/myscoutee/server && -f /etc/myscoutee/myscoutee.secrets.env ]]; then
-    printf '/etc/myscoutee/myscoutee.secrets.env'
+  if [[ "${SERVER_DIR}" == ${RELEASE_PROJECT_ROOT}/server && -f /etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.secrets.env ]]; then
+    printf '/etc/%s/%s.secrets.env' "${RELEASE_PROJECT_NAME}" "${RELEASE_PROJECT_NAME}"
     return
   fi
 
@@ -154,7 +158,10 @@ ensure_firebase_service_account() {
     return 0
   fi
 
-  service_account_path="${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json"
+  # The selected Compose model owns this path. Installed packages use /etc,
+  # while a source checkout may use projects/profile/secrets or an override.
+  service_account_path="$(run_compose config --no-env-resolution --format json \
+    | jq -er '.secrets["firebase-service-account"].file | select(type=="string" and length>0)')"
   if [[ -d "${service_account_path}" ]]; then
     echo "Firebase is enabled, but ${service_account_path} is a directory." >&2
     echo "Replace it with the Firebase Admin SDK service account JSON file." >&2
@@ -167,8 +174,31 @@ ensure_firebase_service_account() {
   fi
 }
 
+# Installed releases may rename their Compose project. Reuse the existing
+# Compose owner to retire only containers proven to belong to this installation.
+# Volumes and bind-mounted deployment data are retained.
+ensure_installed_compose_project() {
+  [[ "$SERVER_DIR" == "$RELEASE_PROJECT_ROOT/server" ]] || return 0
+  local expected project id owner
+  expected="$(run_compose config --no-env-resolution --format json | jq -er '.name')"
+  while IFS= read -r project; do
+    [[ -n "$project" && "$project" != "$expected" ]] || continue
+    [[ "$project" =~ ^[a-zA-Z0-9_.-]+$ ]] || return 1
+    while IFS= read -r id; do
+      owner="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' "$id")"
+      [[ "$owner" == "$SERVER_DIR" ]] || {
+        echo "Compose project $project includes a different installation; refusing to stop it." >&2
+        return 1
+      }
+    done < <(docker ps -aq --filter "label=com.docker.compose.project=$project")
+    run_compose --project-name "$project" down
+  done < <(docker ps -a --filter "label=com.docker.compose.project.working_dir=$SERVER_DIR" \
+    --format '{{.Label "com.docker.compose.project"}}' | sort -u)
+}
+
 case "${1:-}" in
   up|start|restart)
+    ensure_installed_compose_project
     ensure_firebase_service_account
     ;;
 esac

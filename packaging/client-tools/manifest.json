@@ -1,0 +1,12 @@
+[
+  "README.md",
+  "install.env.example",
+  "install.sh",
+  "prepare-debian13-minimal.sh",
+  "purge.sh",
+  "forward-localhost.sh",
+  "remote-transport.sh",
+  "verify-release.sh",
+  "install-temporary-frontend.sh",
+  "install-temporary-image.sh"
+]

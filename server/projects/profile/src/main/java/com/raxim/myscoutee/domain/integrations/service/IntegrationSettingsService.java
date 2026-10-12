@@ -1,10 +1,11 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.payments.api.Affiliates;
+import com.raxim.myscoutee.domain.integrations.api.IntegrationAccountSummaries;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,13 +20,13 @@ public class IntegrationSettingsService {
     private final IntegrationTokenService tokens;
     private final McpAuthorizationService mcp;
     private final ProfileDirectory users;
-    private final Affiliates affiliates;
+    private final IntegrationAccountSummaries summaries;
     private final IntegrationPublicEndpointResolver endpoint;
 
     public IntegrationSettingsService(IntegrationTokenService tokens, McpAuthorizationService mcp,
-            ProfileDirectory users, Affiliates affiliates, IntegrationPublicEndpointResolver endpoint) {
+            ProfileDirectory users, Optional<IntegrationAccountSummaries> summaries, IntegrationPublicEndpointResolver endpoint) {
         this.tokens = tokens; this.mcp = mcp; this.users = users;
-        this.affiliates = affiliates; this.endpoint = endpoint;
+        this.summaries = summaries.orElse(null); this.endpoint = endpoint;
     }
 
     public IntegrationSettingsDto load(String owner) { return load(owner, false); }
@@ -38,7 +39,9 @@ public class IntegrationSettingsService {
                 admin ? IntegrationTokenService.ADMIN_SCOPE : IntegrationTokenService.INTEGRATION_SCOPE, active);
         return new IntegrationSettingsDto(api.baseUrl(), api.maxActiveTokens(), api.maxBatchSize(),
                 api.tokens().stream().map(token -> token.withAccess(access.clientMode(token.id()))).toList(),
-                admin ? api.affiliate() : affiliates.summary(owner), admin ? api.participants() : affiliates.participantSummary(owner), mcp.settings(active, access), access.revision());
+                admin || summaries == null ? api.affiliate() : summaries.summary(owner),
+                admin || summaries == null ? api.participants() : summaries.participantSummary(owner),
+                mcp.settings(active, access), access.revision());
     }
 
     public IntegrationSettingsDto save(String owner, IntegrationSettingsUpdateDto request) { return save(owner, request, false); }

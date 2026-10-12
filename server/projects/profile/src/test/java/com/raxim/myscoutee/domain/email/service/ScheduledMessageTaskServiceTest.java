@@ -109,7 +109,7 @@ class ScheduledMessageTaskServiceTest {
                 scheduledMessageTasksRepository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles),
                 new com.raxim.myscoutee.domain.accounts.service.AccountInactivityService(profiles, userSessionActionsRepository,
-                        new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(profiles, mongoTemplate, affinityRecomputeTaskService, null)),
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(profiles, mongoTemplate, java.util.List.of(affinityRecomputeTaskService::enqueueAdminStatusChanged), null)),
                 scheduledMessageAuditService,
                 emailOutboxRepository,
                 emailTemplatesRepository,

@@ -75,8 +75,8 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
     private MongoTemplate mongoTemplate;
     private AuthenticationMode configProperties;
     private AccountNotifications accounts;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private com.raxim.myscoutee.domain.platform.api.WorkspaceNames workspaceNames;
     private ChatPresence chatWebSocketSessionRegistry;
 
     @Autowired
@@ -508,8 +508,8 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
         if (workspaces.size() == 1) {
             String groupId = workspaces.iterator().next();
             payload.put("workspaceGroupId", groupId);
-            if (communityGroups != null) communityGroups.name(groupId)
-                    .ifPresent(group -> payload.put("workspaceGroupName", group.name()));
+            if (workspaceNames != null) workspaceNames.withWorkspaceName(groupId,
+                    name -> payload.put("workspaceGroupName", name));
             String url = payload.get("url");
             if (StringUtils.hasText(url)) payload.put("url", org.springframework.web.util.UriComponentsBuilder.fromUriString(url)
                     .replaceQueryParam("workspaceGroupId", groupId).build().toUriString());
@@ -539,8 +539,8 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
         payload.putIfAbsent(
                 "notification_message_key",
                 notificationKey(intent.type(), "message"));
-        putIfText(payload, "productName", branding.productName());
-        putIfText(payload, "productLogoUrl", branding.logoUrl());
+        payload.put("productName", branding.productName());
+        payload.put("productLogoUrl", branding.logoUrl());
         putIfText(
                 payload,
                 "productBrandingRevision",
@@ -551,12 +551,12 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
                 branding.productName()));
         putIfText(payload, "body", firstNonBlank(intent.body(), payload.get("body")));
         putIfText(payload, "url", firstNonBlank(intent.clickUrl(), payload.get("url"), DEFAULT_CLICK_URL));
-        putIfText(payload, "icon", branding.applicationIcon(firstNonBlank(
-                intent.iconUrl(),
-                payload.get("icon"))));
-        putIfText(payload, "badge", branding.applicationIcon(firstNonBlank(
-                intent.badgeUrl(),
-                payload.get("badge"))));
+        String iconUrl = branding.applicationIcon(firstNonBlank(intent.iconUrl(), payload.get("icon")));
+        String badgeUrl = branding.applicationIcon(firstNonBlank(intent.badgeUrl(), payload.get("badge")));
+        payload.remove("icon");
+        payload.remove("badge");
+        putIfText(payload, "icon", iconUrl);
+        putIfText(payload, "badge", badgeUrl);
         putIfText(payload, "tag", firstNonBlank(intent.tag(), payload.get("tag"), intent.type()));
         return payload;
     }
@@ -584,16 +584,16 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
         Long revision = parseNonNegativeLong(firstNonBlank(
                 payload.get("productBrandingRevision"),
                 payload.get("product_branding_revision")));
-        if (StringUtils.hasText(productName)
-                && StringUtils.hasText(logoUrl)
-                && revision != null) {
+        if (revision != null
+                && (payload.containsKey("productName") || payload.containsKey("product_name"))
+                && (payload.containsKey("productLogoUrl") || payload.containsKey("product_logo_url"))) {
             return new ResolvedDeploymentBranding(
                     productName,
                     logoUrl,
                     revision);
         }
         return deploymentBrandingResolver == null
-                ? com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback()
+                ? new ResolvedDeploymentBranding("", "", 0L)
                 : deploymentBrandingResolver.resolve();
     }
 

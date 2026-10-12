@@ -19,7 +19,7 @@ class AccountInactivityServiceTest {
     private final UsersRepository users = mock(UsersRepository.class);
     private final UserSessionActionsRepository sessions = mock(UserSessionActionsRepository.class);
     private final AffinityStatusChanges affinity = mock(AffinityStatusChanges.class);
-    private final AccountInactivityService service = new AccountInactivityService(users, sessions, new ProfileStatusWork(users, mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinity, null));
+    private final AccountInactivityService service = new AccountInactivityService(users, sessions, new ProfileStatusWork(users, mock(org.springframework.data.mongodb.core.MongoTemplate.class), java.util.List.of(affinity::enqueueAdminStatusChanged), null));
     private final Instant now = Instant.parse("2026-10-07T00:00:00Z");
 
     @Test void recentSessionActivityReschedulesWithoutSavingOrRecomputing() {

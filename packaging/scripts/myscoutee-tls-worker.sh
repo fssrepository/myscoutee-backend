@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
 umask 077
 
 # Narrow privileged boundary for operator-approved TLS changes. Requests are
 # fixed-shape JSON files; no command, path, image, or URL is accepted from the
 # browser.
 
-STATE_DIR="${MYSCOUTEE_TLS_STATE_DIR:-/var/lib/myscoutee/tls}"
-ENV_FILE="${MYSCOUTEE_TLS_ENV_FILE:-/etc/myscoutee/myscoutee.env}"
-SERVER_DIR="${MYSCOUTEE_TLS_SERVER_DIR:-/opt/myscoutee/server}"
-COMPOSE_WRAPPER="${MYSCOUTEE_TLS_COMPOSE_WRAPPER:-/opt/myscoutee/packaging/scripts/myscoutee-compose.sh}"
+STATE_DIR="${MYSCOUTEE_TLS_STATE_DIR:-/var/lib/${RELEASE_PROJECT_NAME}/tls}"
+ENV_FILE="${MYSCOUTEE_TLS_ENV_FILE:-/etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.env}"
+SERVER_DIR="${MYSCOUTEE_TLS_SERVER_DIR:-${RELEASE_PROJECT_ROOT}/server}"
+COMPOSE_WRAPPER="${MYSCOUTEE_TLS_COMPOSE_WRAPPER:-${RELEASE_PROJECT_ROOT}/packaging/scripts/myscoutee-compose.sh}"
 CERTBOT_IMAGE="${CERT_BOT:-certbot/certbot:v5.4.0}"
 CERTBOT_CONF="${SERVER_DIR}/data/certbot/conf"
 CERTBOT_WWW="${SERVER_DIR}/data/certbot/www"
 MANUAL_CERT="${SERVER_DIR}/docker/conf/nginx/keys/nginx.crt"
 MANUAL_KEY="${SERVER_DIR}/docker/conf/nginx/keys/nginx-nopass.key"
-API_UID="${MYSCOUTEE_API_USER_ID:-10001}"
-API_GID="${MYSCOUTEE_API_GROUP_ID:-10001}"
+API_UID="${MYSCOUTEE_API_USER_ID:-$RELEASE_PROJECT_UID}"
+API_GID="${MYSCOUTEE_API_GROUP_ID:-$RELEASE_PROJECT_GID}"
 WORKER_UID=0
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
   WORKER_UID="${MYSCOUTEE_TLS_WORKER_USER_ID:-0}"

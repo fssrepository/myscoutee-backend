@@ -116,6 +116,12 @@ openssl pkey \
   -noout >/dev/null 2>&1 \
   || fail "The PKCS#8 private key is invalid or requires a passphrase."
 
+# Select identity from this trusted source checkout, never from the candidate.
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../scripts/release-project.sh"
+release_project_load "${SCRIPT_DIR}/../scripts" "$(id -u)" \
+  || fail "Invalid release project policy."
+
 deb_package="$(dpkg-deb -f "${DEB_PATH}" Package 2>/dev/null)" \
   || fail "The Debian artifact is not a valid package."
 deb_version="$(dpkg-deb -f "${DEB_PATH}" Version 2>/dev/null)" \
@@ -123,8 +129,8 @@ deb_version="$(dpkg-deb -f "${DEB_PATH}" Version 2>/dev/null)" \
 deb_architecture="$(dpkg-deb -f "${DEB_PATH}" Architecture 2>/dev/null)" \
   || fail "The Debian artifact has no valid Architecture field."
 
-[[ "${deb_package}" == "myscoutee" ]] \
-  || fail "The Debian Package field must be myscoutee."
+[[ "${deb_package}" == "${RELEASE_PROJECT_NAME}" ]] \
+  || fail "The Debian Package field must be ${RELEASE_PROJECT_NAME}."
 [[ "${deb_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(~qa\.(0|[1-9][0-9]*))?$ ]] \
   || fail "The Debian Version must be a SemVer core or <core>~qa.<number>."
 dpkg --validate-version "${deb_version}" >/dev/null 2>&1 \
@@ -134,12 +140,12 @@ release_version="${deb_version/\~/-}"
   || fail "The Debian Architecture field is invalid."
 
 deb_filename="$(basename -- "${DEB_PATH}")"
-expected_deb_filename="myscoutee_${release_version}_${deb_architecture}.deb"
+expected_deb_filename="${RELEASE_PROJECT_NAME}_${release_version}_${deb_architecture}.deb"
 [[ "${deb_filename}" == "${expected_deb_filename}" ]] \
   || fail "The Debian filename must be ${expected_deb_filename}."
 
 client_tools_filename="$(basename -- "${CLIENT_TOOLS_PATH}")"
-expected_client_tools_filename="myscoutee-client-tools_${release_version}.tar.gz"
+expected_client_tools_filename="${RELEASE_PROJECT_NAME}-client-tools_${release_version}.tar.gz"
 [[ "${client_tools_filename}" == "${expected_client_tools_filename}" ]] \
   || fail "The client-tools filename must be ${expected_client_tools_filename}."
 
@@ -186,6 +192,8 @@ for required_member in \
   "./forward-localhost.sh" \
   "./remote-transport.sh" \
   "./verify-release.sh" \
+  "./release-project.sh" \
+  "./release-project.json" \
   "./verify-deployment/run.mjs"; do
   member_count="$(
     awk -v required="${required_member}" '$0 == required { count++ } END { print count + 0 }' \
@@ -301,10 +309,10 @@ if [[ -z "${OUTPUT_DIR}" ]]; then
 fi
 [[ -d "${OUTPUT_DIR}" && ! -L "${OUTPUT_DIR}" ]] \
   || fail "The output directory must be an existing, non-symbolic-link directory."
-manifest_path="${OUTPUT_DIR}/myscoutee-release_${release_version}.json"
+manifest_path="${OUTPUT_DIR}/${RELEASE_PROJECT_NAME}-release_${release_version}.json"
 [[ ! -L "${manifest_path}" ]] \
   || fail "The release manifest path must not be a symbolic link."
-MANIFEST_TMP="$(mktemp "${OUTPUT_DIR}/.myscoutee-release_${release_version}.XXXXXX")"
+MANIFEST_TMP="$(mktemp "${OUTPUT_DIR}/.${RELEASE_PROJECT_NAME}-release_${release_version}.XXXXXX")"
 
 jq -n \
   --arg version "${release_version}" \

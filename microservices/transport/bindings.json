@@ -135,7 +135,12 @@
       "package": "groups",
       "configuration": "GroupDirectory",
       "propertyPrefix": "group-directory",
-      "credential": "groupDirectoryToken"
+      "credential": "groupDirectoryToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory",
+        "com.raxim.myscoutee.domain.platform.api.WorkspaceNames",
+        "com.raxim.myscoutee.domain.chat.api.SupportWorkspaceDirectory"
+      ]
     },
     {
       "domain": "events",
@@ -278,6 +283,9 @@
       ],
       "providedApis": [
         "AffinityStatusChanges"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.ProfileStatusObserver"
       ]
     },
     {
@@ -306,8 +314,10 @@
       "propertyPrefix": "configuration-catalog",
       "credential": "configurationCatalogToken",
       "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.SchedulingParameters",
         "com.raxim.myscoutee.domain.platform.api.SchedulingPolicy",
-        "com.raxim.myscoutee.domain.platform.api.NotificationPolicy"
+        "com.raxim.myscoutee.domain.platform.api.NotificationPolicy",
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
       ]
     },
     {
@@ -316,7 +326,10 @@
       "package": "assets",
       "configuration": "AssetJobScopes",
       "propertyPrefix": "assets-job-scopes",
-      "credential": "assetJobScopesToken"
+      "credential": "assetJobScopesToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
+      ]
     },
     {
       "domain": "events",
@@ -324,7 +337,10 @@
       "package": "events",
       "configuration": "EventJobScopes",
       "propertyPrefix": "events-job-scopes",
-      "credential": "eventJobScopesToken"
+      "credential": "eventJobScopesToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
+      ]
     },
     {
       "domain": "payments",
@@ -364,7 +380,7 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts",
-        "operator"
+        "platform"
       ]
     },
     {
@@ -575,11 +591,13 @@
       "propertyPrefix": "profile-summaries",
       "credential": "profileSummariesToken",
       "producerDomains": [
+        "administration",
         "chat",
         "community",
         "events",
         "affinity",
-        "content"
+        "content",
+        "operator"
       ]
     },
     {
@@ -622,7 +640,7 @@
       ]
     },
     {
-      "domain": "content",
+      "domain": "administration",
       "api": "AdministrativeActors",
       "package": "content",
       "configuration": "AdministrativeActors",
@@ -1065,6 +1083,10 @@
           "method": "POST",
           "path": "/_internal/v1/access/permissions/requires-authenticated-actor"
         }
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.access.api.RequiresPolicy",
+        "com.raxim.myscoutee.domain.access.api.RequiresPolicies"
       ]
     },
     {
@@ -1129,6 +1151,9 @@
         "chat",
         "payments",
         "affinity"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1332,7 +1357,8 @@
       ],
       "providedApis": [
         "ServiceFeedbackCounters",
-        "FeedCounts"
+        "FeedCounts",
+        "SupportCaseCounters"
       ]
     },
     {
@@ -1363,6 +1389,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1387,6 +1416,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1423,6 +1455,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1447,6 +1482,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1459,6 +1497,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1636,6 +1677,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "notifications"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.notifications.api.NotificationUnreadObserver"
       ]
     },
     {
@@ -2081,13 +2125,19 @@
       "credential": "notificationReadsToken",
       "credentialProperty": "read-token",
       "producerDomains": [
-        "integrations"
+        "integrations",
+        "accounts"
       ],
       "actorOperations": [
         {
           "audience": "notifications:notification-reads",
           "method": "POST",
           "path": "/_internal/v1/notifications/notification-reads/page"
+        },
+        {
+          "audience": "notifications:notification-reads",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-reads/unread"
         }
       ]
     },
@@ -2358,6 +2408,9 @@
     {
       "domain": "payments",
       "api": "Affiliates",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.integrations.api.IntegrationAccountSummaries"
+      ],
       "package": "payments",
       "configuration": "Affiliates",
       "propertyPrefix": "affiliates",
@@ -2613,8 +2666,7 @@
       "credential": "administrativeAccessToken",
       "credentialProperty": "command-token",
       "producerDomains": [
-        "administration",
-        "help"
+        "administration"
       ],
       "actorOperations": [
         {
@@ -2626,11 +2678,6 @@
           "audience": "content:administrative-access",
           "method": "POST",
           "path": "/_internal/v1/content/administrative-access/dashboard_2"
-        },
-        {
-          "audience": "content:administrative-access",
-          "method": "POST",
-          "path": "/_internal/v1/content/administrative-access/resolveadminactor_1"
         },
         {
           "audience": "content:administrative-access",
@@ -2656,16 +2703,6 @@
           "audience": "content:administrative-access",
           "method": "POST",
           "path": "/_internal/v1/content/administrative-access/resolvefeedback_1"
-        },
-        {
-          "audience": "content:administrative-access",
-          "method": "POST",
-          "path": "/_internal/v1/content/administrative-access/isbaseadminprofile_1"
-        },
-        {
-          "audience": "content:administrative-access",
-          "method": "POST",
-          "path": "/_internal/v1/content/administrative-access/basegroupid_1"
         }
       ]
     },
@@ -3066,6 +3103,66 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "integrations"
+      ]
+    },
+    {
+      "domain": "help",
+      "api": "PublicHelpContent",
+      "package": "help",
+      "configuration": "PublicHelpContent",
+      "propertyPrefix": "public-help-content",
+      "credential": "publicHelpContentToken",
+      "producerDomains": [
+        "content"
+      ]
+    },
+    {
+      "domain": "operator",
+      "api": "GlobalIdentityPrivacy",
+      "package": "operator",
+      "configuration": "GlobalIdentityPrivacy",
+      "propertyPrefix": "global-identity-privacy",
+      "credential": "globalIdentityPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "MeasurementEligibility",
+      "package": "accounts",
+      "configuration": "MeasurementEligibility",
+      "propertyPrefix": "measurement-eligibility",
+      "credential": "measurementEligibilityToken",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "operator",
+      "api": "MeasurementReports",
+      "providedApis": [
+        "RevenueReports"
+      ],
+      "package": "operator",
+      "configuration": "OperatorReports",
+      "propertyPrefix": "operator-reports",
+      "credential": "operatorReportsToken",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "operator:integration-reports",
+          "method": "POST",
+          "path": "/_internal/v1/operator/reports/measurements"
+        },
+        {
+          "audience": "operator:integration-reports",
+          "method": "POST",
+          "path": "/_internal/v1/operator/reports/revenue"
+        }
       ]
     }
   ],

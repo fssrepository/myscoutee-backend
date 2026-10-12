@@ -1,10 +1,9 @@
 package com.raxim.myscoutee.domain.content.service;
 
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+import com.raxim.myscoutee.domain.accounts.service.AccountSupportCaseCounterService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.SupportMessages;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,9 +57,9 @@ class AdminModerationServiceTest {
     @Mock
     private ChatMessagesRepository chatMessagesRepository;
     @Mock
-    private ChatService chatService;
+    private SupportMessages chatService;
     @Mock
-    private UserActivityCountersService userActivityCountersService;
+    private AccountSupportCaseCounterService supportCaseCounters;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
     @Mock
@@ -77,25 +76,26 @@ class AdminModerationServiceTest {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new AdminModerationService(
                 new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)),
-                configProperties,
+                new com.raxim.myscoutee.domain.administration.service.AdministrativeActorService(configProperties,
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), appSettingsService),
                 reportsRepository,
                 feedbackRepository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository),
                 new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
                 chatService,
-                userActivityCountersService,
+                supportCaseCounters,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                appSettingsService,
                 notificationOutboxService);
         var statusWork = new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(usersRepository,
-                org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinityRecomputeTaskService, null);
+                org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class),
+                java.util.List.of(affinityRecomputeTaskService::enqueueAdminStatusChanged), null);
         org.springframework.test.util.ReflectionTestUtils.setField(statusWork, "supportMessages", chatService);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "profileModeration",
                 new com.raxim.myscoutee.domain.accounts.service.ProfileModerationService(usersRepository, statusWork));
-        org.springframework.test.util.ReflectionTestUtils.setField(userActivityCountersService, "usersRepository", usersRepository);
-        org.mockito.Mockito.lenient().doCallRealMethod().when(userActivityCountersService).hasSupportCaseCounters(org.mockito.ArgumentMatchers.any());
+        org.springframework.test.util.ReflectionTestUtils.setField(supportCaseCounters, "usersRepository", usersRepository);
+        org.mockito.Mockito.lenient().doCallRealMethod().when(supportCaseCounters).hasSupportCaseCounters(org.mockito.ArgumentMatchers.any());
     }
 
     @AfterEach
@@ -104,14 +104,34 @@ class AdminModerationServiceTest {
     }
 
     @Test
-    void baseStatisticsExcludeIndependentWorkspaceActivityEvenWhenTaggedByAJob() {
-        var member = new Users(); member.setUserId("private-member"); member.setWorkspaceGroupId("private-workspace");
-        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(member));
-        var tags = java.util.Map.of("baseGroupId", "myscoutee-work");
-        var activity = new AdminTelemetryEvent("event.synced", "events", "event", member.getUserId(), 1L, "2026-10-05T00:00:00Z", tags);
-        var job = new AdminTelemetryEvent("jobs.run.completed", "jobs", "job", "worker", 1L, "2026-10-05T00:00:00Z", tags);
-        assertThat(service.baseProfileEvents(List.of(activity, job)).get("myscoutee-work")).containsExactly(job);
+    void dashboardUsesTheCounterOwnerWithoutFetchingTheSameAdminProfileFirst() {
+        Users admin = new Users();
+        admin.setUserId("admin-demo-ava");
+        when(usersRepository.findByUserId(admin.getUserId())).thenReturn(Optional.of(admin));
+        org.mockito.Mockito.doReturn(true).when(supportCaseCounters).hasSupportCaseCounters(admin.getUserId());
+
+        var dashboard = service.dashboard(admin.getUserId());
+
+        assertThat(dashboard.activeAdmin().id()).isEqualTo(admin.getUserId());
+        verify(supportCaseCounters).hasSupportCaseCounters(admin.getUserId());
+        verify(supportCaseCounters, never()).refreshSupportCaseCountersForAdmins();
+        // Two unchanged identity reads and one workspace-scope read. No extra
+        // profile read merely to ask the counter owner whether counters exist.
+        verify(usersRepository, org.mockito.Mockito.times(3)).findByUserId(admin.getUserId());
     }
+
+    @Test
+    void dashboardStillInitializesMissingCountersWhenTheAdminProfileIsAbsent() {
+        var dashboard = service.dashboard("admin-demo-ava");
+
+        assertThat(dashboard.activeAdmin().id()).isEqualTo("admin-demo-ava");
+        verify(supportCaseCounters).hasSupportCaseCounters("admin-demo-ava");
+        verify(supportCaseCounters).refreshSupportCaseCountersForAdmins();
+        // Includes the counter owner's real lookup of the absent profile.
+        verify(usersRepository, org.mockito.Mockito.times(4)).findByUserId("admin-demo-ava");
+    }
+
+
 
     @Test
     void warningWithoutReportIdUsesTheTargetWorkspaceAndSendsSupportMessage() {

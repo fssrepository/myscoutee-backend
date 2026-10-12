@@ -16,6 +16,9 @@ import re
 import subprocess
 import sys
 
+from runtime_config import LAB
+
+# Shared host package inventory, deliberately independent of project VM state.
 ROOT = Path('/var/lib/myscoutee-msc121-host')
 PACKAGES = ['qemu-system-x86', 'qemu-utils', 'libvirt-daemon-system',
             'libvirt-clients', 'genisoimage']
@@ -69,7 +72,7 @@ def no_foreign_resources(require_empty=False, allow_default=False):
                     ('pool-list', '--all', '--name')):
         result = run('virsh', '-c', 'qemu:///system', *command)
         names = set(result.stdout.split())
-        allowed = set() if require_empty else {'myscoutee-msc121'}
+        allowed = set() if require_empty else {LAB['vmName']}
         if allow_default and command[0] == 'net-list':
             allowed.add('default')
         if names - allowed:

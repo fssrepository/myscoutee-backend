@@ -22,7 +22,7 @@ class ModerationOwnershipTest {
     @Test void profileBlockRetryRetainsOriginalStatusAndUnblockRestoresIt() {
         var users = mock(UsersRepository.class); var service = new ProfileModerationService(users,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(users, mock(MongoTemplate.class),
-                        mock(com.raxim.myscoutee.domain.affinity.api.UserAffinityChanges.class), null));
+                        java.util.List.of(mock(com.raxim.myscoutee.domain.accounts.api.ProfileStatusObserver.class)), null));
         var user = new Users(); user.setUserId("profile"); user.setProfileStatus("inactive");
         when(users.findByUserId("profile")).thenReturn(Optional.of(user));
         assertThat(service.block("profile")).isTrue(); assertThat(user.getProfileStatus()).isEqualTo("blocked");

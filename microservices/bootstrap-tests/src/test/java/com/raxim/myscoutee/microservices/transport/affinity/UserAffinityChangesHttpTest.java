@@ -75,6 +75,19 @@ class UserAffinityChangesHttpTest {
         assertNull(remote.enqueueUserChanged(null));assertNull(remote.enqueueAdminStatusChanged(" "));
         assertEquals(200,request(UserAffinityChangesProtocol.PROFILE,body(null),TOKEN,"REAL","POST","application/json").statusCode());
     }
+    @Test void accountStatusObserverUsesTheSameRemoteQueueAndPropagatesUnknownOutcome() {
+        com.raxim.myscoutee.domain.accounts.api.ProfileStatusObserver observer = remote;
+        for (var mode : List.of(MongoSessionMode.REAL, MongoSessionMode.DEMO)) {
+            MongoSessionModeContext.set(mode);
+            observer.onProfileStatusChanged("status-profile");
+            var task = stored.get(mode.name() + ":USER:status-profile");
+            assertEquals(List.of("ADMIN_STATUS_CHANGED"), task.getReasons());
+            assertEquals("workspace-" + mode.name(), task.getBaseGroupId());
+            assertEquals(mode, MongoSessionModeContext.currentMode());
+        }
+        assertEquals(2, stored.size());
+        assertThrows(OutcomeUnknownException.class, () -> observer.onProfileStatusChanged("fail"));
+    }
     @Test void producerCapabilityModeMethodsAndInputBoundsAreRequired() throws Exception {
         for(var path:UserAffinityChangesProtocol.paths()) {
             for(var token:new String[]{null,"unrelated-service-token-000000000000000000000000"})
@@ -132,6 +145,9 @@ class UserAffinityChangesHttpTest {
             "org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
     @Import({UserAffinityChangesServerConfiguration.class,ServiceSecurityConfiguration.class})
     static class Fixture {
+        @Bean ScheduledMongoSessionRunner databases() {
+            return new ScheduledMongoSessionRunner("real", "demo");
+        }
         @Bean MongoTemplate mongo(){
             var mongo=mock(MongoTemplate.class);when(mongo.indexOps(AffinityRecomputeTask.class)).thenReturn(mock(IndexOperations.class));return mongo;
         }

@@ -6,6 +6,18 @@ Run the applicable scenarios in frontend local and backend/HTTP modes. Use the v
 
 For notification checks, compare sender and recipients, unread/menu/base-selector counters, open destination and retry behavior. Automatic reminders include their affected creator; human actions exclude their actor.
 
+## Template regression and fix propagation — MSC-122
+
+Work/Community product workflows are omitted from the template. Assess shared
+landing/login, consent, navigation, list/image components, chat, notifications
+and guide defects against the retained template surfaces. Exercise an affected
+shared path there in local/HTTP mode; do not add Work/Community workflows to
+make the template reproduce an omitted product case.
+
+Follow the [shared template regression requirements](README.md#template-regression-and-fix-propagation--msc-122).
+Record template impact, propagated revisions and its own targeted result for
+each defect; source PASS alone does not close the template follow-up.
+
 ## MSC115-LANDING — Shared landing and demo selection
 
 Actors: Public visitor; Alex Turner; Ava.

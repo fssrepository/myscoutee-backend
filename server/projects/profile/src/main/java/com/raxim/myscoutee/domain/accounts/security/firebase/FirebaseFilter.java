@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.platform.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseTokenInvalidException;
@@ -170,6 +170,11 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
     private void authenticateDemoUser(HttpServletRequest request) {
         String requestedUserId = request == null ? null : request.getHeader(DEMO_USER_ID);
+        // Browser WebSockets cannot set custom headers. The existing socket
+        // sessionId check below still validates this selected DEMO account.
+        if (!StringUtils.hasText(requestedUserId) && isWebSocketTokenRequest(request)) {
+            requestedUserId = request.getParameter("userId");
+        }
         if (!StringUtils.hasText(requestedUserId)) {
             return;
         }
@@ -213,7 +218,24 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
     private boolean isPublicEntryBootstrapRequest(HttpServletRequest request) {
         String requestUri = request == null ? "" : request.getRequestURI();
-        return requestUri.matches("/(?:api/)?mcp/oauth/(?:metadata|resource|token|register)")
+        // These document reads are already public in WebSecurityConfig. Do not
+        // turn an anonymous read into the dev fallback member's expired session.
+        boolean publicDocumentRead = request != null
+                && ("GET".equals(request.getMethod()) || "HEAD".equals(request.getMethod()))
+                && switch (requestUri) {
+                    case "/help/active", "/privacy/active", "/terms/active", "/explanation/active",
+                            "/api/help/active", "/api/privacy/active", "/api/terms/active",
+                            "/api/explanation/active", "/auth/facebook/data-deletion/status",
+                            "/api/auth/facebook/data-deletion/status" -> true;
+                    default -> false;
+                };
+        // Meta authenticates this callback with signed_request in its owning
+        // service; it never has a browser login session or Firebase bearer token.
+        boolean signedProviderCallback = request != null && "POST".equals(request.getMethod())
+                && (requestUri.equals("/auth/facebook/data-deletion")
+                        || requestUri.equals("/api/auth/facebook/data-deletion"));
+        return publicDocumentRead || signedProviderCallback
+                || requestUri.matches("/(?:api/)?mcp/oauth/(?:metadata|resource|token|register)")
                 || requestUri.equals("/health")
                 || requestUri.equals("/api/health")
                 || requestUri.equals("/media/public")

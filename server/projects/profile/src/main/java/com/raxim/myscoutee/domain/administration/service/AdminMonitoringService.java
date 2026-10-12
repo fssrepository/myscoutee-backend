@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.administration.service;
 
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 
-import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
@@ -39,13 +39,15 @@ public class AdminMonitoringService {
     private static final Set<String> WORKER_FILTER_CATEGORIES = Set.of("matching", "jobs");
 
     private final AdminMonitoringRepository monitoringRepository;
-    private final AdministrativeAccess adminModerationService;
+    private final AdministrativeActors adminActors;
+    private final AdminTelemetryScopeService telemetryScope;
 
     public AdminMonitoringService(
             AdminMonitoringRepository monitoringRepository,
-            AdministrativeAccess adminModerationService) {
+            AdministrativeActors adminActors, AdminTelemetryScopeService telemetryScope) {
         this.monitoringRepository = monitoringRepository;
-        this.adminModerationService = adminModerationService;
+        this.adminActors = adminActors;
+        this.telemetryScope = telemetryScope;
     }
 
     public AdminMonitoringStateDto state(String adminUserId) {
@@ -53,7 +55,7 @@ public class AdminMonitoringService {
     }
 
     public AdminMonitoringStateDto state(String adminUserId, String filter) {
-        String groupId = adminModerationService.baseGroupId(adminUserId);
+        String groupId = adminActors.baseGroupId(adminUserId);
         return toDto(groupId == null ? monitoringRepository.globalSnapshotOrDefault() : monitoringRepository.snapshotOrDefault(groupId), filter);
     }
 
@@ -68,7 +70,7 @@ public class AdminMonitoringService {
         if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) {
             return;
         }
-        var scoped = adminModerationService.baseProfileEvents(events == null ? List.of() : events);
+        var scoped = telemetryScope.baseProfileEvents(events == null ? List.of() : events);
         if (JobGroupContext.isActive()) {
             String key = JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId();
             applyTelemetryEvents(scoped.getOrDefault(key, List.of()), lastStreamId, monitoringRepository.ensureSnapshot(JobGroupContext.groupId()));

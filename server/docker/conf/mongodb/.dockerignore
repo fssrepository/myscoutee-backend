@@ -3,6 +3,8 @@
 !00_replica_set.js
 !db_init.js
 !mongo_import.sh
+!mongo-seed-policy.inc
+!replica-entrypoint
+!replica-health
 !e2e_db/
 !e2e_db/**
-

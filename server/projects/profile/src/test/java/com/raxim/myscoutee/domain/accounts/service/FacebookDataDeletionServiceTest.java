@@ -32,19 +32,19 @@ class FacebookDataDeletionServiceTest {
     @Test
     void verifiesSignedRequestAndSchedulesMatchingFacebookUserForDeletion() {
         UsersRepository usersRepository = mock(UsersRepository.class);
-        HomeUserProfileService homeUserProfileService = mock(HomeUserProfileService.class);
+        AccountLifecycleService lifecycle = mock(AccountLifecycleService.class);
         Users user = new Users();
         user.setUserId("user-1");
         user.setFacebookId("facebook-user-1");
         when(usersRepository.findFirstByFacebookId("facebook-user-1")).thenReturn(Optional.of(user));
-        when(homeUserProfileService.scheduleUserDeletionByUserId("user-1", "facebook-data-deletion"))
+        when(lifecycle.scheduleUserDeletionByUserId("user-1", "facebook-data-deletion"))
                 .thenReturn(new UserSubmitActionResponseDto(true, null));
 
         FacebookDataDeletionService service = new FacebookDataDeletionService(
                 configProperties("facebook-secret"),
                 emailProperties("https://myscoutee.com/"),
                 usersRepository,
-                homeUserProfileService,
+                lifecycle,
                 new ObjectMapper());
 
         FacebookDataDeletionResponseDto response = service.handleSignedRequest(
@@ -52,27 +52,27 @@ class FacebookDataDeletionServiceTest {
 
         assertThat(response.confirmation_code()).startsWith("FB").hasSize(26);
         assertThat(response.url()).isEqualTo("https://myscoutee.com/api/auth/facebook/data-deletion/status?code=" + response.confirmation_code());
-        verify(homeUserProfileService).scheduleUserDeletionByUserId("user-1", "facebook-data-deletion");
+        verify(lifecycle).scheduleUserDeletionByUserId("user-1", "facebook-data-deletion");
     }
 
     @Test
     void acceptsSignedRequestWhenNoLocalUserExists() {
         UsersRepository usersRepository = mock(UsersRepository.class);
-        HomeUserProfileService homeUserProfileService = mock(HomeUserProfileService.class);
+        AccountLifecycleService lifecycle = mock(AccountLifecycleService.class);
         when(usersRepository.findFirstByFacebookId("facebook-user-1")).thenReturn(Optional.empty());
 
         FacebookDataDeletionService service = new FacebookDataDeletionService(
                 configProperties("facebook-secret"),
                 emailProperties("https://myscoutee.com"),
                 usersRepository,
-                homeUserProfileService,
+                lifecycle,
                 new ObjectMapper());
 
         FacebookDataDeletionResponseDto response = service.handleSignedRequest(
                 signedRequest("{\"algorithm\":\"HMAC-SHA256\",\"user_id\":\"facebook-user-1\"}", "facebook-secret"));
 
         assertThat(response.confirmation_code()).startsWith("FB");
-        verify(homeUserProfileService, never()).scheduleUserDeletionByUserId("user-1", "facebook-data-deletion");
+        verify(lifecycle, never()).scheduleUserDeletionByUserId("user-1", "facebook-data-deletion");
     }
 
     @Test
@@ -81,7 +81,7 @@ class FacebookDataDeletionServiceTest {
                 configProperties("facebook-secret"),
                 emailProperties("https://myscoutee.com"),
                 mock(UsersRepository.class),
-                mock(HomeUserProfileService.class),
+                mock(AccountLifecycleService.class),
                 new ObjectMapper());
         String signedRequest = signedRequest("{\"algorithm\":\"HMAC-SHA256\",\"user_id\":\"facebook-user-1\"}", "wrong-secret");
 
@@ -98,7 +98,7 @@ class FacebookDataDeletionServiceTest {
                 configProperties(""),
                 emailProperties("https://myscoutee.com"),
                 mock(UsersRepository.class),
-                mock(HomeUserProfileService.class),
+                mock(AccountLifecycleService.class),
                 new ObjectMapper());
 
         ResponseStatusException exception = catchThrowableOfType(

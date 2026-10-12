@@ -72,7 +72,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
             .addProtocols("img", "src", "http", "https", "data")
             .preserveRelativeLinks(true);
 
-    private final AdminModerationService admins;
+    private final com.raxim.myscoutee.domain.administration.api.AdministrativeActors admins;
     private final AuthenticationMode configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final MongoTemplate mongoTemplate;
@@ -83,7 +83,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     private final MediaCleanup mediaStorageService;
 
     public IdeaPostsService(
-            AdminModerationService admins,
+            com.raxim.myscoutee.domain.administration.api.AdministrativeActors admins,
             AuthenticationMode configProperties,
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,

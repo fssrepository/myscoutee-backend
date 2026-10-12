@@ -1,0 +1,2182 @@
+{
+  "indexes": [
+    {
+      "collection": "accountDeletionWarnings",
+      "key": {
+        "userId": 1
+      },
+      "options": {
+        "name": "account_warning_user"
+      }
+    },
+    {
+      "collection": "countryPartitions",
+      "key": {
+        "partitionKey": 1
+      },
+      "options": {
+        "name": "country_partition_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "countryPartitions",
+      "key": {
+        "countryCode": 1
+      },
+      "options": {
+        "name": "country_partition_code",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "countryPartitions",
+      "key": {
+        "geometry": "2dsphere"
+      },
+      "options": {
+        "name": "country_partition_geometry"
+      }
+    },
+    {
+      "collection": "integrationTokens",
+      "key": {
+        "tokenHash": 1
+      },
+      "options": {
+        "name": "integration_token_hash",
+        "unique": true
+      }
+    },
+    {
+      "collection": "integrationTokens",
+      "key": {
+        "ownerUserId": 1,
+        "createdAtIso": -1
+      },
+      "options": {
+        "name": "integration_token_owner_created"
+      }
+    },
+    {
+      "collection": "mcpOAuthClients",
+      "key": {
+        "createdAt": 1
+      },
+      "options": {
+        "name": "createdAt"
+      }
+    },
+    {
+      "collection": "mcpOAuthClients",
+      "key": {
+        "expiresAt": 1
+      },
+      "options": {
+        "name": "expiresAt",
+        "expireAfterSeconds": 0
+      }
+    },
+    {
+      "collection": "mcpAuthorizations",
+      "key": {
+        "clientId": 1
+      },
+      "options": {
+        "name": "clientId"
+      }
+    },
+    {
+      "collection": "mcpAuthorizations",
+      "key": {
+        "accessHash": 1
+      },
+      "options": {
+        "name": "accessHash"
+      }
+    },
+    {
+      "collection": "mcpAuthorizations",
+      "key": {
+        "refreshHash": 1
+      },
+      "options": {
+        "name": "refreshHash"
+      }
+    },
+    {
+      "collection": "mcpAuthorizations",
+      "key": {
+        "expiresAt": 1
+      },
+      "options": {
+        "name": "expiresAt",
+        "expireAfterSeconds": 0
+      }
+    },
+    {
+      "collection": "mcpEventSubscriptions",
+      "key": {
+        "ownerUserId": 1,
+        "name": 1,
+        "resourceId": 1,
+        "enabled": 1
+      },
+      "options": {
+        "name": "mcp_events_owner_event"
+      }
+    },
+    {
+      "collection": "mcpEventSubscriptions",
+      "key": {
+        "ownerUserId": 1,
+        "tokenId": 1,
+        "clientId": 1,
+        "callbackUrl": 1
+      },
+      "options": {
+        "name": "mcp_events_callback"
+      }
+    },
+    {
+      "collection": "mcpEventSubscriptions",
+      "key": {
+        "ownerUserId": 1,
+        "enabled": 1,
+        "expiresAt": 1
+      },
+      "options": {
+        "name": "mcp_events_owner_active"
+      }
+    },
+    {
+      "collection": "mcpEventSubscriptions",
+      "key": {
+        "deleteAfter": 1
+      },
+      "options": {
+        "name": "deleteAfter",
+        "expireAfterSeconds": 0
+      }
+    },
+    {
+      "collection": "integrationWebhookDeliveries",
+      "key": {
+        "protocol": 1,
+        "status": 1,
+        "ownerUserId": 1
+      },
+      "options": {
+        "name": "integration_delivery_protocol_status"
+      }
+    },
+    {
+      "collection": "integrationWebhookDeliveries",
+      "key": {
+        "status": 1,
+        "nextAttemptAtIso": 1,
+        "createdAtIso": 1
+      },
+      "options": {
+        "name": "integration_webhook_delivery_due"
+      }
+    },
+    {
+      "collection": "integrationWebhookDeliveries",
+      "key": {
+        "deleteAfter": 1
+      },
+      "options": {
+        "name": "deleteAfter",
+        "expireAfterSeconds": 0
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "users_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "userId": 1
+      },
+      "options": {
+        "name": "users_user_id",
+        "unique": true
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "email": 1
+      },
+      "options": {
+        "name": "users_email",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "partitionKey": 1
+      },
+      "options": {
+        "name": "users_partition_key",
+        "sparse": true
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "profileStatus": 1
+      },
+      "options": {
+        "name": "users_profile_status"
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "profileStatus": 1,
+        "deletedAtIso": 1
+      },
+      "options": {
+        "name": "users_profile_status_deleted"
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "hostTier": 1
+      },
+      "options": {
+        "name": "users_host_tier"
+      }
+    },
+    {
+      "collection": "users",
+      "key": {
+        "name": 1,
+        "userId": 1
+      },
+      "options": {
+        "name": "users_name_user_id",
+        "collation": {
+          "locale": "en",
+          "strength": 2
+        }
+      }
+    },
+    {
+      "collection": "appSettings",
+      "key": {
+        "settingsKey": 1
+      },
+      "options": {
+        "name": "app_settings_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "notificationRuleConfigs",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "notification_rule_config_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "emailTemplates",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "email_template_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "emailCampaignRules",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "email_campaign_rule_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "emailCampaignRules",
+      "key": {
+        "enabled": 1,
+        "priority": -1
+      },
+      "options": {
+        "name": "email_campaign_rule_enabled_priority"
+      }
+    },
+    {
+      "collection": "notificationTemplates",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "notification_template_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "userNotifications",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "user_notifications_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "userNotifications",
+      "key": {
+        "recipientUserId": 1,
+        "readAtIso": 1,
+        "createdDate": -1,
+        "_id": -1
+      },
+      "options": {
+        "name": "user_notifications_recipient_read_created"
+      }
+    },
+    {
+      "collection": "userNotifications",
+      "key": {
+        "recipientUserId": 1,
+        "createdDate": -1,
+        "_id": -1
+      },
+      "options": {
+        "name": "user_notifications_recipient_created"
+      }
+    },
+    {
+      "collection": "userNotifications",
+      "key": {
+        "sourceType": 1,
+        "sourceId": 1,
+        "createdDate": -1
+      },
+      "options": {
+        "name": "user_notifications_source_created"
+      }
+    },
+    {
+      "collection": "userNotifications",
+      "key": {
+        "recipientUserId": 1,
+        "kind": 1,
+        "sourceType": 1,
+        "sourceId": 1,
+        "readAtIso": 1
+      },
+      "options": {
+        "name": "user_notifications_recipient_kind_source"
+      }
+    },
+    {
+      "collection": "scheduledMessageTasks",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "scheduled_message_task_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "scheduledMessageTasks",
+      "key": {
+        "taskKey": 1
+      },
+      "options": {
+        "name": "scheduled_message_task_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "scheduledMessageTasks",
+      "key": {
+        "status": 1,
+        "dueAtIso": 1
+      },
+      "options": {
+        "name": "scheduled_message_task_status_due"
+      }
+    },
+    {
+      "collection": "affinityConfigs",
+      "key": {
+        "active": 1,
+        "version": -1
+      },
+      "options": {
+        "name": "affinity_config_active_version"
+      }
+    },
+    {
+      "collection": "affinityConfigs",
+      "key": {
+        "key": 1,
+        "version": -1
+      },
+      "options": {
+        "name": "affinity_config_key_version",
+        "unique": true
+      }
+    },
+    {
+      "collection": "adminStats",
+      "key": {
+        "statsKey": 1
+      },
+      "options": {
+        "name": "admin_stats_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "adminMonitoring",
+      "key": {
+        "monitoringKey": 1
+      },
+      "options": {
+        "name": "admin_monitoring_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "user_rate_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "ownerUserId": 1,
+        "mode": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "user_rate_owner_mode_updated_v2"
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "relatedUserId": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "user_rate_primary_lookup_v2"
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "secondaryRelatedUserId": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "user_rate_secondary_lookup_v2",
+        "sparse": true
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "ownerUserId": 1,
+        "relatedUserId": 1,
+        "secondaryRelatedUserId": 1,
+        "mode": 1
+      },
+      "options": {
+        "name": "user_rate_owner_primary_mode_v2"
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "ownerUserId": 1,
+        "mode": 1,
+        "relatedUserId": 1,
+        "secondaryRelatedUserId": 1,
+        "campaignId": 1
+      },
+      "options": {
+        "name": "user_rate_owner_mode_target_campaign_unique_v2",
+        "unique": true
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "relatedUserId": 1,
+        "secondaryRelatedUserId": 1,
+        "mode": 1
+      },
+      "options": {
+        "name": "user_rate_pair_lookup_v2"
+      }
+    },
+    {
+      "collection": "userRates",
+      "key": {
+        "scoreGiven": 1,
+        "updatedDate": 1,
+        "createdDate": 1,
+        "ownerUserId": 1
+      },
+      "options": {
+        "name": "user_rate_qmau_window"
+      }
+    },
+    {
+      "collection": "userFilterPreferences",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "user_filter_preferences_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "eventTickets",
+      "key": {
+        "code": 1
+      },
+      "options": {
+        "name": "event_ticket_code",
+        "unique": true
+      }
+    },
+    {
+      "collection": "eventTickets",
+      "key": {
+        "eventId": 1,
+        "holderUserId": 1
+      },
+      "options": {
+        "name": "event_ticket_active_event_holder",
+        "unique": true,
+        "partialFilterExpression": {
+          "status": "A"
+        }
+      }
+    },
+    {
+      "collection": "eventTickets",
+      "key": {
+        "eventId": 1,
+        "usedAtIso": 1
+      },
+      "options": {
+        "name": "event_ticket_event_used"
+      }
+    },
+    {
+      "collection": "userFilterPreferences",
+      "key": {
+        "userId": 1
+      },
+      "options": {
+        "name": "user_filter_preferences_user",
+        "unique": true
+      }
+    },
+    {
+      "collection": "assets",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "asset_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "assets",
+      "key": {
+        "assetId": 1
+      },
+      "options": {
+        "name": "asset_logical_id"
+      }
+    },
+    {
+      "collection": "assets",
+      "key": {
+        "ownerUserId": 1,
+        "assetId": 1
+      },
+      "options": {
+        "name": "asset_owner_asset_id",
+        "unique": true
+      }
+    },
+    {
+      "collection": "assets",
+      "key": {
+        "ownerUserId": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "asset_owner_updated"
+      }
+    },
+    {
+      "collection": "assetRequests",
+      "key": {
+        "status": 1,
+        "requestedAtIso": 1,
+        "userId": 1
+      },
+      "options": {
+        "name": "asset_request_qmau_booking_window"
+      }
+    },
+    {
+      "collection": "activityMembers",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "activity_member_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "activityMembers",
+      "key": {
+        "ownerType": 1,
+        "ownerId": 1,
+        "userId": 1
+      },
+      "options": {
+        "name": "activity_member_owner_user",
+        "unique": true
+      }
+    },
+    {
+      "collection": "activityMembers",
+      "key": {
+        "ownerType": 1,
+        "ownerId": 1,
+        "actionAtIso": -1
+      },
+      "options": {
+        "name": "activity_member_owner_action"
+      }
+    },
+    {
+      "collection": "activityMembers",
+      "key": {
+        "ownerType": 1,
+        "ownerId": 1,
+        "status": 1,
+        "actionAtIso": -1
+      },
+      "options": {
+        "name": "activity_member_owner_status"
+      }
+    },
+    {
+      "collection": "activityMembers",
+      "key": {
+        "ownerType": 1,
+        "userId": 1,
+        "actionAtIso": -1
+      },
+      "options": {
+        "name": "activity_member_user_action"
+      }
+    },
+    {
+      "collection": "activityMembers",
+      "key": {
+        "ownerType": 1,
+        "status": 1,
+        "requestKind": 1
+      },
+      "options": {
+        "name": "activity_member_status_request"
+      }
+    },
+    {
+      "collection": "activityMembers",
+      "key": {
+        "ownerType": 1,
+        "status": 1,
+        "actionAtIso": 1,
+        "userId": 1
+      },
+      "options": {
+        "name": "activity_member_qmau_join"
+      }
+    },
+    {
+      "collection": "eventCheckoutBasketItems",
+      "key": {
+        "userId": 1,
+        "sourceId": 1,
+        "status": 1,
+        "updatedAtIso": -1
+      },
+      "options": {
+        "name": "checkout_basket_user_source_status"
+      }
+    },
+    {
+      "collection": "eventCheckoutBasketItems",
+      "key": {
+        "userId": 1,
+        "sourceId": 1,
+        "status": 1,
+        "resultState": 1,
+        "updatedAtIso": -1
+      },
+      "options": {
+        "name": "checkout_basket_user_source_result_status"
+      }
+    },
+    {
+      "collection": "eventCheckoutBasketItems",
+      "key": {
+        "userId": 1,
+        "sourceId": 1,
+        "itemId": 1
+      },
+      "options": {
+        "name": "checkout_basket_active_user_source_item",
+        "unique": true,
+        "partialFilterExpression": {
+          "reservationActive": true
+        }
+      }
+    },
+    {
+      "collection": "eventCheckoutBasketItems",
+      "key": {
+        "expiresAtIso": 1,
+        "status": 1
+      },
+      "options": {
+        "name": "checkout_basket_expiry_status"
+      }
+    },
+    {
+      "collection": "payments",
+      "key": {
+        "userId": 1,
+        "sourceId": 1,
+        "createdDate": -1
+      },
+      "options": {
+        "name": "payment_user_source"
+      }
+    },
+    {
+      "collection": "payments",
+      "key": {
+        "userId": 1,
+        "sourceId": 1,
+        "bookingStatus": 1,
+        "createdDate": -1
+      },
+      "options": {
+        "name": "payment_user_source_booking"
+      }
+    },
+    {
+      "collection": "payments",
+      "key": {
+        "revisionRootSessionId": 1,
+        "revisionNumber": -1,
+        "createdDate": -1
+      },
+      "options": {
+        "name": "payment_revision_root"
+      }
+    },
+    {
+      "collection": "payments",
+      "key": {
+        "checkoutSessionId": 1
+      },
+      "options": {
+        "name": "payment_checkout_session",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "payments",
+      "key": {
+        "gatewaySessionId": 1
+      },
+      "options": {
+        "name": "payment_gateway_session",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "payments",
+      "key": {
+        "status": 1,
+        "provider": 1,
+        "auditKind": 1,
+        "createdDate": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "payment_revenue_period_scan"
+      }
+    },
+    {
+      "collection": "revenueReportOutbox",
+      "key": {
+        "deploymentId": 1,
+        "period": 1,
+        "revision": 1
+      },
+      "options": {
+        "name": "revenue_outbox_deployment_period_revision",
+        "unique": true
+      }
+    },
+    {
+      "collection": "revenueReportOutbox",
+      "key": {
+        "deploymentId": 1,
+        "status": 1,
+        "nextRetryAt": 1,
+        "period": 1,
+        "revision": 1
+      },
+      "options": {
+        "name": "revenue_outbox_delivery"
+      }
+    },
+    {
+      "collection": "revenueReportOutbox",
+      "key": {
+        "idempotencyKey": 1
+      },
+      "options": {
+        "name": "revenue_outbox_idempotency",
+        "unique": true
+      }
+    },
+    {
+      "collection": "qualifiedMauReportOutbox",
+      "key": {
+        "deploymentId": 1,
+        "period": 1,
+        "revision": 1
+      },
+      "options": {
+        "name": "qmau_outbox_deployment_period_revision",
+        "unique": true
+      }
+    },
+    {
+      "collection": "qualifiedMauReportOutbox",
+      "key": {
+        "deploymentId": 1,
+        "status": 1,
+        "nextRetryAt": 1,
+        "period": 1,
+        "revision": 1
+      },
+      "options": {
+        "name": "qmau_outbox_delivery"
+      }
+    },
+    {
+      "collection": "qualifiedMauReportOutbox",
+      "key": {
+        "idempotencyKey": 1
+      },
+      "options": {
+        "name": "qmau_outbox_idempotency",
+        "unique": true
+      }
+    },
+    {
+      "collection": "activityResources",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "activity_resource_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "activityResources",
+      "key": {
+        "recordId": 1
+      },
+      "options": {
+        "name": "activity_resource_record_id",
+        "unique": true
+      }
+    },
+    {
+      "collection": "activityResources",
+      "key": {
+        "ownerId": 1,
+        "subEventId": 1,
+        "assetOwnerUserId": 1
+      },
+      "options": {
+        "name": "activity_resource_active_owner_subevent_asset_owner",
+        "unique": true,
+        "partialFilterExpression": {
+          "status": "A"
+        }
+      }
+    },
+    {
+      "collection": "activityResources",
+      "key": {
+        "assetOwnerUserId": 1,
+        "ownerId": 1
+      },
+      "options": {
+        "name": "activity_resource_owner_key"
+      }
+    },
+    {
+      "collection": "accessPolicyDefinitions",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "access_policy_definition_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "accessPolicyDefinitions",
+      "key": {
+        "policyKey": 1
+      },
+      "options": {
+        "name": "access_policy_definition_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "accessGrants",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "access_grant_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "accessGrants",
+      "key": {
+        "subjectUserId": 1,
+        "permission": 1,
+        "resourceType": 1,
+        "resourceId": 1
+      },
+      "options": {
+        "name": "access_grant_subject_permission_resource"
+      }
+    },
+    {
+      "collection": "accessGrants",
+      "key": {
+        "resourceType": 1,
+        "resourceId": 1,
+        "permission": 1
+      },
+      "options": {
+        "name": "access_grant_resource_permission"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "event_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "ownerUserId": 1,
+        "type": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_owner_type_source",
+        "unique": true
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "ownerUserId": 1,
+        "type": 1,
+        "startAtIso": 1
+      },
+      "options": {
+        "name": "event_owner_type"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "ownerUserId": 1,
+        "type": 1,
+        "status": 1,
+        "startAtIso": 1
+      },
+      "options": {
+        "name": "event_owner_type_status_start"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "ownerUserId": 1,
+        "startAtIso": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_owner_start_source"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "ownerUserId": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_owner_source"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "creatorUserId": 1,
+        "startAtIso": 1
+      },
+      "options": {
+        "name": "event_creator_start"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "admins": 1,
+        "startAtIso": 1
+      },
+      "options": {
+        "name": "event_admins_lookup"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "admins": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_admins_source"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "acceptedMemberUserIds": 1,
+        "status": 1,
+        "startAtIso": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_accepted_member_start"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "invitedMemberUserIds": 1,
+        "status": 1,
+        "startAtIso": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_invited_member_start"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "pendingRequestMemberUserIds": 1,
+        "status": 1,
+        "startAtIso": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_pending_request_member_start"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "sourceId": 1,
+        "type": 1
+      },
+      "options": {
+        "name": "event_source_lookup"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "sourceId": 1,
+        "startAtIso": 1,
+        "type": 1
+      },
+      "options": {
+        "name": "event_source_start_lookup"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "status": 1,
+        "creatorUserId": 1,
+        "visibility": 1
+      },
+      "options": {
+        "name": "event_explore_visibility"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "type": 1,
+        "status": 1,
+        "generated": 1,
+        "creatorUserId": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_explore_candidates_status"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "type": 1,
+        "status": 1,
+        "generated": 1,
+        "published": 1,
+        "startAtIso": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_explore_feed_status"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "expired": 1,
+        "endAtIso": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_expired_end"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "expired": 1,
+        "startAtIso": 1,
+        "sourceId": 1
+      },
+      "options": {
+        "name": "event_expired_start"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "locationGeo": "2dsphere"
+      },
+      "options": {
+        "name": "event_location_geo"
+      }
+    },
+    {
+      "collection": "events",
+      "key": {
+        "status": 1,
+        "generated": 1,
+        "createdDate": 1,
+        "creatorUserId": 1
+      },
+      "options": {
+        "name": "event_qmau_host_window"
+      }
+    },
+    {
+      "collection": "chats",
+      "key": {
+        "ownerUserId": 1,
+        "id": 1
+      },
+      "options": {
+        "name": "chat_owner_public_id",
+        "unique": true
+      }
+    },
+    {
+      "collection": "chats",
+      "key": {
+        "id": 1
+      },
+      "options": {
+        "name": "chat_public_id_lookup"
+      }
+    },
+    {
+      "collection": "chats",
+      "key": {
+        "ownerUserId": 1,
+        "dateIso": -1
+      },
+      "options": {
+        "name": "chat_owner_date"
+      }
+    },
+    {
+      "collection": "chats",
+      "key": {
+        "memberIds": 1,
+        "dateIso": -1
+      },
+      "options": {
+        "name": "chat_member_date"
+      }
+    },
+    {
+      "collection": "chats",
+      "key": {
+        "channelType": 1,
+        "dateIso": -1
+      },
+      "options": {
+        "name": "chat_channel_date"
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "chatId": 1,
+        "id": 1
+      },
+      "options": {
+        "name": "chat_message_lookup",
+        "unique": true
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "chatId": 1,
+        "sentAtIso": -1,
+        "id": -1
+      },
+      "options": {
+        "name": "chat_message_page_desc"
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "messageSenderUserIds": 1,
+        "sentAtIso": -1
+      },
+      "options": {
+        "name": "chat_message_sender_date"
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "messageReadByUserIds": 1,
+        "sentAtIso": -1
+      },
+      "options": {
+        "name": "chat_message_reader_date"
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "messageReactionUserIds": 1,
+        "sentAtIso": -1
+      },
+      "options": {
+        "name": "chat_message_reaction_date"
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "messageAttachmentKeys": 1,
+        "sentAtIso": -1
+      },
+      "options": {
+        "name": "chat_message_attachment_date"
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "pollVoterUserIds": 1,
+        "sentAtIso": -1
+      },
+      "options": {
+        "name": "chat_poll_voter_date"
+      }
+    },
+    {
+      "collection": "chatMessages",
+      "key": {
+        "sentAtIso": 1,
+        "senderAvatar.id": 1,
+        "deletedAtIso": 1
+      },
+      "options": {
+        "name": "chat_message_qmau_window"
+      }
+    },
+    {
+      "collection": "eventFeedbackStates",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "event_feedback_state_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "eventFeedbackStates",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1
+      },
+      "options": {
+        "name": "event_feedback_state_user_event",
+        "unique": true
+      }
+    },
+    {
+      "collection": "eventFeedbackStates",
+      "key": {
+        "viewerUserId": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "event_feedback_state_user_updated"
+      }
+    },
+    {
+      "collection": "eventFeedbackStates",
+      "key": {
+        "eventId": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "event_feedback_state_event_updated"
+      }
+    },
+    {
+      "collection": "eventFeedbackStates",
+      "key": {
+        "removed": 1,
+        "submittedAtIso": 1,
+        "viewerUserId": 1,
+        "eventId": 1
+      },
+      "options": {
+        "name": "event_feedback_state_qmau_window"
+      }
+    },
+    {
+      "collection": "eventFeedbackAnswers",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "event_feedback_answer_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "eventFeedbackAnswers",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1,
+        "cardId": 1
+      },
+      "options": {
+        "name": "event_feedback_answer_user_event_card",
+        "unique": true
+      }
+    },
+    {
+      "collection": "eventFeedbackAnswers",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1
+      },
+      "options": {
+        "name": "event_feedback_answer_user_event"
+      }
+    },
+    {
+      "collection": "eventFeedbackAnswers",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "event_feedback_answer_user_event_submitted"
+      }
+    },
+    {
+      "collection": "eventFeedbackAnswers",
+      "key": {
+        "eventId": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "event_feedback_answer_event_submitted"
+      }
+    },
+    {
+      "collection": "eventFeedbackAnswers",
+      "key": {
+        "targetUserId": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "event_feedback_answer_target_user_submitted"
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "contentKey": 1,
+        "lang": 1
+      },
+      "options": {
+        "name": "idea_post_content_lang",
+        "unique": true
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "lang": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "idea_post_lang_submitted"
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "lang": 1,
+        "published": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "idea_post_lang_published_submitted"
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "lang": 1,
+        "published": 1,
+        "submittedAtIso": -1,
+        "_id": -1
+      },
+      "options": {
+        "name": "idea_post_public_page"
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "lang": 1,
+        "published": 1,
+        "featured": 1,
+        "submittedAtIso": -1,
+        "_id": -1
+      },
+      "options": {
+        "name": "idea_post_public_featured_preview"
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "published": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "idea_post_published_submitted"
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "featured": 1,
+        "published": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "idea_post_featured_submitted"
+      }
+    },
+    {
+      "collection": "ideaPosts",
+      "key": {
+        "trashed": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "idea_post_trashed_submitted"
+      }
+    },
+    {
+      "collection": "privacyConsents",
+      "key": {
+        "userId": 1,
+        "revisionId": 1
+      },
+      "options": {
+        "name": "privacy_consent_user_revision",
+        "unique": true
+      }
+    },
+    {
+      "collection": "privacyConsents",
+      "key": {
+        "userId": 1
+      },
+      "options": {
+        "name": "privacy_consent_user"
+      }
+    },
+    {
+      "collection": "privacyConsents",
+      "key": {
+        "revisionId": 1
+      },
+      "options": {
+        "name": "privacy_consent_revision"
+      }
+    },
+    {
+      "collection": "userExperienceProfiles",
+      "key": {
+        "userId": 1
+      },
+      "options": {
+        "name": "user_experience_profiles_user_id",
+        "unique": true
+      }
+    },
+    {
+      "collection": "navigatorContacts",
+      "key": {
+        "userId": 1
+      },
+      "options": {
+        "name": "navigator_contacts_user_id",
+        "unique": true
+      }
+    },
+    {
+      "collection": "operatorRegistryEndpoints",
+      "key": {
+        "enabled": 1,
+        "sortOrder": 1,
+        "label": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "operator_registry_endpoint_enabled_sort"
+      }
+    },
+    {
+      "collection": "operatorRegistryEndpoints",
+      "key": {
+        "baseUrl": 1,
+        "registryScope": 1
+      },
+      "options": {
+        "name": "operator_registry_endpoint_base_scope",
+        "unique": true
+      }
+    },
+    {
+      "collection": "paymentProviders",
+      "key": {
+        "enabled": 1,
+        "sortOrder": 1,
+        "label": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "payment_provider_enabled_sort"
+      }
+    },
+    {
+      "collection": "savedPaymentMethods",
+      "key": {
+        "userId": 1,
+        "status": 1,
+        "createdAtIso": -1
+      },
+      "options": {
+        "name": "saved_payment_method_user_status_created"
+      }
+    },
+    {
+      "collection": "savedPaymentMethods",
+      "key": {
+        "status": 1,
+        "expiryKey": 1,
+        "expiredNotifiedAtIso": 1
+      },
+      "options": {
+        "name": "saved_payment_method_expiry_scan"
+      }
+    },
+    {
+      "collection": "savedPaymentMethods",
+      "key": {
+        "userId": 1,
+        "artworkKey": 1,
+        "status": 1
+      },
+      "options": {
+        "name": "saved_payment_method_user_art_status"
+      }
+    },
+    {
+      "collection": "savedPaymentMethods",
+      "key": {
+        "registrationId": 1
+      },
+      "options": {
+        "name": "saved_payment_method_registration",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "communityProviders",
+      "key": {
+        "enabled": 1,
+        "sortOrder": 1,
+        "name": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "community_provider_enabled_sort"
+      }
+    },
+    {
+      "collection": "i18n_bundles",
+      "key": {
+        "lang": 1
+      },
+      "options": {
+        "name": "i18n_bundles_lang",
+        "unique": true
+      }
+    },
+    {
+      "collection": "i18n_messages",
+      "key": {
+        "key": 1,
+        "lang": 1
+      },
+      "options": {
+        "name": "i18n_messages_key_lang",
+        "unique": true
+      }
+    },
+    {
+      "collection": "notificationRuleConfigs",
+      "key": {
+        "baseGroupId": 1,
+        "ruleKey": 1
+      },
+      "options": {
+        "name": "notification_rule_group_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "emailTemplates",
+      "key": {
+        "baseGroupId": 1,
+        "templateKey": 1
+      },
+      "options": {
+        "name": "email_template_key_group",
+        "unique": true
+      }
+    },
+    {
+      "collection": "emailCampaignRules",
+      "key": {
+        "baseGroupId": 1,
+        "ruleKey": 1
+      },
+      "options": {
+        "name": "email_campaign_rule_key_group",
+        "unique": true
+      }
+    },
+    {
+      "collection": "notificationTemplates",
+      "key": {
+        "baseGroupId": 1,
+        "templateKey": 1
+      },
+      "options": {
+        "name": "notification_template_key_group",
+        "unique": true
+      }
+    },
+    {
+      "collection": "affinityRecomputeTasks",
+      "key": {
+        "baseGroupId": 1,
+        "status": 1,
+        "availableAtIso": 1
+      },
+      "options": {
+        "name": "affinity_recompute_group_status_available"
+      }
+    },
+    {
+      "collection": "notificationOutbox",
+      "key": {
+        "baseGroupId": 1,
+        "status": 1,
+        "nextRetryAt": 1,
+        "createdDate": 1
+      },
+      "options": {
+        "name": "notification_outbox_group_status_retry"
+      }
+    },
+    {
+      "collection": "scheduledMessageTasks",
+      "key": {
+        "baseGroupId": 1,
+        "status": 1,
+        "dueAtIso": 1
+      },
+      "options": {
+        "name": "scheduled_message_group_status_due"
+      }
+    },
+    {
+      "collection": "userAffinityEdges",
+      "key": {
+        "pairKey": 1
+      },
+      "options": {
+        "name": "user_affinity_edge_pair_key",
+        "unique": true
+      }
+    },
+    {
+      "collection": "userAffinityEdges",
+      "key": {
+        "leftUserId": 1,
+        "rightUserId": 1
+      },
+      "options": {
+        "name": "user_affinity_edge_left_right",
+        "unique": true
+      }
+    },
+    {
+      "collection": "userAffinityEdges",
+      "key": {
+        "leftUserId": 1,
+        "edgeWeight": -1
+      },
+      "options": {
+        "name": "user_affinity_edge_left_weight"
+      }
+    },
+    {
+      "collection": "userAffinityEdges",
+      "key": {
+        "rightUserId": 1,
+        "edgeWeight": -1
+      },
+      "options": {
+        "name": "user_affinity_edge_right_weight"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphLayouts",
+      "key": {
+        "layoutVersion": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_layout_version",
+        "unique": true
+      }
+    },
+    {
+      "collection": "adminAffinityGraphLayouts",
+      "key": {
+        "generatedAtIso": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_layout_generated_at"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphNodes",
+      "key": {
+        "layoutVersion": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_node_layout"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphNodes",
+      "key": {
+        "layoutVersion": 1,
+        "userId": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_node_layout_user",
+        "unique": true
+      }
+    },
+    {
+      "collection": "adminAffinityGraphNodes",
+      "key": {
+        "layoutVersion": 1,
+        "tileZ": 1,
+        "tileX": 1,
+        "tileY": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_node_layout_tile"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphNodes",
+      "key": {
+        "layoutVersion": 1,
+        "x": 1,
+        "z": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_node_layout_position"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphNodes",
+      "key": {
+        "layoutVersion": 1,
+        "componentId": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_node_layout_component"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphNodes",
+      "key": {
+        "layoutVersion": 1,
+        "centrality": -1
+      },
+      "options": {
+        "name": "admin_affinity_graph_node_layout_centrality"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphEdges",
+      "key": {
+        "layoutVersion": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_edge_layout"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphEdges",
+      "key": {
+        "layoutVersion": 1,
+        "sourceUserId": 1,
+        "targetUserId": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_edge_layout_pair",
+        "unique": true
+      }
+    },
+    {
+      "collection": "adminAffinityGraphEdges",
+      "key": {
+        "layoutVersion": 1,
+        "sourceUserId": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_edge_layout_source"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphEdges",
+      "key": {
+        "layoutVersion": 1,
+        "targetUserId": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_edge_layout_target"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphEdges",
+      "key": {
+        "layoutVersion": 1,
+        "componentId": 1,
+        "lodLevel": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_edge_layout_component_lod"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphEdges",
+      "key": {
+        "layoutVersion": 1,
+        "weight": -1
+      },
+      "options": {
+        "name": "admin_affinity_graph_edge_layout_weight"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphForests",
+      "key": {
+        "layoutVersion": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_forest_layout"
+      }
+    },
+    {
+      "collection": "adminAffinityGraphForests",
+      "key": {
+        "layoutVersion": 1,
+        "componentId": 1
+      },
+      "options": {
+        "name": "admin_affinity_graph_forest_layout_component",
+        "unique": true
+      }
+    },
+    {
+      "collection": "adminAffinityGraphForests",
+      "key": {
+        "layoutVersion": 1,
+        "memberCount": -1
+      },
+      "options": {
+        "name": "admin_affinity_graph_forest_layout_size"
+      }
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "key": {
+        "baseGroupId": 1,
+        "documentType": 1,
+        "lang": 1,
+        "contextKey": 1,
+        "version": -1
+      },
+      "options": {
+        "name": "help_revision_group_document_lang_context_version",
+        "unique": true
+      }
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "key": {
+        "baseGroupId": 1,
+        "documentType": 1,
+        "lang": 1,
+        "contextKey": 1,
+        "active": 1,
+        "version": -1
+      },
+      "options": {
+        "name": "help_revision_group_document_lang_context_active"
+      }
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "key": {
+        "documentType": 1
+      },
+      "options": {
+        "name": "help_revision_document_type"
+      }
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "key": {
+        "lang": 1
+      },
+      "options": {
+        "name": "help_revision_lang"
+      }
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "key": {
+        "contextKey": 1
+      },
+      "options": {
+        "name": "help_revision_context_key"
+      }
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "key": {
+        "active": 1
+      },
+      "options": {
+        "name": "help_revision_active"
+      }
+    },
+    {
+      "collection": "helpCenterGuideFields",
+      "key": {
+        "screenKey": 1,
+        "id": 1
+      },
+      "options": {
+        "name": "help_guide_field_screen_id",
+        "unique": true
+      }
+    },
+    {
+      "collection": "helpCenterGuideFields",
+      "key": {
+        "screenKey": 1,
+        "order": 1
+      },
+      "options": {
+        "name": "help_guide_field_screen_order"
+      }
+    }
+  ],
+  "retiredIndexes": [
+    {
+      "collection": "userRates",
+      "name": "user_rate_owner_mode_target_unique_v1"
+    },
+    {
+      "collection": "notificationRuleConfigs",
+      "name": "notification_rule_config_rule_key"
+    },
+    {
+      "collection": "emailTemplates",
+      "name": "email_template_key"
+    },
+    {
+      "collection": "emailCampaignRules",
+      "name": "email_campaign_rule_key"
+    },
+    {
+      "collection": "notificationTemplates",
+      "name": "notification_template_key"
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "name": "help_revision_document_lang_context_version"
+    }
+  ]
+}

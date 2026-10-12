@@ -4,6 +4,18 @@ MSC-118: [project issue](https://github.com/fssrepository/myscoutee-roadmap/issu
 Manual status: **NOT RUN**. Automated evidence is recorded separately in
 [the execution record](../../evidence/general/ROLE-GUIDES-NOTIFICATIONS-001-20261007.md).
 
+## Template regression and fix propagation — MSC-122
+
+Check the template's retained member/admin/operator guide launchers and
+notifications, including applicable read/mute persistence and local/HTTP parity.
+Use template-owned actors and seeds. Registry, payment and other omitted role
+screens are N/A. Shared role/menu/guide/inbox fixes require template propagation
+and targeted verification; this does not open omitted operator product screens.
+
+Follow the [shared template regression requirements](../README.md#template-regression-and-fix-propagation--msc-122).
+Record template impact, propagated revisions and its own targeted result for
+each defect; source PASS alone does not close the template follow-up.
+
 ## Baseline and ownership
 
 Use the existing dev stack and disposable demo data, never production users.

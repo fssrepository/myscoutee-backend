@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.affinity.service.UserAffinityEdgeService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
@@ -72,10 +72,10 @@ class EventSchedulerTest {
     @Mock private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groupsRepository;
     private EventJobQueries jobScope() {
         var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
-        var scope = new JobGroupScopeService();
         var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository);
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
-        org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
+        var scope = new JobGroupScopeService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class),
+                java.util.Optional.of(directory), java.util.List.of());
         return new EventJobQueries(mongo, scope);
     }
     @Mock
@@ -103,7 +103,7 @@ class EventSchedulerTest {
     @Mock
     private EventCheckoutBasketService eventCheckoutBasketService;
     @Mock
-    private ChatService chatService;
+    private EventConversations chatService;
     @Mock
     private NotificationRuleRegistryService notificationRuleRegistryService;
     @Mock
@@ -606,8 +606,8 @@ class EventSchedulerTest {
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u1", "u2")));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room1Id),
-                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE),
-                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
+                eq(EventConversations.RANDOM_ROOM_WELCOME_MESSAGE),
+                eq(EventConversations.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
         creationOrder.verify(activitiesMembersService).syncMaterializedSystemEventMembers(
                 argThat(room -> room2Id.equals(room.getSourceId())),
                 eq("scheduler"),
@@ -618,8 +618,8 @@ class EventSchedulerTest {
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u3", "u4")));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room2Id),
-                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE),
-                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
+                eq(EventConversations.RANDOM_ROOM_WELCOME_MESSAGE),
+                eq(EventConversations.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService, times(2)).enqueue(intentCaptor.capture());
@@ -813,7 +813,7 @@ class EventSchedulerTest {
                 anyString(),
                 eq("Welcome to your tournament group for Tournament stage start. "
                         + "Use this chat to coordinate with your group and follow stage updates."),
-                eq(ChatService.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE));
+                eq(EventConversations.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE));
         ArgumentCaptor<NotificationIntent> tournamentIntentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService, times(2)).enqueue(tournamentIntentCaptor.capture());
         assertThat(tournamentIntentCaptor.getAllValues()).allSatisfy(intent -> {

@@ -4,7 +4,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 import com.raxim.myscoutee.domain.payments.api.PaymentProviders;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.microservices.transport.common.RemoteReadTransport;
 import io.micrometer.core.instrument.MeterRegistry;
 import tools.jackson.core.type.TypeReference;

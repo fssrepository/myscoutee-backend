@@ -26,3 +26,25 @@ variable "running" {
   type    = bool
   default = true
 }
+
+variable "lab_name" {
+  type = string
+  validation {
+    condition     = can(regex("^[a-z][a-z0-9-]{0,62}$", var.lab_name))
+    error_message = "Use a safe, project-owned libvirt resource name."
+  }
+}
+variable "bridge_name" {
+  type = string
+  validation {
+    condition     = can(regex("^[a-z][a-z0-9-]{0,14}$", var.bridge_name))
+    error_message = "Use a safe Linux interface name of at most 15 characters."
+  }
+}
+variable "mac_address" {
+  type = string
+  validation {
+    condition     = can(regex("^52:54:00(:[0-9a-f]{2}){3}$", var.mac_address))
+    error_message = "Use an explicit, unique QEMU MAC address."
+  }
+}

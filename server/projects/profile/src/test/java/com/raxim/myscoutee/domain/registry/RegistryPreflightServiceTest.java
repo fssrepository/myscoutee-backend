@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -168,8 +169,8 @@ class RegistryPreflightServiceTest {
             this.objectMapper = objectMapper;
             this.responsePadding = responsePadding;
             KeyPair keyPair = RegistryTestIdentity.generate();
-            String publicKey = RegistryProtocol.standardBase64(keyPair.getPublic().getEncoded());
-            this.fingerprint = RegistryProtocol.publicKeyFingerprint(keyPair.getPublic().getEncoded());
+            String publicKey = CanonicalValues.standardBase64(keyPair.getPublic().getEncoded());
+            this.fingerprint = CanonicalValues.publicKeyFingerprint(keyPair.getPublic().getEncoded());
             String keyId = RegistryProtocol.registryKeyId(fingerprint);
             RegistryIdentityResponse unsigned = new RegistryIdentityResponse(
                     RegistryProtocol.PROTOCOL_VERSION,
@@ -181,7 +182,7 @@ class RegistryPreflightServiceTest {
                     keyPair.getPrivate(),
                     RegistryProtocol.registryIdentity(unsigned));
             if (corruptSignature) {
-                signature = RegistryProtocol.standardBase64(new byte[64]);
+                signature = CanonicalValues.standardBase64(new byte[64]);
             }
             this.identity = new RegistryIdentityResponse(
                     unsigned.protocolVersion(),

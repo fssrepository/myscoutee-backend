@@ -15,9 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebaseUpdateDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentUpdateDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.FirebaseUpdateDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentUpdateDto;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;

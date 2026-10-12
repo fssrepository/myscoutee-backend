@@ -1,5 +1,5 @@
 # Generated for @SERVICE@ from assemblies.json. Domain source is never copied here.
-ARG RUNTIME_IMAGE=myscoutee-service-@RUNTIME_STAGE@:msc121
+ARG RUNTIME_IMAGE=@RUNTIME_IMAGE@
 FROM ${RUNTIME_IMAGE} AS layers
 WORKDIR /extract
 COPY myscoutee-@SERVICE@.jar application.jar
@@ -8,7 +8,7 @@ RUN java -Djarmode=tools -jar application.jar extract --layers --destination ext
 FROM ${RUNTIME_IMAGE}
 ARG BACKEND_REVISION
 ARG BACKEND_DIRTY
-LABEL com.myscoutee.task="MSC-121" \
+LABEL com.myscoutee.task="@ISSUE@" \
       com.myscoutee.assembly="@SERVICE@" \
       org.opencontainers.image.revision="${BACKEND_REVISION}" \
       com.myscoutee.backend-dirty="${BACKEND_DIRTY}"

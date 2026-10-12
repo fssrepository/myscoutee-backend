@@ -41,6 +41,17 @@ that crosses into the sibling `myscoutee-registry` repository.
 
 ## CRITICAL LOCAL RESOURCE RULE
 
+Always assess response-time and CPU impact, but keep validation proportional.
+Use focused JUnit tests and the existing runtime's health, logs and CPU evidence
+for small implementation steps. Run matched load/stress measurements after a
+coherent change batch or to investigate a concrete performance concern, not
+after every edit. Compare the same workload, data, concurrency, warmup and
+deployment limits; record both source revisions and report increases as well
+as decreases. Functional success alone does not prove performance parity.
+Validate each completed backend change batch on both KVM and the monolith,
+serially with only one stack running. Focused runtime checks are required in
+both deployments; repeating stress tests in both is not required by default.
+
 **Backend JUnit exception authorized by the user:** standard and embedded JUnit
 tests may run in a separate, serial process while the dev server runs. Use
 `tools/run-backend-junit.sh`; it reuses the existing Gradle/JUnit implementation

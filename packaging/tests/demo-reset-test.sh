@@ -37,6 +37,9 @@ chmod 0755 "${TEST_ROOT}/bin/docker"
 cat > "${TEST_ROOT}/compose" <<'EOF'
 #!/usr/bin/env sh
 printf '%s\n' "$*" >> "${DEMO_RESET_COMMAND_LOG:?}"
+if [ "${DEMO_RESET_FAIL_INITIALIZER:-false}" = true ]; then
+  case "$*" in *admin\ /docker-entrypoint-initdb.d/db_init.js*) exit 91;; esac
+fi
 if [ "${1:-}" = exec ] && [ "$(cat "${DEMO_RESET_READY_COUNT:?}")" -lt 2 ]; then
   echo "Reset started while MongoDB was still initializing" >&2
   exit 90
@@ -75,9 +78,36 @@ grep -Fq 'MONGO_IMPORT_ALL_SEED_DATABASES=false' "${TEST_ROOT}/commands.log" \
   || fail "reset could import another database"
 grep -Fq 'MONGO_SEED_DIRECTORY=demo_db' "${TEST_ROOT}/commands.log" \
   || fail "reset did not select the packaged demo seed"
+grep -Fq 'admin /docker-entrypoint-initdb.d/db_init.js' "${TEST_ROOT}/commands.log" \
+  || fail "reset did not replay the complete canonical initializer"
+grep -Fq 'MONGO_REAL_DATABASE=production_db' "${TEST_ROOT}/commands.log" \
+  || fail "initializer lost the production database boundary"
+grep -Fq 'Incomplete Explore seed collection:' "${TEST_ROOT}/commands.log" \
+  || fail "reset did not check every selected seed collection"
+if grep -Fq 'db.events.countDocuments' "${TEST_ROOT}/commands.log"; then
+  fail "shared reset requires a native-only domain"
+fi
 grep -Fq 'images/demo-assets images/demo-events images/demo-profiles' \
   "${TEST_ROOT}/commands.log" \
   || fail "reset did not restrict MinIO cleanup to package-owned demo prefixes"
+
+printf '%s\n' 1.0.0 > "${TEST_ROOT}/marker"
+if PATH="${TEST_ROOT}/bin:${PATH}" \
+    DEMO_RESET_COMMAND_LOG="${TEST_ROOT}/initializer-failure.log" \
+    DEMO_RESET_READY_COUNT="${TEST_ROOT}/ready-count" \
+    DEMO_RESET_FAIL_INITIALIZER=true \
+    MYSCOUTEE_COMPOSE_SCRIPT="${TEST_ROOT}/compose" \
+    MYSCOUTEE_ENV_FILE="${TEST_ROOT}/myscoutee.env" \
+    MYSCOUTEE_DEMO_RESET_MARKER="${TEST_ROOT}/marker" \
+    MYSCOUTEE_DEMO_RESET_WAIT_SECONDS=3 \
+    MYSCOUTEE_DEMO_RESET_ALLOW_NON_ROOT_FOR_TESTS=true \
+      bash "${RESET_SCRIPT}" >/dev/null 2>&1; then
+  fail "reset accepted a failed index initialization"
+fi
+[[ -f "${TEST_ROOT}/marker" ]] || fail "failed initialization consumed the retry marker"
+if grep -Fq 'const userCount' "${TEST_ROOT}/initializer-failure.log"; then
+  fail "reset continued after index initialization failed"
+fi
 
 printf '%s\n' 1.0.0 > "${TEST_ROOT}/marker"
 if PATH="${TEST_ROOT}/bin:${PATH}" \

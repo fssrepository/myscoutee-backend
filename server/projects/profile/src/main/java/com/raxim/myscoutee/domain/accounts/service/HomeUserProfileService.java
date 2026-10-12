@@ -1,5 +1,10 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
+import static com.raxim.myscoutee.domain.accounts.service.AccountCounterMapper.*;
+import static com.raxim.myscoutee.domain.accounts.service.ProfileStatusValues.*;
+import static com.raxim.myscoutee.domain.accounts.service.AccountLocationService.toLocationCoordinatesDto;
+import static com.raxim.myscoutee.domain.accounts.service.AccountLocationService.toLocationCoordinatesRecord;
+
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
@@ -13,11 +18,7 @@ import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.UserActivityScheduling;
 import com.raxim.myscoutee.domain.payments.api.AffiliateRegistrations;
 import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
-import com.raxim.myscoutee.domain.platform.api.CountryDirectory;
-import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -46,7 +47,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentityEmail;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
-import com.raxim.myscoutee.domain.access.api.RegionSecurity;
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.api.EventHomeReads.Event;
 import static com.raxim.myscoutee.domain.events.api.EventOwnership.Event.STATUS_ACTIVE;
@@ -57,9 +57,7 @@ import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.UserFriendship;
 import com.raxim.myscoutee.domain.affinity.api.RatingView;
-import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserByIdResponseDto;
@@ -72,7 +70,6 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserNotificationDeviceDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventFeedbackCountersDto;
-import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserGameFilterPreferencesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserImpressionsDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserImpressionsSectionDto;
@@ -88,7 +85,6 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserLocationEligibilityR
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserRealtimeLongPollRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserRealtimeLongPollResponseDto;
-import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
@@ -96,34 +92,24 @@ import com.raxim.myscoutee.common.dto.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.domain.events.api.EventHomeReads;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.events.api.FeedbackDirectory;
-import com.raxim.myscoutee.domain.content.api.UserFeedback;
 import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
-import com.raxim.myscoutee.domain.content.api.UserReports;
-import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
-public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
-        com.raxim.myscoutee.domain.accounts.api.ProfileReadState,
-        com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards,
-        com.raxim.myscoutee.domain.accounts.api.LocationEligibility {
-    @org.springframework.beans.factory.annotation.Autowired
-    private JobAudience jobGroupScope;
+public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
+        ProfileReadCache,
+        com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards {
 
     private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
-    private static final String PROFILE_STATUS_ONBOARDING = "onboarding";
     private static final Set<String> HARD_HIDDEN_PROFILE_STATUSES = Set.of("blocked", "inactive", "deleted", PROFILE_STATUS_ONBOARDING);
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
-    private static final String DEFAULT_SEED_PARTITION_KEY = "country:hu";
-    private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
-    private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
     private static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
@@ -224,24 +210,20 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.api.CaseParticipants caseParticipants;
+    private ProfileMenuCountersService menuCounters;
     private final UsersRepository usersRepository;
+    private final SelectedProfileService selectedProfile;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
-    @org.springframework.beans.factory.annotation.Autowired private ProfileStatusWork profileStatusWork;
+    @org.springframework.beans.factory.annotation.Autowired private AccountLifecycleService lifecycle;
+    @org.springframework.beans.factory.annotation.Autowired private AccountLocationService locations;
     private final EdgeDirectory userAffinityEdgesRepository;
     private final UserFriendshipsRepository userFriendshipsRepository;
     private final RatingDirectory userRatesRepository;
-    private final com.raxim.myscoutee.domain.chat.api.ChatReview chatReview;
     private final EventHomeReads activityEventsRepository;
     private final MemberDirectory activityMembersRepository;
     private final FeedbackDirectory eventFeedbackAnswersRepository;
-    private final UserFeedback userFeedbackSubmissionsRepository;
-    private final UserReports userReportSubmissionsRepository;
-    private final UserSessionActionsRepository userSessionActionsRepository;
     private final UserActivityScheduling scheduledMessageTaskService;
-    private final CountryDirectory countryPartitionService;
-    private final RegionSecurity regionSecurityProperties;
     private final UserAffinityScores absoluteAffinityService;
     private final UserAffinityChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
@@ -249,7 +231,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final AccessPermissions accessControlService;
     private final TicketReads assetsService;
     private final AffiliateRegistrations affiliateService;
-    private NotificationJobs notificationRuleRegistryService;
     private com.raxim.myscoutee.domain.notifications.api.RoleNotifications roleNotifications;
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -287,21 +268,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
+            SelectedProfileService selectedProfile,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
             UserExperienceProfilesRepository userExperienceProfilesRepository,
             EdgeDirectory userAffinityEdgesRepository,
             UserFriendshipsRepository userFriendshipsRepository,
             RatingDirectory userRatesRepository,
-            com.raxim.myscoutee.domain.chat.api.ChatReview chatReview,
             EventHomeReads activityEventsRepository,
             MemberDirectory activityMembersRepository,
             FeedbackDirectory eventFeedbackAnswersRepository,
-            UserFeedback userFeedbackSubmissionsRepository,
-            UserReports userReportSubmissionsRepository,
-            UserSessionActionsRepository userSessionActionsRepository,
             UserActivityScheduling scheduledMessageTaskService,
-            CountryDirectory countryPartitionService,
-            RegionSecurity regionSecurityProperties,
             UserAffinityScores absoluteAffinityService,
             UserAffinityChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
@@ -312,21 +288,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
         this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;
+        this.selectedProfile = selectedProfile;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userFriendshipsRepository = userFriendshipsRepository;
         this.userRatesRepository = userRatesRepository;
-        this.chatReview = chatReview;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
-        this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
-        this.userReportSubmissionsRepository = userReportSubmissionsRepository;
-        this.userSessionActionsRepository = userSessionActionsRepository;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
-        this.countryPartitionService = countryPartitionService;
-        this.regionSecurityProperties = regionSecurityProperties;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
@@ -334,11 +305,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.accessControlService = accessControlService;
         this.assetsService = assetsService;
         this.affiliateService = affiliateService;
-    }
-
-    @Autowired(required = false)
-    void setNotificationRuleRegistryService(NotificationJobs notificationRuleRegistryService) {
-        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     @Autowired(required = false)
@@ -403,63 +369,11 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 menuCounters);
     }
 
-    public UserMenuCountersDto queryMenuCounters(String requestedUserId) {
-        String resolvedUserId = resolveSelectedUserId(requestedUserId);
-        Users user = findUser(resolvedUserId);
-        return user == null ? emptyMenuCounters() : buildMenuCounters(user);
-    }
-
     // Initial avatar persistence changes the selector's location-required badge too.
     @CacheEvict(value = "demo_users", allEntries = true, condition = "#latitude != null || #longitude != null")
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId, Double latitude, Double longitude) {
-        if (latitude != null || longitude != null) {
-            if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)
-                    || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid location coordinates.");
-            }
-            Users selected = resolveCurrentUser(requestedUserId);
-            if (selected == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found.");
-            if (!accessControlService.canCurrentActorEditProfile(selected.getUserId())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
-            }
-            var coordinates = new LocationCoordinatesDto(latitude, longitude);
-            Users account = StringUtils.hasText(selected.getAccountUserId())
-                    ? usersRepository.findByUserId(selected.getAccountUserId()).orElseThrow(
-                            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.")) : selected;
-            String resolvedPartition = countryPartitionService.resolvePartitionKey(coordinates, account.getPartitionKey());
-            if (regionSecurityProperties.isEnabled() && !StringUtils.hasText(resolvedPartition)) {
-                // Discard an unsupported pending sample, not the already admitted profile load.
-                if (account.getLocationCoordinates() != null) return loadProfileExtById(requestedUserId);
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
-            }
-            // Resolve the point once for the account and group profile, before either field update.
-            String accountPartition = resolveStoredPartitionKey(resolvedPartition, account.getPartitionKey(), account);
-            String selectedPartition = account == selected ? accountPartition
-                    : resolveStoredPartitionKey(resolvedPartition, selected.getPartitionKey(), selected);
-            persistLoadedLocation(account, coordinates, accountPartition);
-            if (account != selected) persistLoadedLocation(selected, coordinates, selectedPartition);
-        }
+        locations.updateLoadedLocation(requestedUserId, latitude, longitude);
         return loadProfileExtById(requestedUserId);
-    }
-
-    private void persistLoadedLocation(Users user, LocationCoordinatesDto coordinates, String partition) {
-        var record = toLocationCoordinatesRecord(coordinates);
-        usersRepository.updateLocation(user.getUserId(), record, partition);
-        user.setLocationCoordinates(record);
-        user.setPartitionKey(partition);
-        evictUserReadCaches(user.getUserId());
-    }
-
-    private String validatedLocationPartition(Users current, LocationCoordinatesDto coordinates) {
-        String resolved = countryPartitionService.resolvePartitionKey(coordinates, current == null ? null : current.getPartitionKey());
-        String stored = current == null ? null : current.getPartitionKey();
-        boolean retainsStored = StringUtils.hasText(stored)
-                && sameLocation(coordinates, current.getLocationCoordinates());
-        if (regionSecurityProperties.isEnabled() && coordinates != null
-                && !StringUtils.hasText(resolved) && !retainsStored) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
-        }
-        return resolveStoredPartitionKey(resolved, stored, current);
     }
 
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId) {
@@ -637,22 +551,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
-        if (!regionSecurityProperties.isEnabled()) {
-            return new UserLocationEligibilityResponseDto(true, null, null, false, false);
-        }
-
-        if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
-            return new UserLocationEligibilityResponseDto(false, null, null, true, true);
-        }
-
-        LocationCoordinatesDto coordinates = new LocationCoordinatesDto(latitude, longitude);
-        String partitionKey = countryPartitionService.resolvePartitionKey(coordinates);
-        return new UserLocationEligibilityResponseDto(
-                StringUtils.hasText(partitionKey),
-                partitionKey,
-                StringUtils.hasText(partitionKey) ? null : INELIGIBLE_REGION_MESSAGE,
-                true,
-                false);
+        return locations.queryLocationEligibility(latitude, longitude);
     }
 
     public UserGameFilterPreferencesDto resolveFilterPreferences(String requestedUserId) {
@@ -730,7 +629,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
         }
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
-            adjustAccountPurgePendingCount(saved.getUserId(), shouldTrackForAccountPurge ? 1 : -1);
+            lifecycle.adjustAccountPurgePendingCount(saved.getUserId(), shouldTrackForAccountPurge ? 1 : -1);
         }
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(saved));
         evictUserReadCaches(normalizedUserId);
@@ -760,158 +659,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return savedUser;
     }
 
-    public UserSubmitActionResponseDto submitFeedback(UserFeedbackSubmitRequestDto request) {
-        Users currentUser = resolveCurrentUser(request == null ? null : request.userId());
-        String userId = normalizeId(currentUser == null ? null : currentUser.getId());
-        if (!StringUtils.hasText(userId) || request == null) {
-            return new UserSubmitActionResponseDto(false, "Unable to send feedback.");
-        }
-
-        String submissionId = userFeedbackSubmissionsRepository.submit(userId, safeText(request.category()), safeText(request.subject()), safeText(request.details()));
-        if (roleNotifications != null) roleNotifications.moderationSubmitted("feedback-submitted", submissionId);
-        adminTelemetryService.record("feedback.submitted", "moderation", submissionId, userId);
-        return new UserSubmitActionResponseDto(true, null);
-    }
-
-    public UserSubmitActionResponseDto submitReport(UserReportUserSubmitRequestDto request) {
-        Users currentUser = resolveCurrentUser(request == null ? null : request.userId());
-        String userId = normalizeId(currentUser == null ? null : currentUser.getId());
-        if (!StringUtils.hasText(userId) || request == null) {
-            return new UserSubmitActionResponseDto(false, "Unable to submit report.");
-        }
-
-        String targetUserId = normalizeId(request.targetUserId());
-        String eventId = normalizeId(request.eventId());
-        if (!StringUtils.hasText(targetUserId)
-                || !StringUtils.hasText(eventId)
-                || userId.equals(targetUserId)) {
-            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
-        }
-
-        Event eventRecord = resolvePreferredEventRecord(eventId);
-        Member reporterMembership = resolveAcceptedReportMember(eventId, userId);
-        Member targetMembership = resolveAcceptedReportMember(eventId, targetUserId);
-        boolean sharedAcceptedEvent = reporterMembership != null && targetMembership != null;
-        boolean reportableEventOrganizer = isReportableEventOrganizer(eventRecord, targetUserId);
-        if (!sharedAcceptedEvent && !reportableEventOrganizer) {
-            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
-        }
-
-        String requestMemberEntryId = normalizeId(request.memberEntryId());
-        String resolvedTargetMemberEntryId = resolveActivityMemberEntryId(targetMembership);
-        if (StringUtils.hasText(requestMemberEntryId)
-                && !requestMemberEntryId.equals(resolvedTargetMemberEntryId)) {
-            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
-        }
-
-        String sourceType = normalizeOptionalText(request.sourceType());
-        String sourceId = normalizeOptionalText(request.sourceId());
-        String sourceText = normalizeOptionalText(request.sourceText());
-        String chatId = normalizeOptionalText(request.chatId());
-        String messageId = normalizeOptionalText(request.messageId());
-        String assetId = normalizeOptionalText(request.assetId());
-        String assetType = normalizeOptionalText(request.assetType());
-        if (StringUtils.hasText(chatId) || "chat".equalsIgnoreCase(safeText(sourceType))) {
-            var reportedChat = chatReview.reportEvidence(userId, targetUserId, chatId, messageId);
-            if (reportedChat == null) {
-                return new UserSubmitActionResponseDto(false, "Reports can only include chat messages you can view.");
-            }
-            chatId = normalizeOptionalText(reportedChat.chatId());
-            messageId = normalizeOptionalText(reportedChat.messageId());
-            sourceType = "chat";
-            sourceId = normalizeOptionalText(firstNonBlank(sourceId, messageId));
-            sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChat.text()));
-        }
-
-        String reportSyncKey = reportSyncKey(
-                userId,
-                targetUserId,
-                eventId,
-                request.reason(),
-                request.details(),
-                sourceType,
-                sourceId,
-                chatId,
-                messageId,
-                assetId);
-        if (userReportSubmissionsRepository.exists(reportSyncKey)) {
-            return new UserSubmitActionResponseDto(true, "Report already submitted.");
-        }
-
-        var submission = userReportSubmissionsRepository.submit(new com.raxim.myscoutee.domain.content.api.UserReports.ReportDraft(
-                reportSyncKey,
-                userId,
-                safeText(request.handle()),
-                safeText(request.reason()),
-                safeText(request.details()),
-                targetUserId,
-                resolvedTargetMemberEntryId,
-                eventId,
-                normalizeOptionalText(firstNonBlank(eventRecord == null ? null : eventRecord.getTitle(), request.eventTitle())),
-                normalizeOptionalText(firstNonBlank(eventRecord == null ? null : eventRecord.getStartAtIso(), request.eventStartAtIso())),
-                sourceType,
-                sourceId,
-                sourceText,
-                chatId,
-                messageId,
-                assetId,
-                assetType));
-        if (submission.duplicate()) return new UserSubmitActionResponseDto(true, "Report already submitted.");
-        if (roleNotifications != null) roleNotifications.moderationSubmitted("report-submitted", submission.id());
-        adminTelemetryService.record("report.submitted", "moderation", submission.id(), userId);
-        return new UserSubmitActionResponseDto(true, null);
-    }
-
     public UserSubmitActionResponseDto logout(UserLogoutRequestDto request) {
-        String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
-        if (!StringUtils.hasText(resolvedUserId)) {
-            return new UserSubmitActionResponseDto(false, "Unable to logout.");
-        }
-        recordSessionAction(resolvedUserId, "logout", "session");
-        return new UserSubmitActionResponseDto(true, null);
+        return lifecycle.logout(request);
     }
 
-    @CacheEvict(value = "demo_users", allEntries = true)
     public UserSubmitActionResponseDto deleteUser(UserDeleteRequestDto request) {
-        String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
-        if (!StringUtils.hasText(resolvedUserId)) {
-            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
-        }
-        if (!accessControlService.canCurrentActorDeleteProfile(resolvedUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to delete this profile.");
-        }
-        return scheduleUserDeletionByUserId(resolvedUserId, "status:D");
+        return lifecycle.deleteUser(request);
     }
 
-    @CacheEvict(value = "demo_users", allEntries = true)
     public UserSubmitActionResponseDto scheduleUserDeletionByUserId(String userId, String source) {
-        String resolvedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(resolvedUserId)) {
-            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
-        }
-
-        Users user = usersRepository.findByUserId(resolvedUserId)
-                .or(() -> usersRepository.findById(resolvedUserId))
-                .orElse(null);
-        if (user == null) {
-            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
-        }
-
-        String previousProfileStatus = resolveProfileStatus(user);
-        boolean newlyTrackedForPurge = !Boolean.TRUE.equals(user.getAccountPurgePendingCounterTracked());
-        user.setStatus("D");
-        user.setProfileStatus("deleted");
-        user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
-        user.setDeletedAtIso(Instant.now().toString());
-        user.setAccountPurgePendingCounterTracked(true);
-        profileStatusWork.save(user);
-        if (newlyTrackedForPurge) {
-            adjustAccountPurgePendingCount(user.getUserId(), 1);
-        }
-        evictUserReadCaches(resolvedUserId);
-        recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
-        adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);
-        return new UserSubmitActionResponseDto(true, null);
+        return lifecycle.scheduleUserDeletionByUserId(userId, source);
     }
 
     public List<Users> queryGameStackUserRecords(String activeUserId) {
@@ -1348,8 +1105,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     @Override public UserDto present(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
         return toUserDto((Users) profile);
     }
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.api.GroupAdministration groupAdministration;
 
     public UserDto toUserDto(Users user) {
         return toUserDto(user, true);
@@ -1473,56 +1228,15 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     public Users resolveCurrentUser(String requestedUserId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal) {
-            Users principalUser = firebasePrincipal.getUser();
-            String principalUserId = principalUser != null
-                    ? normalizeId(principalUser.getId())
-                    : normalizeId(firebasePrincipal.getUserId());
-            if (StringUtils.hasText(principalUserId)) {
-                Users refreshedPrincipalUser = findUser(principalUserId);
-                if (refreshedPrincipalUser != null) {
-                    return refreshedPrincipalUser;
-                }
-            }
-            if (isUsableUserDocument(principalUser)) {
-                return principalUser;
-            }
-            // An authenticated identity must never fall back to a different
-            // account selected through request data when its profile is missing.
-            return null;
-        }
-
-        if (authentication != null
-                && authentication.getPrincipal() instanceof com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor actor) {
-            if (!authentication.isAuthenticated()) return null;
-            var identity = actor.getProfileIdentity();
-            if (identity == null || !java.util.Objects.equals(actor.getUserId(), identity.userId())) return null;
-            Users user = findUser(normalizeId(actor.getUserId()));
-            // The signed selection is a constraint, not permission to switch to a
-            // requested profile or to keep a profile after its ownership changes.
-            return user != null
-                    && java.util.Objects.equals(identity.accountUserId(), user.getAccountUserId())
-                    && java.util.Objects.equals(identity.workspaceGroupId(), user.getWorkspaceGroupId()) ? user : null;
-        }
-
-        String normalizedRequestedUserId = normalizeId(requestedUserId);
-        if (StringUtils.hasText(normalizedRequestedUserId)) {
-            return findUser(normalizedRequestedUserId);
-        }
-
-        return null;
+        return selectedProfile.resolveCurrentUser(requestedUserId);
     }
 
     public String resolveSelectedUserId(String requestedUserId) {
-        Users currentUser = resolveCurrentUser(requestedUserId);
-        return currentUser == null ? null : normalizeId(currentUser.getId());
+        return selectedProfile.resolveSelectedUserId(requestedUserId);
     }
 
-    @Override public com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto resolveSelectedIdentity(String requestedUserId) {
-        Users currentUser = resolveCurrentUser(requestedUserId);
-        return currentUser == null ? null : new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(
-                normalizeId(currentUser.getId()), currentUser.getAccountUserId(), currentUser.getWorkspaceGroupId());
+    public com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto resolveSelectedIdentity(String requestedUserId) {
+        return selectedProfile.resolveSelectedIdentity(requestedUserId);
     }
 
     private Users findUser(String userId) {
@@ -1821,14 +1535,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     private boolean isUsableUserDocument(Users user) {
-        if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
-            return false;
-        }
-        return PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))
-                || StringUtils.hasText(user.getName())
-                || user.getAge() != null
-                || user.getLocationCoordinates() != null
-                || !normalizeStrings(user.getImages()).isEmpty();
+        return SelectedProfileService.isUsableUserDocument(user);
     }
 
     private boolean isSelectableDemoUserDocument(Users user) {
@@ -2262,57 +1969,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 List.of());
     }
 
-    private UserMenuCountersDto buildMenuCounters(Users user) {
-        Users account = StringUtils.hasText(user.getAccountUserId()) ? findUser(user.getAccountUserId()) : user;
-        return buildMenuCounters(user, account);
-    }
-
-    private UserMenuCountersDto buildMenuCounters(Users user, Users account) {
-        Users.UserActivitiesRecord activities = user.getActivities();
-        Users.UserActivitiesRecord accountActivities = account == null ? null : account.getActivities();
-        return new UserMenuCountersDto(
-                activities == null ? 0 : normalizeCount(activities.game()),
-                activities == null ? 0 : normalizeCount(activities.chats()),
-                activities == null ? 0 : normalizeCount(activities.invitations()),
-                activities == null ? 0 : normalizeCount(activities.events()),
-                activities == null ? 0 : normalizeCount(activities.hosting()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.cars()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.accommodation()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.supplies()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.tickets()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.contacts()),
-                activities == null ? 0 : normalizeCount(activities.feedback()),
-                toUserChatCountersDto(activities == null ? null : activities.chat()),
-                toUserEventCountersDto(activities == null ? null : activities.event()),
-                toUserAssetCountersDto(accountActivities == null ? null : accountActivities.asset()),
-                toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
-                activities == null ? 0 : normalizeCount(activities.adminJobs()),
-                activities == null ? 0 : normalizeCount(activities.adminMetrics()),
-                normalizeCount(user.getPaymentRefundsPending()),
-                normalizeCount(account == null ? null : account.getContactRequestsPending()),
-                activities == null ? 0 : normalizeCount(activities.notifications()), communityCaseCount(user));
-    }
-
-    private int communityCaseCount(Users user) {
-        if (caseParticipants == null || user.getWorkspaceGroupId() == null) return 0;
-        boolean community = com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
-                || communityGroupsRepository.findById(user.getWorkspaceGroupId()).map(g -> "community".equals(g.effectiveType())).orElse(false);
-        if (!community) return 0;
-        String account = StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId();
-        var managed = groupAdministration.managedGroups(account);
-        return caseParticipants.visibleCount(com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID, account, managed);
-    }
-
-    private UserMenuCountersDto emptyMenuCounters() {
-        return new UserMenuCountersDto(
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                new UserChatCountersDto(0, 0, 0, 0, 0, 0),
-                new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
-                new UserAssetCountersDto(0, 0, 0, 0),
-                new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                0, 0, 0, 0);
-    }
-
     private String adminDisplayName(String email) {
         String normalizedEmail = safeText(email);
         if (!StringUtils.hasText(normalizedEmail)) {
@@ -2341,7 +1997,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private Users mergeUserDocument(Users current, UserDto user) {
         LocationCoordinatesDto requestedLocation = user.locationCoordinates();
-        String locationPartition = validatedLocationPartition(current, requestedLocation);
+        String locationPartition = locations.validatedLocationPartition(current, requestedLocation);
 
         Users document = current == null ? new Users() : current;
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
@@ -2420,14 +2076,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return user != null
                 && StringUtils.hasText(safeText(user.getDeletedAtIso()))
                 && ("deleted".equals(profileStatus) || PROFILE_STATUS_ONBOARDING.equals(profileStatus));
-    }
-
-    private void adjustAccountPurgePendingCount(String userId, int delta) {
-        if (delta == 0 || notificationRuleRegistryService == null) {
-            return;
-        }
-        JobGroupContext.run(jobGroupScope.forUser(userId), () -> notificationRuleRegistryService.adjustPendingCount(
-                NotificationJobs.RULE_ACCOUNT_PURGE, delta, "admin.jobs.table.affected"));
     }
 
     private void saveUserExperienceProfile(String userId, List<ExperienceEntryDto> entries) {
@@ -2568,7 +2216,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return user;
         }
 
-        String resolvedPartitionKey = resolveStoredPartitionKey(
+        String resolvedPartitionKey = locations.resolveStoredPartitionKey(
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
                 null,
                 user);
@@ -2578,39 +2226,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
         user.setPartitionKey(resolvedPartitionKey);
         return usersRepository.save(user);
-    }
-
-    private String resolveStoredPartitionKey(
-            LocationCoordinatesDto coordinates,
-            String currentPartitionKey,
-            Users partitionOwner) {
-        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(coordinates);
-        return resolveStoredPartitionKey(resolvedPartitionKey, currentPartitionKey, partitionOwner);
-    }
-
-    private String resolveStoredPartitionKey(
-            String resolvedPartitionKey,
-            String currentPartitionKey,
-            Users partitionOwner) {
-        if (StringUtils.hasText(resolvedPartitionKey)) {
-            return resolvedPartitionKey;
-        }
-
-        String normalizedCurrentPartitionKey = safeText(currentPartitionKey);
-        if (StringUtils.hasText(normalizedCurrentPartitionKey)) {
-            return normalizedCurrentPartitionKey;
-        }
-
-        return isSeedLikeHungaryUser(partitionOwner) ? DEFAULT_SEED_PARTITION_KEY : null;
-    }
-
-    private boolean sameLocation(
-            LocationCoordinatesDto requested,
-            Users.LocationCoordinatesRecord stored) {
-        return requested != null
-                && stored != null
-                && Objects.equals(requested.latitude(), stored.latitude())
-                && Objects.equals(requested.longitude(), stored.longitude());
     }
 
     private String resolveStoredEmail(String userId, String fallbackEmail) {
@@ -2640,120 +2255,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return "";
         }
         return safeText(firebasePrincipal.getEmail());
-    }
-
-    private boolean isSeedLikeHungaryUser(Users user) {
-        if (user == null) {
-            return false;
-        }
-
-        return normalizeStrings(user.getImages()).stream()
-                .anyMatch(this::isSeedImageUrl);
-    }
-
-    private boolean isSeedImageUrl(String value) {
-        return safeText(value).contains(SEED_USER_IMAGE_HOST);
-    }
-
-    private Event resolvePreferredEventRecord(String eventId) {
-        String normalizedEventId = normalizeId(eventId);
-        if (!StringUtils.hasText(normalizedEventId)) {
-            return null;
-        }
-        return preferredEventRecordsBySourceId(activityEventsRepository.findBySourceId(normalizedEventId)).get(normalizedEventId);
-    }
-
-    private Member resolveAcceptedReportMember(String eventId, String userId) {
-        String normalizedEventId = normalizeId(eventId);
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
-            return null;
-        }
-
-        Member storedMember = activityMembersRepository
-                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedEventId, normalizedUserId)
-                .orElse(null);
-        if (storedMember != null) {
-            return STATUS_ACCEPTED.equals(normalizeMemberStatus(storedMember.getStatus()))
-                    ? storedMember
-                    : null;
-        }
-        return null;
-    }
-
-    private boolean isReportableEventOrganizer(Event eventRecord, String userId) {
-        String normalizedUserId = normalizeId(userId);
-        if (eventRecord == null
-                || !STATUS_ACTIVE.equals(eventRecord.getStatus())
-                || !StringUtils.hasText(normalizedUserId)) {
-            return false;
-        }
-        if (normalizedUserId.equals(normalizeId(eventRecord.getOwnerUserId()))
-                || normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
-            return true;
-        }
-        return (eventRecord.getAdmins() == null ? List.<String>of() : eventRecord.getAdmins()).stream()
-                .map(this::normalizeId)
-                .anyMatch(normalizedUserId::equals);
-    }
-
-
-
-
-
-
-
-    private String resolveActivityMemberEntryId(Member member) {
-        if (member == null) {
-            return null;
-        }
-        String syncKey = normalizeId(member.getSyncKey());
-        if (StringUtils.hasText(syncKey)) {
-            return syncKey;
-        }
-        String id = normalizeId(member.getId());
-        return StringUtils.hasText(id) ? id : null;
-    }
-
-    private String normalizeMemberStatus(String status) {
-        String normalizedStatus = safeText(status);
-        if (STATUS_ACCEPTED.equals(normalizedStatus)) {
-            return STATUS_ACCEPTED;
-        }
-        if (STATUS_PENDING.equals(normalizedStatus)) {
-            return STATUS_PENDING;
-        }
-        if (STATUS_DELETED.equals(normalizedStatus)) {
-            return STATUS_DELETED;
-        }
-        return normalizedStatus;
-    }
-
-    private Map<String, Event> preferredEventRecordsBySourceId(List<? extends Event> records) {
-        LinkedHashMap<String, Event> preferredBySourceId = new LinkedHashMap<>();
-        for (Event record : records == null ? List.<Event>of() : records) {
-            if (record == null) {
-                continue;
-            }
-            String sourceId = normalizeId(record.getSourceId());
-            if (!StringUtils.hasText(sourceId)) {
-                continue;
-            }
-            Event current = preferredBySourceId.get(sourceId);
-            if (current == null || shouldPreferEventRecord(record, current)) {
-                preferredBySourceId.put(sourceId, record);
-            }
-        }
-        return preferredBySourceId;
-    }
-
-    private boolean shouldPreferEventRecord(Event next, Event current) {
-        boolean nextActive = "A".equals(safeText(next == null ? null : next.getStatus()));
-        boolean currentActive = "A".equals(safeText(current == null ? null : current.getStatus()));
-        if (nextActive != currentActive) {
-            return nextActive;
-        }
-        return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
     }
 
     private boolean isHostingRecordForUser(Event record, String userId) {
@@ -2917,50 +2418,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return Integer.toHexString(Objects.hash(totals.outgoing(), totals.incoming(), totals.all()));
     }
 
-    private void recordSessionAction(String userId, String action, String metadata) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId)) {
-            return;
-        }
-        String nowIso = Instant.now().toString();
-        UserSessionAction document = new UserSessionAction();
-        document.setId(new ObjectId().toHexString());
-        document.setSyncKey(UUID.randomUUID().toString());
-        document.setUserId(normalizedUserId);
-        document.setAction(safeText(action));
-        document.setMetadata(safeText(metadata));
-        document.setCreatedDate(nowIso);
-        document.setCreatedUser(normalizedUserId);
-        document.setUpdatedDate(nowIso);
-        document.setUpdatedUser(normalizedUserId);
-        userSessionActionsRepository.save(document);
-    }
-
-    private String resolveProfileStatus(Users user) {
-        return resolveProfileStatus(user == null ? null : user.getStatus(), user == null ? null : user.getProfileStatus());
-    }
-
-    private String resolveProfileStatus(String status, String fallbackProfileStatus) {
-        String normalizedProfileStatus = safeText(fallbackProfileStatus);
-        if ("blocked".equals(normalizedProfileStatus)) {
-            return "blocked";
-        }
-        if (PROFILE_STATUS_ONBOARDING.equals(normalizedProfileStatus)) {
-            return PROFILE_STATUS_ONBOARDING;
-        }
-        return switch (safeText(status)) {
-            case "D" -> "deleted";
-            case "B" -> "blocked";
-            case "I" -> "inactive";
-            case "F" -> "friends only";
-            case "H" -> "host only";
-            case "A" -> "public";
-            default -> {
-                yield StringUtils.hasText(normalizedProfileStatus) ? normalizedProfileStatus : "public";
-            }
-        };
-    }
-
     private String resolveStatusCode(String profileStatus, String fallbackStatus) {
         return switch (safeText(profileStatus)) {
             case "deleted" -> "D";
@@ -3088,63 +2545,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 normalizeCount(activities.notifications()));
     }
 
-    private UserEventCountersDto toUserEventCountersDto(Users.UserEventCountersRecord event) {
-        return new UserEventCountersDto(
-                event == null ? 0 : normalizeCount(event.all()),
-                event == null ? 0 : normalizeCount(event.active()),
-                event == null ? 0 : normalizeCount(event.pending()),
-                event == null ? 0 : normalizeCount(event.invitations()),
-                event == null ? 0 : normalizeCount(event.hosting()),
-                event == null ? 0 : normalizeCount(event.drafts()),
-                event == null ? 0 : normalizeCount(event.trash()),
-                event == null ? 0 : normalizeCount(event.watchlist()));
-    }
-
-    private UserChatCountersDto toUserChatCountersDto(Users.UserChatCountersRecord chat) {
-        return new UserChatCountersDto(
-                chat == null ? 0 : normalizeCount(chat.all()),
-                chat == null ? 0 : normalizeCount(chat.event()),
-                chat == null ? 0 : normalizeCount(chat.subEvent()),
-                chat == null ? 0 : normalizeCount(chat.group()),
-                chat == null ? 0 : normalizeCount(chat.service()),
-                chat == null ? 0 : normalizeCount(chat.appSupport()),
-                toUserSupportCaseCountersDto(chat == null ? null : chat.supportCases()),
-                chat == null ? 0 : normalizeCount(chat.groupSupport()),
-                chat == null ? 0 : normalizeCount(chat.contacts()),
-                chat == null ? 0 : normalizeCount(chat.campaign()),
-                chat == null ? 0 : normalizeCount(chat.cases()));
-    }
-
-    private UserSupportCaseCountersDto toUserSupportCaseCountersDto(
-            Users.UserSupportCaseCountersRecord supportCases) {
-        return new UserSupportCaseCountersDto(
-                supportCases == null ? 0 : normalizeCount(supportCases.pending()),
-                supportCases == null ? 0 : normalizeCount(supportCases.warned()),
-                supportCases == null ? 0 : normalizeCount(supportCases.picked()),
-                supportCases == null ? 0 : normalizeCount(supportCases.solved()),
-                supportCases == null ? 0 : normalizeCount(supportCases.blocked()),
-                supportCases == null ? 0 : normalizeCount(supportCases.all()));
-    }
-
-    private UserAssetCountersDto toUserAssetCountersDto(Users.UserAssetCountersRecord asset) {
-        return new UserAssetCountersDto(
-                asset == null ? 0 : normalizeCount(asset.cars()),
-                asset == null ? 0 : normalizeCount(asset.accommodation()),
-                asset == null ? 0 : normalizeCount(asset.supplies()),
-                asset == null ? 0 : normalizeCount(asset.tickets()),
-                asset == null ? 0 : normalizeCount(asset.carsPending()),
-                asset == null ? 0 : normalizeCount(asset.accommodationPending()),
-                asset == null ? 0 : normalizeCount(asset.suppliesPending()));
-    }
-
-    private UserEventFeedbackCountersDto toUserEventFeedbackCountersDto(Users.UserEventFeedbackCountersRecord feedback) {
-        return new UserEventFeedbackCountersDto(
-                feedback == null ? 0 : normalizeCount(feedback.ownEvents()),
-                feedback == null ? 0 : normalizeCount(feedback.pending()),
-                feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
-                feedback == null ? 0 : normalizeCount(feedback.removed()));
-    }
-
     private Users.UserEventCountersRecord toUserEventCountersRecord(UserEventCountersDto event) {
         return new Users.UserEventCountersRecord(
                 event == null ? 0 : normalizeCount(event.all()),
@@ -3200,20 +2600,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 feedback == null ? 0 : normalizeCount(feedback.pending()),
                 feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
                 feedback == null ? 0 : normalizeCount(feedback.removed()));
-    }
-
-    private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord record) {
-        if (record == null) {
-            return null;
-        }
-        return new LocationCoordinatesDto(record.latitude(), record.longitude());
-    }
-
-    private Users.LocationCoordinatesRecord toLocationCoordinatesRecord(LocationCoordinatesDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        return new Users.LocationCoordinatesRecord(dto.latitude(), dto.longitude());
     }
 
     private List<ProfileDetailGroupDto> toProfileDetailsDto(List<Users.ProfileDetailGroupRecord> records) {
@@ -3827,31 +3213,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return value == null ? "" : value.trim().toLowerCase();
     }
 
-    private String reportSyncKey(
-            String reporterUserId,
-            String targetUserId,
-            String eventId,
-            String reason,
-            String details,
-            String sourceType,
-            String sourceId,
-            String chatId,
-            String messageId,
-            String assetId) {
-        String identity = String.join("|",
-                normalizeId(reporterUserId),
-                normalizeId(targetUserId),
-                normalizeId(eventId),
-                normalizeId(reason),
-                normalizeId(details),
-                normalizeToken(sourceType),
-                normalizeId(sourceId),
-                normalizeId(chatId),
-                normalizeId(messageId),
-                normalizeId(assetId));
-        return "user-report:" + UUID.nameUUIDFromBytes(identity.getBytes(StandardCharsets.UTF_8));
-    }
-
     private String safeText(String value) {
         return normalizeId(value);
     }
@@ -3919,4 +3280,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     @Override public UserDto presentGameCard(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) { return toGameCardUserDto((Users) profile); }
+
+    public UserMenuCountersDto queryMenuCounters(String requestedUserId) {
+        return menuCounters.queryMenuCounters(requestedUserId);
+    }
+
+    private UserMenuCountersDto buildMenuCounters(Users user) {
+        return menuCounters.buildMenuCounters(user);
+    }
+
+    private UserMenuCountersDto buildMenuCounters(Users user, Users account) {
+        return menuCounters.buildMenuCounters(user, account);
+    }
 }

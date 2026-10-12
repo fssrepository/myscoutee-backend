@@ -20,8 +20,11 @@ import tempfile
 import workloads as w
 import mongo_replica
 
-DATABASES = {'msc121_real': 'myscoutee_db', 'msc121_demo': 'demo_db'}
-STATE_DB = 'msc121_bootstrap'
+REAL_DB = w.CONFIG['databases']['real']
+DEMO_DB = w.CONFIG['databases']['demo']
+DATABASES = {REAL_DB: 'myscoutee_db', DEMO_DB: 'demo_db'}
+STATE_DB = w.CONFIG['databases']['bootstrap']
+IMPORT_FILES = ('mongo_import.sh', 'mongo-seed-policy.inc')
 
 
 def seed_bundle(backend):
@@ -34,7 +37,7 @@ def seed_bundle(backend):
     if not rules.get('myscoutee_db') or rules['myscoutee_db'] == '*' or rules.get('demo_db') != '*':
         raise RuntimeError('Review changed canonical production/DEMO seed policy before lab bootstrap.')
     allowlist = ';'.join(database + ':' + rules[directory] for database, directory in DATABASES.items())
-    files = {'mongo_import.sh': source / 'mongo_import.sh'}
+    files = {name: source / name for name in IMPORT_FILES}
     for directory in DATABASES.values():
         for path in sorted((source / directory).glob('*.json')):
             if not re.fullmatch(r'[A-Za-z0-9_]+\.json', path.name):
@@ -48,11 +51,11 @@ def seed_bundle(backend):
     return files, allowlist, bundle_fingerprint(files, allowlist)
 
 
-def bundle_fingerprint(files, allowlist, importer=None):
+def bundle_fingerprint(files, allowlist, policy=None):
     digest = hashlib.sha256(json.dumps({'databases': DATABASES, 'allowlist': allowlist}, sort_keys=True).encode())
     for name, path in files.items():
         digest.update(name.encode() + b'\0')
-        digest.update(importer if name == 'mongo_import.sh' and importer is not None else path.read_bytes())
+        digest.update(policy if name == 'mongo-seed-policy.inc' and policy is not None else path.read_bytes())
     return digest.hexdigest()
 
 
@@ -65,8 +68,8 @@ def catalog_baseline_fingerprint(files, allowlist, catalog):
     rules = dict(item.split(':', 1) for item in allowlist.split(';'))
     previous_rules = ';'.join(db + ':' + (rule if rule == '*' else
         ','.join(item for item in rule.split(',') if item != catalog)) for db, rule in rules.items())
-    importer = files['mongo_import.sh'].read_text()
-    lines = importer.splitlines(keepends=True)
+    policy = files['mongo-seed-policy.inc'].read_text()
+    lines = policy.splitlines(keepends=True)
     indices = [index for index, line in enumerate(lines) if line.startswith('allowed_collections_by_db=')]
     if len(indices) != 1 or lines[indices[0]].count(',' + catalog + ',') != 2:
         raise RuntimeError('Canonical importer allowlist shape changed; review a separate migration.')
@@ -76,7 +79,7 @@ def catalog_baseline_fingerprint(files, allowlist, catalog):
 
 def mongo(script):
     prefix = "db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME,process.env.MONGO_INITDB_ROOT_PASSWORD);\n"
-    host = ['--host', 'msc121/mongodb:27017,mongodb-secondary:27017'] if w.CONFIG.get('mongoReplicaSet') else []
+    host = ['--host', w.CONFIG['databases']['replicaSet'] + '/mongodb:27017,mongodb-secondary:27017'] if w.CONFIG.get('mongoReplicaSet') else []
     result = w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--',
                     'mongosh', *host, '--quiet', '--eval', prefix + script, timeout=120)
     return json.loads(result.stdout.strip().splitlines()[-1])
@@ -87,7 +90,7 @@ def claim_bootstrap(fingerprint, namespace_uid):
     # A durable fingerprint permits recovery of this exact interrupted import.
     return mongo("""
 const databases = %s;
-if(process.env.MONGO_REAL_DATABASE!=='msc121_real'||process.env.MONGO_DEMO_DATABASE!=='msc121_demo')
+if(process.env.MONGO_REAL_DATABASE!==%s||process.env.MONGO_DEMO_DATABASE!==%s)
   throw new Error('Unexpected lab database configuration');
 const state=db.getSiblingDB(%s).getCollection('seed');
 const saved=state.findOne({_id:'canonical'});
@@ -103,7 +106,7 @@ if(!saved) {
   state.insertOne({_id:'canonical',fingerprint,namespaceUid:%s,status:'started',startedAt:new Date()});
 }
 print(JSON.stringify({status:saved?saved.status:'started'}));
-""" % (json.dumps(DATABASES), json.dumps(STATE_DB), json.dumps(fingerprint),
+""" % (json.dumps(DATABASES), json.dumps(REAL_DB), json.dumps(DEMO_DB), json.dumps(STATE_DB), json.dumps(fingerprint),
          json.dumps(namespace_uid), json.dumps(namespace_uid)))
 
 
@@ -144,7 +147,7 @@ def verify_persistence(fingerprint, namespace_uid, restart):
 
 
 def import_files(files, allowlist, fingerprint, databases=DATABASES, catalog=None):
-    directory = '/tmp/msc121-seed-' + fingerprint[:16]
+    directory = '/tmp/' + w.NAMESPACE + '-seed-' + fingerprint[:16]
     w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--', 'mkdir', '-p', directory)
     try:
         with tempfile.TemporaryFile() as archive:
@@ -159,7 +162,7 @@ def import_files(files, allowlist, fingerprint, databases=DATABASES, catalog=Non
             print('Importing canonical ' + source + ' into owned ' + database + ' using the prod allowlist.', flush=True)
             single_file = directory + '/' + source + '/' + catalog + '.json' if catalog else ''
             w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--', 'env',
-                   'MONGO_IMPORT_HOST=' + ('msc121/mongodb:27017,mongodb-secondary:27017' if w.CONFIG.get('mongoReplicaSet') else '127.0.0.1'),
+                   'MONGO_IMPORT_HOST=' + (w.CONFIG['databases']['replicaSet'] + '/mongodb:27017,mongodb-secondary:27017' if w.CONFIG.get('mongoReplicaSet') else '127.0.0.1'),
                    'MONGO_SEED_ROOT=' + directory, 'MONGO_APP_DATABASE=' + database,
                    'MONGO_SEED_DIRECTORY=' + source, 'MONGO_IMPORT_ALL_SEED_DATABASES=false',
                    'MONGO_IMPORT_REPLACE_COLLECTIONS=false',
@@ -205,7 +208,7 @@ print(JSON.stringify({fingerprint:state.fingerprint,missing}));
         if before['fingerprint'] == fingerprint:
             raise RuntimeError('Completed catalog data changed; refusing automatic repair.')
         databases = {name: DATABASES[name] for name in before['missing']}
-        selected = {'mongo_import.sh': files['mongo_import.sh']}
+        selected = {name: files[name] for name in IMPORT_FILES}
         selected.update({source + '/' + catalog + '.json': files[source + '/' + catalog + '.json']
                          for source in databases.values()})
         narrow_allowlist = ';'.join(name + ':' + catalog for name in databases)
@@ -228,17 +231,61 @@ print(JSON.stringify({updated:true}));
     print('PASS: canonical ' + catalog + ' catalog verified in REAL/DEMO; existing business data preserved.')
 
 
+def reset_lab(fingerprint, namespace_uid, previous):
+    """Explicit disposable-lab reset using the existing verified Mongo backup.
+
+    The caller already holds the VM lock and verifies stopped backend writers,
+    namespace ownership and Mongo image identity. Ordinary startup never calls it.
+    Keep a reset marker before dropping anything so the same command can resume.
+    """
+    guard = """
+if(process.env.MONGO_REAL_DATABASE!==%s || process.env.MONGO_DEMO_DATABASE!==%s)
+  throw new Error('Unexpected lab database configuration');
+const state=db.getSiblingDB(%s).seed.findOne({_id:'canonical'});
+if(!state || state.namespaceUid!==%s)throw new Error('Lab seed ownership mismatch');
+const complete=state.fingerprint===%s && state.status==='complete';
+const original=state.fingerprint===%s && state.status==='complete';
+const resuming=state.fingerprint===%s && state.resetFrom===%s && ['resetting','started'].includes(state.status);
+if(!complete && !original && !resuming)throw new Error('Lab reset baseline mismatch');
+""" % (json.dumps(REAL_DB), json.dumps(DEMO_DB), json.dumps(STATE_DB),
+       json.dumps(namespace_uid), json.dumps(fingerprint), json.dumps(previous),
+       json.dumps(fingerprint), json.dumps(previous))
+    current = mongo(guard + "print(JSON.stringify({complete,original,resuming}));")
+    if current['complete']:
+        return
+    receipt = w.vm.VM / ('seed-reset-' + previous + '-' + fingerprint + '.json')
+    if current['resuming'] and not receipt.exists():
+        raise RuntimeError('Interrupted lab reset lost its backup receipt; refusing another reset.')
+    saved = mongo_replica.backup(receipt, 'seed-reset', {'seedFrom': previous, 'seedTo': fingerprint})
+    if saved.get('seedFrom') != previous or saved.get('seedTo') != fingerprint:
+        raise RuntimeError('Lab reset backup belongs to a different seed transition.')
+    print('Verified pre-reset Mongo backup: ' + str(w.vm.VM / saved['backup']), flush=True)
+    mongo(guard + """
+if(complete)throw new Error('Seed changed after reset preparation');
+const marker=db.getSiblingDB(%s).seed;
+marker.updateOne({_id:'canonical'},{$set:{fingerprint:%s,resetFrom:%s,status:'resetting'}});
+for(const name of %s) {
+  if(db.getSiblingDB(name).dropDatabase().ok!==1)throw new Error('Failed lab reset: '+name);
+}
+marker.updateOne({_id:'canonical'},{$set:{status:'started'}});
+print(JSON.stringify({reset:true}));
+""" % (json.dumps(STATE_DB), json.dumps(fingerprint), json.dumps(previous), json.dumps(list(DATABASES))))
+
+
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--verify',action='store_true',help='Read completed bootstrap, content hashes and indexes without importing')
     parser.add_argument('--restart',action='store_true',help='Verify identical data/indexes after replacing only the Mongo pod; implies --verify')
     parser.add_argument('--add-catalog', choices=['landingSlides'], help='Explicitly add the omitted production landing catalog')
-    parser.add_argument('--from-fingerprint', help='Reviewed source/complete-bootstrap fingerprint before the catalog/allowlist change')
+    parser.add_argument('--reset-lab', action='store_true', help='Back up and reset both owned lab databases to the current canonical seed; never automatic')
+    parser.add_argument('--from-fingerprint', help='Reviewed complete-bootstrap fingerprint before the explicit catalog change or lab reset')
     args=parser.parse_args(argv)
     if args.add_catalog and (args.verify or args.restart or not args.from_fingerprint or not re.fullmatch(r'[a-f0-9]{64}', args.from_fingerprint)):
         parser.error('Catalog migration requires --from-fingerprint and cannot combine with verification/restart.')
-    if args.from_fingerprint and not args.add_catalog:
-        parser.error('--from-fingerprint requires --add-catalog')
+    if args.reset_lab and (args.verify or args.restart or args.add_catalog or not args.from_fingerprint or not re.fullmatch(r'[a-f0-9]{64}', args.from_fingerprint)):
+        parser.error('Lab reset requires --from-fingerprint and cannot combine with other seed actions.')
+    if args.from_fingerprint and not (args.add_catalog or args.reset_lab):
+        parser.error('--from-fingerprint requires --add-catalog or --reset-lab')
 
     backend = Path(os.environ.get('MYSCOUTEE_BACKEND_SOURCE', w.SHELL.parent))
     files, allowlist, fingerprint = seed_bundle(backend)
@@ -262,6 +309,12 @@ def main(argv=None):
         if args.verify or args.restart:
             verify_persistence(fingerprint, namespace['metadata']['uid'], args.restart)
             return
+        if args.reset_lab:
+            reset_lab(fingerprint, namespace['metadata']['uid'], args.from_fingerprint)
+        if w.CONFIG.get('mongoReplicaSet'):
+            # A fresh frontend-only deployment has no primary yet. Reuse the
+            # owned replica initializer before the canonical bootstrap write.
+            mongo_replica.initialize()
         state = claim_bootstrap(fingerprint, namespace['metadata']['uid'])
         if state['status'] == 'complete':
             print('Canonical seed already bootstrapped; no data or indexes changed.')
@@ -277,10 +330,10 @@ for(const name of Object.keys(stats)) {
 policies:target.accessPolicyDefinitions.countDocuments({}),i18n:target.i18n_messages.countDocuments({})};
   if(!stats[name].policies || !stats[name].i18n)throw new Error('Required catalog seed is empty');
 }
-if(!stats.msc121_demo.users)throw new Error('DEMO users absent');
+if(!stats[%s].users)throw new Error('DEMO users absent');
 db.getSiblingDB(%s).seed.updateOne({_id:'canonical',fingerprint:%s},{$set:{status:'complete',completedAt:new Date()}});
 print(JSON.stringify(stats));
-""" % (json.dumps(DATABASES), json.dumps(STATE_DB), json.dumps(fingerprint)))
+""" % (json.dumps(DATABASES), json.dumps(DEMO_DB), json.dumps(STATE_DB), json.dumps(fingerprint)))
         print('Canonical bootstrap verified:', json.dumps(result, sort_keys=True))
 
 

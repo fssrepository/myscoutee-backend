@@ -8,6 +8,9 @@ public class IntegrationPrivacyService implements com.raxim.myscoutee.domain.int
  private final MongoTemplate mongo;
  public IntegrationPrivacyService(MongoTemplate mongo) { this.mongo=mongo; }
  public void purgeParticipantData(String userId) {
+  if(!StringUtils.hasText(userId))return;
+  remove("integrationTokens",userId,"ownerUserId");
+  remove("mcpAuthorizations",userId,"ownerUserId");
   remove("integrationParticipantInvites",userId,"ownerUserId","claimedUserId");
   remove("mcpEventSubscriptions",userId,"ownerUserId");
   remove("integrationWebhookDeliveries",userId,"ownerUserId");

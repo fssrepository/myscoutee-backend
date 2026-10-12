@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 import com.raxim.myscoutee.domain.registry.dto.RegistryInspection;
 
@@ -58,8 +59,8 @@ public class RegistryPreflightService {
                 identity.protocolVersion(),
                 identity.registryScope(),
                 identity.registryKeyId(),
-                RegistryProtocol.publicKeyFingerprint(
-                        RegistryProtocol.decodeStandardBase64(
+                CanonicalValues.publicKeyFingerprint(
+                        CanonicalValues.decodeStandardBase64(
                                 identity.registryPublicKey(),
                                 "registry_public_key")),
                 identity.registryPublicKey());
@@ -80,11 +81,11 @@ public class RegistryPreflightService {
         }
 
         String registryKeyId = RegistryProtocol.requireRegistryKeyId(identity.registryKeyId());
-        byte[] publicKeyDer = RegistryProtocol.decodeStandardBase64(
+        byte[] publicKeyDer = CanonicalValues.decodeStandardBase64(
                 identity.registryPublicKey(),
                 "registry_public_key");
-        PublicKey publicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parsePublicKeyDer(publicKeyDer, "registry_public_key");
-        String fingerprint = RegistryProtocol.publicKeyFingerprint(publicKeyDer);
+        PublicKey publicKey = com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.parsePublicKeyDer(publicKeyDer, "registry_public_key");
+        String fingerprint = CanonicalValues.publicKeyFingerprint(publicKeyDer);
         if (!RegistryProtocol.registryKeyId(fingerprint).equals(registryKeyId)) {
             throw new IllegalArgumentException(
                     "Registry identity key ID does not match its public key.");
@@ -92,7 +93,7 @@ public class RegistryPreflightService {
 
         String configuredFingerprint = safeText(properties.getExpectedRegistryKeyFingerprint());
         if (!configuredFingerprint.isEmpty()) {
-            RegistryProtocol.requireHash(
+            CanonicalValues.requireHash(
                     configuredFingerprint,
                     "configured registry public-key fingerprint");
             if (!RegistryProtocol.hashEquals(configuredFingerprint, fingerprint)) {
@@ -101,7 +102,7 @@ public class RegistryPreflightService {
             }
         }
 
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 publicKey,
                 RegistryProtocol.registryIdentity(identity),
                 identity.signature())) {
