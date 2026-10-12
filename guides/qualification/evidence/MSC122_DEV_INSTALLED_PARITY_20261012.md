@@ -4,6 +4,61 @@ Date: 2026-10-12. Scope: native MyScoutee and the minimal template. The referenc
 is the working development implementation and its classified environment inputs,
 not merely the Debian builder's own file allow-list. No Netcup access is allowed.
 
+## Current verdict: FAIL — installed parity is not established
+
+The earlier source/payload checks below passed only their stated static boundary.
+They did not cover the complete resulting database after reset and retained
+upgrade. Do not interpret them as successful DEV/E2E/installed parity.
+Continue with the reusable [environment parity checklist](../ENVIRONMENT_PARITY_CHECKLIST.md).
+No direct database repair is permitted: corrections must be delivered through
+the versioned installation/upgrade path, then verified against its result.
+
+Read-only diagnosis of the native 1.4.0 VMware candidate on 2026-10-12 found:
+
+| Boundary | Actual evidence | Status / required correction |
+| --- | --- | --- |
+| Installed demo indexes | 29 of 199 canonical indexes missing; production has all 199 with matching definitions | FAIL. Demo reset drops the database and calls the importer without replaying the complete initializer |
+| Visible demo selector | HTTP 200 with 53 members takes 4.68–5.44 seconds, exceeding the existing 3-second UI deadline; popup shows unavailable | FAIL. `countryPartitions` has only `_id_`; the actual geo lookup uses COLLSCAN. Fix initialization, not the timeout or Java query |
+| Full demo JSON inventory | All 49 packaged files inspected; no seed document missing; jobs have changed runtime-owned fields | Data presence alone passes; reset/index/runtime qualification remains failed |
+| Full retained production JSON inventory | All 23 packaged files inspected. Missing IDs in affinityConfigs (2), emailCampaignRules (6), emailTemplates (10), helpCenterRevisions (848), ideaPosts (16), landingSlides (12), notificationTemplates (10) | OPEN. Classify default ownership, operator changes and semantic identity before defining upgrade changes. Counts alone do not authorize restoring deleted operator content |
+| Public entry guide | Visible entry guide reports no guide for the screen | FAIL. Trace current guide selection and retained revisions through the versioned upgrade path |
+| Template reset oracle | Shared reset script unconditionally requires nonempty `events`; the template deliberately has no event domain | FAIL by source inspection; template installation not yet run. Use the selected project's seed contract |
+| Source seeds | Native 143 JSON files and template 39 parsed and classified by existing seed audit; source checks pass | PASS at source only; actual E2E and template installation still pending |
+
+Native source revision: `2751ea861`; installed artifact was built from
+`aa2371c94` (the later change concerns the browser harness). Template source:
+`37455e5`. Raw read-only local inventory: `/tmp/msc122-all-mongo-inputs-before.json`;
+this temporary file is diagnostic evidence, not a durable release artifact.
+No installed database documents or indexes were manually changed by this audit.
+
+### Reset correction in source; installation replay still pending
+
+The package reset now invokes the existing `db_init.js` after import. Its new
+reset selector accepts only literal `demo_db`, rejects a matching REAL database,
+and excludes every other configured database. Ordinary fresh initialization is
+unchanged. The shared reset oracle checks IDs/counts for every packaged JSON,
+including empty baselines, rather than requiring the native-only event domain.
+The reset marker is retained on an initializer failure.
+
+Focused checks passed for native and template:
+
+- `runtime-index-parity-test.mjs`: full definition agreement (199 / 67), actual
+  initializer target selection and rejected unsafe reset targets.
+- Its `--print-script` real-Mongo test on the existing VMware Mongo service:
+  uniquely named disposable test databases only; missing indexes recreated,
+  repeated initialization and upgrade, retained documents, scoped uniqueness
+  and indexed lookup. Actual `demo_db` and `production_db` were not changed.
+- `demo-reset-test.sh`: command order/readiness, target/media boundaries,
+  failed initialization and retained retry marker, both project selections.
+- `demo-reset-seed-test.mjs`: actual reset-oracle source with all 49 / 15 JSON
+  files and mocked collection reads; missing/wrong identities, unexpectedly
+  populated empty baselines and external avatars are rejected. This source
+  regression does not replace a real package reset/import.
+
+The installed VMware package still has the original defect. No improved response
+time or completed installation is claimed until the corrected artifact is
+installed and its actual data, indexes and browser results are checked.
+
 ## Comparison inventory
 
 | Input boundary | Development source | Installed delivery and expected difference | Result before installation |

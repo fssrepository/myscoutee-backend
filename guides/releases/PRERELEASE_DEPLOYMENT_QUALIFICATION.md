@@ -39,6 +39,11 @@ Use one immutable artifact set throughout the sequence:
 
 A local build or an installed candidate is not itself a release.
 
+Use the numbered [environment parity checklist](../qualification/ENVIRONMENT_PARITY_CHECKLIST.md)
+to compare DEV, E2E, KVM and installed inputs and their resulting runtime state.
+Fix installation defects in the versioned source/installer/migrations; never
+repair the installed database directly to make qualification pass.
+
 ## Packaging gate before release
 
 The local VMware deployment is the preproduction environment for these checks.
