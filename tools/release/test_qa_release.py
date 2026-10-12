@@ -69,6 +69,8 @@ class QaReleaseTest(unittest.TestCase):
                     tar_add(tar, './' + name, guard if name == 'install.sh' else b'fixture\n')
                 tar_add(tar, './VERSION', b'1.0.0\n')
                 tar_add(tar, './verify-release.sh', (ROOT / 'packaging/client-tools/verify-release.sh').read_bytes())
+                for helper in ('release-project.sh', 'release-project.json'):
+                    tar_add(tar, './' + helper, (ROOT / 'packaging/scripts' / helper).read_bytes())
             before = [sha(deb), sha(client)]
             output = work / 'qa'
             command = ['python3', ROOT / 'tools/release/reversion-qa-artifacts.py', '--deb', deb, '--deb-sha256', before[0], '--client-tools', client, '--client-tools-sha256', before[1], '--version', '1.0.0-qa.1', '--output-dir', output]

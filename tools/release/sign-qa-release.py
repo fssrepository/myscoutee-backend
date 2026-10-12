@@ -5,15 +5,11 @@ The QA-only private key stays outside the repository and release directory.
 Existing package signatures and hashes are produced by the normal release tools.
 """
 import argparse
-import base64
-import hashlib
 import json
 import os
 from pathlib import Path
 import re
 import subprocess
-import tempfile
-from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -64,61 +60,18 @@ def main():
         key.chmod(0o600)
     if key.is_symlink() or not key.is_file() or key.stat().st_mode & 0o077:
         parser.error('QA private key must be a regular protected file')
-    run('bash', ROOT / 'packaging/release/sign-release-artifacts.sh',
-        '--private-key', key, '--deb', args.deb.resolve(),
-        '--client-tools', args.client_tools.resolve(), '--channel', 'qa', '--output-dir', output)
-    package_manifest = json.loads((output / f'myscoutee-release_{version}.json').read_text())
-    artifact = next(item for item in package_manifest['artifacts'] if item['purpose'] == 'debian-package')
-    public_key = output / 'qa-release-public.pem'
-    run('openssl', 'pkey', '-in', key, '-pubout', '-out', public_key)
-    public_der = subprocess.check_output(['openssl', 'pkey', '-pubin', '-in', str(public_key), '-outform', 'DER'])
-    manifest = {
-        'manifest_version': '1', 'release_version': version, 'channel': 'qa',
-        'published_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'minimum_compatible_version': args.minimum_version,
-        'maximum_compatible_version': args.maximum_version,
-        'artifact_url': f'https://github.com/fssrepository/myscoutee/releases/download/{args.tag}/{artifact["filename"]}',
-        'artifact_size_bytes': artifact['sizeBytes'], 'artifact_sha256': artifact['sha256'],
-        'package_signing_key_id': package_manifest['signingKeyId'],
-        'package_signature': artifact['signature'],
-        'release_notes_url': f'https://github.com/fssrepository/myscoutee/releases/tag/{args.tag}',
-        'backup_required': False, 'expected_downtime_seconds': 300, 'status': 'AVAILABLE',
-        'supersedes_version': args.maximum_version if version != args.maximum_version else '', 'superseded_by_version': '', 'revocation_reason': ''
-    }
-    source = output / 'update-manifest.source.json'
-    source.write_text(json.dumps(manifest, indent=2) + '\n')
-    run('python3', ROOT / 'packaging/release/sign-update-manifest.py', '--private-key', key,
-        '--manifest', source, '--output', output / 'myscoutee-update.json')
-    fingerprint = 'sha256:' + hashlib.sha256(public_der).hexdigest()
-    for path in (args.deb.resolve(), args.client_tools.resolve()):
-        run('bash', ROOT / 'packaging/client-tools/verify-release.sh', path,
-            output / f'myscoutee-release_{version}.json', public_key, fingerprint)
-    envelope = json.loads((output / 'myscoutee-update.json').read_text())
-    with tempfile.TemporaryDirectory(prefix='qa-sign-verify-') as temp:
-        message, signature = Path(temp) / 'message', Path(temp) / 'signature'
-        message.write_bytes(b'myscoutee-update-catalog-v1\n' + base64.b64decode(envelope['manifestBase64'], validate=True))
-        signature.write_bytes(base64.b64decode(envelope['signature'], validate=True))
-        run('openssl', 'pkeyutl', '-verify', '-pubin', '-inkey', public_key,
-            '-rawin', '-in', message, '-sigfile', signature)
-    checksums = []
-    for path in (args.deb.resolve(), args.client_tools.resolve()):
-        with path.open('rb') as stream:
-            hasher = hashlib.sha256()
-            for chunk in iter(lambda: stream.read(1024 * 1024), b''):
-                hasher.update(chunk)
-            checksum = hasher.hexdigest()
-        name = path.name + '.sha256'
-        (output / name).write_text(f'{checksum}  {path.name}\n')
-        (output / name).chmod(0o644)
-        checksums.append(name)
-    record = {'purpose': 'QA only; not a production vendor trust root', 'tag': args.tag,
-              'version': version, 'artifactSha256': artifact['sha256'],
-              'trustedPublicKeySpkiSha256': fingerprint,
-              'upload': [artifact['filename'], args.client_tools.name, f'myscoutee-release_{version}.json',
-                         'myscoutee-update.json', *checksums], 'privateKeyPublished': False,
-              'artifactSignaturesVerified': True, 'updateManifestSignatureVerified': True}
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('release_bundle', ROOT / 'packaging/release/prepare-release.py')
+    bundle = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bundle)
+    record = bundle.prepare_release(args.deb, args.client_tools, key, args.tag,
+                                    args.minimum_version, args.maximum_version,
+                                    'fssrepository/myscoutee', 'qa')
+    record['purpose'] = 'QA only; not a production vendor trust root'
+    public_key = output / 'release-public.pem'
+    public_key.rename(output / 'qa-release-public.pem')
+    record['upload'].remove('release-public.pem')
     (output / 'QA-RELEASE.json').write_text(json.dumps(record, indent=2) + '\n')
-    public_key.chmod(0o644)
     print(json.dumps(record, indent=2))
 
 
