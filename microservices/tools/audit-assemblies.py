@@ -195,7 +195,7 @@ def main():
     parser.add_argument('--artifacts', action='store_true')
     args = parser.parse_args()
     services, owners = configuration()
-    report = {'issue': 'MSC-121', 'runtimeVerified': False, 'services': {}}
+    report = {'issue': json.loads((SHELL / 'assemblies.json').read_text())['issue'], 'runtimeVerified': False, 'services': {}}
     for name, assembly in services.items():
         details = {'domains': assembly['domains'], 'candidateRemoteContracts': inventory(assembly, owners),
                    'unboundInjectedApiCandidates': injected_inventory(assembly, owners)}

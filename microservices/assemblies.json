@@ -3,6 +3,8 @@
   "issue": "MSC-121",
   "projectName": "myscoutee-microservices",
   "version": "msc121",
+  "sharedJavaIncludes": [],
+  "repositoryFactoryBean": "com.raxim.myscoutee.common.config.repository.MongoRepositoryFactoryBean",
   "sharedConfigurationImports": [
     "com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler"
   ],

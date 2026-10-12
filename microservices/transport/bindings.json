@@ -2121,13 +2121,19 @@
       "credential": "notificationReadsToken",
       "credentialProperty": "read-token",
       "producerDomains": [
-        "integrations"
+        "integrations",
+        "accounts"
       ],
       "actorOperations": [
         {
           "audience": "notifications:notification-reads",
           "method": "POST",
           "path": "/_internal/v1/notifications/notification-reads/page"
+        },
+        {
+          "audience": "notifications:notification-reads",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-reads/unread"
         }
       ]
     },

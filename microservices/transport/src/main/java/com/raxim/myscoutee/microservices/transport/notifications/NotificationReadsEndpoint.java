@@ -17,17 +17,22 @@ public final class NotificationReadsEndpoint {
     public NotificationReadsEndpoint(NotificationReads owner, ObjectMapper mapper, com.raxim.myscoutee.microservices.transport.security.ActorDelegation.Verifier verifier) { this.owner = owner; this.mapper = mapper; this.verifier = verifier; }
     @PostMapping(value = NotificationReadsProtocol.PAGE, produces = "application/json")
     public ResponseEntity<?> page(HttpServletRequest request) throws java.io.IOException {
-        return read(request, NotificationReadsProtocol.Query.class, NotificationReadsProtocol::valid, command ->
+        return read(request, NotificationReadsProtocol.PAGE, NotificationReadsProtocol.Query.class, NotificationReadsProtocol::valid, command ->
                 com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> owner.queryPage(command.userId(), command.bucket(), command.limit(), command.cursor(), command.workspace())));
     }
-    private <T> ResponseEntity<?> read(HttpServletRequest request, Class<T> type, Predicate<T> valid, Function<T, Object> action)
+    @PostMapping(value = NotificationReadsProtocol.UNREAD, produces = "application/json")
+    public ResponseEntity<?> unread(HttpServletRequest request) throws java.io.IOException {
+        return read(request, NotificationReadsProtocol.UNREAD, NotificationReadsProtocol.UnreadQuery.class, NotificationReadsProtocol::valid, command ->
+                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> owner.currentUnreadCount(command.userId())));
+    }
+    private <T extends NotificationReadsProtocol.ActorQuery> ResponseEntity<?> read(HttpServletRequest request, String path, Class<T> type, Predicate<T> valid, Function<T, Object> action)
             throws java.io.IOException {
         try {
             var verified = com.raxim.myscoutee.microservices.transport.security.DelegatedRequestBodies.read(
-                    request, mapper, verifier, NotificationReadsProtocol.AUDIENCE, NotificationReadsProtocol.PAGE, type, NotificationReadsProtocol.MAX_REQUEST_BYTES);
+                    request, mapper, verifier, NotificationReadsProtocol.AUDIENCE, path, type, NotificationReadsProtocol.MAX_REQUEST_BYTES);
             T query = verified.value();
             if (!valid.test(query)) throw new ReadQueryBodies.RejectedQuery(400, "INVALID_REQUEST");
-            if (!((NotificationReadsProtocol.Query) query).userId().equals(verified.principal().getUserId()))
+            if (!query.userId().equals(verified.principal().getUserId()))
                 throw new org.springframework.security.access.AccessDeniedException("Actor mismatch");
             return verified.call(() -> response(200, action.apply(query)));
         } catch (org.springframework.security.access.AccessDeniedException denied) { return response(403, new NotificationReadsProtocol.Error("INVALID_DELEGATION"));

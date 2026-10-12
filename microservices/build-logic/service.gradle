@@ -53,6 +53,7 @@ def sharedPaths = [
 ]
 if (domains.contains('accounts')) sharedPaths += ['common/config/WebSecurityConfig.java', 'common/config/mongo/SessionMongoRoutingFilter.java']
 if (assembly.starters.contains('data-redis')) sharedPaths += 'common/redis/**'
+sharedPaths += rootProject.assemblyConfiguration.sharedJavaIncludes
 sourceSets.main.java {
     srcDirs = [canonicalJava, rootProject.file('bootstrap/src/main/java'), rootProject.file('transport/src/main/java'), generatedJava]
     domains.each { domain -> include "${packageRoot}domain/${domain}/**" }
@@ -99,7 +100,7 @@ ${explicitImports ? '@org.springframework.context.annotation.Import({' + explici
 @org.springframework.context.annotation.ComponentScan(basePackages = {${quoted(packages)}})
 @org.springframework.boot.context.properties.ConfigurationPropertiesScan(basePackages = {${quoted(packages)}})
 @org.springframework.data.mongodb.repository.config.EnableMongoRepositories(
-    repositoryFactoryBeanClass = com.raxim.myscoutee.common.config.repository.MongoRepositoryFactoryBean.class,
+    repositoryFactoryBeanClass = ${rootProject.assemblyConfiguration.repositoryFactoryBean}.class,
     basePackages = {${quoted(packages.collect { it + '.repository' })}})
 public class AssemblyConfiguration {}
 """
