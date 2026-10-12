@@ -11,6 +11,7 @@ SHARED = (
     'countryPartitions', 'helpCenterRevisions', 'ideaPosts', 'emailTemplates',
     'emailCampaignRules', 'notificationTemplates', 'i18n_messages', 'i18n_bundles',
     'scheduledMessageTasks', 'exchangeRates',
+    'landingSlides', 'helpCenterGuideFields',
 )
 CONFIGURED = (
     'affinityConfigs', 'appSettings', 'deploymentConfigurations',
@@ -24,6 +25,11 @@ RUNTIME = (
     'navigatorContacts', 'payments', 'savedPaymentMethods', 'userAffinityEdges',
     'userExperienceProfiles', 'userFeedback', 'userNotifications', 'userReports',
 )
+# These product scenarios have DEMO/E2E fixtures and no production seed file.
+DEMO_ONLY_RUNTIME = (
+    'communityAnnouncements', 'campaigns', 'serviceOfferings', 'serviceCases',
+    'communityScheduledTasks',
+)
 
 def identity(value):
     return value.get('$oid') if isinstance(value, dict) else value
@@ -31,7 +37,7 @@ def identity(value):
 def audit(seeds=SEEDS):
     errors = []
     data = {}
-    known = set(SHARED + CONFIGURED + RUNTIME) | {'adminUsers'}
+    known = set(SHARED + CONFIGURED + RUNTIME + DEMO_ONLY_RUNTIME) | {'adminUsers'}
     for mode in ('demo_db', 'myscoutee_db', 'e2e_db'):
         data[mode] = {}
         for path in (seeds / mode).glob('*.json'):
@@ -45,7 +51,8 @@ def audit(seeds=SEEDS):
             if len(set(ids)) != len(ids):
                 errors.append(f'{mode}/{path.stem}: duplicate identity')
             data[mode][path.stem] = rows
-        for name in SHARED + CONFIGURED + RUNTIME:
+        required = SHARED + CONFIGURED + RUNTIME + (() if mode == 'myscoutee_db' else DEMO_ONLY_RUNTIME)
+        for name in required:
             if name not in data[mode]:
                 errors.append(f'{mode}/{name}: missing JSON baseline')
     if errors:
@@ -65,25 +72,21 @@ def audit(seeds=SEEDS):
             if name == 'appSettings' and mode == 'myscoutee_db':
                 reference[0]['adminEmails'] = []
             if name == 'deploymentConfigurations':
-                # Explicitly curated, empty deployment contact/social defaults.
+                # Public brand links are shared; deployment contacts are curated.
                 reference[0]['privacyContact'] = actual[0]['privacyContact']
                 if mode == 'myscoutee_db':
-                    if actual[0]['socialLinks']:
-                        errors.append('production social links must not contain demo destinations')
                     if actual[0].get('integration', {}).get('publicBaseUrl') is not None:
                         errors.append('production integration URL must be operator-configured')
-                    reference[0]['socialLinks'] = []
                     reference[0]['integration'] = {'publicBaseUrl': None}
                     if actual[0]['payment'].get('exchangeRateUrl') != 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml':
                         errors.append('production exchange-rate source must default to public ECB HTTPS')
                     reference[0]['payment']['exchangeRateUrl'] = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
             if name == 'notificationRuleConfigs' and mode == 'e2e_db':
                 for row in reference:
-                    if row['_id'] == 'notification-rule-event-counter-expiry':
-                        timing = next(r['timing'] for r in actual if r['_id'] == row['_id'])
-                        if timing.get('intervalSeconds') != 5:
-                            errors.append('e2e counter expiry must retain its 5-second fixture timing')
-                        row['timing'] = timing
+                    if row.get('ruleKey') == 'event-counter-expiry':
+                        row['timing'].update(intervalMinutes=1, intervalSeconds=5,
+                                             intervalAmount=5, intervalUnit='seconds',
+                                             cronExpression='0/5 * * * * ?')
             if actual != reference:
                 errors.append(f'{mode}/{name}: unexpected configuration difference')
         for name in ('adminStats', 'adminMonitoring'):
@@ -92,10 +95,23 @@ def audit(seeds=SEEDS):
             if not set(demo[name][0]).issubset(target[name][0]):
                 errors.append(f'{mode}/{name}: missing top-level telemetry fields')
         if mode == 'myscoutee_db':
-            for name in RUNTIME + ('operatorRegistryEndpoints', 'adminUsers'):
-                if target.get(name) != []:
+            # MSC-115 introduced these two system-owned root workspaces. They
+            # are product catalogs, not DEMO members or user-created groups.
+            groups = target['communityGroups']
+            if {identity(row['_id']) for row in groups} != {'myscoutee-work', 'myscoutee-community'} or any(
+                    row.get('ownerUserId') != 'system' or row.get('visibility') != 'public'
+                    or row.get('policy') != {'workspace': True, 'enabled': False, 'requiredFields': []}
+                    for row in groups):
+                errors.append('production community groups must contain only the two public system workspaces')
+            for name in RUNTIME + DEMO_ONLY_RUNTIME + ('operatorRegistryEndpoints', 'adminUsers'):
+                if name == 'communityGroups':
+                    continue
+                if target.get(name, []) != []:
                     errors.append(f'{mode}/{name}: must remain empty')
         else:
+            for name in DEMO_ONLY_RUNTIME:
+                if target[name] != demo[name]:
+                    errors.append(f'e2e_db/{name}: differs from the product demo fixture')
             if target['operatorRegistryEndpoints'] != demo['operatorRegistryEndpoints']:
                 errors.append('e2e Registry fixture differs from demo baseline')
             users = {identity(r['_id']) for r in target['users']}
@@ -110,4 +126,4 @@ if __name__ == '__main__':
     errors = audit()
     if errors:
         raise SystemExit('\n'.join(errors))
-    print(f'PASS: all {len(SHARED + CONFIGURED + RUNTIME)} dev/prod/e2e seed baselines classified; shared definitions, configuration differences, production isolation and simulator-card owners verified.')
+    print(f'PASS: all {len(SHARED + CONFIGURED + RUNTIME + DEMO_ONLY_RUNTIME)} dev/prod/e2e seed baselines classified; shared definitions, configuration differences, production isolation and simulator-card owners verified.')

@@ -4,10 +4,17 @@ These source-checkout-only tools inspect or update canonical static demo/E2E
 seed data. They do not connect to a running server or database. Review their
 generated JSON/SVG diffs before committing.
 
-- `check-system-seed-parity.py` classifies all 40 demo, production and E2E
+- `check-system-seed-parity.py` classifies the demo, production and E2E
   baselines, checks shared definitions/configuration differences and simulator-card
   owners, and rejects synthetic production identities/activity.
   Production packaging runs this check before staging artifacts.
+  Landing slides and guide fields are shared catalogs. Community announcements,
+  campaigns, service offerings/cases and community scheduled tasks have matching
+  demo/E2E fixtures; their production baseline must be absent or empty.
+  The two public, system-owned root workspaces and public MyScoutee social
+  links introduced by MSC-115 remain production catalogs. E2E uses five-second
+  event-counter expiry for all three configured scopes; other rule differences
+  are rejected.
 - `backfill-user-rate-seed-distances.mjs` deterministically updates demo and
   E2E `userRates.json` distances.
 - `normalize-chat-seed.mjs` checks chat/member/event JSON consistency; pass
