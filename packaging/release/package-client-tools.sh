@@ -18,11 +18,19 @@ install -d "${DIST_DIR}"
 WORK_DIR="$(mktemp -d "${DIST_DIR}/.client-tools.XXXXXX")"
 trap 'rm -rf -- "${WORK_DIR}"' EXIT
 install -d "${WORK_DIR}/payload/verify-deployment"
-for helper in README.md install.env.example install.sh prepare-debian13-minimal.sh \
-  purge.sh forward-localhost.sh remote-transport.sh verify-release.sh \
-  install-temporary-frontend.sh install-temporary-image.sh; do
+selection="${REPO_ROOT}/packaging/client-tools/manifest.json"
+jq -e 'type == "array" and length > 0 and length == (unique | length)
+  and all(.[]; type == "string" and test("^[A-Za-z0-9][A-Za-z0-9._-]*$"))
+  and (index("install.sh") != null) and (index("verify-release.sh") != null)
+  and (index("remote-transport.sh") != null)' "$selection" >/dev/null || {
+  echo 'Invalid client-tools selection.' >&2; exit 1;
+}
+while IFS= read -r helper; do
+  [[ -f "${REPO_ROOT}/packaging/client-tools/${helper}" && ! -L "${REPO_ROOT}/packaging/client-tools/${helper}" ]] || {
+    echo "Client helper must be a regular file: ${helper}" >&2; exit 1;
+  }
   install -m 0644 "${REPO_ROOT}/packaging/client-tools/${helper}" "${WORK_DIR}/payload/${helper}"
-done
+done < <(jq -r '.[]' "$selection")
 cp -a "${REPO_ROOT}/packaging/verify-deployment/." "${WORK_DIR}/payload/verify-deployment/"
 for helper in release-project.sh release-project.json; do
   install -m 0644 "${REPO_ROOT}/packaging/scripts/${helper}" "${WORK_DIR}/payload/${helper}"

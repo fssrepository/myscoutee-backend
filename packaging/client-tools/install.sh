@@ -1,5 +1,5 @@
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
 SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(CDPATH= cd "${SCRIPT_DIR}/../.." && pwd)"
@@ -33,6 +33,13 @@ fail() {
   exit 1
 }
 
+# Same package-owned identity as the signed-artifact verifier. The client
+# archive carries this policy beside the scripts; source checkouts use scripts/.
+POLICY_DIRECTORY="${SCRIPT_DIR}/../scripts"
+if [[ -f "${SCRIPT_DIR}/release-project.sh" ]]; then POLICY_DIRECTORY="${SCRIPT_DIR}"; fi
+source "${POLICY_DIRECTORY}/release-project.sh"
+release_project_load "${POLICY_DIRECTORY}" "$(id -u)" || fail "invalid client project policy"
+
 is_truthy() {
   case "$1" in
     1|true|TRUE|True|yes|YES|Yes|on|ON|On|enabled|ENABLED|Enabled)
@@ -51,7 +58,7 @@ latest_deb() {
     "${REPO_ROOT}/packaging/dist"; do
     [ -d "$candidate_dir" ] || continue
     find "$candidate_dir" -maxdepth 1 -type f \
-      -name 'myscoutee_*_*.deb' -printf '%T@ %p\n' 2>/dev/null
+      -name "${RELEASE_PROJECT_NAME}_*_*.deb" -printf '%T@ %p\n' 2>/dev/null
   done \
     | sort -nr \
     | awk 'NR == 1 { print $2 }'
@@ -72,7 +79,7 @@ fi
 
 REMOTE_HOST="${REMOTE_HOST:-}"
 REMOTE_USER="${REMOTE_USER:-}"
-REMOTE_DEB_PATH="${REMOTE_DEB_PATH:-/tmp/myscoutee.deb}"
+REMOTE_DEB_PATH="${REMOTE_DEB_PATH:-/tmp/${RELEASE_PROJECT_NAME}.deb}"
 RUN_APT_UPDATE="${RUN_APT_UPDATE:-false}"
 START_SERVICE="${START_SERVICE:-true}"
 STOP_ON_FAILURE="${STOP_ON_FAILURE:-true}"
@@ -130,8 +137,8 @@ command -v dpkg-deb >/dev/null 2>&1 \
   || fail "dpkg-deb is required to inspect ${DEB_PATH}"
 PACKAGE_NAME="$(dpkg-deb -f "$DEB_PATH" Package)"
 PACKAGE_VERSION="$(dpkg-deb -f "$DEB_PATH" Version)"
-[ "$PACKAGE_NAME" = "myscoutee" ] \
-  || fail "expected package myscoutee, got ${PACKAGE_NAME:-missing}"
+[ "$PACKAGE_NAME" = "$RELEASE_PROJECT_NAME" ] \
+  || fail "expected package ${RELEASE_PROJECT_NAME}, got ${PACKAGE_NAME:-missing}"
 printf '%s\n' "$PACKAGE_VERSION" \
   | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(~qa\.[1-9][0-9]*)?$' \
   || fail "package version must be a SemVer core or QA prerelease"
@@ -181,7 +188,7 @@ remote_transport_scp "$DEB_PATH" "$REMOTE_DEB_PATH"
 
 installed_version="$(
   remote_transport_run sh -c \
-    "dpkg-query -W -f='\${Version}' myscoutee 2>/dev/null || true"
+    "dpkg-query -W -f='\${Version}' '${RELEASE_PROJECT_NAME}' 2>/dev/null || true"
 )"
 if [ -z "$installed_version" ]; then
   echo "Remote package state: fresh install"
@@ -226,7 +233,7 @@ if is_truthy "$START_SERVICE"; then
   qualification_mode="restart-and-check"
 fi
 set -- \
-  /opt/myscoutee/packaging/scripts/qualify-deployment.sh \
+  "${RELEASE_PROJECT_ROOT}/packaging/scripts/qualify-deployment.sh" \
   "$qualification_mode" \
   --expected-version "$PACKAGE_VERSION" \
   --timeout-seconds "$QUALIFY_TIMEOUT_SECONDS"
@@ -237,7 +244,7 @@ fi
 echo "Running package-provided deployment qualification..."
 remote_transport_run_root "$@"
 
-remote_transport_run_root /opt/myscoutee/packaging/scripts/record-installed-package.sh "$REMOTE_DEB_PATH"
+remote_transport_run_root "${RELEASE_PROJECT_ROOT}/packaging/scripts/record-installed-package.sh" "$REMOTE_DEB_PATH"
 
 echo "Install and host qualification passed."
 if [ -n "$VERIFY_DEPLOYMENT_URL" ]; then
