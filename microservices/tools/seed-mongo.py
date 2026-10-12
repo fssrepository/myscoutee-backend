@@ -20,8 +20,10 @@ import tempfile
 import workloads as w
 import mongo_replica
 
-DATABASES = {'msc121_real': 'myscoutee_db', 'msc121_demo': 'demo_db'}
-STATE_DB = 'msc121_bootstrap'
+REAL_DB = w.CONFIG['databases']['real']
+DEMO_DB = w.CONFIG['databases']['demo']
+DATABASES = {REAL_DB: 'myscoutee_db', DEMO_DB: 'demo_db'}
+STATE_DB = w.CONFIG['databases']['bootstrap']
 IMPORT_FILES = ('mongo_import.sh', 'mongo-seed-policy.inc')
 
 
@@ -77,7 +79,7 @@ def catalog_baseline_fingerprint(files, allowlist, catalog):
 
 def mongo(script):
     prefix = "db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME,process.env.MONGO_INITDB_ROOT_PASSWORD);\n"
-    host = ['--host', 'msc121/mongodb:27017,mongodb-secondary:27017'] if w.CONFIG.get('mongoReplicaSet') else []
+    host = ['--host', w.CONFIG['databases']['replicaSet'] + '/mongodb:27017,mongodb-secondary:27017'] if w.CONFIG.get('mongoReplicaSet') else []
     result = w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--',
                     'mongosh', *host, '--quiet', '--eval', prefix + script, timeout=120)
     return json.loads(result.stdout.strip().splitlines()[-1])
@@ -88,7 +90,7 @@ def claim_bootstrap(fingerprint, namespace_uid):
     # A durable fingerprint permits recovery of this exact interrupted import.
     return mongo("""
 const databases = %s;
-if(process.env.MONGO_REAL_DATABASE!=='msc121_real'||process.env.MONGO_DEMO_DATABASE!=='msc121_demo')
+if(process.env.MONGO_REAL_DATABASE!==%s||process.env.MONGO_DEMO_DATABASE!==%s)
   throw new Error('Unexpected lab database configuration');
 const state=db.getSiblingDB(%s).getCollection('seed');
 const saved=state.findOne({_id:'canonical'});
@@ -104,7 +106,7 @@ if(!saved) {
   state.insertOne({_id:'canonical',fingerprint,namespaceUid:%s,status:'started',startedAt:new Date()});
 }
 print(JSON.stringify({status:saved?saved.status:'started'}));
-""" % (json.dumps(DATABASES), json.dumps(STATE_DB), json.dumps(fingerprint),
+""" % (json.dumps(DATABASES), json.dumps(REAL_DB), json.dumps(DEMO_DB), json.dumps(STATE_DB), json.dumps(fingerprint),
          json.dumps(namespace_uid), json.dumps(namespace_uid)))
 
 
@@ -145,7 +147,7 @@ def verify_persistence(fingerprint, namespace_uid, restart):
 
 
 def import_files(files, allowlist, fingerprint, databases=DATABASES, catalog=None):
-    directory = '/tmp/msc121-seed-' + fingerprint[:16]
+    directory = '/tmp/' + w.NAMESPACE + '-seed-' + fingerprint[:16]
     w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--', 'mkdir', '-p', directory)
     try:
         with tempfile.TemporaryFile() as archive:
@@ -160,7 +162,7 @@ def import_files(files, allowlist, fingerprint, databases=DATABASES, catalog=Non
             print('Importing canonical ' + source + ' into owned ' + database + ' using the prod allowlist.', flush=True)
             single_file = directory + '/' + source + '/' + catalog + '.json' if catalog else ''
             w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--', 'env',
-                   'MONGO_IMPORT_HOST=' + ('msc121/mongodb:27017,mongodb-secondary:27017' if w.CONFIG.get('mongoReplicaSet') else '127.0.0.1'),
+                   'MONGO_IMPORT_HOST=' + (w.CONFIG['databases']['replicaSet'] + '/mongodb:27017,mongodb-secondary:27017' if w.CONFIG.get('mongoReplicaSet') else '127.0.0.1'),
                    'MONGO_SEED_ROOT=' + directory, 'MONGO_APP_DATABASE=' + database,
                    'MONGO_SEED_DIRECTORY=' + source, 'MONGO_IMPORT_ALL_SEED_DATABASES=false',
                    'MONGO_IMPORT_REPLACE_COLLECTIONS=false',
@@ -278,10 +280,10 @@ for(const name of Object.keys(stats)) {
 policies:target.accessPolicyDefinitions.countDocuments({}),i18n:target.i18n_messages.countDocuments({})};
   if(!stats[name].policies || !stats[name].i18n)throw new Error('Required catalog seed is empty');
 }
-if(!stats.msc121_demo.users)throw new Error('DEMO users absent');
+if(!stats[%s].users)throw new Error('DEMO users absent');
 db.getSiblingDB(%s).seed.updateOne({_id:'canonical',fingerprint:%s},{$set:{status:'complete',completedAt:new Date()}});
 print(JSON.stringify(stats));
-""" % (json.dumps(DATABASES), json.dumps(STATE_DB), json.dumps(fingerprint)))
+""" % (json.dumps(DATABASES), json.dumps(DEMO_DB), json.dumps(STATE_DB), json.dumps(fingerprint)))
         print('Canonical bootstrap verified:', json.dumps(result, sort_keys=True))
 
 

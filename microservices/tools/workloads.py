@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Versioned image cache and Kubernetes workloads inside the owned MSC-121 guest.
+"""Versioned image cache and Kubernetes workloads inside the owned project guest.
 
 Startup never invokes a build. lock-images explicitly records already-built
 artifacts; import-images transfers only missing immutable versions to containerd.
@@ -29,7 +29,8 @@ SERVICES = json.loads((SHELL / 'assemblies.json').read_text())['services']
 TRANSPORTS = json.loads((SHELL / 'transport/bindings.json').read_text())['bindings']
 NAMESPACE = CONFIG['namespace']
 LOCK = SHELL / 'deploy/images.lock.json'
-LABEL = {'app.kubernetes.io/part-of': 'myscoutee-msc121'}
+LABEL = {'app.kubernetes.io/part-of': NAMESPACE}
+IMAGES = CONFIG['images']
 INVENTORY = vm.VM / 'workloads.json'
 SECRET_FILE = vm.VM / 'workload-secrets.json'
 
@@ -53,7 +54,7 @@ def image_lock():
     if manifest.get('schemaVersion') != 1 or set(manifest['images']) != set(SERVICES) | set(CONFIG['dependencies']):
         raise RuntimeError('Image lock does not match current assembly/dependency inventory.')
     for name, entry in manifest['images'].items():
-        expected = 'docker.io/library/myscoutee-service-' + name + ':0.1.0-' + entry['id'].removeprefix('sha256:')[:12]
+        expected = 'docker.io/library/' + IMAGES['prefix'] + name + ':' + IMAGES['immutableVersion'] + '-' + entry['id'].removeprefix('sha256:')[:12]
         if not re.fullmatch(r'sha256:[a-f0-9]{64}', entry['id']) or entry['reference'] != expected:
             raise RuntimeError('Invalid immutable image identity: ' + name)
     return manifest['images']
@@ -61,14 +62,14 @@ def image_lock():
 
 def lock_images():
     images = {}
-    sources = {name: f'myscoutee-service-{name}:msc121' for name in SERVICES}
+    sources = {name: IMAGES['prefix'] + name + ':' + IMAGES['buildTag'] for name in SERVICES}
     sources.update(CONFIG['dependencies'])
     for name, source in sources.items():
         info = json.loads(vm.run('docker', 'image', 'inspect', source).stdout)[0]
         fingerprint = vm.run(SHELL.parent / 'packaging/scripts/image-content-fingerprint.sh', 'docker', source).stdout.strip()
         images[name] = {'source': source, 'id': info['Id'], 'contentFingerprint': fingerprint,
                         'sourceDigests': info.get('RepoDigests', []),
-                        'reference': f'docker.io/library/myscoutee-service-{name}:0.1.0-' + info['Id'].split(':')[1][:12]}
+                        'reference': 'docker.io/library/' + IMAGES['prefix'] + name + ':' + IMAGES['immutableVersion'] + '-' + info['Id'].split(':')[1][:12]}
     candidate = json.dumps({'schemaVersion': 1, 'images': images}, indent=2) + '\n'
     if not LOCK.exists() or LOCK.read_text() != candidate:
         LOCK.write_text(candidate)
@@ -149,13 +150,16 @@ def secrets_data():
     values = json.loads(SECRET_FILE.read_text()) if not added else {
         'mongoPassword': secrets.token_hex(24), 'mongoRootPassword': secrets.token_hex(24),
         'localizationToken': secrets.token_urlsafe(32)}
-    for key, value in {
+    generated = {
             'configurationMasterKey': secrets.token_hex(32),
-            'mongoReplicaKey': base64.b64encode(secrets.token_bytes(512)).decode('ascii'),
+            'mongoReplicaKey': base64.b64encode(secrets.token_bytes(512)).decode('ascii')}
+    if 'payment-simulator' in CONFIG['dependencies']:
+        generated.update({
             'paymentSimulatorApiKey': 'sk_test_' + secrets.token_urlsafe(32),
             'paymentSimulatorWebhookSecret': 'whsec_' + secrets.token_urlsafe(32),
             'paymentSimulatorPosKey': str(uuid.uuid4()),
-            'paymentSimulatorAuditToken': secrets.token_urlsafe(32)}.items():
+            'paymentSimulatorAuditToken': secrets.token_urlsafe(32)})
+    for key, value in generated.items():
         if key not in values:
             values[key] = value
             added = True
@@ -285,6 +289,17 @@ def release_simulator_certificate():
     return certificate + '\n'
 
 
+def runtime_environment():
+    replacements = {'@PUBLIC_BASE_URL@': 'http://localhost:' + str(CONFIG['localPort']),
+                    '@VM_IP@': vm.IP, '@STUN_NODE_PORT@': str(CONFIG['stunNodePort'])}
+    result = {}
+    for key, value in CONFIG['environment'].items():
+        for placeholder, replacement in replacements.items():
+            value = value.replace(placeholder, replacement)
+        result[key] = value
+    return result
+
+
 def chart_values(backends_enabled=True):
     backend = Path(os.environ.get('MYSCOUTEE_BACKEND_SOURCE', SHELL.parent))
     transport_runtime, _ = transport_settings(SERVICES)
@@ -304,32 +319,16 @@ def chart_values(backends_enabled=True):
         'actorDelegation': delegation,
         'publicBaseUrl': 'http://localhost:' + str(CONFIG['localPort']),
         'stunNodePort': CONFIG['stunNodePort'],
+        'databases': CONFIG['databases'],
         'runtime': {
+            **runtime_environment(),
+            'MONGODB_DATABASE': CONFIG['databases']['real'],
+            'MONGODB_DEMO_DATABASE': CONFIG['databases']['demo'],
             'MYSCOUTEE_DELEGATION_URL': 'http://' + delegation['owner'] + ':8080',
             'MYSCOUTEE_DELEGATION_ALLOW_INSECURE_HTTP': 'true',
-            'SPRING_PROFILES_ACTIVE': 'prod', 'MONGODB_HOST': 'mongodb', 'MONGODB_PORT': '27017',
-            'MONGODB_DATABASE': 'msc121_real', 'MONGODB_DEMO_DATABASE': 'msc121_demo',
-            'SPRING_DATA_REDIS_HOST': 'redis', 'FIREBASE_ENABLED': 'false',
-            'MEDIA_ENABLED': 'true', 'MEDIA_OBJECT_STORE_ENDPOINT': 'http://minio:9000',
-            'MEDIA_OBJECT_STORE_REGION': 'eu-central-1', 'MEDIA_BUCKET': 'myscoutee-media',
-            'MEDIA_OBJECT_STORE_PATH_STYLE': 'true',
-            'EMAIL_ENABLED': 'false', 'REGISTRY_ENABLED': 'false',
-            'REGISTRY_OUTBOUND_ALLOWED': 'false', 'PAYMENT_ENABLE_PAY': 'false',
-            'REGISTRY_DEMO_BASE_URL': 'http://registry:8080', 'REGISTRY_DEMO_SCOPE': 'demo:myscoutee',
-            'REGISTRY_DEMO_ALLOW_INSECURE_HTTP': 'true', 'REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS': 'registry',
-            'REGISTRY_DEMO_PRIVATE_KEY_PATH': '/var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem',
-            'REGISTRY_DEMO_PUBLIC_KEY_PATH': '/var/lib/myscoutee/registry-demo/keys/deployment-public-key.der',
-            'REGISTRY_DEMO_STATE_DIR': '/var/lib/myscoutee/registry-demo/state',
-            'PAYMENT_SIMULATOR_ENABLED': 'true', 'PAYMENT_SIMULATOR_BASE_URL': 'http://payment-simulator:18082',
-            'PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL': 'http://payments:8080/payment-methods/registrations/callback',
-            'PAYMENT_SIMULATOR_APPLICATION_BASE_URL': 'http://localhost:' + str(CONFIG['localPort']),
-            'PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT': 'merchant@myscoutee.invalid',
-            'PAYMENT_STRIPE_API_BASE_URL': 'http://payment-simulator:18082', 'PAYMENT_STRIPE_TEST_GATEWAY_ENABLED': 'true',
-            'PAYMENT_BARION_API_BASE_URL': 'http://payment-simulator:18082', 'PAYMENT_BARION_TEST_GATEWAY_ENABLED': 'true',
-            'CHAT_CALL_STUN_URLS': 'stun:' + vm.IP + ':' + str(CONFIG['stunNodePort']),
-            'CHAT_CALL_STUN_HEALTH_HOST': 'stun',
             **transport_runtime},
         'shared': {
+            'publicUpstreamRoutes': '\n        '.join(route['pattern'] + ' ' + route['service'] + '.' + NAMESPACE + '.svc.cluster.local:8080;' for route in CONFIG['publicRoutes']),
             'metricsUpstreamRoutes': '\n'.join('/metrics/' + name + ' ' + name + '.' + NAMESPACE + '.svc.cluster.local:8081;' for name in SERVICES),
             'runtimeStatusLocation': (backend / 'server/docker/conf/nginx/conf/http/runtime-status.conf').read_text(),
             'mongoInitScript': (backend / 'server/docker/conf/mongodb/db_init.js').read_text(),
@@ -341,14 +340,16 @@ def chart_objects():
               ('Service', 'mongodb'), ('Service', 'mongodb-secondary'), ('Service', 'mongodb-members')]
              if CONFIG.get('mongoReplicaSet') else
              [('PersistentVolumeClaim', 'mongodb'), ('Deployment', 'mongodb'), ('Service', 'mongodb')])
-    return [('Secret', 'runtime'), ('Secret', 'mongodb-bootstrap'), ('Secret', 'minio-bootstrap'), ('Secret', 'payment-simulator'),
+    return [('Secret', 'runtime'), ('Secret', 'mongodb-bootstrap'), ('Secret', 'minio-bootstrap'),
+            *([('Secret', 'payment-simulator')] if 'payment-simulator' in CONFIG['dependencies'] else []),
             *mongo, ('Secret', 'actor-delegation-issuer'), ('Secret', 'deployment-configuration'),
             *[('Secret', 'transport-' + name) for name in SERVICES],
             ('ServiceAccount', 'runtime-status'), ('Role', 'runtime-status'), ('RoleBinding', 'runtime-status'),
             ('ConfigMap', 'runtime'), ('ConfigMap', 'mongodb-init'), ('ConfigMap', 'frontend'), ('ConfigMap', 'release-simulator-ca'),
             ('Service', 'metrics-gateway'), ('PersistentVolumeClaim', 'minio'),
             ('PersistentVolumeClaim', 'release-simulator'),
-            ('PersistentVolumeClaim', 'registry'), ('PersistentVolumeClaim', 'registry-client'), ('PersistentVolumeClaim', 'payment-simulator'),
+            *([('PersistentVolumeClaim', 'registry'), ('PersistentVolumeClaim', 'registry-client')] if 'registry' in CONFIG['dependencies'] else []),
+            *([('PersistentVolumeClaim', 'payment-simulator')] if 'payment-simulator' in CONFIG['dependencies'] else []),
             *[(kind, name) for name in [*SERVICES, *CONFIG['dependencies']] if name != 'mongodb' for kind in ['Deployment', 'Service']]]
 
 

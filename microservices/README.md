@@ -861,3 +861,17 @@ requirements and follow-up boundaries. Affinity task discovery now uses one
 change stream per configured database with fallback polling disabled. Normal
 Compose replica defaults and isolated bootstrap verification are documented in
 [the packaging guide](../packaging/README.md#default-mongo-replica-set-and-change-streams).
+
+
+### Project configuration reuse (MSC-122)
+
+`deploy/runtime.json` now owns the lab display/state/VM/network identity,
+monitoring ports, image naming/support source locations, isolated databases,
+runtime environment and ordered public routes. The existing lifecycle tools,
+Helm chart and monitoring renderer consume these values. Native configured
+identities are unchanged; never edit them to adopt another project's resources.
+The root host package inventory is shared and remains at its existing location;
+foreign-resource guards still protect other labs, even when they are stopped.
+Selected dependencies control optional support workloads and credentials.
+See `MSC122_LAB_CONFIGURATION_20261012.json` for the source comparison and the
+separate runtime qualification boundary.

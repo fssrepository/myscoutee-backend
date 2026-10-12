@@ -3,7 +3,7 @@
 set -euo pipefail
 umask 077
 tools_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-state_root="${XDG_STATE_HOME:-${HOME}/.local/state}/myscoutee-microservices/msc121"
+state_root="$(python3 "${tools_root}/runtime_config.py" state)"
 [[ "${1:-}" == --purge-host || -z "${1:-}" ]] || {
   echo 'Usage: cleanup-lab.sh [--purge-host]. Deletes this lab and its data; no global prune.' >&2; exit 2;
 }

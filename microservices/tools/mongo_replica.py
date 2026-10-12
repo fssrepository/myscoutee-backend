@@ -19,6 +19,7 @@ import workloads as w
 
 STATE = w.vm.VM / 'mongo-replicaset.json'
 STATEFUL_STATE = w.vm.VM / 'mongo-statefulset.json'
+DATABASES = w.CONFIG['databases']
 MEMBERS = [name + '.' + w.NAMESPACE + '.svc.cluster.local:27017' for name in ('mongodb', 'mongodb-secondary')]
 
 
@@ -50,7 +51,7 @@ def configured():
     config = result['config']
     if config is None:
         return False
-    if config['_id'] != 'msc121' or sorted(m['host'] for m in config['members']) != sorted(MEMBERS):
+    if config['_id'] != DATABASES['replicaSet'] or sorted(m['host'] for m in config['members']) != sorted(MEMBERS):
         raise RuntimeError('Existing replica configuration differs; refusing reconfiguration')
     return True
 
@@ -82,7 +83,7 @@ def require_conversion_receipt():
 
 def initialize():
     if not configured():
-        config = {'_id': 'msc121', 'members': [{'_id': i, 'host': host, 'priority': 2 if i == 0 else 1}
+        config = {'_id': DATABASES['replicaSet'], 'members': [{'_id': i, 'host': host, 'priority': 2 if i == 0 else 1}
                                             for i, host in enumerate(MEMBERS)]}
         direct('print(JSON.stringify(rs.initiate(' + json.dumps(config) + ')));')
     deadline = time.monotonic() + 150
@@ -96,7 +97,7 @@ def initialize():
 
 
 def collection_counts():
-    return direct("const r={};for(const n of ['msc121_real','msc121_demo']) {const d=db.getSiblingDB(n);r[n]={};for(const c of d.getCollectionNames().sort())r[n][c]=d.getCollection(c).countDocuments({});}print(JSON.stringify(r));")
+    return direct("const r={};for(const n of " + json.dumps([DATABASES["real"], DATABASES["demo"]]) + ") {const d=db.getSiblingDB(n);r[n]={};for(const c of d.getCollectionNames().sort())r[n][c]=d.getCollection(c).countDocuments({});}print(JSON.stringify(r));")
 
 
 def backup(path=None, purpose="replicaset", extra=None):
@@ -133,13 +134,13 @@ def backup(path=None, purpose="replicaset", extra=None):
 
 def replication_probe():
     marker = 'replica-check-' + uuid.uuid4().hex
-    host = 'mongodb://' + ','.join(MEMBERS) + '/?replicaSet=msc121'
+    host = 'mongodb://' + ','.join(MEMBERS) + '/?replicaSet=' + DATABASES['replicaSet']
     # Discover the current primary; never assume the first member is still primary.
-    script = "const c=new Mongo(" + json.dumps(host) + ");c.getDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME,process.env.MONGO_INITDB_ROOT_PASSWORD);const d=c.getDB('msc121_bootstrap');"
+    script = "const c=new Mongo(" + json.dumps(host) + ");c.getDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME,process.env.MONGO_INITDB_ROOT_PASSWORD);const d=c.getDB(" + json.dumps(DATABASES["bootstrap"]) + ");"
     direct(script + 'd.replicaChecks.insertOne({_id:' + json.dumps(marker) + '},{writeConcern:{w:"majority",wtimeout:15000}});print(JSON.stringify({written:true}));')
     try:
         secondary = next(row['name'].split('.')[0] for row in initialize()['members'] if row['state'] == 'SECONDARY')
-        observed = direct('db.getMongo().setReadPref("secondary");print(JSON.stringify({found:db.getSiblingDB("msc121_bootstrap").replicaChecks.countDocuments({_id:' + json.dumps(marker) + '})}));', secondary)
+        observed = direct('db.getMongo().setReadPref("secondary");print(JSON.stringify({found:db.getSiblingDB(' + json.dumps(DATABASES["bootstrap"]) + ').replicaChecks.countDocuments({_id:' + json.dumps(marker) + '})}));', secondary)
         if observed['found'] != 1:
             raise RuntimeError('Replica write was not present on the second member')
     finally:
@@ -169,7 +170,7 @@ def require_owned(obj):
 
 
 def content_snapshot():
-    return direct("const r={};for(const n of ['msc121_real','msc121_demo']) {const d=db.getSiblingDB(n);r[n]={hashes:d.runCommand({dbHash:1}).collections,indexes:{}};for(const c of d.getCollectionNames().sort())r[n].indexes[c]=d.getCollection(c).getIndexes();}print(JSON.stringify(r));")
+    return direct("const r={};for(const n of " + json.dumps([DATABASES["real"], DATABASES["demo"]]) + ") {const d=db.getSiblingDB(n);r[n]={hashes:d.runCommand({dbHash:1}).collections,indexes:{}};for(const c of d.getCollectionNames().sort())r[n].indexes[c]=d.getCollection(c).getIndexes();}print(JSON.stringify(r));")
 
 
 def require_stateful_volumes():

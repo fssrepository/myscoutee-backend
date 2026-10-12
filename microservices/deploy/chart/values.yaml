@@ -19,6 +19,7 @@ minio:
   storage: 1Gi
 clusterDns: ""
 runtime: {}
+databases: {}
 releaseSimulatorCertificate: ""
 credentials: {}
 transportCredentialsByService: {}

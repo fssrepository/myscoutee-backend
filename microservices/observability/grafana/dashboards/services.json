@@ -1,10 +1,10 @@
 {
   "uid": "myscoutee-services",
-  "title": "MyScoutee service assemblies",
+  "title": "@DISPLAY_NAME@ service assemblies",
   "schemaVersion": 39,
   "version": 1,
   "tags": [
-    "MSC-121"
+    "@ISSUE@"
   ],
   "refresh": "30s",
   "time": {

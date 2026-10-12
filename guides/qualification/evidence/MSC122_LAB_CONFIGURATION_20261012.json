@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-10-12T00:10:18.593220+00:00",
+  "baseRevision": "7e9e2797403566fef4db85b25f2535253a496361",
+  "scope": "Move project identity, VM state/network, image names, monitoring ports, databases, environment and public-route selection into existing deploy/runtime.json. Preserve native configured values. Optional support dependencies no longer force absent product credentials or Helm resources.",
+  "verification": {
+    "infraSafetyTests": 69,
+    "projectIsolationTests": 5,
+    "terraformValidate": "PASS",
+    "shellSyntax": "PASS",
+    "nativeRenderedChartComparison": {
+      "objects": 64,
+      "differences": 0,
+      "method": "Same synthetic credentials, image lock, DNS and public certificate; semantic YAML comparison includes all runtime configuration, routes, secrets, labels and checksums.",
+      "baselineSha256": "f92e5fc1594a0d7d6a1db363805b42a86ea0a29bcf7541aa8aaf1a8a57de2daa"
+    },
+    "existingStateComparison": "PASS: libvirt names, bridge, domain memory and MAC unchanged; no VM/disk/resource adoption or deletion."
+  },
+  "ownership": "Root host package inventory remains shared at its existing path. VM and user tool state are project-specific. All UUID, plan deletion/replacement, foreign-resource and no-autostart guards remain in force.",
+  "runtimeBoundary": "PENDING at source checkpoint: native KVM and monolith, then selected template deployment. No latency/CPU parity claim from configuration rendering."
+}

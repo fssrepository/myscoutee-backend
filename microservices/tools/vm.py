@@ -24,13 +24,12 @@ import time
 import urllib.request
 import xml.etree.ElementTree as ET
 
-SHELL = Path(__file__).resolve().parents[1]
-STATE = Path(os.environ.get('XDG_STATE_HOME', str(Path.home() / '.local/state'))) / 'myscoutee-microservices/msc121'
+from runtime_config import SHELL, CONFIG, LAB, STATE
 VM = STATE / 'vm'
-NAME = 'myscoutee-msc121'
-CIDR = '192.168.173.0/24'
-IP = '192.168.173.10'
-MEMORY_MIB = 8192
+NAME = LAB['vmName']
+CIDR = LAB['networkCidr']
+IP = str(ipaddress.ip_network(CIDR)[10])
+MEMORY_MIB = LAB['memoryMiB']
 OBSERVE_INTERVAL_SECONDS = 1
 ADDRESSES = {'libvirt_pool.lab', 'libvirt_network.lab', 'libvirt_volume.base',
              'libvirt_volume.system', 'libvirt_volume.bootstrap',
@@ -120,7 +119,7 @@ def overlap(routes, owned_bridge=False):
         if destination == 'default':
             continue
         network = ipaddress.ip_network(destination, strict=False)
-        if owned_bridge and route.get('dev') == 'virbr-msc121' and network.subnet_of(desired):
+        if owned_bridge and route.get('dev') == LAB['bridge'] and network.subnet_of(desired):
             continue
         if desired.overlaps(network):
             raise RuntimeError('Lab subnet overlaps an existing route/network: ' + destination)
@@ -191,7 +190,8 @@ def prepare():
     # Rebuild public material from the private key, never rotate on an ordinary start.
     key.with_suffix('.pub').write_text(run('ssh-keygen', '-y', '-f', key).stdout)
     variables = dict(verified_cloud_image=str(image), ssh_public_key_file=str(key.with_suffix('.pub')),
-                     network_cidr=CIDR, memory_mib=MEMORY_MIB, running=True)
+                     network_cidr=CIDR, memory_mib=MEMORY_MIB, running=True,
+                     lab_name=NAME, bridge_name=LAB['bridge'], mac_address=LAB['macAddress'])
     (VM / 'inputs.tfvars.json').write_text(json.dumps(variables, indent=2) + '\n')
 
 
@@ -277,7 +277,7 @@ def monitoring_snapshot():
     global _monitoring_observation
     now = time.monotonic()
     if _monitoring_observation is None or now - _monitoring_observation[0] >= 5:
-        ids = run('docker', 'ps', '-q', '--filter', 'label=com.docker.compose.project=msc121-observability').stdout.split()
+        ids = run('docker', 'ps', '-q', '--filter', 'label=com.docker.compose.project=' + LAB['monitoringProject']).stdout.split()
         entries = []
         if ids:
             for entry in json.loads(run('docker', 'inspect', *ids).stdout):
@@ -286,7 +286,7 @@ def monitoring_snapshot():
                 pid = entry['State']['Pid']
                 group = next(line.split(':', 2)[2] for line in Path(f'/proc/{pid}/cgroup').read_text().splitlines()
                              if line.startswith('0::'))
-                entries.append(((entry['Id'], entry['State']['StartedAt']), entry['Name'].removeprefix('/msc121-observability-'),
+                entries.append(((entry['Id'], entry['State']['StartedAt']), entry['Name'].removeprefix('/' + LAB['monitoringProject'] + '-'),
                                 Path('/sys/fs/cgroup') / group.lstrip('/')))
         _monitoring_observation = (now, entries)
     entries = _monitoring_observation[1]
@@ -320,8 +320,8 @@ def monitoring_snapshot():
 def observe_snapshot():
     """Collect first, then repaint once; slow SSH must not blank the screen."""
     global _vm_observation
-    lines = ['MyScoutee | ' + time.strftime('%Y-%m-%d %H:%M:%S %Z'),
-             'App :18080  |  Grafana :13000  |  Prometheus :19090  (localhost)',
+    lines = [LAB['displayName'] + ' | ' + time.strftime('%Y-%m-%d %H:%M:%S %Z'),
+             f"App :{CONFIG['localPort']}  |  Grafana :{LAB['grafanaPort']}  |  Prometheus :{LAB['prometheusPort']}  (localhost)",
              '']
     memory = dict(line.split(':', 1) for line in Path('/proc/meminfo').read_text().splitlines())
     lines.append('HOST / KVM   Available RAM: %.1f GiB' % (int(memory['MemAvailable'].split()[0]) / 1024 ** 2))

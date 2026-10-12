@@ -10,7 +10,7 @@ metadata:
   name: {{ $name }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/part-of: myscoutee-msc121
+    app.kubernetes.io/part-of: {{ $.Release.Namespace }}
     app.kubernetes.io/name: {{ $name }}
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/part-of: myscoutee-msc121
+        app.kubernetes.io/part-of: {{ $.Release.Namespace }}
         app.kubernetes.io/name: {{ $name }}
       annotations:
         myscoutee/transport-scope-version: '2'
@@ -184,7 +184,7 @@ metadata:
   name: {{ $name }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    app.kubernetes.io/part-of: myscoutee-msc121
+    app.kubernetes.io/part-of: {{ $.Release.Namespace }}
     app.kubernetes.io/name: {{ $name }}
     app.kubernetes.io/managed-by: Helm
 spec:

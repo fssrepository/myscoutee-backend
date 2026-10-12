@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # Reuse the canonical receiver; add only the Kubernetes state source.
-ARG FRONTEND_BASE_IMAGE=myscoutee-frontend-runtime-base:msc121
+ARG FRONTEND_BASE_IMAGE
 FROM golang:1.26-bookworm AS runtime-status-builder
 WORKDIR /src
 COPY --from=runtime-common . ./
