@@ -16,6 +16,7 @@ release_project_load "${SCRIPT_DIR}/../scripts" "$(id -u)" || {
 }
 NESTED_ARCHIVE_AUDIT="${SCRIPT_DIR}/audit-nested-archive.py"
 PRIVATE_KEY_AUDIT="${SCRIPT_DIR}/private_key_material.py"
+source "${SCRIPT_DIR}/audit-project-seeds.sh"
 
 cleanup() {
   rm -rf "${AUDIT_TMP}"
@@ -216,21 +217,6 @@ audit_mongo_seed_privacy() {
     echo "A private/runtime collection was embedded in the production Mongo seed." >&2
     exit 1
   fi
-  if [[ -f "${production_seed}/communityProviders.json" ]] && ! jq -e '
-      type == "array" and length == 2
-      and (map(._id) | sort) == ["discord", "discourse"]
-      and all(.[];
-        .configured == false and .available == true and .enabled == true
-        and (keys | sort) == (["_id", "name", "purpose", "url", "configured", "available", "enabled", "sortOrder"] | sort)
-        and .purpose == ("operator.community.provider." + ._id + ".purpose")
-        and (if ._id == "discord"
-          then .name == "Discord" and .url == "https://discord.com/" and .sortOrder == 10
-          else .name == "Discourse" and .url == "https://www.discourse.org/" and .sortOrder == 20
-          end))
-    ' "${production_seed}/communityProviders.json" >/dev/null; then
-    echo "Production community providers must contain only unconfigured built-in catalog definitions." >&2
-    exit 1
-  fi
   # Product-owned public pages have been intentional defaults since MSC-115.
   # Remove only those exact JSON string values; suffixes and other URLs remain
   # subject to the deployment-specific social-link rejection below.
@@ -258,32 +244,7 @@ audit_mongo_seed_privacy() {
     echo "Production deployment configuration must be schema v5 with privacy and Integration URL unconfigured." >&2
     exit 1
   fi
-  if ! jq -e '
-      [
-        .[]
-        | select(.documentType == "privacy" and .active == true)
-      ] as $documents
-      | ($documents | length == 2)
-      and all($documents[];
-        ([.sections[] | select(.id == "contact-details")] | length == 1)
-        and (
-          [.sections[] | select(.id == "contact-details")][0].contentHtml
-          == "{{deployment.privacy.contactDetails}}"
-        )
-        and ([.sections[] | select(.id == "account-data-deletion")] | length == 1)
-        and (
-          [.sections[] | select(.id == "account-data-deletion")][0].contentHtml
-          | contains("{{deployment.privacy.deletionEmailRoute}}")
-        )
-        and (
-          [.sections[] | .contentHtml // ""] | join(" ")
-          | test("DPO|privacy@myscoutee|myscoutee1@gmail"; "i")
-          | not
-        ))
-    ' "${production_seed}/helpCenterRevisions.json" >/dev/null; then
-    echo "Production privacy help content must use runtime contact tokens without fixed privacy identities." >&2
-    exit 1
-  fi
+  audit_project_seeds "${production_seed}"
 
   if ! jq -e '
       type == "array"

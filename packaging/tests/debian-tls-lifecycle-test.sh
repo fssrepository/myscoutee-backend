@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export DPKG_MAINTSCRIPT_PACKAGE=myscoutee
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"

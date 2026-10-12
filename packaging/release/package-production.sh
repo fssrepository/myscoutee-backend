@@ -60,7 +60,8 @@ sed \
 }
 install -m 0755 "${REPO_ROOT}/packaging/debian/postinst" "${STAGING_DIR}/DEBIAN/postinst"
 install -m 0755 "${REPO_ROOT}/packaging/debian/prerm" "${STAGING_DIR}/DEBIAN/prerm"
-install -m 0755 "${REPO_ROOT}/packaging/debian/postrm" "${STAGING_DIR}/DEBIAN/postrm"
+python3 "${SCRIPT_DIR}/render-postrm.py" "${REPO_ROOT}/packaging" "${STAGING_DIR}/DEBIAN/postrm"
+chmod 0755 "${STAGING_DIR}/DEBIAN/postrm"
 
 sed 's/docker-compose.production-replicaset.yml/docker-compose.replicaset.yml/g' \
   "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml"
@@ -96,7 +97,7 @@ stage_mongo_configuration() {
   for production_identity_seed in \
     "${production_source}/adminUsers.json" \
     "${production_source}/users.json"; do
-    if ! jq -e 'type == "array" and length == 0' \
+    if [[ -e "${production_identity_seed}" ]] && ! jq -e 'type == "array" and length == 0' \
         "${production_identity_seed}" >/dev/null; then
       echo "Production identity seeds must remain empty; operators are provisioned after installation." >&2
       exit 1
@@ -110,9 +111,7 @@ stage_mongo_configuration() {
     jq -c '
       [
         .[]
-        | select(
-            (._id | type) == "string"
-            and (._id | startswith("admin-demo-")))
+        | select(.hostTier == "Admin")
         | (.email // "")
         | select(test("@[^@]+\\.(local|invalid)$"; "i"))
       ]

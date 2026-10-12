@@ -2,10 +2,14 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
 
 default_server_dir() {
-  if [[ "${SCRIPT_DIR}" == /opt/myscoutee/packaging/scripts && -f /opt/myscoutee/server/docker-compose-prod.yml ]]; then
-    printf '/opt/myscoutee/server'
+  if [[ "${SCRIPT_DIR}" == ${RELEASE_PROJECT_ROOT}/packaging/scripts && -f ${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml ]]; then
+    printf '%s/server' "${RELEASE_PROJECT_ROOT}"
     return
   fi
 
@@ -17,8 +21,8 @@ default_server_dir() {
 SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-$(default_server_dir)}"
 
 default_env_file() {
-  if [[ "${SERVER_DIR}" == /opt/myscoutee/server && -f /etc/myscoutee/myscoutee.env ]]; then
-    printf '/etc/myscoutee/myscoutee.env'
+  if [[ "${SERVER_DIR}" == ${RELEASE_PROJECT_ROOT}/server && -f /etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.env ]]; then
+    printf '/etc/%s/%s.env' "${RELEASE_PROJECT_NAME}" "${RELEASE_PROJECT_NAME}"
     return
   fi
 
@@ -26,8 +30,8 @@ default_env_file() {
 }
 
 default_secrets_file() {
-  if [[ "${SERVER_DIR}" == /opt/myscoutee/server && -f /etc/myscoutee/myscoutee.secrets.env ]]; then
-    printf '/etc/myscoutee/myscoutee.secrets.env'
+  if [[ "${SERVER_DIR}" == ${RELEASE_PROJECT_ROOT}/server && -f /etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.secrets.env ]]; then
+    printf '/etc/%s/%s.secrets.env' "${RELEASE_PROJECT_NAME}" "${RELEASE_PROJECT_NAME}"
     return
   fi
 

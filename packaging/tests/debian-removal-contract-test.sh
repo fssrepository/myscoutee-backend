@@ -13,6 +13,9 @@ cleanup() {
   rm -rf "${TEST_ROOT}"
 }
 trap cleanup EXIT
+POSTRM="${TEST_ROOT}/postrm"
+python3 "${REPO_ROOT}/packaging/release/render-postrm.py" "${REPO_ROOT}/packaging" "$POSTRM"
+export DPKG_MAINTSCRIPT_PACKAGE=myscoutee
 
 fail() {
   echo "FAIL: $1" >&2
@@ -54,6 +57,8 @@ myscoutee-nginx:1.0.0-prod
 myscoutee-minio:audit-final
 myscoutee-registry:1.0.0-prod
 myscoutee-payment-simulator:1.0.0-prod
+myscoutee-mcp:1.0.0-prod
+myscoutee-template-api:1.0.0-prod
 mongo:8.0.4
 redis:8.6.1-alpine
 unrelated-api:1.0.0-prod

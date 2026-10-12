@@ -2,10 +2,16 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
+source "${SCRIPT_DIR}/host-project-checks.sh"
+BACKEND_CONTAINER="$(jq -er '.images[] | select(.service=="profilemanagement") | .container' "$RELEASE_PROJECT_POLICY")"
 
 default_server_dir() {
-  if [[ "${SCRIPT_DIR}" == /opt/myscoutee/packaging/scripts && -f /opt/myscoutee/server/docker-compose-prod.yml ]]; then
-    printf '/opt/myscoutee/server'
+  if [[ "${SCRIPT_DIR}" == ${RELEASE_PROJECT_ROOT}/packaging/scripts && -f ${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml ]]; then
+    printf '%s/server' "${RELEASE_PROJECT_ROOT}"
     return
   fi
 
@@ -16,8 +22,8 @@ default_server_dir() {
 
 SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-$(default_server_dir)}"
 ENV_FILE="${MYSCOUTEE_ENV_FILE:-${SERVER_DIR}/.env}"
-if [[ "${SERVER_DIR}" == /opt/myscoutee/server && -f /etc/myscoutee/myscoutee.env ]]; then
-  ENV_FILE="${MYSCOUTEE_ENV_FILE:-/etc/myscoutee/myscoutee.env}"
+if [[ "${SERVER_DIR}" == ${RELEASE_PROJECT_ROOT}/server && -f /etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.env ]]; then
+  ENV_FILE="${MYSCOUTEE_ENV_FILE:-/etc/${RELEASE_PROJECT_NAME}/${RELEASE_PROJECT_NAME}.env}"
 fi
 
 BASE_URL="${MYSCOUTEE_BASE_URL:-http://127.0.0.1}"
@@ -202,7 +208,7 @@ internal_get() {
       internal_path="${internal_path#/api}"
       ;;
   esac
-  docker exec myscoutee \
+  docker exec "$BACKEND_CONTAINER" \
     wget -qO- "http://localhost:8080${internal_path}"
 }
 
@@ -257,16 +263,13 @@ main() {
     docker_compose up -d
   else
     require_existing_container_running mongodb
-    require_existing_container_running payment-simulator
-    require_existing_container_running myscoutee
+    require_existing_container_running "$BACKEND_CONTAINER"
   fi
 
   wait_for_health mongodb healthy
-  wait_for_health payment-simulator healthy
-  wait_for_health myscoutee healthy
+  wait_for_health "$BACKEND_CONTAINER" healthy
 
-  docker exec payment-simulator /payment-simulator healthcheck >/dev/null
-  status_line ok "payment simulator internal health"
+  project_smoke_dependencies
 
   local version fcv
   version="$(mongo_eval_root 'print(db.version())' | tail -n 1 | tr -d '\r')"
@@ -287,12 +290,12 @@ main() {
   demo_database="$(read_env_file_value MONGO_DEMO_DATABASE "${ENV_FILE}" || true)"
   demo_database="${demo_database:-demo_db}"
 
-  require_count "production idea posts seed" "${real_database}" "ideaPosts"
   require_count "production i18n seed" "${real_database}" "i18n_messages"
   require_count "production privacy seed" "${real_database}" "helpCenterRevisions" '{"documentType":"privacy","active":true}'
   require_count "demo users seed" "${demo_database}" "users"
-  require_count "demo events seed" "${demo_database}" "events"
   require_count "demo privacy seed" "${demo_database}" "helpCenterRevisions" '{"documentType":"privacy","active":true}'
+
+  project_smoke_seeds "${real_database}" "${demo_database}"
 
   mongo_eval_app '
     const collection = db.getCollection("_myscoutee_mongo_compat_smoke");
@@ -312,11 +315,10 @@ main() {
   status_line ok "Mongo app-user CRUD smoke"
 
   check_http_or_internal "backend health" "/api/health" '"status":"UP"'
-  check_http_or_internal "landing content query" "/api/landing/content?lang=en" '"ideas"'
+  project_smoke_http
   check_http_or_internal "active help content" "/api/help/active?lang=en" '"documentKind":"help"'
   check_http_or_internal "active privacy content" "/api/privacy/active?lang=en" '"documentKind":"privacy"'
   check_http_or_internal "active privacy sections" "/api/privacy/active?lang=en" '"sections":[{'
-  check_http_or_internal "active explanation content" "/api/explanation/active?lang=en&contextKey=home.game" '"documentKind":"explanation"'
 
   status_line ok "Mongo ${EXPECTED_MONGO_MINOR} compatibility smoke passed"
 }

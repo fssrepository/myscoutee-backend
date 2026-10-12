@@ -10,6 +10,7 @@ script=r'''
 const testDb=db.getSiblingDB('qa_release_defaults_'+new ObjectId().toHexString());
 function check(value,message){if(!value)throw Error(message);}
 const seeds={deploymentConfigurations:[{_id:'deployment-configuration',payment:{exchangeRateUrl:'https://rates.example/reference.xml'}}],exchangeRates:[{_id:'default-v1',rates:{EUR:'1'}}],notificationRuleConfigs:[{_id:'existing',enabled:true},{_id:'new',enabled:true}],countryPartitions:[{_id:'country-test',countryCode:'DE'}],i18n_messages:[{_id:'text',value:'first'}],i18n_bundles:[{_id:'en',version:'1'}]};
+seeds['release-system-seeds']=SELECTION;
 function migrate(db){
  const require=name=>({readFileSync:path=>JSON.stringify(seeds[path.split('/').pop().replace('.json','')])});
  SOURCE
@@ -38,6 +39,6 @@ try{
  let rejected=false;try{migrate(testDb);}catch(e){rejected=true;}check(rejected,'unsupported schema accepted');
  print('PASS migration006: defaults, custom/null/blank URLs, operator secrets, job overrides, retained rates/users, repeat execution, schema rejection');
 }finally{testDb.dropDatabase();}
-'''.replace('SOURCE',source)
+'''.replace('SOURCE',source).replace('SELECTION',(root/'scripts/release-system-seeds.json').read_text())
 if '--print-script' in sys.argv: print(script)
 else: subprocess.run(['docker','exec','-i','mongodb','sh','-c','exec mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin production_db --file /dev/stdin'],input=script,text=True,check=True)

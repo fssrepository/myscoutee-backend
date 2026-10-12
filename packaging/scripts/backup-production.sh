@@ -3,28 +3,30 @@ set -euo pipefail
 umask 077
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
+source "${SCRIPT_DIR}/recovery-project.sh"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 
 SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-${REPO_ROOT}/server}"
 if [[ -n "${MYSCOUTEE_BACKUP_DIR:-}" ]]; then
   BACKUP_DIR="${MYSCOUTEE_BACKUP_DIR}"
-elif [[ "${SERVER_DIR}" == "/opt/myscoutee/server" ]]; then
-  # Keep installed backups outside /opt/myscoutee: apt purge intentionally
+elif [[ "${SERVER_DIR}" == "${RELEASE_PROJECT_ROOT}/server" ]]; then
+  # Keep installed backups outside ${RELEASE_PROJECT_ROOT}: apt purge intentionally
   # removes that tree.
-  BACKUP_DIR="/var/backups/myscoutee"
+  BACKUP_DIR="/var/backups/${RELEASE_PROJECT_NAME}"
 else
   BACKUP_DIR="${REPO_ROOT}/packaging/dist/backups"
 fi
 DATABASE_NAME="${MONGO_DATABASE:-myscoutee_db}"
 TIMESTAMP="$(date '+%Y%m%d-%H%M%S')"
-BACKUP_NAME="myscoutee-backup-${TIMESTAMP}"
+BACKUP_NAME="${RELEASE_PROJECT_NAME}-backup-${TIMESTAMP}"
 WORK_DIR="$(mktemp -d)"
 REQUIRE_COMPLETE="${MYSCOUTEE_BACKUP_REQUIRE_COMPLETE:-false}"
 mongo_complete=false
 config_complete=true
-registry_keys_complete=false
-registry_state_complete=false
-registry_identity_required=false
 configuration_key_complete=false
 minio_complete=false
 missing_components=()
@@ -66,25 +68,9 @@ resolve_host_path() {
   esac
 }
 
-default_registry_key_dir() {
-  if [[ "${SERVER_DIR}" == "/opt/myscoutee/server" ]]; then
-    printf '/etc/myscoutee/registry'
-  else
-    printf '%s/data/registry-keys' "${SERVER_DIR}"
-  fi
-}
-
-default_registry_state_dir() {
-  if [[ "${SERVER_DIR}" == "/opt/myscoutee/server" ]]; then
-    printf '/var/lib/myscoutee/registry'
-  else
-    printf '%s/data/registry' "${SERVER_DIR}"
-  fi
-}
-
 default_configuration_key_dir() {
-  if [[ "${SERVER_DIR}" == "/opt/myscoutee/server" ]]; then
-    printf '/etc/myscoutee/configuration'
+  if [[ "${SERVER_DIR}" == "${RELEASE_PROJECT_ROOT}/server" ]]; then
+    printf '/etc/%s/configuration' "${RELEASE_PROJECT_NAME}"
   else
     printf '%s/data/configuration' "${SERVER_DIR}"
   fi
@@ -96,19 +82,16 @@ cleanup() {
 trap cleanup EXIT
 
 ENV_FILE="${SERVER_DIR}/.env"
-registry_key_dir_value="${REGISTRY_KEY_DIR_HOST:-$(read_env_file_value REGISTRY_KEY_DIR_HOST "${ENV_FILE}" || true)}"
-registry_state_dir_value="${REGISTRY_STATE_DIR_HOST:-$(read_env_file_value REGISTRY_STATE_DIR_HOST "${ENV_FILE}" || true)}"
 configuration_key_dir_value="${OPERATOR_CONFIGURATION_KEY_DIR_HOST:-$(read_env_file_value OPERATOR_CONFIGURATION_KEY_DIR_HOST "${ENV_FILE}" || true)}"
-REGISTRY_KEY_DIR="${MYSCOUTEE_REGISTRY_KEY_DIR:-$(resolve_host_path "${registry_key_dir_value:-$(default_registry_key_dir)}")}"
-REGISTRY_STATE_DIR="${MYSCOUTEE_REGISTRY_STATE_DIR:-$(resolve_host_path "${registry_state_dir_value:-$(default_registry_state_dir)}")}"
 CONFIGURATION_KEY_DIR="${MYSCOUTEE_CONFIGURATION_KEY_DIR:-$(resolve_host_path "${configuration_key_dir_value:-$(default_configuration_key_dir)}")}"
 
 mkdir -p \
   "${BACKUP_DIR}" \
   "${WORK_DIR}/mongo" \
   "${WORK_DIR}/config" \
-  "${WORK_DIR}/configuration" \
-  "${WORK_DIR}/registry"
+  "${WORK_DIR}/configuration"
+
+project_recovery_init
 
 if docker ps --format '{{.Names}}' | grep -qx mongodb; then
   if docker exec mongodb sh -lc "mongodump --username \"\${MONGO_APP_USERNAME:-guest}\" --password \"\${MONGO_APP_PASSWORD:-guest}\" --authenticationDatabase \"\${MONGO_APP_DATABASE:-${DATABASE_NAME}}\" --db \"\${MONGO_APP_DATABASE:-${DATABASE_NAME}}\" --archive --gzip" > "${WORK_DIR}/mongo/${DATABASE_NAME}.archive.gz"; then
@@ -161,58 +144,7 @@ else
   echo "Warning: operator configuration master key is missing or unsafe." >&2
 fi
 
-# Registry enrollment is optional. Require its recovery components as soon as
-# either directory contains identity/state material; never treat a partial
-# identity as an unconfigured deployment. Failed inspection must abort backup.
-for registry_dir in "${REGISTRY_KEY_DIR}" "${REGISTRY_STATE_DIR}"; do
-  if [[ -L "${registry_dir}" ]]; then
-    echo "Deployment registry backup paths must not be symbolic links." >&2
-    exit 1
-  elif [[ -d "${registry_dir}" ]]; then
-    registry_entry="$(find "${registry_dir}" -mindepth 1 -print -quit)"
-    if [[ -n "${registry_entry}" ]]; then
-      registry_identity_required=true
-    fi
-  elif [[ -e "${registry_dir}" ]]; then
-    echo "Deployment registry backup paths must be directories." >&2
-    exit 1
-  fi
-done
-
-if [[ -L "${REGISTRY_KEY_DIR}" \
-  || -L "${REGISTRY_KEY_DIR}/deployment-private-key.pem" \
-  || -L "${REGISTRY_KEY_DIR}/deployment-public-key.der" ]]; then
-  echo "Deployment registry key backup paths must not be symbolic links." >&2
-  exit 1
-elif [[ -f "${REGISTRY_KEY_DIR}/deployment-private-key.pem" \
-  && -f "${REGISTRY_KEY_DIR}/deployment-public-key.der" ]]; then
-  if find "${REGISTRY_KEY_DIR}" -type l -print -quit | grep -q .; then
-    echo "Deployment registry key directory must not contain symbolic links." >&2
-    exit 1
-  fi
-  mkdir -p "${WORK_DIR}/registry/keys"
-  cp -a "${REGISTRY_KEY_DIR}/." "${WORK_DIR}/registry/keys/"
-  registry_keys_complete=true
-elif [[ "${registry_identity_required}" == "true" ]]; then
-  missing_components+=("registry-keys")
-  echo "Warning: deployment registry keypair was not found under ${REGISTRY_KEY_DIR}; identity backup skipped." >&2
-fi
-
-if [[ -L "${REGISTRY_STATE_DIR}" ]]; then
-  echo "Deployment registry state backup path must not be a symbolic link." >&2
-  exit 1
-elif [[ -d "${REGISTRY_STATE_DIR}" ]]; then
-  if find "${REGISTRY_STATE_DIR}" -type l -print -quit | grep -q .; then
-    echo "Deployment registry state backup path must not contain symbolic links." >&2
-    exit 1
-  fi
-  mkdir -p "${WORK_DIR}/registry/state"
-  cp -a "${REGISTRY_STATE_DIR}/." "${WORK_DIR}/registry/state/"
-  registry_state_complete=true
-elif [[ "${registry_identity_required}" == "true" ]]; then
-  missing_components+=("registry-state")
-  echo "Warning: deployment registry state was not found under ${REGISTRY_STATE_DIR}; registry state backup skipped." >&2
-fi
+project_backup
 
 if [[ -d "${SERVER_DIR}/data/minio" ]]; then
   if find "${SERVER_DIR}/data/minio" -type l -print -quit | grep -q .; then
@@ -238,12 +170,10 @@ if (( ${#missing_components[@]} == 0 )); then
 fi
 jq -n \
   --arg createdAt "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+  --argjson project "$(project_backup_manifest)" \
   --argjson complete "${complete}" \
   --argjson mongo "${mongo_complete}" \
   --argjson config "${config_complete}" \
-  --argjson registryIdentityRequired "${registry_identity_required}" \
-  --argjson registryKeys "${registry_keys_complete}" \
-  --argjson registryState "${registry_state_complete}" \
   --argjson configurationKey "${configuration_key_complete}" \
   --argjson minio "${minio_complete}" \
   --argjson missing "${missing_json}" \
@@ -251,17 +181,14 @@ jq -n \
     schemaVersion: 1,
     createdAt: $createdAt,
     complete: $complete,
-    registryIdentityRequired: $registryIdentityRequired,
     components: {
       mongodb: $mongo,
       configuration: $config,
       operatorConfigurationKey: $configurationKey,
-      registryKeys: $registryKeys,
-      registryState: $registryState,
       minio: $minio
     },
     missing: $missing
-  }' > "${WORK_DIR}/backup-manifest.json"
+  } * $project' > "${WORK_DIR}/backup-manifest.json"
 
 if [[ "${REQUIRE_COMPLETE}" == "true" && "${complete}" != "true" ]]; then
   echo "Complete backup required; missing: ${missing_components[*]}" >&2

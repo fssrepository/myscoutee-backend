@@ -102,3 +102,7 @@ Thumbs.db
 /guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.png
 /guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.jpg
 /guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.webp
+
+# Python command modules used by source-only seed/release tools.
+/tools/seeds/__pycache__/
+/packaging/release/__pycache__/

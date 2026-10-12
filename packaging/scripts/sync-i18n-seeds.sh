@@ -2,11 +2,15 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
 
 default_server_dir() {
-  if [[ "${SCRIPT_DIR}" == /opt/myscoutee/packaging/scripts \
-    && -f /opt/myscoutee/server/docker-compose-prod.yml ]]; then
-    printf '/opt/myscoutee/server'
+  if [[ "${SCRIPT_DIR}" == ${RELEASE_PROJECT_ROOT}/packaging/scripts \
+    && -f ${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml ]]; then
+    printf '%s/server' "${RELEASE_PROJECT_ROOT}"
     return
   fi
 

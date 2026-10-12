@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 TEST_DIR="$(mktemp -d)"
 trap 'rm -rf -- "$TEST_DIR"' EXIT
-cp "$ROOT/packaging/scripts/restart-update-stack.sh" "$TEST_DIR/"
+cp "$ROOT/packaging/scripts/"{restart-update-stack.sh,release-project.sh,release-project.json} "$TEST_DIR/"
 mkdir "$TEST_DIR/bin"
 export UPDATE_RESTART_TRACE="$TEST_DIR/trace"
 export UPDATE_TEST_DOCKER="$(command -v docker)"
@@ -36,6 +36,9 @@ for command in compose reset-demo-state.sh sync-i18n-seeds.sh migrate-production
 #!/bin/sh
 set -eu
 if [ "$(basename "$0")" = compose ]; then
+  if [ "${1:-}" = config ]; then
+    exec "$UPDATE_TEST_DOCKER" compose -f "$UPDATE_TEST_MODEL" --env-file "$UPDATE_TEST_ENV_FILE" "$@"
+  fi
   images="$("$UPDATE_TEST_DOCKER" compose -f "$UPDATE_TEST_MODEL" --env-file "$UPDATE_TEST_ENV_FILE" config --no-env-resolution --images)"
   if printf '%s\n' "$images" | grep -Fq "$UPDATE_TEST_OLD_VERSION-prod"; then
     echo 'FAIL: stale worker image overrides the newly installed configuration' >&2
@@ -66,7 +69,7 @@ assert lines == [
     'reset-demo-state.sh ',
     'sync-i18n-seeds.sh --prepare-only',
     'migrate-production-data.sh ',
-    'compose up -d --no-deps --wait --wait-timeout 300 mongodb redis minio registry payment-simulator mcp',
+    'compose up -d --no-deps --wait --wait-timeout 300 mcp minio mongodb payment-simulator redis registry stun',
     'compose up -d --no-deps profilemanagement',
     'compose up -d --no-deps nginx',
 ], lines

@@ -2,6 +2,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/release-project.sh"
+release_project_load "${SCRIPT_DIR}" "$(stat -c %u "${BASH_SOURCE[0]}")" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2; exit 1;
+}
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 SERVER_DIR="${REPO_ROOT}/server"
 
@@ -17,12 +21,6 @@ if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.
 fi
 
 export MYSCOUTEE_VERSION="${VERSION}"
-export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
-export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
-export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
-export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
-export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
-export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
-export MCP_IMAGE="${MCP_IMAGE:-myscoutee-mcp:${VERSION}-prod}"
+release_project_export_images "${VERSION}"
 
 MYSCOUTEE_SERVER_DIR="${SERVER_DIR}" "${SCRIPT_DIR}/myscoutee-compose.sh" up -d

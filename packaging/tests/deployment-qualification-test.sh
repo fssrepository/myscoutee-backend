@@ -9,6 +9,8 @@ MONGO_SMOKE="${REPO_ROOT}/packaging/scripts/smoke-mongo-compatibility.sh"
 TEST_ROOT="$(mktemp -d /tmp/myscoutee-deployment-qualification-test.XXXXXX)"
 FAKE_BIN="${TEST_ROOT}/bin"
 COMMAND_LOG="${TEST_ROOT}/commands.log"
+export QUALIFICATION_COMPOSE_CONFIG="${TEST_ROOT}/compose.json"
+MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=fixture docker compose -f "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" config --no-env-resolution --format json > "$QUALIFICATION_COMPOSE_CONFIG"
 
 cleanup() {
   rm -rf -- "${TEST_ROOT}"
@@ -141,6 +143,8 @@ chmod 0755 "${SMOKE_SCRIPT}"
 COMPOSE_SCRIPT="${TEST_ROOT}/compose.sh"
 cat > "${COMPOSE_SCRIPT}" <<'SCRIPT'
 #!/usr/bin/env bash
+if [[ "${1:-}" == config ]]; then cat "$QUALIFICATION_COMPOSE_CONFIG"; exit 0; fi
+if [[ "$*" == "ps -a -q stun" ]]; then printf 'server-stun-1\n'; exit 0; fi
 printf 'compose\t%s\n' "$*" >> "${QUALIFICATION_TEST_LOG:?}"
 SCRIPT
 chmod 0755 "${COMPOSE_SCRIPT}"
@@ -175,7 +179,7 @@ grep -Fqx $'systemctl\trestart myscoutee.service' "${COMMAND_LOG}" \
   || fail "restart-and-check did not restart the service"
 grep -Fq $'smoke\tbase=http://127.0.0.1 start=false timeout=' "${COMMAND_LOG}" \
   || fail "qualification did not invoke the packaged smoke contract"
-for required_container in mongodb redis minio registry-demo payment-simulator mcp myscoutee nginx; do
+for required_container in server-stun-1 mongodb redis minio registry-demo payment-simulator mcp myscoutee nginx; do
   grep -Fq $'docker\tinspect '"${required_container}"' --format ' \
     "${COMMAND_LOG}" \
     || fail "qualification did not wait for ${required_container} health"

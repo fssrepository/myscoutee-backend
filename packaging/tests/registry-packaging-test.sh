@@ -12,6 +12,7 @@ cleanup() {
   rm -rf "${TEST_ROOT}"
 }
 trap cleanup EXIT
+python3 "${REPO_ROOT}/packaging/release/render-postrm.py" "${REPO_ROOT}/packaging" "${TEST_ROOT}/postrm"
 
 fail() {
   echo "FAIL: $1" >&2
@@ -570,7 +571,7 @@ mkdir -p \
   "${FAILED_RESTORE_STUB_DIR}" \
   "${FAILED_RESTORE_SERVER_DIR}" \
   "${FAILED_RESTORE_KEY_DIR}"
-printf '%s\n' 'FIREBASE_ENABLED=false' \
+printf '%s\n' 'FIREBASE_ENABLED=false' 'MONGO_REPLICA_SET_ENABLED=false' \
   > "${FAILED_RESTORE_SERVER_DIR}/.env"
 printf '7%.0s' {1..64} > "${FAILED_RESTORE_KEY_DIR}/deployment-master-key"
 printf '\n' >> "${FAILED_RESTORE_KEY_DIR}/deployment-master-key"
@@ -630,7 +631,7 @@ RACE_KEY_DIR="${TEST_ROOT}/race-identity"
 RACE_STATE_DIR="${TEST_ROOT}/race-state"
 RACE_LOG="${TEST_ROOT}/race-docker.log"
 mkdir -p "${RACE_STUB_DIR}" "${RACE_SERVER_DIR}"
-printf '%s\n' 'FIREBASE_ENABLED=false' > "${RACE_SERVER_DIR}/.env"
+printf '%s\n' 'FIREBASE_ENABLED=false' 'MONGO_REPLICA_SET_ENABLED=false' > "${RACE_SERVER_DIR}/.env"
 cat > "${RACE_STUB_DIR}/docker" <<'STUB'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -672,12 +673,12 @@ if grep -Fxq '/opt/myscoutee/packaging/scripts/ensure-deployment-identity.sh' \
   "${REPO_ROOT}/packaging/debian/postinst"; then
   fail "postinst initializes a node identity before operator consent"
 fi
-grep -Fq '0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry' \
-  "${REPO_ROOT}/packaging/debian/postinst" \
-  || fail "postinst does not create the API-owned deployment-key directory with mode 0700"
-grep -Fq '0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry' \
-  "${REPO_ROOT}/packaging/debian/postinst" \
-  || fail "postinst does not create the API-owned registry-state directory with mode 0700"
+jq -e '
+  .ownedDirectories as $directories
+  | all(["/etc/myscoutee/registry", "/var/lib/myscoutee/registry"][];
+      . as $path | any($directories[]; .path==$path and .mode=="0700" and .uid==10001 and .gid==10001))
+' "${REPO_ROOT}/packaging/templates/install-policy.json" >/dev/null \
+  || fail "install policy does not retain the API-owned Registry directories"
 grep -Eq '^Depends:.*openssl' "${REPO_ROOT}/packaging/debian/control" \
   || fail "openssl is not a hard package dependency"
 grep -Eq '^Depends:.*jq' "${REPO_ROOT}/packaging/debian/control" \
@@ -740,18 +741,18 @@ for compose_file in \
     fail "${compose_file} shadows bootstrap subject/digest values supplied by .env.secrets"
   fi
 done
-grep -Fq 'BACKUP_DIR="/var/backups/myscoutee"' \
+grep -Fq 'BACKUP_DIR="/var/backups/${RELEASE_PROJECT_NAME}"' \
   "${REPO_ROOT}/packaging/scripts/backup-production.sh" \
   || fail "installed backups do not default outside the purgeable /opt tree"
 if grep -Fq 'rm -rf /var/backups/myscoutee' \
-    "${REPO_ROOT}/packaging/debian/postrm"; then
+    "${TEST_ROOT}/postrm"; then
   fail "package purge deletes the external deployment recovery archive"
 fi
 grep -Fq 'REGISTRY_DEMO_VOLUME_NAME' \
-  "${REPO_ROOT}/packaging/debian/postrm" \
+  "${TEST_ROOT}/postrm" \
   || fail "package purge leaves the seeded demo registry volume behind"
 grep -Fq 'REGISTRY_DEMO_CLIENT_VOLUME_NAME' \
-  "${REPO_ROOT}/packaging/debian/postrm" \
+  "${TEST_ROOT}/postrm" \
   || fail "package purge leaves the demo registry client-state volume behind"
 for managed_repository in \
   myscoutee-api \
@@ -759,15 +760,15 @@ for managed_repository in \
   myscoutee-minio \
   myscoutee-registry; do
   grep -Fq "${managed_repository}" \
-    "${REPO_ROOT}/packaging/debian/postrm" \
+    "${TEST_ROOT}/postrm" \
     || fail "package purge leaves managed repository ${managed_repository} behind"
 done
-if grep -Fq 'MONGO_IMAGE' "${REPO_ROOT}/packaging/debian/postrm" \
-    || grep -Fq 'REDIS_IMAGE' "${REPO_ROOT}/packaging/debian/postrm"; then
+if grep -Fq 'MONGO_IMAGE' "${TEST_ROOT}/postrm" \
+    || grep -Fq 'REDIS_IMAGE' "${TEST_ROOT}/postrm"; then
   fail "package purge removes shared upstream MongoDB or Redis images"
 fi
 OPERATOR_PURGE="${REPO_ROOT}/packaging/client-tools/purge.sh"
-grep -Fq 'apt-get purge -y myscoutee' "${OPERATOR_PURGE}" \
+grep -Fq 'apt-get purge -y "$RELEASE_PROJECT_NAME"' "${OPERATOR_PURGE}" \
   || fail "Operator purge wrapper does not delegate to Debian package lifecycle"
 if grep -Eq \
     'myscoutee-(api|nginx|minio|registry)|registry-demo|docker (image|volume)' \
@@ -778,17 +779,17 @@ if grep -Fq 'rm -rf /var/backups/myscoutee' \
     "${OPERATOR_PURGE}"; then
   fail "remote purge deletes the external deployment recovery archive"
 fi
-grep -Fq 'cp -a "${REPO_ROOT}/packaging/scripts"' \
+grep -Fq 'cp -a "${runtime_script_path}" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts/"' \
   "${REPO_ROOT}/packaging/release/package-production.sh" \
   || fail "package staging does not include the deployment identity helper"
-grep -Fq 'find "${STAGING_DIR}/opt/myscoutee/packaging/scripts"' \
+grep -Fq 'find "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts"' \
   "${REPO_ROOT}/packaging/release/package-production.sh" \
   || fail "package staging does not make the deployment identity helper executable"
 grep -Fq 'sync -f "${KEY_DIR}"' "${IDENTITY_SCRIPT}" \
   || fail "deployment identity helper does not durably sync its key directory"
 grep -Fq 'sync -f "${BACKUP_DIR}/${BACKUP_NAME}.tar.gz"' "${BACKUP_SCRIPT}" \
   || fail "production backup reports success before syncing its archive"
-grep -Fq 'sync -f "${REGISTRY_STATE_DIR}"' "${RESTORE_SCRIPT}" \
+grep -Fq 'sync -f "${REGISTRY_STATE_DIR}"' "${REPO_ROOT}/packaging/scripts/recovery-project.sh" \
   || fail "registry restore reports success before syncing restored state"
 
 for compose_file in \
@@ -856,16 +857,16 @@ grep -Fq '/workspace/data/registry-demo-state' "${DEMO_DEV_COMPOSE}" \
 
 for seed_file in "${DEMO_USERS}" "${E2E_USERS}"; do
   jq -e '
-    ([.[].email | ascii_downcase] | length == (unique | length))
+    ([.[] | select((.email | type)=="string") | .email | ascii_downcase] | length == (unique | length))
     and ([.[] | select(
       (.operator // false) == false
       and .hostTier != "Operator"
       and .hostTier != "Admin"
-      and (.email | test("^member[0-9]+@myscoutee\\.local$"))
+      and ((.email // "") | test("^member[0-9]+@myscoutee\\.local$"))
     )] | length == 53)
     and ([.[] | select(
       .hostTier == "Admin"
-      and (.email | test("^admin[0-9]+@myscoutee\\.local$"))
+      and ((.email // "") | test("^admin[0-9]+@myscoutee\\.local$"))
     )] | length == 2)
   ' "${seed_file}" >/dev/null \
     || fail "${seed_file} does not contain one unique numbered email per demo member/admin"
@@ -888,6 +889,8 @@ if docker compose version >/dev/null 2>&1; then
   cp "${REPO_ROOT}/server/.env.secrets.example" "${COMPOSE_STAGE}/.env.secrets"
   cp "${REPO_ROOT}/server/projects/profile/secrets/firebase-service-account.json.example" \
     "${COMPOSE_STAGE}/projects/profile/secrets/firebase-service-account.json"
+  cp "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${COMPOSE_STAGE}/"
+  cp "${REPO_ROOT}/server/docker-compose-stun.yml" "${COMPOSE_STAGE}/"
   PACKAGED_PROD_JSON="$(
     docker compose \
     --env-file "${REPO_ROOT}/packaging/templates/myscoutee.env" \
@@ -908,6 +911,7 @@ if docker compose version >/dev/null 2>&1; then
     "${REPO_ROOT}/server/docker-compose-prod.yml" \
     "${SOURCE_COMPOSE_STAGE}/docker-compose-prod.yml" \
     || fail "isolated source production Compose fixture differs from source"
+  cp "${REPO_ROOT}/server/"docker-compose{.replicaset,-stun}.yml "${SOURCE_COMPOSE_STAGE}/"
   SOURCE_PROD_JSON="$(
     docker compose \
     --project-directory "${SOURCE_COMPOSE_STAGE}" \
