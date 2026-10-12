@@ -13,13 +13,20 @@
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
           "actor": "native-vmware",
           "expectedName": "Native vmware entry",
-          "sessionKind": "anonymous"
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "native-vmware-peer",
+          "expectedName": "Native vmware entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
         }
       ]
     },
@@ -29,13 +36,20 @@
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
           "actor": "native-monolith",
           "expectedName": "Native monolith entry",
-          "sessionKind": "anonymous"
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "native-monolith-peer",
+          "expectedName": "Native monolith entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
         }
       ]
     },
@@ -45,13 +59,20 @@
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
           "actor": "native-kvm",
           "expectedName": "Native kvm entry",
-          "sessionKind": "anonymous"
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "native-kvm-peer",
+          "expectedName": "Native kvm entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
         }
       ]
     },
@@ -61,13 +82,20 @@
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
           "actor": "template-vmware",
           "expectedName": "Template vmware entry",
-          "sessionKind": "anonymous"
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-vmware-peer",
+          "expectedName": "Template vmware entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
         }
       ]
     },
@@ -77,13 +105,20 @@
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
           "actor": "template-monolith",
           "expectedName": "Template monolith entry",
-          "sessionKind": "anonymous"
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-monolith-peer",
+          "expectedName": "Template monolith entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
         }
       ]
     },
@@ -93,13 +128,20 @@
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {
-        "columns": 1
+        "columns": 2
       },
       "sessions": [
         {
           "actor": "template-kvm",
           "expectedName": "Template kvm entry",
-          "sessionKind": "anonymous"
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-kvm-peer",
+          "expectedName": "Template kvm entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
         }
       ]
     }

@@ -364,6 +364,16 @@ E2E_UI_BASE_URL=https://127.0.0.1 node e2e/functional/ui/run.mjs --record
 
 Recorded output is written under `.e2e-artifacts/functional/ui/` and is gitignored.
 
+For explicitly delegated visible full-flow testing, first use the versioned
+`guides/qa/tools/open-checkpoint-browser-sessions.mjs` launcher and its configured
+fixture baseline. Set `E2E_MANAGED_BROWSER_MANIFEST` to that launcher's runtime
+manifest under `/tmp/myscoutee-qa-browser-sessions/`. The existing UI runner
+attaches to those visible sessions instead of starting headless browsers; only
+its test tabs are closed. The launcher continues to own the windows and profiles.
+Configure enough isolated sessions (two for two-user chat) and fake media for
+call checks. This attachment does not grant automation permission during a
+manual-QA handoff; explicit user delegation is still required.
+
 ## UI Stress Checks
 
 UI stress checks use Chrome DevTools Protocol to apply mobile viewport, touch,
