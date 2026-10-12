@@ -50,12 +50,11 @@ process.stdout.write(process.env.QA_TEST_CONTAINER);
   }
   for (const [file, entry] of [['server/.dockerignore', 'docker/.qa-mobile-runtime/'],
     ['server/docker/.dockerignore', '.qa-mobile-runtime/']]) assert.ok(read(file).split('\n').includes(entry), file);
-  // Run the package script's actual selection expression; no package/build process.
-  const selection = read('packaging/release/package-production.sh').match(/find "\$\{SERVER_DIR\}\/docker\/scripts"[\s\S]*?\| sort/)[0];
-  const selected = spawnSync('bash', ['-c', selection], { encoding: 'utf8', env: { ...process.env, SERVER_DIR: path.join(root, 'server') } });
-  assert.equal(selected.status, 0);
-  assert.doesNotMatch(selected.stdout, /manual-qa-checkpoints|admin-job-fixtures|start_profilemanagement_dev|frontend_auto_watch/);
-  assert.match(selected.stdout, /bootstrap_mongodb_seed\.sh/);
+  // The explicit project inventory is the package builder input.
+  const selected = JSON.parse(read('packaging/release/runtime-scripts.json'));
+  assert.ok(Array.isArray(selected));
+  assert.doesNotMatch(selected.join('\n'), /manual-qa-checkpoints|admin-job-fixtures|start_profilemanagement_dev|frontend_auto_watch/);
+  assert.ok(selected.includes('bootstrap_mongodb_seed.sh'));
   console.log('PASS: 7 dev runtime gate cases; production config, build-context and package helper isolation.');
 } finally {
   rmSync(fixture, { recursive: true, force: true });

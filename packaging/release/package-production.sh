@@ -184,19 +184,18 @@ stage_mongo_configuration() {
 python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py"
 node "${REPO_ROOT}/frontend/scripts/audit-i18n-mongo-seed.js"
 stage_mongo_configuration
-while IFS= read -r runtime_script_path; do
-  cp -a "${runtime_script_path}" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/scripts/"
-done < <(
-  find "${SERVER_DIR}/docker/scripts" \
-    -mindepth 1 \
-    -maxdepth 1 \
-    ! -name "admin-job-fixtures" \
-    ! -name "manual-qa-checkpoints" \
-    ! -name "start_profilemanagement_dev.sh" \
-    ! -name "frontend_auto_watch.sh" \
-    -print \
-    | sort
-)
+# Host runtime scripts are project-selected build inputs. Dev/E2E helpers can
+# remain in the source tree without becoming installed host commands.
+runtime_manifest="${REPO_ROOT}/packaging/release/runtime-scripts.json"
+jq -e 'type=="array" and length==(unique|length)
+  and all(.[]; type=="string" and test("^[A-Za-z][A-Za-z0-9_.-]*$"))' "$runtime_manifest" >/dev/null
+while IFS= read -r runtime_name; do
+  runtime_script_path="${SERVER_DIR}/docker/scripts/${runtime_name}"
+  [[ -e "$runtime_script_path" && ! -L "$runtime_script_path" ]] || {
+    echo "Selected host runtime script is missing or symbolic: ${runtime_name}" >&2; exit 1;
+  }
+  cp -a "$runtime_script_path" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/scripts/"
+done < <(jq -r '.[]' "$runtime_manifest")
 # Only deployment-host runtime scripts are installed. Everything in
 # packaging/release and repository developer helpers stays source-only.
 install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts"

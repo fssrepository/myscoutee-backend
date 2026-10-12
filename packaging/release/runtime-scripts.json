@@ -1,0 +1,15 @@
+[
+  "bootstrap_minio_seed.sh",
+  "bootstrap_mongodb_seed.sh",
+  "country-partitions",
+  "ensure_operator_configuration_master_key.sh",
+  "prepare_dev_runtime_directories.sh",
+  "reconcile_event_member_projections.cjs",
+  "reconcile_sub_event_counters.cjs",
+  "reconcile_tournament_group_counters.cjs",
+  "reconcile_user_event_counters.cjs",
+  "start_minio_with_seed.sh",
+  "start_release_simulator.sh",
+  "sync_frontend_assets.sh",
+  "tests"
+]
