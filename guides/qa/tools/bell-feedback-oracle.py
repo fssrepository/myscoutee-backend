@@ -15,11 +15,11 @@ const wrapper=db.manualQaCheckpointSnapshots.findOne({scenario:'bell-feedback'})
 const rateBaseline=wrapper?.ratingBaseline || rates.documents;
 const selector={viewerUserId:c.actorUserId,eventId:c.eventId};
 print(JSON.stringify({at:new Date().toISOString(),context:c,
- answers:db.eventFeedbackAnswers.find(selector).toArray(),states:db.eventFeedbackStates.find(selector).toArray(),
+ answers:db.feedbackAnswers.find(selector).toArray(),states:db.feedbackStates.find(selector).toArray(),
  ratesUnchanged:same(db.userRates.find(rates.selector).toArray(),rateBaseline),
  ratesBefore:rateBaseline,ratesNow:db.userRates.find(rates.selector).toArray(),
- inbox:db.userNotifications.find({kind:'event-feedback-submitted',sourceId:c.eventId,senderUserId:c.actorUserId}).toArray(),
- outbox:db.notificationOutbox.find({notificationType:'event-feedback-submitted',entityId:c.eventId,'payload.senderUserId':c.actorUserId},{payload:0}).toArray(),
+ inbox:db.userNotifications.find({kind:'feedback-submitted',sourceId:c.eventId,senderUserId:c.actorUserId}).toArray(),
+ outbox:db.notificationOutbox.find({notificationType:'feedback-submitted',entityId:c.eventId,'payload.senderUserId':c.actorUserId},{payload:0}).toArray(),
  tasks:db.affinityRecomputeTasks.find({targetId:{$in:ids}},{targetId:1,status:1,pendingCounterTracked:1}).toArray(),
  counters:ids.map(userId=>({userId,stored:Number(db.users.findOne({userId})?.activities?.notifications||0),actual:db.userNotifications.countDocuments({recipientUserId:userId,readAtIso:null})}))
 }));

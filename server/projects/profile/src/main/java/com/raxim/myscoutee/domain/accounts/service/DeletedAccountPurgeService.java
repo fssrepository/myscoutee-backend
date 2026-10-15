@@ -524,7 +524,7 @@ public class DeletedAccountPurgeService {
         notificationPrivacy.purgeDeliveryData(userId);
         runProductCleanup(Action.TICKET_AUDIT, context);
         runProductCleanup(Action.CONTENT_SHARE_TOKENS, context);
-        runProductCleanup(Action.EVENT_FEEDBACK, context);
+        runProductCleanup(Action.FEEDBACK, context);
         runProductCleanup(Action.AFFINITY_TASKS, context);
         runProductCleanup(Action.LEADERBOARD, context);
         helpPrivacy.anonymizeAuthors(userId);

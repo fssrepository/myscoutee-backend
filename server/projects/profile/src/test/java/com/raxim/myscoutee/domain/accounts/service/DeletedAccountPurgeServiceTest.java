@@ -305,7 +305,7 @@ class DeletedAccountPurgeServiceTest {
                 Action.MANAGED_EVENT_ADMINS, Action.ASSET_REQUESTS, Action.ACTIVITY_RESOURCES,
                 Action.IDEA_POSTS, Action.RATINGS, Action.EDGES, Action.CONTENT_FEEDBACK,
                 Action.CONTENT_REPORTS, Action.CONTENT_FEED_VIEWS, Action.PAYER_RECORDS,
-                Action.TICKET_AUDIT, Action.CONTENT_SHARE_TOKENS, Action.EVENT_FEEDBACK,
+                Action.TICKET_AUDIT, Action.CONTENT_SHARE_TOKENS, Action.FEEDBACK,
                 Action.AFFINITY_TASKS, Action.LEADERBOARD, Action.SCHEDULER_MARKERS, Action.AFFINITY_AUTHORS);
         verify(users).delete(user);
     }

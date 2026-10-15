@@ -1884,12 +1884,6 @@
     "value": "Verification email sent. Confirm it, then continue here."
   },
   {
-    "_id": "i18n-message-en-feedback",
-    "key": "feedback",
-    "lang": "en",
-    "value": "Feedback"
-  },
-  {
     "_id": "i18n-message-en-feedback-details",
     "key": "feedback.details",
     "lang": "en",
@@ -1902,44 +1896,44 @@
     "value": "Feedback submitted from the app."
   },
   {
-    "_id": "i18n-message-en-event-feedback-confirm-remove-failure",
-    "key": "event.feedback.confirm.remove.failure",
+    "_id": "i18n-message-en-feedback-confirm-remove-failure",
+    "key": "feedback.confirm.remove.failure",
     "lang": "en",
     "value": "Unable to remove this feedback item."
   },
   {
-    "_id": "i18n-message-en-event-feedback-confirm-remove-message",
-    "key": "event.feedback.confirm.remove.message",
+    "_id": "i18n-message-en-feedback-confirm-remove-message",
+    "key": "feedback.confirm.remove.message",
     "lang": "en",
     "value": "This feedback item will be moved to Removed without feedback."
   },
   {
-    "_id": "i18n-message-en-event-feedback-confirm-remove-title",
-    "key": "event.feedback.confirm.remove.title",
+    "_id": "i18n-message-en-feedback-confirm-remove-title",
+    "key": "feedback.confirm.remove.title",
     "lang": "en",
     "value": "Remove feedback?"
   },
   {
-    "_id": "i18n-message-en-event-feedback-confirm-remove-warning",
-    "key": "event.feedback.confirm.remove.warning",
+    "_id": "i18n-message-en-feedback-confirm-remove-warning",
+    "key": "feedback.confirm.remove.warning",
     "lang": "en",
     "value": "You can restore it later from the Removed filter."
   },
   {
-    "_id": "i18n-message-en-event-feedback-confirm-restore-failure",
-    "key": "event.feedback.confirm.restore.failure",
+    "_id": "i18n-message-en-feedback-confirm-restore-failure",
+    "key": "feedback.confirm.restore.failure",
     "lang": "en",
     "value": "Unable to restore this feedback item."
   },
   {
-    "_id": "i18n-message-en-event-feedback-confirm-restore-message",
-    "key": "event.feedback.confirm.restore.message",
+    "_id": "i18n-message-en-feedback-confirm-restore-message",
+    "key": "feedback.confirm.restore.message",
     "lang": "en",
     "value": "This feedback item will move back to Pending."
   },
   {
-    "_id": "i18n-message-en-event-feedback-confirm-restore-title",
-    "key": "event.feedback.confirm.restore.title",
+    "_id": "i18n-message-en-feedback-confirm-restore-title",
+    "key": "feedback.confirm.restore.title",
     "lang": "en",
     "value": "Restore feedback?"
   },
@@ -5886,10 +5880,10 @@
     "value": "Preparing demo users"
   },
   {
-    "_id": "i18n-message-en-preparing-event-feedback",
-    "key": "preparing.event.feedback",
+    "_id": "i18n-message-en-preparing-feedback",
+    "key": "preparing.feedback",
     "lang": "en",
-    "value": "Preparing event feedback"
+    "value": "Preparing feedback"
   },
   {
     "_id": "i18n-message-en-preparing-owned-assets",
@@ -7146,8 +7140,8 @@
     "value": "Event updates"
   },
   {
-    "_id": "i18n-message-en-stats-event-feedback-submitted",
-    "key": "stats.event.feedback.submitted",
+    "_id": "i18n-message-en-stats-feedback-submitted",
+    "key": "stats.feedback.submitted",
     "lang": "en",
     "value": "Feedback"
   },
@@ -9408,10 +9402,10 @@
     "value": "Energetic, bold, spontaneous"
   },
   {
-    "_id": "i18n-message-en-event-feedback",
-    "key": "event.feedback",
+    "_id": "i18n-message-en-feedback",
+    "key": "feedback",
     "lang": "en",
-    "value": "Event Feedback"
+    "value": "Feedback"
   },
   {
     "_id": "i18n-message-en-excellent",
@@ -9912,10 +9906,10 @@
     "value": "Overall"
   },
   {
-    "_id": "i18n-message-en-own-event-feedback",
-    "key": "own.event.feedback",
+    "_id": "i18n-message-en-own-feedback",
+    "key": "own.feedback",
     "lang": "en",
-    "value": "Own Event Feedback"
+    "value": "Own Feedback"
   },
   {
     "_id": "i18n-message-en-pansexual",
@@ -16822,18 +16816,6 @@
     "key": "notification.kind.event-checkout-basket-updated.message",
     "lang": "en",
     "value": "{memberName} updated the booking for {eventTitle}. Review it again."
-  },
-  {
-    "_id": "i18n-message-en-notification-kind-event-feedback-submitted-title",
-    "key": "notification.kind.event-feedback-submitted.title",
-    "lang": "en",
-    "value": "New event feedback"
-  },
-  {
-    "_id": "i18n-message-en-notification-kind-event-feedback-submitted-message",
-    "key": "notification.kind.event-feedback-submitted.message",
-    "lang": "en",
-    "value": "You received feedback for {eventTitle}."
   },
   {
     "_id": "i18n-message-en-notification-kind-event-invitation-accepted-title",
@@ -25530,26 +25512,26 @@
     "value": "Event name"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-event-feedback-filter-trigger-description",
-    "key": "guide.event.feedback.event.feedback.filter.trigger.description",
+    "_id": "i18n-message-en-guide-feedback-feedback-filter-trigger-description",
+    "key": "guide.feedback.feedback.filter.trigger.description",
     "lang": "en",
     "value": "Filter feedback by its current state to focus on items that need review or already have a response. The selection changes which cards appear below."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-event-feedback-filter-trigger-label",
-    "key": "guide.event.feedback.event.feedback.filter.trigger.label",
+    "_id": "i18n-message-en-guide-feedback-feedback-filter-trigger-label",
+    "key": "guide.feedback.feedback.filter.trigger.label",
     "lang": "en",
     "value": "Feedback categories"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-list-description",
-    "key": "guide.event.feedback.feedback.list.description",
+    "_id": "i18n-message-en-guide-feedback-feedback-list-description",
+    "key": "guide.feedback.feedback.list.description",
     "lang": "en",
     "value": "Review the feedback cards and their status badges. Open a card to respond or inspect its details; organizers can also review the collected results."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-list-label",
-    "key": "guide.event.feedback.feedback.list.label",
+    "_id": "i18n-message-en-guide-feedback-feedback-list-label",
+    "key": "guide.feedback.feedback.list.label",
     "lang": "en",
     "value": "Event feedback"
   },
@@ -27078,50 +27060,50 @@
     "value": "Move to additional stages or groups in the event. Your current event context remains in place as you continue through the list."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-detail-label",
-    "key": "guide.event.feedback.detail.feedback-detail.label",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-detail-label",
+    "key": "guide.feedback.detail.feedback-detail.label",
     "lang": "en",
     "value": "Submitted feedback"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-detail-description",
-    "key": "guide.event.feedback.detail.feedback-detail.description",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-detail-description",
+    "key": "guide.feedback.detail.feedback-detail.description",
     "lang": "en",
     "value": "Review your submitted answers and the event context they refer to. The detail view helps you understand what was recorded without changing your response."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-answer-primary-label",
-    "key": "guide.event.feedback.detail.feedback-answer-primary.label",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-answer-primary-label",
+    "key": "guide.feedback.detail.feedback-answer-primary.label",
     "lang": "en",
     "value": "Primary answer"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-answer-primary-description",
-    "key": "guide.event.feedback.detail.feedback-answer-primary.description",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-answer-primary-description",
+    "key": "guide.feedback.detail.feedback-answer-primary.description",
     "lang": "en",
     "value": "Read the main answer saved for this feedback prompt. It helps you confirm the core response before checking any additional details."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-answer-secondary-label",
-    "key": "guide.event.feedback.detail.feedback-answer-secondary.label",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-answer-secondary-label",
+    "key": "guide.feedback.detail.feedback-answer-secondary.label",
     "lang": "en",
     "value": "Additional answer"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-answer-secondary-description",
-    "key": "guide.event.feedback.detail.feedback-answer-secondary.description",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-answer-secondary-description",
+    "key": "guide.feedback.detail.feedback-answer-secondary.description",
     "lang": "en",
     "value": "Review any secondary answer connected to the prompt. This extra detail adds nuance to the feedback the organizer receives."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-detail-close-label",
-    "key": "guide.event.feedback.detail.feedback-detail-close.label",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-detail-close-label",
+    "key": "guide.feedback.detail.feedback-detail-close.label",
     "lang": "en",
     "value": "Close feedback details"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-feedback-detail-close-description",
-    "key": "guide.event.feedback.detail.feedback-detail-close.description",
+    "_id": "i18n-message-en-guide-feedback-detail-feedback-detail-close-description",
+    "key": "guide.feedback.detail.feedback-detail-close.description",
     "lang": "en",
     "value": "Return to the previous feedback or event screen when you finish reviewing. Closing this guide leaves the detail popup open."
   },
@@ -27378,20 +27360,20 @@
     "value": "Review each stage’s status, participants, and actions to understand how the full event is organized."
   },
   {
-    "_id": "i18n-message-en-guide-context-event-feedback-detail-title",
-    "key": "guide.context.event.feedback.detail.title",
+    "_id": "i18n-message-en-guide-context-feedback-detail-title",
+    "key": "guide.context.feedback.detail.title",
     "lang": "en",
     "value": "Feedback details"
   },
   {
-    "_id": "i18n-message-en-guide-context-event-feedback-detail-summary",
-    "key": "guide.context.event.feedback.detail.summary",
+    "_id": "i18n-message-en-guide-context-feedback-detail-summary",
+    "key": "guide.context.feedback.detail.summary",
     "lang": "en",
     "value": "Review the answers saved for an event."
   },
   {
-    "_id": "i18n-message-en-guide-context-event-feedback-detail-description",
-    "key": "guide.context.event.feedback.detail.description",
+    "_id": "i18n-message-en-guide-context-feedback-detail-description",
+    "key": "guide.context.feedback.detail.description",
     "lang": "en",
     "value": "Check the main and additional answers, then return to the feedback or event screen when you are done."
   },
@@ -27480,38 +27462,38 @@
     "value": "Open a transaction’s menu to inspect or manage that record. Payment history is separate from the saved methods used for future checkouts."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-badge-start-label",
-    "key": "guide.event.feedback.card-badge-start.label",
+    "_id": "i18n-message-en-guide-feedback-card-badge-start-label",
+    "key": "guide.feedback.card-badge-start.label",
     "lang": "en",
     "value": "Feedback author"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-badge-start-description",
-    "key": "guide.event.feedback.card-badge-start.description",
+    "_id": "i18n-message-en-guide-feedback-card-badge-start-description",
+    "key": "guide.feedback.card-badge-start.description",
     "lang": "en",
     "value": "Open the profile connected to this feedback entry. This helps you understand whose experience is summarized before reviewing the details."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-badge-end-label",
-    "key": "guide.event.feedback.card-badge-end.label",
+    "_id": "i18n-message-en-guide-feedback-card-badge-end-label",
+    "key": "guide.feedback.card-badge-end.label",
     "lang": "en",
     "value": "Feedback status"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-badge-end-description",
-    "key": "guide.event.feedback.card-badge-end.description",
+    "_id": "i18n-message-en-guide-feedback-card-badge-end-description",
+    "key": "guide.feedback.card-badge-end.description",
     "lang": "en",
     "value": "Check the status and event details shown on the card. These indicators help you see which feedback entries still need attention."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-label",
-    "key": "guide.event.feedback.card-actions.label",
+    "_id": "i18n-message-en-guide-feedback-card-actions-label",
+    "key": "guide.feedback.card-actions.label",
     "lang": "en",
     "value": "Feedback actions"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-description",
-    "key": "guide.event.feedback.card-actions.description",
+    "_id": "i18n-message-en-guide-feedback-card-actions-description",
+    "key": "guide.feedback.card-actions.description",
     "lang": "en",
     "value": "Open the card menu to review the available feedback actions. The menu reflects whether the item is pending, submitted, or no longer available."
   },
@@ -27960,14 +27942,14 @@
     "value": "Close this view to return to the profile or screen that opened it. The impression history remains available from the same entry point."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-close-label",
-    "key": "guide.event.feedback.detail.close.label",
+    "_id": "i18n-message-en-guide-feedback-detail-close-label",
+    "key": "guide.feedback.detail.close.label",
     "lang": "en",
     "value": "Close feedback details"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-detail-close-description",
-    "key": "guide.event.feedback.detail.close.description",
+    "_id": "i18n-message-en-guide-feedback-detail-close-description",
+    "key": "guide.feedback.detail.close.description",
     "lang": "en",
     "value": "Close the saved feedback summary to return to the feedback list or event. The recorded answers remain saved after you leave this view."
   },
@@ -30666,26 +30648,26 @@
     "value": "The label distinguishes waiting, blocked or inactive items from confirmed ones. Waiting for approval requires a decision before participation is accepted."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-pending-count-label",
-    "key": "guide.event.feedback.card-pending-count.label",
+    "_id": "i18n-message-en-guide-feedback-card-pending-count-label",
+    "key": "guide.feedback.card-pending-count.label",
     "lang": "en",
     "value": "Requests needing attention"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-pending-count-description",
-    "key": "guide.event.feedback.card-pending-count.description",
+    "_id": "i18n-message-en-guide-feedback-card-pending-count-description",
+    "key": "guide.feedback.card-pending-count.description",
     "lang": "en",
     "value": "This badge counts pending requests attached to the card. It is separate from accepted participation or occupied capacity; a pending request is not a confirmed place."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-status-label",
-    "key": "guide.event.feedback.card-status.label",
+    "_id": "i18n-message-en-guide-feedback-card-status-label",
+    "key": "guide.feedback.card-status.label",
     "lang": "en",
     "value": "Feedback progress"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-status-description",
-    "key": "guide.event.feedback.card-status.description",
+    "_id": "i18n-message-en-guide-feedback-card-status-description",
+    "key": "guide.feedback.card-status.description",
     "lang": "en",
     "value": "Feedbacked means answers were submitted. Removed means the task was dismissed. A pending task still needs a response when it becomes available."
   },
@@ -30762,50 +30744,50 @@
     "value": "Ends your participation in this assigned resource. Review any booking or payment consequences before confirming."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-addorganizernote-label",
-    "key": "guide.event.feedback.card-actions.addOrganizerNote.label",
+    "_id": "i18n-message-en-guide-feedback-card-actions-addorganizernote-label",
+    "key": "guide.feedback.card-actions.addOrganizerNote.label",
     "lang": "en",
     "value": "Remember the organizer"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-addorganizernote-description",
-    "key": "guide.event.feedback.card-actions.addOrganizerNote.description",
+    "_id": "i18n-message-en-guide-feedback-card-actions-addorganizernote-description",
+    "key": "guide.feedback.card-actions.addOrganizerNote.description",
     "lang": "en",
     "value": "Stores your note about the organizer for later reference. Opening the note editor does not change the submitted feedback."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-editorganizernote-label",
-    "key": "guide.event.feedback.card-actions.editOrganizerNote.label",
+    "_id": "i18n-message-en-guide-feedback-card-actions-editorganizernote-label",
+    "key": "guide.feedback.card-actions.editOrganizerNote.label",
     "lang": "en",
     "value": "Update your organizer note"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-editorganizernote-description",
-    "key": "guide.event.feedback.card-actions.editOrganizerNote.description",
+    "_id": "i18n-message-en-guide-feedback-card-actions-editorganizernote-description",
+    "key": "guide.feedback.card-actions.editOrganizerNote.description",
     "lang": "en",
-    "value": "Changes your saved note about the organizer. This is separate from the event feedback you already submitted."
+    "value": "Changes your saved note about the organizer. This is separate from the feedback you already submitted."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-removefeedback-label",
-    "key": "guide.event.feedback.card-actions.removeFeedback.label",
+    "_id": "i18n-message-en-guide-feedback-card-actions-removefeedback-label",
+    "key": "guide.feedback.card-actions.removeFeedback.label",
     "lang": "en",
     "value": "Dismiss a feedback task"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-removefeedback-description",
-    "key": "guide.event.feedback.card-actions.removeFeedback.description",
+    "_id": "i18n-message-en-guide-feedback-card-actions-removefeedback-description",
+    "key": "guide.feedback.card-actions.removeFeedback.description",
     "lang": "en",
     "value": "Moves this pending feedback task to Removed so it no longer stays in the pending list. It can be restored from there."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-restorefeedback-label",
-    "key": "guide.event.feedback.card-actions.restoreFeedback.label",
+    "_id": "i18n-message-en-guide-feedback-card-actions-restorefeedback-label",
+    "key": "guide.feedback.card-actions.restoreFeedback.label",
     "lang": "en",
     "value": "Return a feedback task"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-card-actions-restorefeedback-description",
-    "key": "guide.event.feedback.card-actions.restoreFeedback.description",
+    "_id": "i18n-message-en-guide-feedback-card-actions-restorefeedback-description",
+    "key": "guide.feedback.card-actions.restoreFeedback.description",
     "lang": "en",
     "value": "Returns a dismissed feedback task to the available list. It does not create or submit feedback answers."
   },
@@ -32469,7 +32451,7 @@
     "_id": "i18n-message-en-guide-navigation-menu-feedback-description",
     "key": "guide.navigation.menu.feedback.description",
     "lang": "en",
-    "value": "Review pending and completed event feedback. This is feedback about participation; application support is available separately in Settings."
+    "value": "Review pending and completed feedback. This is feedback about participation; application support is available separately in Settings."
   },
   {
     "_id": "i18n-message-en-guide-navigation-menu-rates-label",
@@ -32907,7 +32889,7 @@
     "_id": "i18n-message-en-guide-navigation-menu-settings-feedback-description",
     "key": "guide.navigation.menu.settings.feedback.description",
     "lang": "en",
-    "value": "Opens application feedback for questions or suggestions. Use event feedback separately to describe an attended event."
+    "value": "Opens application feedback for questions or suggestions. Use feedback separately to describe an attended event."
   },
   {
     "_id": "i18n-message-en-guide-navigation-menu-settings-report-bugs-label",
@@ -35214,86 +35196,86 @@
     "value": "Choose the body-type option that describes you. This is a required profile field, so leaving the selector empty keeps this section incomplete."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-form-progress-label",
-    "key": "guide.event.feedback.form-progress.label",
+    "_id": "i18n-message-en-guide-feedback-form-progress-label",
+    "key": "guide.feedback.form-progress.label",
     "lang": "en",
     "value": "Required answers on this card"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-form-progress-description",
-    "key": "guide.event.feedback.form-progress.description",
+    "_id": "i18n-message-en-guide-feedback-form-progress-description",
+    "key": "guide.feedback.form-progress.description",
     "lang": "en",
     "value": "The counter follows the event and participant cards. Red marks missing required answers on the current card; complete them before moving forward."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-primary-label",
-    "key": "guide.event.feedback.feedback-primary.label",
+    "_id": "i18n-message-en-guide-feedback-feedback-primary-label",
+    "key": "guide.feedback.feedback-primary.label",
     "lang": "en",
     "value": "Your overall impression"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-primary-description",
-    "key": "guide.event.feedback.feedback-primary.description",
+    "_id": "i18n-message-en-guide-feedback-feedback-primary-description",
+    "key": "guide.feedback.feedback-primary.description",
     "lang": "en",
     "value": "Choose one answer about the event or person shown above. Each card keeps its own answers, so check whose feedback you are filling in."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-secondary-label",
-    "key": "guide.event.feedback.feedback-secondary.label",
+    "_id": "i18n-message-en-guide-feedback-feedback-secondary-label",
+    "key": "guide.feedback.feedback-secondary.label",
     "lang": "en",
     "value": "A second aspect of the experience"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-secondary-description",
-    "key": "guide.event.feedback.feedback-secondary.description",
+    "_id": "i18n-message-en-guide-feedback-feedback-secondary-description",
+    "key": "guide.feedback.feedback-secondary.description",
     "lang": "en",
     "value": "Choose one response to this card’s follow-up question. It is required independently of the overall answer and adds context to your feedback."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-traits-label",
-    "key": "guide.event.feedback.feedback-traits.label",
+    "_id": "i18n-message-en-guide-feedback-feedback-traits-label",
+    "key": "guide.feedback.feedback-traits.label",
     "lang": "en",
     "value": "The qualities you noticed"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-traits-description",
-    "key": "guide.event.feedback.feedback-traits.description",
+    "_id": "i18n-message-en-guide-feedback-feedback-traits-description",
+    "key": "guide.feedback.feedback-traits.description",
     "lang": "en",
     "value": "Select one to three traits that fit your experience. Tap a selected trait again to remove it; at least one is required before continuing."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-comment-label",
-    "key": "guide.event.feedback.feedback-comment.label",
+    "_id": "i18n-message-en-guide-feedback-feedback-comment-label",
+    "key": "guide.feedback.feedback-comment.label",
     "lang": "en",
     "value": "Optional event comment"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-feedback-comment-description",
-    "key": "guide.event.feedback.feedback-comment.description",
+    "_id": "i18n-message-en-guide-feedback-feedback-comment-description",
+    "key": "guide.feedback.feedback-comment.description",
     "lang": "en",
     "value": "Add up to 160 characters about the event. This field is optional and appears on the event card, so leaving it empty does not block the next step."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-form-navigation-label",
-    "key": "guide.event.feedback.form-navigation.label",
+    "_id": "i18n-message-en-guide-feedback-form-navigation-label",
+    "key": "guide.feedback.form-navigation.label",
     "lang": "en",
     "value": "Continue without submitting"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-form-navigation-description",
-    "key": "guide.event.feedback.form-navigation.description",
+    "_id": "i18n-message-en-guide-feedback-form-navigation-description",
+    "key": "guide.feedback.form-navigation.description",
     "lang": "en",
     "value": "The arrow opens the next card once required answers are complete. Your answers stay in this form; only Submit feedback on the overview sends them."
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-form-save-label",
-    "key": "guide.event.feedback.form-save.label",
+    "_id": "i18n-message-en-guide-feedback-form-save-label",
+    "key": "guide.feedback.form-save.label",
     "lang": "en",
     "value": "Submit all answers together"
   },
   {
-    "_id": "i18n-message-en-guide-event-feedback-form-save-description",
-    "key": "guide.event.feedback.form-save.description",
+    "_id": "i18n-message-en-guide-feedback-form-save-description",
+    "key": "guide.feedback.form-save.description",
     "lang": "en",
     "value": "Review the event and participant answers, then submit them together. Missing required answers block submission; use the previous arrow to return and correct them."
   },
@@ -35403,7 +35385,7 @@
     "_id": "i18n-message-en-guide-activities-rates-rating-details-description",
     "key": "guide.activities.rates.rating-details.description",
     "lang": "en",
-    "value": "The detailed rating belongs to the evaluated card domain. Dating, a pair, a campaign, a Work profile and service interest use their own criteria; completed-service feedback remains separate."
+    "value": "The detailed rating belongs to the evaluated card domain. Dating, a pair, a campaign, a Work profile and service interest use their own criteria; completed-feedback remains separate."
   },
   {
     "_id": "i18n-message-en-group-type-dating",
@@ -37428,74 +37410,74 @@
     "value": "No quotations assigned."
   },
   {
-    "_id": "i18n-message-en-service-feedback-title",
-    "key": "service.feedback.title",
+    "_id": "i18n-message-en-feedback-evaluation-title",
+    "key": "feedback.evaluation.title",
     "lang": "en",
-    "value": "Service feedback"
+    "value": "Feedback"
   },
   {
-    "_id": "i18n-message-en-service-feedback-pending",
-    "key": "service.feedback.pending",
+    "_id": "i18n-message-en-feedback-evaluation-pending",
+    "key": "feedback.evaluation.pending",
     "lang": "en",
     "value": "Pending"
   },
   {
-    "_id": "i18n-message-en-service-feedback-feedbacked",
-    "key": "service.feedback.feedbacked",
+    "_id": "i18n-message-en-feedback-evaluation-feedbacked",
+    "key": "feedback.evaluation.feedbacked",
     "lang": "en",
     "value": "Submitted"
   },
   {
-    "_id": "i18n-message-en-service-feedback-removed",
-    "key": "service.feedback.removed",
+    "_id": "i18n-message-en-feedback-evaluation-removed",
+    "key": "feedback.evaluation.removed",
     "lang": "en",
     "value": "Removed"
   },
   {
-    "_id": "i18n-message-en-service-feedback-received",
-    "key": "service.feedback.received",
+    "_id": "i18n-message-en-feedback-evaluation-received",
+    "key": "feedback.evaluation.received",
     "lang": "en",
     "value": "Received"
   },
   {
-    "_id": "i18n-message-en-service-feedback-empty",
-    "key": "service.feedback.empty",
+    "_id": "i18n-message-en-feedback-evaluation-empty",
+    "key": "feedback.evaluation.empty",
     "lang": "en",
-    "value": "No service feedback in this list."
+    "value": "No feedback in this list."
   },
   {
-    "_id": "i18n-message-en-service-feedback-view",
-    "key": "service.feedback.view",
+    "_id": "i18n-message-en-feedback-evaluation-view",
+    "key": "feedback.evaluation.view",
     "lang": "en",
     "value": "View feedback"
   },
   {
-    "_id": "i18n-message-en-service-feedback-failed",
-    "key": "service.feedback.failed",
+    "_id": "i18n-message-en-feedback-evaluation-failed",
+    "key": "feedback.evaluation.failed",
     "lang": "en",
     "value": "The feedback could not be loaded or saved. Please try again."
   },
   {
-    "_id": "i18n-message-en-service-feedback-comment",
-    "key": "service.feedback.comment",
+    "_id": "i18n-message-en-feedback-evaluation-comment",
+    "key": "feedback.evaluation.comment",
     "lang": "en",
     "value": "Your experience with the provider"
   },
   {
-    "_id": "i18n-message-en-service-feedback-statistics",
-    "key": "service.feedback.statistics",
+    "_id": "i18n-message-en-feedback-evaluation-statistics",
+    "key": "feedback.evaluation.statistics",
     "lang": "en",
     "value": "Provider feedback"
   },
   {
-    "_id": "i18n-message-en-service-feedback-count",
-    "key": "service.feedback.count",
+    "_id": "i18n-message-en-feedback-evaluation-count",
+    "key": "feedback.evaluation.count",
     "lang": "en",
     "value": "Reviews"
   },
   {
-    "_id": "i18n-message-en-service-feedback-average",
-    "key": "service.feedback.average",
+    "_id": "i18n-message-en-feedback-evaluation-average",
+    "key": "feedback.evaluation.average",
     "lang": "en",
     "value": "Overall rating"
   },
@@ -37524,14 +37506,14 @@
     "value": "Value for money"
   },
   {
-    "_id": "i18n-message-en-notification-kind-service-feedback-ready-message",
-    "key": "notification.kind.service-feedback-ready.message",
+    "_id": "i18n-message-en-notification-kind-feedback-evaluation-ready-message",
+    "key": "notification.kind.feedback-evaluation-ready.message",
     "lang": "en",
     "value": "The case is complete. You can now review the provider."
   },
   {
-    "_id": "i18n-message-en-notification-kind-service-feedback-submitted-message",
-    "key": "notification.kind.service-feedback-submitted.message",
+    "_id": "i18n-message-en-notification-kind-feedback-evaluation-submitted-message",
+    "key": "notification.kind.feedback-evaluation-submitted.message",
     "lang": "en",
     "value": "You received feedback about your service."
   },
@@ -39066,12 +39048,6 @@
     "value": "Az ellenőrző email elküldve. Erősítsd meg, majd folytasd itt."
   },
   {
-    "_id": "i18n-message-hu-feedback",
-    "key": "feedback",
-    "lang": "hu",
-    "value": "Visszajelzés"
-  },
-  {
     "_id": "i18n-message-hu-feedback-details",
     "key": "feedback.details",
     "lang": "hu",
@@ -39084,44 +39060,44 @@
     "value": "Az alkalmazásból beküldött visszajelzések."
   },
   {
-    "_id": "i18n-message-hu-event-feedback-confirm-remove-failure",
-    "key": "event.feedback.confirm.remove.failure",
+    "_id": "i18n-message-hu-feedback-confirm-remove-failure",
+    "key": "feedback.confirm.remove.failure",
     "lang": "hu",
     "value": "Nem sikerült eltávolítani ezt a visszajelzési elemet."
   },
   {
-    "_id": "i18n-message-hu-event-feedback-confirm-remove-message",
-    "key": "event.feedback.confirm.remove.message",
+    "_id": "i18n-message-hu-feedback-confirm-remove-message",
+    "key": "feedback.confirm.remove.message",
     "lang": "hu",
     "value": "Ez a visszajelzési elem visszajelzés nélkül az Eltávolítottak közé kerül."
   },
   {
-    "_id": "i18n-message-hu-event-feedback-confirm-remove-title",
-    "key": "event.feedback.confirm.remove.title",
+    "_id": "i18n-message-hu-feedback-confirm-remove-title",
+    "key": "feedback.confirm.remove.title",
     "lang": "hu",
     "value": "Visszajelzés eltávolítása?"
   },
   {
-    "_id": "i18n-message-hu-event-feedback-confirm-remove-warning",
-    "key": "event.feedback.confirm.remove.warning",
+    "_id": "i18n-message-hu-feedback-confirm-remove-warning",
+    "key": "feedback.confirm.remove.warning",
     "lang": "hu",
     "value": "Később visszaállíthatod az Eltávolítottak szűrőből."
   },
   {
-    "_id": "i18n-message-hu-event-feedback-confirm-restore-failure",
-    "key": "event.feedback.confirm.restore.failure",
+    "_id": "i18n-message-hu-feedback-confirm-restore-failure",
+    "key": "feedback.confirm.restore.failure",
     "lang": "hu",
     "value": "Nem sikerült visszaállítani ezt a visszajelzési elemet."
   },
   {
-    "_id": "i18n-message-hu-event-feedback-confirm-restore-message",
-    "key": "event.feedback.confirm.restore.message",
+    "_id": "i18n-message-hu-feedback-confirm-restore-message",
+    "key": "feedback.confirm.restore.message",
     "lang": "hu",
     "value": "Ez a visszajelzési elem visszakerül a Függő listába."
   },
   {
-    "_id": "i18n-message-hu-event-feedback-confirm-restore-title",
-    "key": "event.feedback.confirm.restore.title",
+    "_id": "i18n-message-hu-feedback-confirm-restore-title",
+    "key": "feedback.confirm.restore.title",
     "lang": "hu",
     "value": "Visszajelzés visszaállítása?"
   },
@@ -43068,8 +43044,8 @@
     "value": "Demo felhasználók előkészítése"
   },
   {
-    "_id": "i18n-message-hu-preparing-event-feedback",
-    "key": "preparing.event.feedback",
+    "_id": "i18n-message-hu-preparing-feedback",
+    "key": "preparing.feedback",
     "lang": "hu",
     "value": "Esemény-visszajelzések előkészítése"
   },
@@ -44328,8 +44304,8 @@
     "value": "Eseményfrissítések"
   },
   {
-    "_id": "i18n-message-hu-stats-event-feedback-submitted",
-    "key": "stats.event.feedback.submitted",
+    "_id": "i18n-message-hu-stats-feedback-submitted",
+    "key": "stats.feedback.submitted",
     "lang": "hu",
     "value": "Visszajelzések"
   },
@@ -46590,8 +46566,8 @@
     "value": "Energikus, bátor, spontán"
   },
   {
-    "_id": "i18n-message-hu-event-feedback",
-    "key": "event.feedback",
+    "_id": "i18n-message-hu-feedback",
+    "key": "feedback",
     "lang": "hu",
     "value": "Esemény-visszajelzés"
   },
@@ -47058,8 +47034,8 @@
     "value": "Összkép"
   },
   {
-    "_id": "i18n-message-hu-own-event-feedback",
-    "key": "own.event.feedback",
+    "_id": "i18n-message-hu-own-feedback",
+    "key": "own.feedback",
     "lang": "hu",
     "value": "Saját esemény visszajelzései"
   },
@@ -54004,18 +53980,6 @@
     "key": "notification.kind.event-checkout-basket-updated.message",
     "lang": "hu",
     "value": "{memberName} frissítette a(z) {eventTitle} foglalását. Ellenőrizd újra."
-  },
-  {
-    "_id": "i18n-message-hu-notification-kind-event-feedback-submitted-title",
-    "key": "notification.kind.event-feedback-submitted.title",
-    "lang": "hu",
-    "value": "Új esemény-visszajelzés"
-  },
-  {
-    "_id": "i18n-message-hu-notification-kind-event-feedback-submitted-message",
-    "key": "notification.kind.event-feedback-submitted.message",
-    "lang": "hu",
-    "value": "Visszajelzést kaptál erről: {eventTitle}."
   },
   {
     "_id": "i18n-message-hu-notification-kind-event-invitation-accepted-title",
@@ -62712,26 +62676,26 @@
     "value": "Esemény neve"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-event-feedback-filter-trigger-description",
-    "key": "guide.event.feedback.event.feedback.filter.trigger.description",
+    "_id": "i18n-message-hu-guide-feedback-feedback-filter-trigger-description",
+    "key": "guide.feedback.feedback.filter.trigger.description",
     "lang": "hu",
     "value": "Állapot szerint szűrheted a visszajelzéseket, így az átnézendő vagy már megválaszolt elemekre figyelhetsz. A választás módosítja az alábbi kártyákat."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-event-feedback-filter-trigger-label",
-    "key": "guide.event.feedback.event.feedback.filter.trigger.label",
+    "_id": "i18n-message-hu-guide-feedback-feedback-filter-trigger-label",
+    "key": "guide.feedback.feedback.filter.trigger.label",
     "lang": "hu",
     "value": "Visszajelzés-kategóriák"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-list-description",
-    "key": "guide.event.feedback.feedback.list.description",
+    "_id": "i18n-message-hu-guide-feedback-feedback-list-description",
+    "key": "guide.feedback.feedback.list.description",
     "lang": "hu",
     "value": "Nézd át a visszajelzési kártyákat és az állapotjelvényeket. Nyiss meg egy kártyát a válaszhoz vagy részletekhez; a szervezők az összegyűlt eredményeket is áttekinthetik."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-list-label",
-    "key": "guide.event.feedback.feedback.list.label",
+    "_id": "i18n-message-hu-guide-feedback-feedback-list-label",
+    "key": "guide.feedback.feedback.list.label",
     "lang": "hu",
     "value": "Esemény-visszajelzések"
   },
@@ -64260,50 +64224,50 @@
     "value": "Továbbléphetsz az esemény további szakaszaihoz vagy csoportjaihoz. A lista folytatása közben az aktuális eseménykontextus megmarad."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-detail-label",
-    "key": "guide.event.feedback.detail.feedback-detail.label",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-detail-label",
+    "key": "guide.feedback.detail.feedback-detail.label",
     "lang": "hu",
     "value": "Beküldött visszajelzés"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-detail-description",
-    "key": "guide.event.feedback.detail.feedback-detail.description",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-detail-description",
+    "key": "guide.feedback.detail.feedback-detail.description",
     "lang": "hu",
     "value": "Nézd át a beküldött válaszaidat és a hozzájuk tartozó eseménykontextust. A részletes nézet megmutatja, mi került rögzítésre, a válasz módosítása nélkül."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-answer-primary-label",
-    "key": "guide.event.feedback.detail.feedback-answer-primary.label",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-answer-primary-label",
+    "key": "guide.feedback.detail.feedback-answer-primary.label",
     "lang": "hu",
     "value": "Elsődleges válasz"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-answer-primary-description",
-    "key": "guide.event.feedback.detail.feedback-answer-primary.description",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-answer-primary-description",
+    "key": "guide.feedback.detail.feedback-answer-primary.description",
     "lang": "hu",
     "value": "Olvasd el a visszajelzési kérdéshez mentett fő választ. Ezzel ellenőrizheted az alapválaszt a további részletek előtt."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-answer-secondary-label",
-    "key": "guide.event.feedback.detail.feedback-answer-secondary.label",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-answer-secondary-label",
+    "key": "guide.feedback.detail.feedback-answer-secondary.label",
     "lang": "hu",
     "value": "Kiegészítő válasz"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-answer-secondary-description",
-    "key": "guide.event.feedback.detail.feedback-answer-secondary.description",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-answer-secondary-description",
+    "key": "guide.feedback.detail.feedback-answer-secondary.description",
     "lang": "hu",
     "value": "Nézd át a kérdéshez tartozó kiegészítő választ is. Ez az extra részlet pontosítja a szervezőhöz eljutó visszajelzést."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-detail-close-label",
-    "key": "guide.event.feedback.detail.feedback-detail-close.label",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-detail-close-label",
+    "key": "guide.feedback.detail.feedback-detail-close.label",
     "lang": "hu",
     "value": "Visszajelzés részleteinek bezárása"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-feedback-detail-close-description",
-    "key": "guide.event.feedback.detail.feedback-detail-close.description",
+    "_id": "i18n-message-hu-guide-feedback-detail-feedback-detail-close-description",
+    "key": "guide.feedback.detail.feedback-detail-close.description",
     "lang": "hu",
     "value": "A részletek áttekintése után visszatérhetsz az előző visszajelzési vagy eseményképernyőhöz. A guide bezárása nyitva hagyja a részleteket."
   },
@@ -64560,20 +64524,20 @@
     "value": "Nézd át az egyes szakaszok állapotát, résztvevőit és műveleteit, hogy megértsd a teljes esemény szerkezetét."
   },
   {
-    "_id": "i18n-message-hu-guide-context-event-feedback-detail-title",
-    "key": "guide.context.event.feedback.detail.title",
+    "_id": "i18n-message-hu-guide-context-feedback-detail-title",
+    "key": "guide.context.feedback.detail.title",
     "lang": "hu",
     "value": "Visszajelzés részletei"
   },
   {
-    "_id": "i18n-message-hu-guide-context-event-feedback-detail-summary",
-    "key": "guide.context.event.feedback.detail.summary",
+    "_id": "i18n-message-hu-guide-context-feedback-detail-summary",
+    "key": "guide.context.feedback.detail.summary",
     "lang": "hu",
     "value": "Eseményhez mentett válaszok áttekintése."
   },
   {
-    "_id": "i18n-message-hu-guide-context-event-feedback-detail-description",
-    "key": "guide.context.event.feedback.detail.description",
+    "_id": "i18n-message-hu-guide-context-feedback-detail-description",
+    "key": "guide.context.feedback.detail.description",
     "lang": "hu",
     "value": "Ellenőrizd az elsődleges és kiegészítő válaszokat, majd térj vissza a visszajelzéshez vagy az eseményhez."
   },
@@ -64662,38 +64626,38 @@
     "value": "A tranzakció menüjében megnyithatod vagy kezelheted az adott tételt. Az előzmények külön vannak a későbbi fizetésekhez mentett módoktól."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-badge-start-label",
-    "key": "guide.event.feedback.card-badge-start.label",
+    "_id": "i18n-message-hu-guide-feedback-card-badge-start-label",
+    "key": "guide.feedback.card-badge-start.label",
     "lang": "hu",
     "value": "Visszajelzés szerzője"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-badge-start-description",
-    "key": "guide.event.feedback.card-badge-start.description",
+    "_id": "i18n-message-hu-guide-feedback-card-badge-start-description",
+    "key": "guide.feedback.card-badge-start.description",
     "lang": "hu",
     "value": "Nyisd meg a bejegyzéshez tartozó profilt. Így látod, kinek a tapasztalatát foglalja össze a visszajelzés, mielőtt átnézed a részleteket."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-badge-end-label",
-    "key": "guide.event.feedback.card-badge-end.label",
+    "_id": "i18n-message-hu-guide-feedback-card-badge-end-label",
+    "key": "guide.feedback.card-badge-end.label",
     "lang": "hu",
     "value": "Visszajelzés állapota"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-badge-end-description",
-    "key": "guide.event.feedback.card-badge-end.description",
+    "_id": "i18n-message-hu-guide-feedback-card-badge-end-description",
+    "key": "guide.feedback.card-badge-end.description",
     "lang": "hu",
     "value": "Ellenőrizd a kártyán látható állapotot és eseményadatokat. A jelzésekből kiderül, mely visszajelzésekkel van még teendőd."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-label",
-    "key": "guide.event.feedback.card-actions.label",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-label",
+    "key": "guide.feedback.card-actions.label",
     "lang": "hu",
     "value": "Visszajelzés műveletei"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-description",
-    "key": "guide.event.feedback.card-actions.description",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-description",
+    "key": "guide.feedback.card-actions.description",
     "lang": "hu",
     "value": "A kártyamenüben találod az elérhető műveleteket. A lehetőségek attól függnek, hogy a visszajelzés függőben van, elküldted, vagy már nem érhető el."
   },
@@ -65142,14 +65106,14 @@
     "value": "Zárd be ezt a nézetet, hogy visszatérj a profillaphoz vagy az előző képernyőhöz. A benyomások előzménye ugyanonnan később is elérhető."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-close-label",
-    "key": "guide.event.feedback.detail.close.label",
+    "_id": "i18n-message-hu-guide-feedback-detail-close-label",
+    "key": "guide.feedback.detail.close.label",
     "lang": "hu",
     "value": "Visszajelzés részleteinek bezárása"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-detail-close-description",
-    "key": "guide.event.feedback.detail.close.description",
+    "_id": "i18n-message-hu-guide-feedback-detail-close-description",
+    "key": "guide.feedback.detail.close.description",
     "lang": "hu",
     "value": "Zárd be a mentett visszajelzés összegzését, hogy visszatérj a listához vagy az eseményhez. A rögzített válaszok az ablak bezárása után is megmaradnak."
   },
@@ -67848,26 +67812,26 @@
     "value": "A felirat elkülöníti a várakozó, letiltott vagy inaktív elemet a megerősítettől. Jóváhagyásra váró részvétel csak döntés után lesz elfogadott."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-pending-count-label",
-    "key": "guide.event.feedback.card-pending-count.label",
+    "_id": "i18n-message-hu-guide-feedback-card-pending-count-label",
+    "key": "guide.feedback.card-pending-count.label",
     "lang": "hu",
     "value": "Elintézendő kérelmek"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-pending-count-description",
-    "key": "guide.event.feedback.card-pending-count.description",
+    "_id": "i18n-message-hu-guide-feedback-card-pending-count-description",
+    "key": "guide.feedback.card-pending-count.description",
     "lang": "hu",
     "value": "A jelvény a kártyához tartozó függő kérelmek száma. Különbözik az elfogadott részvételtől vagy foglalt kapacitástól: a kérelem még nem biztos hely."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-status-label",
-    "key": "guide.event.feedback.card-status.label",
+    "_id": "i18n-message-hu-guide-feedback-card-status-label",
+    "key": "guide.feedback.card-status.label",
     "lang": "hu",
     "value": "Visszajelzés állapota"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-status-description",
-    "key": "guide.event.feedback.card-status.description",
+    "_id": "i18n-message-hu-guide-feedback-card-status-description",
+    "key": "guide.feedback.card-status.description",
     "lang": "hu",
     "value": "A Visszajelzett állapot beküldött válaszokat jelent. Az Eltávolított elrakott feladatot jelez. Az elérhető függő feladat még válaszra vár."
   },
@@ -67944,50 +67908,50 @@
     "value": "Megszünteti a részvételedet ebben a hozzárendelt erőforrásban. Megerősítés előtt nézd át a foglalási és fizetési következményeket."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-addorganizernote-label",
-    "key": "guide.event.feedback.card-actions.addOrganizerNote.label",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-addorganizernote-label",
+    "key": "guide.feedback.card-actions.addOrganizerNote.label",
     "lang": "hu",
     "value": "Szervezői emlékeztető"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-addorganizernote-description",
-    "key": "guide.event.feedback.card-actions.addOrganizerNote.description",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-addorganizernote-description",
+    "key": "guide.feedback.card-actions.addOrganizerNote.description",
     "lang": "hu",
     "value": "Saját megjegyzést rögzíthetsz a szervezőről későbbre. A jegyzetszerkesztő megnyitása nem módosítja a beküldött visszajelzést."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-editorganizernote-label",
-    "key": "guide.event.feedback.card-actions.editOrganizerNote.label",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-editorganizernote-label",
+    "key": "guide.feedback.card-actions.editOrganizerNote.label",
     "lang": "hu",
     "value": "Szervezői jegyzet módosítása"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-editorganizernote-description",
-    "key": "guide.event.feedback.card-actions.editOrganizerNote.description",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-editorganizernote-description",
+    "key": "guide.feedback.card-actions.editOrganizerNote.description",
     "lang": "hu",
     "value": "A szervezőről mentett saját megjegyzésedet módosítja. Ez külön kezelhető a már beküldött esemény-visszajelzéstől."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-removefeedback-label",
-    "key": "guide.event.feedback.card-actions.removeFeedback.label",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-removefeedback-label",
+    "key": "guide.feedback.card-actions.removeFeedback.label",
     "lang": "hu",
     "value": "Visszajelzési feladat elrakása"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-removefeedback-description",
-    "key": "guide.event.feedback.card-actions.removeFeedback.description",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-removefeedback-description",
+    "key": "guide.feedback.card-actions.removeFeedback.description",
     "lang": "hu",
     "value": "Az Eltávolítottak közé teszi ezt a visszajelzési feladatot, így nem marad a függő listán. Onnan visszaállítható."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-restorefeedback-label",
-    "key": "guide.event.feedback.card-actions.restoreFeedback.label",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-restorefeedback-label",
+    "key": "guide.feedback.card-actions.restoreFeedback.label",
     "lang": "hu",
     "value": "Visszajelzési feladat visszaállítása"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-card-actions-restorefeedback-description",
-    "key": "guide.event.feedback.card-actions.restoreFeedback.description",
+    "_id": "i18n-message-hu-guide-feedback-card-actions-restorefeedback-description",
+    "key": "guide.feedback.card-actions.restoreFeedback.description",
     "lang": "hu",
     "value": "Visszateszi az elrakott visszajelzési feladatot az elérhető listára. Nem hoz létre és nem küld be válaszokat."
   },
@@ -72396,86 +72360,86 @@
     "value": "Válaszd ki a rád illő testalkatot. Ez kötelező profilmező: amíg a választó üres, ez a rész hiányos marad."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-form-progress-label",
-    "key": "guide.event.feedback.form-progress.label",
+    "_id": "i18n-message-hu-guide-feedback-form-progress-label",
+    "key": "guide.feedback.form-progress.label",
     "lang": "hu",
     "value": "Kötelező válaszok ezen a kártyán"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-form-progress-description",
-    "key": "guide.event.feedback.form-progress.description",
+    "_id": "i18n-message-hu-guide-feedback-form-progress-description",
+    "key": "guide.feedback.form-progress.description",
     "lang": "hu",
     "value": "A számláló az esemény és a résztvevők kártyáin vezet végig. A piros jelzés az aktuális kártyán hiányzó kötelező válaszokat mutatja; ezeket pótold a továbblépéshez."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-primary-label",
-    "key": "guide.event.feedback.feedback-primary.label",
+    "_id": "i18n-message-hu-guide-feedback-feedback-primary-label",
+    "key": "guide.feedback.feedback-primary.label",
     "lang": "hu",
     "value": "Összbenyomásod"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-primary-description",
-    "key": "guide.event.feedback.feedback-primary.description",
+    "_id": "i18n-message-hu-guide-feedback-feedback-primary-description",
+    "key": "guide.feedback.feedback-primary.description",
     "lang": "hu",
     "value": "Válassz egy választ a fent látható eseményről vagy személyről. Minden kártyának külön válaszai vannak, ezért figyeld, kiről töltöd ki az értékelést."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-secondary-label",
-    "key": "guide.event.feedback.feedback-secondary.label",
+    "_id": "i18n-message-hu-guide-feedback-feedback-secondary-label",
+    "key": "guide.feedback.feedback-secondary.label",
     "lang": "hu",
     "value": "Az élmény egy másik szempontja"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-secondary-description",
-    "key": "guide.event.feedback.feedback-secondary.description",
+    "_id": "i18n-message-hu-guide-feedback-feedback-secondary-description",
+    "key": "guide.feedback.feedback-secondary.description",
     "lang": "hu",
     "value": "Válaszolj a kártya második kérdésére is. Ez az összbenyomástól függetlenül kötelező, és további hátteret ad az értékeléshez."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-traits-label",
-    "key": "guide.event.feedback.feedback-traits.label",
+    "_id": "i18n-message-hu-guide-feedback-feedback-traits-label",
+    "key": "guide.feedback.feedback-traits.label",
     "lang": "hu",
     "value": "Amit észrevettél"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-traits-description",
-    "key": "guide.event.feedback.feedback-traits.description",
+    "_id": "i18n-message-hu-guide-feedback-feedback-traits-description",
+    "key": "guide.feedback.feedback-traits.description",
     "lang": "hu",
     "value": "Válassz egy–három, a tapasztalatodra jellemző tulajdonságot. A kijelölt elemre újra kattintva törölheted a választást; legalább egy szükséges a továbblépéshez."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-comment-label",
-    "key": "guide.event.feedback.feedback-comment.label",
+    "_id": "i18n-message-hu-guide-feedback-feedback-comment-label",
+    "key": "guide.feedback.feedback-comment.label",
     "lang": "hu",
     "value": "Opcionális megjegyzés az eseményről"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-feedback-comment-description",
-    "key": "guide.event.feedback.feedback-comment.description",
+    "_id": "i18n-message-hu-guide-feedback-feedback-comment-description",
+    "key": "guide.feedback.feedback-comment.description",
     "lang": "hu",
     "value": "Legfeljebb 160 karakterben írhatod le a véleményed az eseményről. Ez csak az esemény kártyáján jelenik meg, és üresen is tovább lehet lépni."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-form-navigation-label",
-    "key": "guide.event.feedback.form-navigation.label",
+    "_id": "i18n-message-hu-guide-feedback-form-navigation-label",
+    "key": "guide.feedback.form-navigation.label",
     "lang": "hu",
     "value": "Továbblépés beküldés nélkül"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-form-navigation-description",
-    "key": "guide.event.feedback.form-navigation.description",
+    "_id": "i18n-message-hu-guide-feedback-form-navigation-description",
+    "key": "guide.feedback.form-navigation.description",
     "lang": "hu",
     "value": "A nyíl a kötelező válaszok kitöltése után a következő kártyát nyitja. A válaszok az űrlapon maradnak; csak az összesítő beküldés gombja küldi el őket."
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-form-save-label",
-    "key": "guide.event.feedback.form-save.label",
+    "_id": "i18n-message-hu-guide-feedback-form-save-label",
+    "key": "guide.feedback.form-save.label",
     "lang": "hu",
     "value": "Az összes válasz beküldése"
   },
   {
-    "_id": "i18n-message-hu-guide-event-feedback-form-save-description",
-    "key": "guide.event.feedback.form-save.description",
+    "_id": "i18n-message-hu-guide-feedback-form-save-description",
+    "key": "guide.feedback.form-save.description",
     "lang": "hu",
     "value": "Nézd át az eseményről és a résztvevőkről adott válaszokat, majd küldd be őket együtt. Hiányzó kötelező válasszal nem küldhetők be; javításhoz lépj vissza a nyíllal."
   },
@@ -74610,74 +74574,74 @@
     "value": "Nincs hozzárendelt árajánlat."
   },
   {
-    "_id": "i18n-message-hu-service-feedback-title",
-    "key": "service.feedback.title",
+    "_id": "i18n-message-hu-feedback-evaluation-title",
+    "key": "feedback.evaluation.title",
     "lang": "hu",
-    "value": "Szolgáltatói visszajelzés"
+    "value": "Visszajelzés"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-pending",
-    "key": "service.feedback.pending",
+    "_id": "i18n-message-hu-feedback-evaluation-pending",
+    "key": "feedback.evaluation.pending",
     "lang": "hu",
     "value": "Függőben"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-feedbacked",
-    "key": "service.feedback.feedbacked",
+    "_id": "i18n-message-hu-feedback-evaluation-feedbacked",
+    "key": "feedback.evaluation.feedbacked",
     "lang": "hu",
     "value": "Elküldött"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-removed",
-    "key": "service.feedback.removed",
+    "_id": "i18n-message-hu-feedback-evaluation-removed",
+    "key": "feedback.evaluation.removed",
     "lang": "hu",
     "value": "Eltávolított"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-received",
-    "key": "service.feedback.received",
+    "_id": "i18n-message-hu-feedback-evaluation-received",
+    "key": "feedback.evaluation.received",
     "lang": "hu",
     "value": "Kapott"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-empty",
-    "key": "service.feedback.empty",
+    "_id": "i18n-message-hu-feedback-evaluation-empty",
+    "key": "feedback.evaluation.empty",
     "lang": "hu",
     "value": "Nincs szolgáltatói visszajelzés ebben a listában."
   },
   {
-    "_id": "i18n-message-hu-service-feedback-view",
-    "key": "service.feedback.view",
+    "_id": "i18n-message-hu-feedback-evaluation-view",
+    "key": "feedback.evaluation.view",
     "lang": "hu",
     "value": "Visszajelzés megtekintése"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-failed",
-    "key": "service.feedback.failed",
+    "_id": "i18n-message-hu-feedback-evaluation-failed",
+    "key": "feedback.evaluation.failed",
     "lang": "hu",
     "value": "A visszajelzés nem tölthető be vagy nem menthető. Próbáld újra."
   },
   {
-    "_id": "i18n-message-hu-service-feedback-comment",
-    "key": "service.feedback.comment",
+    "_id": "i18n-message-hu-feedback-evaluation-comment",
+    "key": "feedback.evaluation.comment",
     "lang": "hu",
     "value": "Tapasztalatod a szolgáltatóval"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-statistics",
-    "key": "service.feedback.statistics",
+    "_id": "i18n-message-hu-feedback-evaluation-statistics",
+    "key": "feedback.evaluation.statistics",
     "lang": "hu",
     "value": "A szolgáltató értékelései"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-count",
-    "key": "service.feedback.count",
+    "_id": "i18n-message-hu-feedback-evaluation-count",
+    "key": "feedback.evaluation.count",
     "lang": "hu",
     "value": "Értékelések száma"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-average",
-    "key": "service.feedback.average",
+    "_id": "i18n-message-hu-feedback-evaluation-average",
+    "key": "feedback.evaluation.average",
     "lang": "hu",
     "value": "Átlagos értékelés"
   },
@@ -74706,14 +74670,14 @@
     "value": "Ár-érték arány"
   },
   {
-    "_id": "i18n-message-hu-notification-kind-service-feedback-ready-message",
-    "key": "notification.kind.service-feedback-ready.message",
+    "_id": "i18n-message-hu-notification-kind-feedback-evaluation-ready-message",
+    "key": "notification.kind.feedback-evaluation-ready.message",
     "lang": "hu",
     "value": "Az ügy lezárult. Most visszajelzést adhatsz a szolgáltatóról."
   },
   {
-    "_id": "i18n-message-hu-notification-kind-service-feedback-submitted-message",
-    "key": "notification.kind.service-feedback-submitted.message",
+    "_id": "i18n-message-hu-notification-kind-feedback-evaluation-submitted-message",
+    "key": "notification.kind.feedback-evaluation-submitted.message",
     "lang": "hu",
     "value": "Visszajelzést kaptál a szolgáltatásodról."
   },
@@ -79776,84 +79740,6 @@
     "value": "Kérdezz a szervezőtől"
   },
   {
-    "_id": "i18n-message-en-guide-community-service-feedback-close-description",
-    "key": "guide.community.service-feedback.close.description",
-    "lang": "en",
-    "value": "Close the feedback form without submitting."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-close-label",
-    "key": "guide.community.service-feedback.close.label",
-    "lang": "en",
-    "value": "Close"
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-communication-descript",
-    "key": "guide.community.service-feedback.service-feedback-communication.description",
-    "lang": "en",
-    "value": "Choose how clear and useful communication with the provider was during the work. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-communication-label",
-    "key": "guide.community.service-feedback.service-feedback-communication.label",
-    "lang": "en",
-    "value": "Communication"
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-quality-description",
-    "key": "guide.community.service-feedback.service-feedback-quality.description",
-    "lang": "en",
-    "value": "Choose the labelled answer that matches the quality of the completed work you experienced. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-quality-label",
-    "key": "guide.community.service-feedback.service-feedback-quality.label",
-    "lang": "en",
-    "value": "Quality of the work"
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-reliability-descriptio",
-    "key": "guide.community.service-feedback.service-feedback-reliability.description",
-    "lang": "en",
-    "value": "Choose how reliably the provider kept the agreed commitments. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-reliability-label",
-    "key": "guide.community.service-feedback.service-feedback-reliability.label",
-    "lang": "en",
-    "value": "Reliability"
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-value-description",
-    "key": "guide.community.service-feedback.service-feedback-value.description",
-    "lang": "en",
-    "value": "Choose how the delivered work compared with the agreed price. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-value-label",
-    "key": "guide.community.service-feedback.service-feedback-value.label",
-    "lang": "en",
-    "value": "Value for money"
-  },
-  {
-    "_id": "i18n-message-en-guide-context-community-service-feedback-description",
-    "key": "guide.context.community.service-feedback.description",
-    "lang": "en",
-    "value": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected."
-  },
-  {
-    "_id": "i18n-message-en-guide-context-community-service-feedback-summary",
-    "key": "guide.context.community.service-feedback.summary",
-    "lang": "en",
-    "value": "Review the service image and choose an answer for each question."
-  },
-  {
-    "_id": "i18n-message-en-guide-context-community-service-feedback-title",
-    "key": "guide.context.community.service-feedback.title",
-    "lang": "en",
-    "value": "Service feedback"
-  },
-  {
     "_id": "i18n-message-en-guide-context-profile-integration-access-description",
     "key": "guide.context.profile.integration-access.description",
     "lang": "en",
@@ -80064,202 +79950,124 @@
     "value": "The connection change failed. Please retry."
   },
   {
-    "_id": "i18n-message-en-service-feedback-communication-10",
-    "key": "service.feedback.communication.10",
+    "_id": "i18n-message-en-feedback-evaluation-communication-10",
+    "key": "feedback.evaluation.communication.10",
     "lang": "en",
     "value": "Excellent"
   },
   {
-    "_id": "i18n-message-en-service-feedback-communication-2",
-    "key": "service.feedback.communication.2",
+    "_id": "i18n-message-en-feedback-evaluation-communication-2",
+    "key": "feedback.evaluation.communication.2",
     "lang": "en",
     "value": "Very difficult"
   },
   {
-    "_id": "i18n-message-en-service-feedback-communication-4",
-    "key": "service.feedback.communication.4",
+    "_id": "i18n-message-en-feedback-evaluation-communication-4",
+    "key": "feedback.evaluation.communication.4",
     "lang": "en",
     "value": "Difficult"
   },
   {
-    "_id": "i18n-message-en-service-feedback-communication-6",
-    "key": "service.feedback.communication.6",
+    "_id": "i18n-message-en-feedback-evaluation-communication-6",
+    "key": "feedback.evaluation.communication.6",
     "lang": "en",
     "value": "Adequate"
   },
   {
-    "_id": "i18n-message-en-service-feedback-communication-8",
-    "key": "service.feedback.communication.8",
+    "_id": "i18n-message-en-feedback-evaluation-communication-8",
+    "key": "feedback.evaluation.communication.8",
     "lang": "en",
     "value": "Clear"
   },
   {
-    "_id": "i18n-message-en-service-feedback-quality-10",
-    "key": "service.feedback.quality.10",
+    "_id": "i18n-message-en-feedback-evaluation-quality-10",
+    "key": "feedback.evaluation.quality.10",
     "lang": "en",
     "value": "Excellent"
   },
   {
-    "_id": "i18n-message-en-service-feedback-quality-2",
-    "key": "service.feedback.quality.2",
+    "_id": "i18n-message-en-feedback-evaluation-quality-2",
+    "key": "feedback.evaluation.quality.2",
     "lang": "en",
     "value": "Very poor"
   },
   {
-    "_id": "i18n-message-en-service-feedback-quality-4",
-    "key": "service.feedback.quality.4",
+    "_id": "i18n-message-en-feedback-evaluation-quality-4",
+    "key": "feedback.evaluation.quality.4",
     "lang": "en",
     "value": "Poor"
   },
   {
-    "_id": "i18n-message-en-service-feedback-quality-6",
-    "key": "service.feedback.quality.6",
+    "_id": "i18n-message-en-feedback-evaluation-quality-6",
+    "key": "feedback.evaluation.quality.6",
     "lang": "en",
     "value": "Acceptable"
   },
   {
-    "_id": "i18n-message-en-service-feedback-quality-8",
-    "key": "service.feedback.quality.8",
+    "_id": "i18n-message-en-feedback-evaluation-quality-8",
+    "key": "feedback.evaluation.quality.8",
     "lang": "en",
     "value": "Good"
   },
   {
-    "_id": "i18n-message-en-service-feedback-reliability-10",
-    "key": "service.feedback.reliability.10",
+    "_id": "i18n-message-en-feedback-evaluation-reliability-10",
+    "key": "feedback.evaluation.reliability.10",
     "lang": "en",
     "value": "Consistently reliable"
   },
   {
-    "_id": "i18n-message-en-service-feedback-reliability-2",
-    "key": "service.feedback.reliability.2",
+    "_id": "i18n-message-en-feedback-evaluation-reliability-2",
+    "key": "feedback.evaluation.reliability.2",
     "lang": "en",
     "value": "Very unreliable"
   },
   {
-    "_id": "i18n-message-en-service-feedback-reliability-4",
-    "key": "service.feedback.reliability.4",
+    "_id": "i18n-message-en-feedback-evaluation-reliability-4",
+    "key": "feedback.evaluation.reliability.4",
     "lang": "en",
     "value": "Often unreliable"
   },
   {
-    "_id": "i18n-message-en-service-feedback-reliability-6",
-    "key": "service.feedback.reliability.6",
+    "_id": "i18n-message-en-feedback-evaluation-reliability-6",
+    "key": "feedback.evaluation.reliability.6",
     "lang": "en",
     "value": "Mixed experience"
   },
   {
-    "_id": "i18n-message-en-service-feedback-reliability-8",
-    "key": "service.feedback.reliability.8",
+    "_id": "i18n-message-en-feedback-evaluation-reliability-8",
+    "key": "feedback.evaluation.reliability.8",
     "lang": "en",
     "value": "Mostly reliable"
   },
   {
-    "_id": "i18n-message-en-service-feedback-value-10",
-    "key": "service.feedback.value.10",
+    "_id": "i18n-message-en-feedback-evaluation-value-10",
+    "key": "feedback.evaluation.value.10",
     "lang": "en",
     "value": "Excellent value"
   },
   {
-    "_id": "i18n-message-en-service-feedback-value-2",
-    "key": "service.feedback.value.2",
+    "_id": "i18n-message-en-feedback-evaluation-value-2",
+    "key": "feedback.evaluation.value.2",
     "lang": "en",
     "value": "Very poor value"
   },
   {
-    "_id": "i18n-message-en-service-feedback-value-4",
-    "key": "service.feedback.value.4",
+    "_id": "i18n-message-en-feedback-evaluation-value-4",
+    "key": "feedback.evaluation.value.4",
     "lang": "en",
     "value": "Poor value"
   },
   {
-    "_id": "i18n-message-en-service-feedback-value-6",
-    "key": "service.feedback.value.6",
+    "_id": "i18n-message-en-feedback-evaluation-value-6",
+    "key": "feedback.evaluation.value.6",
     "lang": "en",
     "value": "Fair value"
   },
   {
-    "_id": "i18n-message-en-service-feedback-value-8",
-    "key": "service.feedback.value.8",
+    "_id": "i18n-message-en-feedback-evaluation-value-8",
+    "key": "feedback.evaluation.value.8",
     "lang": "en",
     "value": "Good value"
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-close-description",
-    "key": "guide.community.service-feedback.close.description",
-    "lang": "hu",
-    "value": "Zárd be a visszajelzést elküldés nélkül."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-close-label",
-    "key": "guide.community.service-feedback.close.label",
-    "lang": "hu",
-    "value": "Bezárás"
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-communication-descript",
-    "key": "guide.community.service-feedback.service-feedback-communication.description",
-    "lang": "hu",
-    "value": "Válaszd ki, mennyire volt érthető és használható a szolgáltatóval való kommunikáció a munka során. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-communication-label",
-    "key": "guide.community.service-feedback.service-feedback-communication.label",
-    "lang": "hu",
-    "value": "Kommunikáció"
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-quality-description",
-    "key": "guide.community.service-feedback.service-feedback-quality.description",
-    "lang": "hu",
-    "value": "Válaszd azt a feliratos választ, amely az általad tapasztalt elvégzett munka minőségét írja le. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-quality-label",
-    "key": "guide.community.service-feedback.service-feedback-quality.label",
-    "lang": "hu",
-    "value": "A munka minősége"
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-reliability-descriptio",
-    "key": "guide.community.service-feedback.service-feedback-reliability.description",
-    "lang": "hu",
-    "value": "Válaszd ki, mennyire tartotta be a szolgáltató a megbeszélt vállalásokat. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-reliability-label",
-    "key": "guide.community.service-feedback.service-feedback-reliability.label",
-    "lang": "hu",
-    "value": "Megbízhatóság"
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-value-description",
-    "key": "guide.community.service-feedback.service-feedback-value.description",
-    "lang": "hu",
-    "value": "Válaszd ki, hogyan viszonyult az elvégzett munka a megbeszélt árhoz. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-value-label",
-    "key": "guide.community.service-feedback.service-feedback-value.label",
-    "lang": "hu",
-    "value": "Ár-érték arány"
-  },
-  {
-    "_id": "i18n-message-hu-guide-context-community-service-feedback-description",
-    "key": "guide.context.community.service-feedback.description",
-    "lang": "hu",
-    "value": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk."
-  },
-  {
-    "_id": "i18n-message-hu-guide-context-community-service-feedback-summary",
-    "key": "guide.context.community.service-feedback.summary",
-    "lang": "hu",
-    "value": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ."
-  },
-  {
-    "_id": "i18n-message-hu-guide-context-community-service-feedback-title",
-    "key": "guide.context.community.service-feedback.title",
-    "lang": "hu",
-    "value": "Szolgáltatói visszajelzés"
   },
   {
     "_id": "i18n-message-hu-guide-context-profile-integration-access-description",
@@ -80472,148 +80280,124 @@
     "value": "A kapcsolat módosítása nem sikerült. Próbáld újra."
   },
   {
-    "_id": "i18n-message-hu-service-feedback-communication-10",
-    "key": "service.feedback.communication.10",
+    "_id": "i18n-message-hu-feedback-evaluation-communication-10",
+    "key": "feedback.evaluation.communication.10",
     "lang": "hu",
     "value": "Kiváló"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-communication-2",
-    "key": "service.feedback.communication.2",
+    "_id": "i18n-message-hu-feedback-evaluation-communication-2",
+    "key": "feedback.evaluation.communication.2",
     "lang": "hu",
     "value": "Nagyon nehézkes"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-communication-4",
-    "key": "service.feedback.communication.4",
+    "_id": "i18n-message-hu-feedback-evaluation-communication-4",
+    "key": "feedback.evaluation.communication.4",
     "lang": "hu",
     "value": "Nehézkes"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-communication-6",
-    "key": "service.feedback.communication.6",
+    "_id": "i18n-message-hu-feedback-evaluation-communication-6",
+    "key": "feedback.evaluation.communication.6",
     "lang": "hu",
     "value": "Megfelelő"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-communication-8",
-    "key": "service.feedback.communication.8",
+    "_id": "i18n-message-hu-feedback-evaluation-communication-8",
+    "key": "feedback.evaluation.communication.8",
     "lang": "hu",
     "value": "Egyértelmű"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-quality-10",
-    "key": "service.feedback.quality.10",
+    "_id": "i18n-message-hu-feedback-evaluation-quality-10",
+    "key": "feedback.evaluation.quality.10",
     "lang": "hu",
     "value": "Kiváló"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-quality-2",
-    "key": "service.feedback.quality.2",
+    "_id": "i18n-message-hu-feedback-evaluation-quality-2",
+    "key": "feedback.evaluation.quality.2",
     "lang": "hu",
     "value": "Nagyon gyenge"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-quality-4",
-    "key": "service.feedback.quality.4",
+    "_id": "i18n-message-hu-feedback-evaluation-quality-4",
+    "key": "feedback.evaluation.quality.4",
     "lang": "hu",
     "value": "Gyenge"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-quality-6",
-    "key": "service.feedback.quality.6",
+    "_id": "i18n-message-hu-feedback-evaluation-quality-6",
+    "key": "feedback.evaluation.quality.6",
     "lang": "hu",
     "value": "Elfogadható"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-quality-8",
-    "key": "service.feedback.quality.8",
+    "_id": "i18n-message-hu-feedback-evaluation-quality-8",
+    "key": "feedback.evaluation.quality.8",
     "lang": "hu",
     "value": "Jó"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-reliability-10",
-    "key": "service.feedback.reliability.10",
+    "_id": "i18n-message-hu-feedback-evaluation-reliability-10",
+    "key": "feedback.evaluation.reliability.10",
     "lang": "hu",
     "value": "Végig megbízható"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-reliability-2",
-    "key": "service.feedback.reliability.2",
+    "_id": "i18n-message-hu-feedback-evaluation-reliability-2",
+    "key": "feedback.evaluation.reliability.2",
     "lang": "hu",
     "value": "Megbízhatatlan"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-reliability-4",
-    "key": "service.feedback.reliability.4",
+    "_id": "i18n-message-hu-feedback-evaluation-reliability-4",
+    "key": "feedback.evaluation.reliability.4",
     "lang": "hu",
     "value": "Gyakran bizonytalan"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-reliability-6",
-    "key": "service.feedback.reliability.6",
+    "_id": "i18n-message-hu-feedback-evaluation-reliability-6",
+    "key": "feedback.evaluation.reliability.6",
     "lang": "hu",
     "value": "Vegyes tapasztalat"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-reliability-8",
-    "key": "service.feedback.reliability.8",
+    "_id": "i18n-message-hu-feedback-evaluation-reliability-8",
+    "key": "feedback.evaluation.reliability.8",
     "lang": "hu",
     "value": "Többnyire megbízható"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-value-10",
-    "key": "service.feedback.value.10",
+    "_id": "i18n-message-hu-feedback-evaluation-value-10",
+    "key": "feedback.evaluation.value.10",
     "lang": "hu",
     "value": "Kiváló arány"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-value-2",
-    "key": "service.feedback.value.2",
+    "_id": "i18n-message-hu-feedback-evaluation-value-2",
+    "key": "feedback.evaluation.value.2",
     "lang": "hu",
     "value": "Nagyon rossz arány"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-value-4",
-    "key": "service.feedback.value.4",
+    "_id": "i18n-message-hu-feedback-evaluation-value-4",
+    "key": "feedback.evaluation.value.4",
     "lang": "hu",
     "value": "Rossz arány"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-value-6",
-    "key": "service.feedback.value.6",
+    "_id": "i18n-message-hu-feedback-evaluation-value-6",
+    "key": "feedback.evaluation.value.6",
     "lang": "hu",
     "value": "Elfogadható arány"
   },
   {
-    "_id": "i18n-message-hu-service-feedback-value-8",
-    "key": "service.feedback.value.8",
+    "_id": "i18n-message-hu-feedback-evaluation-value-8",
+    "key": "feedback.evaluation.value.8",
     "lang": "hu",
     "value": "Jó arány"
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-form-save-description",
-    "key": "guide.community.service-feedback.form-save.description",
-    "lang": "en",
-    "value": "Review all selected answers before submitting. Submitted feedback is read-only."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-form-save-label",
-    "key": "guide.community.service-feedback.form-save.label",
-    "lang": "en",
-    "value": "Overview"
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-form-save-description",
-    "key": "guide.community.service-feedback.form-save.description",
-    "lang": "hu",
-    "value": "Elküldés előtt nézd át a kiválasztott válaszokat. Az elküldött visszajelzés már csak megtekinthető."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-form-save-label",
-    "key": "guide.community.service-feedback.form-save.label",
-    "lang": "hu",
-    "value": "Összegzés"
   },
   {
     "_id": "i18n-message-en-chat-call-follow-speakers",
@@ -86847,7 +86631,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-complete-description",
     "key": "guide.community.cases.card-actions:complete.description",
     "lang": "en",
-    "value": "Mark the case completed when work is finished. Completion also schedules service feedback; review the task board and confirm the selected case."
+    "value": "Mark the case completed when work is finished. Completion also schedules feedback; review the task board and confirm the selected case."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-complete-label",
@@ -87202,30 +86986,6 @@
     "key": "guide.community.service.editor.close.label",
     "lang": "en",
     "value": "Close"
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-form-navigation-description",
-    "key": "guide.community.service-feedback.form-navigation.description",
-    "lang": "en",
-    "value": "Use the arrows to move to the summary or back to your answers before submitting."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-form-navigation-label",
-    "key": "guide.community.service-feedback.form-navigation.label",
-    "lang": "en",
-    "value": "Review answers"
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-form-progress-description",
-    "key": "guide.community.service-feedback.form-progress.description",
-    "lang": "en",
-    "value": "The counter shows this questionnaire’s current page. Review the service image and your answers."
-  },
-  {
-    "_id": "i18n-message-en-guide-community-service-feedback-form-progress-label",
-    "key": "guide.community.service-feedback.form-progress.label",
-    "lang": "en",
-    "value": "Feedback pages"
   },
   {
     "_id": "i18n-message-en-guide-community-services-basket-description",
@@ -88638,30 +88398,6 @@
     "value": "Bezárás"
   },
   {
-    "_id": "i18n-message-hu-guide-community-service-feedback-form-navigation-description",
-    "key": "guide.community.service-feedback.form-navigation.description",
-    "lang": "hu",
-    "value": "A nyilakkal lépj az összegzéshez, vagy térj vissza a válaszokhoz elküldés előtt."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-form-navigation-label",
-    "key": "guide.community.service-feedback.form-navigation.label",
-    "lang": "hu",
-    "value": "Válaszok áttekintése"
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-form-progress-description",
-    "key": "guide.community.service-feedback.form-progress.description",
-    "lang": "hu",
-    "value": "A számláló a kérdőív aktuális oldalát jelzi. Ellenőrizd a szolgáltatás képét és a válaszaidat."
-  },
-  {
-    "_id": "i18n-message-hu-guide-community-service-feedback-form-progress-label",
-    "key": "guide.community.service-feedback.form-progress.label",
-    "lang": "hu",
-    "value": "A visszajelzés oldalai"
-  },
-  {
     "_id": "i18n-message-hu-guide-community-services-basket-description",
     "key": "guide.community.services.basket.description",
     "lang": "hu",
@@ -89667,7 +89403,7 @@
     "_id": "i18n-message-en-case-confirm-complete",
     "key": "case.confirm.complete",
     "lang": "en",
-    "value": "The case will be marked completed and service feedback will be scheduled."
+    "value": "The case will be marked completed and feedback will be scheduled."
   },
   {
     "_id": "i18n-message-en-case-confirm-decline",
@@ -91486,5 +91222,245 @@
     "key": "admin.jobs.rule.admin-signals.description",
     "lang": "hu",
     "value": "Az adatbázis statisztikai változásait legfeljebb óránként küldi el. A sikertelen küldést külön újrapróbáló worker kezeli."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-error-registration-required",
+    "key": "operator.leaderboard.error.registration.required",
+    "lang": "en",
+    "value": "Register this node to view the network leaderboard."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-error-registration-required",
+    "key": "operator.leaderboard.error.registration.required",
+    "lang": "hu",
+    "value": "A hálózati ranglista megtekintéséhez regisztráld ezt a csomópontot."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-feedback-evaluation-description",
+    "key": "guide.context.feedback.evaluation.description",
+    "lang": "en",
+    "value": "Use the same picture, answer blocks and overview as feedback. No written comment is collected."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-feedback-evaluation-summary",
+    "key": "guide.context.feedback.evaluation.summary",
+    "lang": "en",
+    "value": "Review the service image and choose an answer for each question."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-feedback-evaluation-title",
+    "key": "guide.context.feedback.evaluation.title",
+    "lang": "en",
+    "value": "Feedback"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-close-description",
+    "key": "guide.feedback.evaluation.close.description",
+    "lang": "en",
+    "value": "Close the feedback form without submitting."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-close-label",
+    "key": "guide.feedback.evaluation.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-communication-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-communication.description",
+    "lang": "en",
+    "value": "Choose how clear and useful communication with the provider was during the work. Select one labelled answer for each question."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-communication-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-communication.label",
+    "lang": "en",
+    "value": "Communication"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-quality-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-quality.description",
+    "lang": "en",
+    "value": "Choose the labelled answer that matches the quality of the completed work you experienced. Select one labelled answer for each question."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-quality-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-quality.label",
+    "lang": "en",
+    "value": "Quality of the work"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-reliability-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-reliability.description",
+    "lang": "en",
+    "value": "Choose how reliably the provider kept the agreed commitments. Select one labelled answer for each question."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-reliability-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-reliability.label",
+    "lang": "en",
+    "value": "Reliability"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-value-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-value.description",
+    "lang": "en",
+    "value": "Choose how the delivered work compared with the agreed price. Select one labelled answer for each question."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-feedback-evaluation-value-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-value.label",
+    "lang": "en",
+    "value": "Value for money"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-form-navigation-description",
+    "key": "guide.feedback.evaluation.form-navigation.description",
+    "lang": "en",
+    "value": "Use the arrows to move to the summary or back to your answers before submitting."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-form-navigation-label",
+    "key": "guide.feedback.evaluation.form-navigation.label",
+    "lang": "en",
+    "value": "Review answers"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-form-progress-description",
+    "key": "guide.feedback.evaluation.form-progress.description",
+    "lang": "en",
+    "value": "The counter shows this questionnaire’s current page. Review the service image and your answers."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-form-progress-label",
+    "key": "guide.feedback.evaluation.form-progress.label",
+    "lang": "en",
+    "value": "Feedback pages"
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-form-save-description",
+    "key": "guide.feedback.evaluation.form-save.description",
+    "lang": "en",
+    "value": "Review all selected answers before submitting. Submitted feedback is read-only."
+  },
+  {
+    "_id": "i18n-message-en-guide-feedback-evaluation-form-save-label",
+    "key": "guide.feedback.evaluation.form-save.label",
+    "lang": "en",
+    "value": "Overview"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-feedback-evaluation-description",
+    "key": "guide.context.feedback.evaluation.description",
+    "lang": "hu",
+    "value": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-feedback-evaluation-summary",
+    "key": "guide.context.feedback.evaluation.summary",
+    "lang": "hu",
+    "value": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-feedback-evaluation-title",
+    "key": "guide.context.feedback.evaluation.title",
+    "lang": "hu",
+    "value": "Visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-close-description",
+    "key": "guide.feedback.evaluation.close.description",
+    "lang": "hu",
+    "value": "Zárd be a visszajelzést elküldés nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-close-label",
+    "key": "guide.feedback.evaluation.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-communication-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-communication.description",
+    "lang": "hu",
+    "value": "Válaszd ki, mennyire volt érthető és használható a szolgáltatóval való kommunikáció a munka során. Kérdésenként egy feliratos válasz jelölhető."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-communication-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-communication.label",
+    "lang": "hu",
+    "value": "Kommunikáció"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-quality-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-quality.description",
+    "lang": "hu",
+    "value": "Válaszd azt a feliratos választ, amely az általad tapasztalt elvégzett munka minőségét írja le. Kérdésenként egy feliratos válasz jelölhető."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-quality-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-quality.label",
+    "lang": "hu",
+    "value": "A munka minősége"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-reliability-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-reliability.description",
+    "lang": "hu",
+    "value": "Válaszd ki, mennyire tartotta be a szolgáltató a megbeszélt vállalásokat. Kérdésenként egy feliratos válasz jelölhető."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-reliability-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-reliability.label",
+    "lang": "hu",
+    "value": "Megbízhatóság"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-value-description",
+    "key": "guide.feedback.evaluation.feedback-evaluation-value.description",
+    "lang": "hu",
+    "value": "Válaszd ki, hogyan viszonyult az elvégzett munka a megbeszélt árhoz. Kérdésenként egy feliratos válasz jelölhető."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-feedback-evaluation-value-label",
+    "key": "guide.feedback.evaluation.feedback-evaluation-value.label",
+    "lang": "hu",
+    "value": "Ár-érték arány"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-form-navigation-description",
+    "key": "guide.feedback.evaluation.form-navigation.description",
+    "lang": "hu",
+    "value": "A nyilakkal lépj az összegzéshez, vagy térj vissza a válaszokhoz elküldés előtt."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-form-navigation-label",
+    "key": "guide.feedback.evaluation.form-navigation.label",
+    "lang": "hu",
+    "value": "Válaszok áttekintése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-form-progress-description",
+    "key": "guide.feedback.evaluation.form-progress.description",
+    "lang": "hu",
+    "value": "A számláló a kérdőív aktuális oldalát jelzi. Ellenőrizd a szolgáltatás képét és a válaszaidat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-form-progress-label",
+    "key": "guide.feedback.evaluation.form-progress.label",
+    "lang": "hu",
+    "value": "A visszajelzés oldalai"
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-form-save-description",
+    "key": "guide.feedback.evaluation.form-save.description",
+    "lang": "hu",
+    "value": "Elküldés előtt nézd át a kiválasztott válaszokat. Az elküldött visszajelzés már csak megtekinthető."
+  },
+  {
+    "_id": "i18n-message-hu-guide-feedback-evaluation-form-save-label",
+    "key": "guide.feedback.evaluation.form-save.label",
+    "lang": "hu",
+    "value": "Összegzés"
   }
 ]

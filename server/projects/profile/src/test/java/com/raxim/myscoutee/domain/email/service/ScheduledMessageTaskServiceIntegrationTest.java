@@ -420,8 +420,8 @@ class ScheduledMessageTaskServiceIntegrationTest {
             return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.SupportMessages.class);
         }
         @Bean
-        com.raxim.myscoutee.domain.community.service.ServiceFeedbackService serviceFeedback() {
-            return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.service.ServiceFeedbackService.class);
+        com.raxim.myscoutee.domain.feedback.service.FeedbackEvaluationService feedbackEvaluation() {
+            return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.feedback.service.FeedbackEvaluationService.class);
         }
         @Bean
         tools.jackson.databind.ObjectMapper objectMapper() {

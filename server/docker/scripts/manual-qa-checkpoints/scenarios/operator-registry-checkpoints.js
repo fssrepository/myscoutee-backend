@@ -50,7 +50,7 @@
       add(d.creatorUserId, 'host', d.createdDate, d.sourceId || d._id));
     Q.collection('assetRequests').find({ status: 'accepted', booking: { $ne: null } },
       { userId: 1, requestedAtIso: 1 }).forEach(d => add(d.userId, 'book', d.requestedAtIso, d._id));
-    Q.collection('eventFeedbackStates').find({ removed: { $ne: true } },
+    Q.collection('feedbackStates').find({ removed: { $ne: true } },
       { viewerUserId: 1, eventId: 1, submittedAtIso: 1 }).forEach(d => {
       if (attendance.has(JSON.stringify([d.eventId, d.viewerUserId]))) {
         add(d.viewerUserId, 'verified-attendance', d.submittedAtIso, d.eventId);

@@ -51,7 +51,7 @@ import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.api.EventHomeReads.Event;
 import static com.raxim.myscoutee.domain.events.api.EventOwnership.Event.STATUS_ACTIVE;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
-import com.raxim.myscoutee.domain.events.api.FeedbackDirectory.Answer;
+import com.raxim.myscoutee.domain.feedback.api.FeedbackDirectory.Answer;
 import com.raxim.myscoutee.domain.accounts.document.UserFilterPreferences;
 import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
@@ -69,7 +69,7 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.ProfileExtByIdResponseDt
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserNotificationDeviceDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventCountersDto;
-import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventFeedbackCountersDto;
+import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserFeedbackCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserGameFilterPreferencesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserImpressionsDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserImpressionsSectionDto;
@@ -91,7 +91,7 @@ import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto
 import com.raxim.myscoutee.common.dto.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.domain.events.api.EventHomeReads;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
-import com.raxim.myscoutee.domain.events.api.FeedbackDirectory;
+import com.raxim.myscoutee.domain.feedback.api.FeedbackDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
@@ -108,7 +108,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
     private static final Set<String> HARD_HIDDEN_PROFILE_STATUSES = Set.of("blocked", "inactive", "deleted", PROFILE_STATUS_ONBOARDING);
-    private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
+    private static final long FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
     private static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
@@ -221,7 +221,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final RatingDirectory userRatesRepository;
     private final EventHomeReads activityEventsRepository;
     private final MemberDirectory activityMembersRepository;
-    private final FeedbackDirectory eventFeedbackAnswersRepository;
+    private final FeedbackDirectory feedbackAnswersRepository;
     private final UserActivityScheduling scheduledMessageTaskService;
     private final UserAffinityScores absoluteAffinityService;
     private final UserAffinityChanges affinityRecomputeTaskService;
@@ -274,7 +274,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             RatingDirectory userRatesRepository,
             EventHomeReads activityEventsRepository,
             MemberDirectory activityMembersRepository,
-            FeedbackDirectory eventFeedbackAnswersRepository,
+            FeedbackDirectory feedbackAnswersRepository,
             UserActivityScheduling scheduledMessageTaskService,
             UserAffinityScores absoluteAffinityService,
             UserAffinityChanges affinityRecomputeTaskService,
@@ -294,7 +294,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.userRatesRepository = userRatesRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
-        this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
+        this.feedbackAnswersRepository = feedbackAnswersRepository;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
@@ -2310,7 +2310,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 counters.chat(),
                 counters.event(),
                 counters.asset(),
-                counters.eventFeedback(),
+                counters.feedbackCounts(),
                 counters.adminJobs(),
                 counters.adminMetrics(),
                 counters.paymentRefundsPending(),
@@ -2359,10 +2359,10 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().carsPending())),
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().accommodationPending())),
                 String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().suppliesPending())),
-                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().ownEvents())),
-                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().pending())),
-                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().feedbacked())),
-                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().removed())),
+                String.valueOf(normalizeCount(counters.feedbackCounts() == null ? null : counters.feedbackCounts().ownEvents())),
+                String.valueOf(normalizeCount(counters.feedbackCounts() == null ? null : counters.feedbackCounts().pending())),
+                String.valueOf(normalizeCount(counters.feedbackCounts() == null ? null : counters.feedbackCounts().feedbacked())),
+                String.valueOf(normalizeCount(counters.feedbackCounts() == null ? null : counters.feedbackCounts().removed())),
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
                 String.valueOf(normalizeCount(counters.paymentRefundsPending())),
@@ -2474,7 +2474,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                     new UserChatCountersDto(0, 0, 0, 0, 0, 0),
                     new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                     new UserAssetCountersDto(0, 0, 0, 0),
-                    new UserEventFeedbackCountersDto(0, 0, 0, 0),
+                    new UserFeedbackCountersDto(0, 0, 0, 0),
                     0, 0, normalizeCount(paymentRefundsPending), normalizeCount(contactRequestsPending), 0);
         }
         return new UserActivitiesDto(
@@ -2492,7 +2492,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 toUserChatCountersDto(activities.chat()),
                 toUserEventCountersDto(activities.event()),
                 toUserAssetCountersDto(activities.asset()),
-                toUserEventFeedbackCountersDto(activities.eventFeedback()),
+                toUserFeedbackCountersDto(activities.feedbackCounts()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()),
                 normalizeCount(paymentRefundsPending), normalizeCount(contactRequestsPending),
@@ -2506,7 +2506,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                     new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                     new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                     new Users.UserAssetCountersRecord(0, 0, 0, 0),
-                    new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                    new Users.UserFeedbackCountersRecord(0, 0, 0, 0),
                     0, 0, 0);
         }
         return new Users.UserActivitiesRecord(
@@ -2524,7 +2524,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 toUserChatCountersRecord(activities.chat()),
                 toUserEventCountersRecord(activities.event()),
                 toUserAssetCountersRecord(activities.asset()),
-                toUserEventFeedbackCountersRecord(activities.eventFeedback()),
+                toUserFeedbackCountersRecord(activities.feedbackCounts()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()),
                 normalizeCount(activities.notifications()));
@@ -2579,8 +2579,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 asset == null ? 0 : normalizeCount(asset.suppliesPending()));
     }
 
-    private Users.UserEventFeedbackCountersRecord toUserEventFeedbackCountersRecord(UserEventFeedbackCountersDto feedback) {
-        return new Users.UserEventFeedbackCountersRecord(
+    private Users.UserFeedbackCountersRecord toUserFeedbackCountersRecord(UserFeedbackCountersDto feedback) {
+        return new Users.UserFeedbackCountersRecord(
                 feedback == null ? 0 : normalizeCount(feedback.ownEvents()),
                 feedback == null ? 0 : normalizeCount(feedback.pending()),
                 feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
@@ -2711,7 +2711,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     private UserImpressionsDto resolveMergedUserImpressionsUncached(Users user) {
-        List<? extends Answer> feedbackAnswers = eventFeedbackAnswersRepository
+        List<? extends Answer> feedbackAnswers = feedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc(normalizeId(user.getId()));
         UserImpressionsSectionDto host = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().host(), "event", feedbackAnswers);
         UserImpressionsSectionDto member = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().member(), "attendee", feedbackAnswers);
@@ -2762,14 +2762,14 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                     || normalizeCount(activities.hosting()) > 0;
         }
         if ("attendee".equals(normalizedKind)) {
-            Users.UserEventFeedbackCountersRecord eventFeedback = activities.eventFeedback();
+            Users.UserFeedbackCountersRecord feedbackCounts = activities.feedbackCounts();
             return normalizeCount(activities.chats()) > 0
                     || normalizeCount(activities.invitations()) > 0
                     || normalizeCount(activities.tickets()) > 0
                     || normalizeCount(activities.feedback()) > 0
-                    || normalizeCount(eventFeedback == null ? null : eventFeedback.pending()) > 0
-                    || normalizeCount(eventFeedback == null ? null : eventFeedback.feedbacked()) > 0
-                    || normalizeCount(eventFeedback == null ? null : eventFeedback.removed()) > 0;
+                    || normalizeCount(feedbackCounts == null ? null : feedbackCounts.pending()) > 0
+                    || normalizeCount(feedbackCounts == null ? null : feedbackCounts.feedbacked()) > 0
+                    || normalizeCount(feedbackCounts == null ? null : feedbackCounts.removed()) > 0;
         }
         return false;
     }

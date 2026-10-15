@@ -9,13 +9,14 @@ its [CSV source](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv), and the
 ## Template regression and fix propagation — MSC-122
 
 MSC-122 and its completed template qualification are closed. This is not a
-fifth open task or a request to repeat the completed template regression.
-The rules below apply to new defects found during the four remaining tasks.
+new open task or a request to repeat the completed template regression.
+MSC-115 development is closed. The rules below apply to newly found shared defects.
 
-The outstanding MSC-115, MSC-116, MSC-117 and MSC-119 cases must also assess
+The MSC-116/117/119 campaigns and user-requested MSC-118 QA must assess
 whether a newly found defect affects `myscoutee-template`. Each linked checklist
-defines its retained scope. Retest affected shared functionality in the template
-itself after carrying over the fix; omitted product features are N/A
+defines its retained scope. Queue affected checks in the existing separate
+MSC115-TEMPLATE-REGRESSION checkpoint and execute them there after carrying over
+the fix; they do not become test steps inside the source campaigns. Omitted product features are N/A
 with a reason, not missing template functionality.
 
 For every defect found in these cases:
@@ -35,8 +36,10 @@ For every defect found in these cases:
 
 Keep source and template results separate in the testcase's matrix evidence and
 in the template's own qualification matrix. Source PASS does not imply template
-PASS. An affected fix remains open until propagation and targeted template
-verification are recorded. These requirements do not change existing execution
+PASS. The template follow-up remains open until propagation and targeted
+verification are recorded; it does not reopen accepted source development QA.
+Actual provider/physical/deployed checks remain outside development QA.
+These requirements do not change existing execution
 statuses or authorize starting a manual browser campaign.
 
 ## Domain directories
@@ -122,13 +125,14 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 
 ## General UI
 
-- [MSC115-TEMPLATE-REGRESSION](general/MSC115-TEMPLATE-REGRESSION.md) — Batched verification of template counterparts affected by MSC-115 fixes.
+- [MSC115-TEMPLATE-REGRESSION](general/MSC115-TEMPLATE-REGRESSION.md) — Only unverified template deltas from collected MSC-115/116/117/118/119 fixes; credit completed evidence before execution.
 
 - [CHAT-CALL-001](general/CHAT-CALL-001.md) — Saját STUN, WebRTC hang/videó, MLS és koordinátorcsere.
 
-- [SERVICE-FEEDBACK-UI-001](general/SERVICE-FEEDBACK-UI-001.md) — Service image, event-style switch blocks and EN/HU guide extension.
+- [FEEDBACK-UI-001](general/FEEDBACK-UI-001.md) — Central Feedback ownership, one list request, local parity and focused form verification.
 
-- [EXPLANATION-GUIDE-001](general/EXPLANATION-GUIDE-001.md) — Application-wide compact explanations, guide navigation and floating controls.
+- [EXPLANATION-GUIDE-001](general/EXPLANATION-GUIDE-001.md) — CLOSED / PASS for accepted scope; original application-wide guide checklist preserved.
+- [MSC-116 consolidated automatic QA](api/MSC-116_AUTOMATIC_QA.md) — Includes the remaining MSC-119 introduction in steps 75–81 before one KVM sample; no separate MSC-119 QA or duplicate guide run.
 
 ## Operator
 

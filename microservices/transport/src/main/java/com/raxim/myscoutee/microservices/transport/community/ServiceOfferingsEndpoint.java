@@ -71,4 +71,10 @@ public final class ServiceOfferingsEndpoint {
         catch (RuntimeException unavailable) { return response(503, new ServiceOfferingsProtocol.Error("SERVICE_OFFERINGS_UNAVAILABLE")); }
     }
     private ResponseEntity<?> response(int status, Object body) { return ResponseEntity.status(status).cacheControl(CacheControl.noStore()).body(body); }
+    @PostMapping(value = ServiceOfferingsProtocol.VISIBLE_METADATA, produces = "application/json")
+    public ResponseEntity<?> visibleMetadata(HttpServletRequest request) throws java.io.IOException {
+        return read(request, ServiceOfferingsProtocol.VisibleMetadata.class, ServiceOfferingsProtocol::valid, command ->
+            com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(),
+                () -> new ServiceOfferingsProtocol.VisibleMetadataResult(true, owner.visibleMetadata(command.actor(), command.ids()))));
+    }
 }

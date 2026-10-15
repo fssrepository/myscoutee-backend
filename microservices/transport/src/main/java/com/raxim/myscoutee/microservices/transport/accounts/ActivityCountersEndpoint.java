@@ -16,11 +16,11 @@ public final class ActivityCountersEndpoint {
     private final ActivityCounters owner;
     private final com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters;
     private final ObjectMapper mapper;
-    private final com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters feedback;
+    private final com.raxim.myscoutee.domain.accounts.api.FeedbackEvaluationCounters feedback;
     private final com.raxim.myscoutee.domain.accounts.api.FeedCounts feed;
     public ActivityCountersEndpoint(ActivityCounters owner, ObjectMapper mapper,
             com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters,
-            com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters feedback, com.raxim.myscoutee.domain.accounts.api.FeedCounts feed) {
+            com.raxim.myscoutee.domain.accounts.api.FeedbackEvaluationCounters feedback, com.raxim.myscoutee.domain.accounts.api.FeedCounts feed) {
         this.owner = owner; this.mapper = mapper; this.supportCounters = supportCounters; this.feedback = feedback; this.feed = feed;
     }
     @PostMapping(value = ActivityCountersProtocol.MENU_CHANGE, produces = "application/json")
@@ -90,11 +90,11 @@ public final class ActivityCountersEndpoint {
         return read(request, ActivityCountersProtocol.FeedbackQuery.class, ActivityCountersProtocol::valid,
                 query -> com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(query.scope().active(), query.scope().groupId(), () -> { owner.applyFeedbackTransition(query.owners(), query.userId(), query.wasSubmitted(), query.wasRemoved(), query.isSubmitted(), query.isRemoved()); return new ActivityCountersProtocol.Receipt(true); }));
     }
-    @PostMapping(value = ActivityCountersProtocol.SERVICE_FEEDBACK, produces = "application/json")
-    public ResponseEntity<?> serviceFeedback(HttpServletRequest request) throws java.io.IOException {
-        return read(request, ActivityCountersProtocol.ServiceFeedbackQuery.class, ActivityCountersProtocol::valid,
+    @PostMapping(value = ActivityCountersProtocol.FEEDBACK_EVALUATION, produces = "application/json")
+    public ResponseEntity<?> feedbackEvaluation(HttpServletRequest request) throws java.io.IOException {
+        return read(request, ActivityCountersProtocol.FeedbackEvaluationQuery.class, ActivityCountersProtocol::valid,
                 query -> com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(query.scope().active(), query.scope().groupId(),
-                        () -> { feedback.updateServiceFeedbackPending(query.userId(), query.count()); return new ActivityCountersProtocol.Receipt(true); }));
+                        () -> { feedback.updateFeedbackEvaluationPending(query.userId(), query.count()); return new ActivityCountersProtocol.Receipt(true); }));
     }
     @PostMapping(value = ActivityCountersProtocol.STORED_FEED, produces = "application/json")
     public ResponseEntity<?> storedFeed(HttpServletRequest request) throws java.io.IOException {

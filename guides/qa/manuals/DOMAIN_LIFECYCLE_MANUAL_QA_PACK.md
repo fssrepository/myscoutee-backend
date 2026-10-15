@@ -2710,30 +2710,19 @@ again.
 
 ### `CHAT-CALL-001` — direct audio/video group calls
 
-The stable [34-step click guide](../checklists/general/CHAT-CALL-001.md) owns
-this journey. Reuse its dedicated Alice/Bob/Carol fixture and the versioned
-two-/three-session browser launcher; this entry does not resume or launch QA.
+The stable [29-step remaining development guide](../checklists/general/CHAT-CALL-001.md)
+owns this journey. October12 two-party RTP, repeated-call and KVM continuity
+proof is credited. Remaining blocks cover source controls, three-party media,
+seven-actor paging/video RTP, availability/cleanup and call/volume Help.
+The existing three-actor fixture cannot prove seven-actor paging; extend its
+owner when that block executes, without duplicating identities.
 
-- Steps 1–12: immediate audio call from the second chat header row, shared
-  full-size popup, camera/microphone controls, synchronized tile and volume
-  controls, mute colors, speech spectrum, follow-speakers switch and HU/EN text.
-- Steps 13–22: three participants, admin mute/release, coordinator departure
-  and rejoin, permission/connection cleanup, live owned-STUN availability and
-  direct ICE media without TURN, including the zero persisted-message oracle.
-- Steps 23–29: native SmartList paging, mobile 2×2 / laptop up-to-3×2 grids,
-  video pause/resume for offscreen tiles with continuous audio, manual video
-  prohibition and recent-speaker ordering. The three-actor fixture does not
-  prove four-/seven-actor full pages; the larger prepared baseline is explicit.
-- Steps 30–34: own-preview silence, separate-device physical audio checks,
-  responsive translations, workspace-specific chat menus and the linked
-  `MSC115-CASE-CHAT` direct Tasks-button regression.
-
-Keep UI observations, per-peer video/audio RTP counters and signaling/security
-evidence distinct. Removing a video element alone does not prove bandwidth
-reduction. The coordinator handles MLS membership; media remains direct mesh,
-not a master/child forwarding tree. The removed verification-code header button
-is not a manual oracle. Record execution in the existing `CHAT-CALL-001` CSV/XLSX
-row and dated evidence; expanding this guide does not establish a manual PASS.
+Physical audio and external-network checks are in separate live qualification.
+Template checks stay in the existing template QA. The removed CALL-01 observation
+is not reopened. Keep actual peer RTP, UI and signaling evidence distinct;
+media remains direct mesh and a vanished video element is not bandwidth proof.
+Record this campaign once in CHAT-CALL-001; call guides also satisfy their
+assigned guide coverage without another run.
 
 ## Event feedback and Impressions checkpoints
 

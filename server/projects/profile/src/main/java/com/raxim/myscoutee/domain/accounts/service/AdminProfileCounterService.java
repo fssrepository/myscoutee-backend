@@ -82,7 +82,7 @@ public class AdminProfileCounterService implements AdminCounterRefresh {
                 existing == null ? null : existing.chat(),
                 existing == null ? null : existing.event(),
                 existing == null ? null : existing.asset(),
-                existing == null ? null : existing.eventFeedback(),
+                existing == null ? null : existing.feedbackCounts(),
                 counters.jobs(),
                 counters.metrics(),
                 count(existing == null ? null : existing.notifications()));

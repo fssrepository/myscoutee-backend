@@ -24,7 +24,7 @@ public interface EventPrivacy extends AccountPurgeActions {
                 Map.entry(Action.ACTIVITY_MEMBERSHIPS, context -> purgeActivityMemberships(context.userId())),
                 Map.entry(Action.MANAGED_EVENT_ADMINS, context -> purgeManagedEventAdminReferences(context.userId())),
                 Map.entry(Action.TICKET_AUDIT, context -> anonymizeTicketAudit(context.userId())),
-                Map.entry(Action.EVENT_FEEDBACK, context -> purgeFeedback(context.userId())),
+                Map.entry(Action.FEEDBACK, context -> purgeFeedback(context.userId())),
                 Map.entry(Action.LEADERBOARD, context -> purgeLeaderboard(context.userId())),
                 Map.entry(Action.SCHEDULER_MARKERS, context -> anonymizeSchedulerMarkers(context.userId())),
                 Map.entry(Action.OWNED_EVENTS, context -> {

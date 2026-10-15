@@ -1,0 +1,144 @@
+{
+  "task": "MSC-116",
+  "date": "2026-10-15",
+  "status": "CLOSED for delegated development scope",
+  "sourceAtReconciliation": {
+    "backend": "498a47b9ec51b77d14b2f8fe85a710472b2222e4",
+    "frontend": "14e71c22a685dcd854f43511bf54477858676f4b",
+    "workingTreeChanges": true
+  },
+  "blocks": [
+    {
+      "steps": "1\u20133",
+      "block": "Preparation",
+      "result": "PASS",
+      "evidence": "Retained fixture, isolated managed actors and single settings GET established."
+    },
+    {
+      "steps": "4\u201317",
+      "block": "Settings",
+      "result": "PASS",
+      "evidence": "Nested drafts, one parent PUT, profile ownership, failed-save retry and a real stale revision conflict verified."
+    },
+    {
+      "steps": "18\u201320",
+      "block": "HTTP guides",
+      "result": "PASS",
+      "evidence": "EN/HU desktop/mobile contexts checked; 37 recorded runs and 291 steps. Popup transitions retained separately."
+    },
+    {
+      "steps": "21\u201331",
+      "block": "API and domain contracts",
+      "result": "PASS",
+      "evidence": "Manual-client 16-pack matrix, API packs, live downgrade, discovery and permitted/forbidden operations checked. Development package evidence retained; no vendor-host acceptance claim."
+    },
+    {
+      "steps": "32\u201334",
+      "block": "OAuth",
+      "result": "PASS",
+      "evidence": "Independent account grants, PKCE and negative identity/rotation cases, live access enforcement and browser-logout independence checked."
+    },
+    {
+      "steps": "35\u201338",
+      "block": "Local parity and regressions",
+      "result": "PASS",
+      "evidence": "IndexedDB save/reload and role settings checked; 24 local guide runs / 180 steps. Latest Events regression: 137 tests in 17 suites, zero failures/errors/skips; focused embedded and Go checks also passed."
+    },
+    {
+      "steps": "39\u201347",
+      "block": "Events setup",
+      "result": "PASS",
+      "evidence": "Discovery, challenge, resource filters, pack matrix, signing-key boundaries, TTL, refresh and unsubscribe checked."
+    },
+    {
+      "steps": "48\u201354",
+      "block": "Events delivery",
+      "result": "PASS",
+      "evidence": "Real producers, encounters, signatures, retries, claimed-work restart recovery, authority loss, account purge and retention checked. At-least-once delivery retained."
+    },
+    {
+      "steps": "55\u201358",
+      "block": "Events bounds",
+      "result": "PASS WITH RECORDED LIMIT",
+      "evidence": "Concurrency, verification admission, response bounds, queue limits and DNS/TLS/redirect protections checked. Count-based queue admission is not a global reservation: concurrent publishers may occupy previously admitted slots."
+    },
+    {
+      "steps": "59\u201367",
+      "block": "Roles and development packages",
+      "result": "PASS",
+      "evidence": "Role readers, forbidden writes, node catalogs/producers, queued authority and anonymous/private package separation checked. Real vendor-host/Scheduled/publication qualification remains separate."
+    },
+    {
+      "steps": "68\u201373",
+      "block": "Central Feedback",
+      "result": "PASS",
+      "evidence": "One combined page request; real labelled choices, normal submit, read-only reopen, owner counters, green badge and no numeric card score. HTTP/local and retained EN/HU guides passed. Rejected synthetic 8/9 \u2192 8.5 UI evidence is excluded."
+    },
+    {
+      "steps": "74",
+      "block": "Shared fix propagation",
+      "result": "RECORDED",
+      "evidence": "Applicable guide/access fixes propagated to existing template sources and QA. Template runtime remains NOT RUN; product Feedback is N/A there."
+    },
+    {
+      "steps": "75\u201381",
+      "block": "First-visit introduction",
+      "result": "PASS",
+      "evidence": "Consolidated MSC-119 scope: EN/HU desktop/mobile/short viewport, dismissal persistence, unchanged consent, preference preservation and stale-response suppression. Existing context priority corrected in product and template."
+    },
+    {
+      "steps": "82",
+      "block": "Serial KVM sample",
+      "result": "PASS",
+      "evidence": "Eight updated assemblies started. Native auth, combined settings/Feedback page, real OAuth, MCP Events catalog and domain read passed; revoke returned 200 and subsequent access 401. Full UI was not replayed."
+    },
+    {
+      "steps": "83",
+      "block": "Focused measurement",
+      "result": "MEASURED; NO COMPARABLE BASELINE",
+      "evidence": "events/list: 3 warmups + 20 samples, concurrency 1, zero errors, median 97.06 ms and p95 121.10 ms. Resource window includes background work. No performance-parity or regression claim."
+    },
+    {
+      "steps": "84",
+      "block": "Cleanup",
+      "result": "PASS WITH RETAINED METADATA",
+      "evidence": "17 campaign credentials revoked through owner APIs. Registry and Mongo fixture/session snapshots restored; active campaign credentials, enabled subscriptions and campaign events are zero. One inactive public DCR registration remains. KVM off; original 8 monolith containers restored for cleanup, then stopped at the user\u2019s request. frontend-sync remains off."
+    },
+    {
+      "steps": "85",
+      "block": "Documentation and ledger",
+      "result": "COMPLETE",
+      "evidence": "QA records and PDF updated; task accounting and Project closure recorded separately. No duplicate MSC-119 campaign or added QA row."
+    }
+  ],
+  "cleanup": {
+    "fixtureRows": 0,
+    "activeCampaignCredentials": 0,
+    "enabledSubscriptions": 0,
+    "campaignEvents": 0,
+    "campaignClients": 1
+  },
+  "evidenceRetention": {
+    "earlyTemporaryArtifacts": "Some pre-restart /tmp artifacts were lost in the workstation restart. Their observed results remain in the retained session tool outputs; they were not recreated or replayed.",
+    "excluded": "service-feedback-form.json and packaged-private-review P4 synthetic numeric UI setup do not support final Feedback acceptance. Final normal FormFlow evidence is in FEEDBACK-UI-001.",
+    "rawPrivateEvidence": "Credentials, callback destinations and private payloads remain excluded from Git."
+  },
+  "unproven": [
+    "Template runtime",
+    "Real external vendor-host/Scheduled/publication qualification",
+    "Production deployment",
+    "Full application behavior on KVM",
+    "Matched historical Events-catalog CPU/latency comparison"
+  ],
+  "frontendSync": "Stopped for memory relief; no duplicate watcher or test owner.",
+  "finalRuntime": "KVM and all8 monolith containers stopped at the user\u2019s request; frontend-sync remains off.",
+  "ledgerVerification": {
+    "cases": 146,
+    "complete": 143,
+    "partial": 2,
+    "notStarted": 1,
+    "failed": 0,
+    "nativeRecalculation": "LibreOffice disposable-copy recalculation: no formula errors; summary143/146 and API domain8/8 agree with CSV. Original workbook and formulas retained.",
+    "previewLimitation": "Artifact Tool import renders pre-existing numeric placeholders and returns domain-formula errors; native Calc confirms those formulas are valid."
+  }
+}

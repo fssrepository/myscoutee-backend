@@ -25,7 +25,7 @@ class AdminStatsServiceTest {
                 "event.members.changed", 5L,
                 "event.member.joined", 2L,
                 "event.member.invited", 3L,
-                "event.feedback.submitted", 4L,
+                "feedback.submitted", 4L,
                 "asset.requests.changed", 7L));
         AdminStatsRepository repository = mock(AdminStatsRepository.class);
         when(repository.globalSnapshotOrDefault()).thenReturn(snapshot);

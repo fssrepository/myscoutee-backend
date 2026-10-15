@@ -149,24 +149,24 @@ public final class RemoteAccessPermissions extends RemoteReadTransport implement
         return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_LEADERBOARD_ENTRY, query, AccessPermissionsProtocol.valid(query),
                 new TypeReference<AccessPermissionsProtocol.Decision>() {}, value -> value.allowed() != null).allowed();
     }
-    @Override public boolean canCurrentActorSubmitEventFeedback(String userId, String eventId) {
-        var query = new AccessPermissionsProtocol.CanCurrentActorSubmitEventFeedbackQuery(userId, eventId);
-        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_EVENT_FEEDBACK, query, AccessPermissionsProtocol.valid(query),
+    @Override public boolean canCurrentActorSubmitFeedback(String userId, String eventId) {
+        var query = new AccessPermissionsProtocol.CanCurrentActorSubmitFeedbackQuery(userId, eventId);
+        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_FEEDBACK, query, AccessPermissionsProtocol.valid(query),
                 new TypeReference<AccessPermissionsProtocol.Decision>() {}, value -> value.allowed() != null).allowed();
     }
-    @Override public boolean canCurrentActorSaveEventFeedbackNote(String userId, String eventId) {
-        var query = new AccessPermissionsProtocol.CanCurrentActorSaveEventFeedbackNoteQuery(userId, eventId);
-        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SAVE_EVENT_FEEDBACK_NOTE, query, AccessPermissionsProtocol.valid(query),
+    @Override public boolean canCurrentActorSaveFeedbackNote(String userId, String eventId) {
+        var query = new AccessPermissionsProtocol.CanCurrentActorSaveFeedbackNoteQuery(userId, eventId);
+        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SAVE_FEEDBACK_NOTE, query, AccessPermissionsProtocol.valid(query),
                 new TypeReference<AccessPermissionsProtocol.Decision>() {}, value -> value.allowed() != null).allowed();
     }
-    @Override public boolean canCurrentActorRemoveEventFeedback(String userId, String eventId) {
-        var query = new AccessPermissionsProtocol.CanCurrentActorRemoveEventFeedbackQuery(userId, eventId);
-        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_REMOVE_EVENT_FEEDBACK, query, AccessPermissionsProtocol.valid(query),
+    @Override public boolean canCurrentActorRemoveFeedback(String userId, String eventId) {
+        var query = new AccessPermissionsProtocol.CanCurrentActorRemoveFeedbackQuery(userId, eventId);
+        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_REMOVE_FEEDBACK, query, AccessPermissionsProtocol.valid(query),
                 new TypeReference<AccessPermissionsProtocol.Decision>() {}, value -> value.allowed() != null).allowed();
     }
-    @Override public boolean canCurrentActorRestoreEventFeedback(String userId, String eventId) {
-        var query = new AccessPermissionsProtocol.CanCurrentActorRestoreEventFeedbackQuery(userId, eventId);
-        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_RESTORE_EVENT_FEEDBACK, query, AccessPermissionsProtocol.valid(query),
+    @Override public boolean canCurrentActorRestoreFeedback(String userId, String eventId) {
+        var query = new AccessPermissionsProtocol.CanCurrentActorRestoreFeedbackQuery(userId, eventId);
+        return read(AccessPermissionsProtocol.CAN_CURRENT_ACTOR_RESTORE_FEEDBACK, query, AccessPermissionsProtocol.valid(query),
                 new TypeReference<AccessPermissionsProtocol.Decision>() {}, value -> value.allowed() != null).allowed();
     }
     @Override public boolean canCurrentActorCreateChatMessage(String userId, String chatId) {

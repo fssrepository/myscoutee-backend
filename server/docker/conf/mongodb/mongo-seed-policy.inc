@@ -312,7 +312,7 @@ ensure_collection_versions() {
   local collection_name="$2"
 
   case "${collection_name}" in
-    assets|events|eventFeedbackStates)
+    assets|events|feedbackStates)
       # A seed sync can run after the owner's startup migration. Imported
       # documents must remain existing entities for Spring Data @Version.
       mongosh \
@@ -857,7 +857,7 @@ db.getCollection('qualifiedMauReportOutbox').createIndex({ deploymentId: 1, stat
 db.getCollection('qualifiedMauReportOutbox').createIndex({ idempotencyKey: 1 }, { name: 'qmau_outbox_idempotency', unique: true });
 " >/dev/null
       ;;
-    eventFeedbackStates)
+    feedbackStates)
       mongosh \
         --host "${mongo_host}" \
         --port "${mongo_port}" \
@@ -867,14 +867,14 @@ db.getCollection('qualifiedMauReportOutbox').createIndex({ idempotencyKey: 1 }, 
         --quiet \
         "${target_db}" \
         --eval "
-db.getCollection('eventFeedbackStates').createIndex({ syncKey: 1 }, { name: 'event_feedback_state_sync_key', unique: true, sparse: true });
-db.getCollection('eventFeedbackStates').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_state_user_event', unique: true });
-db.getCollection('eventFeedbackStates').createIndex({ viewerUserId: 1, updatedDate: -1 }, { name: 'event_feedback_state_user_updated' });
-db.getCollection('eventFeedbackStates').createIndex({ eventId: 1, updatedDate: -1 }, { name: 'event_feedback_state_event_updated' });
-db.getCollection('eventFeedbackStates').createIndex({ removed: 1, submittedAtIso: 1, viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_state_qmau_window' });
+db.getCollection('feedbackStates').createIndex({ syncKey: 1 }, { name: 'feedback_state_sync_key', unique: true, sparse: true });
+db.getCollection('feedbackStates').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'feedback_state_user_event', unique: true });
+db.getCollection('feedbackStates').createIndex({ viewerUserId: 1, updatedDate: -1 }, { name: 'feedback_state_user_updated' });
+db.getCollection('feedbackStates').createIndex({ eventId: 1, updatedDate: -1 }, { name: 'feedback_state_event_updated' });
+db.getCollection('feedbackStates').createIndex({ removed: 1, submittedAtIso: 1, viewerUserId: 1, eventId: 1 }, { name: 'feedback_state_qmau_window' });
 " >/dev/null
       ;;
-    eventFeedbackAnswers)
+    feedbackAnswers)
       mongosh \
         --host "${mongo_host}" \
         --port "${mongo_port}" \
@@ -884,12 +884,12 @@ db.getCollection('eventFeedbackStates').createIndex({ removed: 1, submittedAtIso
         --quiet \
         "${target_db}" \
         --eval "
-db.getCollection('eventFeedbackAnswers').createIndex({ syncKey: 1 }, { name: 'event_feedback_answer_sync_key', unique: true, sparse: true });
-db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, cardId: 1 }, { name: 'event_feedback_answer_user_event_card', unique: true });
-db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_answer_user_event' });
-db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_user_event_submitted' });
-db.getCollection('eventFeedbackAnswers').createIndex({ eventId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_event_submitted' });
-db.getCollection('eventFeedbackAnswers').createIndex({ targetUserId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_target_user_submitted' });
+db.getCollection('feedbackAnswers').createIndex({ syncKey: 1 }, { name: 'feedback_answer_sync_key', unique: true, sparse: true });
+db.getCollection('feedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, cardId: 1 }, { name: 'feedback_answer_user_event_card', unique: true });
+db.getCollection('feedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'feedback_answer_user_event' });
+db.getCollection('feedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, submittedAtIso: -1 }, { name: 'feedback_answer_user_event_submitted' });
+db.getCollection('feedbackAnswers').createIndex({ eventId: 1, submittedAtIso: -1 }, { name: 'feedback_answer_event_submitted' });
+db.getCollection('feedbackAnswers').createIndex({ targetUserId: 1, submittedAtIso: -1 }, { name: 'feedback_answer_target_user_submitted' });
 " >/dev/null
       ;;
     ideaPosts)

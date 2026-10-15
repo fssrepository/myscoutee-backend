@@ -42,10 +42,10 @@ public interface AccessPermissions extends ConsentAuthorization {
     boolean canCurrentActorRejectAssetBorrow(String requesterUserId, String assetId);
     boolean canCurrentActorCancelAssetBorrow(String requesterUserId, String assetId);
     boolean canCurrentActorSubmitLeaderboardEntry(String actorUserId, String eventId);
-    boolean canCurrentActorSubmitEventFeedback(String userId, String eventId);
-    boolean canCurrentActorSaveEventFeedbackNote(String userId, String eventId);
-    boolean canCurrentActorRemoveEventFeedback(String userId, String eventId);
-    boolean canCurrentActorRestoreEventFeedback(String userId, String eventId);
+    boolean canCurrentActorSubmitFeedback(String userId, String eventId);
+    boolean canCurrentActorSaveFeedbackNote(String userId, String eventId);
+    boolean canCurrentActorRemoveFeedback(String userId, String eventId);
+    boolean canCurrentActorRestoreFeedback(String userId, String eventId);
     boolean canCurrentActorCreateChatMessage(String userId, String chatId);
     boolean canCurrentActorEditChatMessage(String userId, String chatId);
     boolean canCurrentActorDeleteChatMessage(String userId, String chatId);

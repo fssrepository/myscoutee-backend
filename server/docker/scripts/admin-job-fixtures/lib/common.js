@@ -5,6 +5,8 @@
   const PREFIX = "admin-job-fixture:v1";
   const SNAPSHOT_COLLECTION = "adminJobFixtureSnapshots";
   const FIXTURE_ACTOR = `${PREFIX}:actor`;
+  let ruleScope = {};
+  const ruleSelector = ruleKey => ({ ruleKey, ...ruleScope });
   const SECONDARY_RULE_KEYS_BY_JOB = {
     "event-random-groups": ["notification-outbox"],
     "event-auto-inviter": [
@@ -136,7 +138,7 @@
 
   function requireRule(ruleKey) {
     const rules = collection("notificationRuleConfigs")
-      .find({ ruleKey })
+      .find(ruleSelector(ruleKey))
       .limit(2)
       .toArray();
     if (rules.length !== 1) {
@@ -153,7 +155,7 @@
     const now = nowIso();
     const result = collection("notificationRuleConfigs").updateOne(
       {
-        ruleKey,
+        ...ruleSelector(ruleKey),
         "runState.currentStatus": { $ne: "running" }
       },
       {
@@ -191,7 +193,7 @@
     const now = nowIso();
     const result = collection("notificationRuleConfigs").updateOne(
       {
-        ruleKey,
+        ...ruleSelector(ruleKey),
         "runState.currentStatus": { $ne: "running" }
       },
       {
@@ -329,7 +331,7 @@
       .map(item => safeText(item.ruleKey))
       .filter(Boolean);
     const runningRule = [...new Set([...primaryRuleKeys, ...secondaryRuleKeys])]
-      .map(ruleKey => collection("notificationRuleConfigs").findOne({ ruleKey }))
+      .map(ruleKey => collection("notificationRuleConfigs").findOne(ruleSelector(ruleKey)))
       .find(rule => rule && rule.runState && rule.runState.currentStatus === "running");
     if (runningRule) {
       fail(
@@ -354,7 +356,7 @@
         }
         const result = collection(item.collection).replaceOne(
           {
-            ruleKey,
+            _id: document._id,
             "runState.currentStatus": { $ne: "running" }
           },
           document
@@ -394,7 +396,7 @@
       }
       const result = collection("notificationRuleConfigs").updateOne(
         {
-          ruleKey,
+          ...ruleSelector(ruleKey),
           "runState.currentStatus": { $ne: "running" }
         },
         update
@@ -441,12 +443,12 @@
     if (ruleKey) {
       if (existingRuleSpec) {
         existingRuleSpec.selector = {
-          $or: [existingRuleSpec.selector, { ruleKey }]
+          $or: [existingRuleSpec.selector, ruleSelector(ruleKey)]
         };
       } else {
         result.push({
           collection: "notificationRuleConfigs",
-          selector: { ruleKey }
+          selector: ruleSelector(ruleKey)
         });
       }
     }
@@ -458,6 +460,7 @@
     if (!definition || definition.job !== requestedJob) {
       fail(`scenario mismatch: requested '${requestedJob}'.`);
     }
+    ruleScope = definition.ruleScope || {};
     if (!["prepare", "status", "trigger", "reset"].includes(command)) {
       fail(`unsupported command '${command}'.`);
     }

@@ -10,7 +10,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 /** Bounded existing bulk upserts; validate the complete input before sending the first batch. No retries. */
-public final class RemoteActivityCounters extends RemoteReadTransport implements ActivityCounters, com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates, com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters, com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.FeedCounts {
+public final class RemoteActivityCounters extends RemoteReadTransport implements ActivityCounters, com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates, com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters, com.raxim.myscoutee.domain.accounts.api.FeedbackEvaluationCounters, com.raxim.myscoutee.domain.accounts.api.FeedCounts {
     private final ObjectMapper mapper;
     public RemoteActivityCounters(URI origin, String token, boolean allowHttp, Duration connectTimeout,
             Duration requestTimeout, ObjectMapper mapper, MeterRegistry metrics) {
@@ -134,11 +134,11 @@ public final class RemoteActivityCounters extends RemoteReadTransport implements
         var result = exchange(ActivityCountersProtocol.FEEDBACK_TRANSITION, bytes, new TypeReference<ActivityCountersProtocol.Receipt>() {},
                 "activity-counters.feedback-transition", ActivityCountersProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.completed()));
     }
-    @Override public void updateServiceFeedbackPending(String userId, int count) {
-        var query = new ActivityCountersProtocol.ServiceFeedbackQuery(ActivityCountersProtocol.Scope.current(), userId, count);
+    @Override public void updateFeedbackEvaluationPending(String userId, int count) {
+        var query = new ActivityCountersProtocol.FeedbackEvaluationQuery(ActivityCountersProtocol.Scope.current(), userId, count);
         if (!ActivityCountersProtocol.valid(query)) throw new IllegalArgumentException("Invalid feedback counter request");
-        exchange(ActivityCountersProtocol.SERVICE_FEEDBACK, mapper.writeValueAsBytes(query), new TypeReference<ActivityCountersProtocol.Receipt>() {},
-                "activity-counters.service-feedback", ActivityCountersProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.completed()));
+        exchange(ActivityCountersProtocol.FEEDBACK_EVALUATION, mapper.writeValueAsBytes(query), new TypeReference<ActivityCountersProtocol.Receipt>() {},
+                "activity-counters.feedback-evaluation", ActivityCountersProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.completed()));
     }
     @Override public com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord counters(String userId) {
         var query = new ActivityCountersProtocol.IdQuery(ActivityCountersProtocol.Scope.current(), userId);

@@ -68,8 +68,9 @@ public record EventOwnershipDto(
         String creatorUserId,
         String workspaceGroupId,
         String updatedDate,
-        List<String> admins) implements EventOwnership.Event {
+        List<String> admins, List<String> pendingMemberUserIds) implements EventOwnership.Event {
     public EventOwnershipDto {
+        if (pendingMemberUserIds != null) pendingMemberUserIds = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(pendingMemberUserIds));
         if (acceptedMemberUserIds != null) acceptedMemberUserIds = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(acceptedMemberUserIds));
         if (invitedMemberUserIds != null) invitedMemberUserIds = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(invitedMemberUserIds));
         if (pendingRequestMemberUserIds != null) pendingRequestMemberUserIds = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(pendingRequestMemberUserIds));
@@ -146,7 +147,7 @@ public record EventOwnershipDto(
                 value.getCreatorUserId(),
                 value.getWorkspaceGroupId(),
                 value.getUpdatedDate(),
-                value.getAdmins());
+                value.getAdmins(), value.getPendingMemberUserIds());
     }
     @Override public List<String> getAcceptedMemberUserIds() { return acceptedMemberUserIds; }
     @Override public List<String> getInvitedMemberUserIds() { return invitedMemberUserIds; }
@@ -211,4 +212,5 @@ public record EventOwnershipDto(
     @Override public String getWorkspaceGroupId() { return workspaceGroupId; }
     @Override public String getUpdatedDate() { return updatedDate; }
     @Override public List<String> getAdmins() { return admins; }
+    @Override public List<String> getPendingMemberUserIds() { return pendingMemberUserIds; }
 }

@@ -48,7 +48,7 @@ public class ProfileMenuCountersService {
                 toUserChatCountersDto(activities == null ? null : activities.chat()),
                 toUserEventCountersDto(activities == null ? null : activities.event()),
                 toUserAssetCountersDto(accountActivities == null ? null : accountActivities.asset()),
-                toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
+                toUserFeedbackCountersDto(activities == null ? null : activities.feedbackCounts()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()),
                 normalizeCount(user.getPaymentRefundsPending()),

@@ -183,9 +183,9 @@
       "credential": "eventHomeReadsToken"
     },
     {
-      "domain": "events",
+      "domain": "feedback",
       "api": "FeedbackDirectory",
-      "package": "events",
+      "package": "feedback",
       "configuration": "FeedbackDirectory",
       "propertyPrefix": "feedback-directory",
       "credential": "feedbackDirectoryToken"
@@ -279,7 +279,8 @@
         "accounts",
         "assets",
         "events",
-        "content"
+        "content",
+        "feedback"
       ],
       "providedApis": [
         "AffinityStatusChanges"
@@ -598,7 +599,8 @@
         "events",
         "affinity",
         "content",
-        "operator"
+        "operator",
+        "feedback"
       ]
     },
     {
@@ -902,22 +904,22 @@
         {
           "audience": "access:permissions",
           "method": "POST",
-          "path": "/_internal/v1/access/permissions/can-current-actor-submit-event-feedback"
+          "path": "/_internal/v1/access/permissions/can-current-actor-submit-feedback"
         },
         {
           "audience": "access:permissions",
           "method": "POST",
-          "path": "/_internal/v1/access/permissions/can-current-actor-save-event-feedback-note"
+          "path": "/_internal/v1/access/permissions/can-current-actor-save-feedback-note"
         },
         {
           "audience": "access:permissions",
           "method": "POST",
-          "path": "/_internal/v1/access/permissions/can-current-actor-remove-event-feedback"
+          "path": "/_internal/v1/access/permissions/can-current-actor-remove-feedback"
         },
         {
           "audience": "access:permissions",
           "method": "POST",
-          "path": "/_internal/v1/access/permissions/can-current-actor-restore-event-feedback"
+          "path": "/_internal/v1/access/permissions/can-current-actor-restore-feedback"
         },
         {
           "audience": "access:permissions",
@@ -1271,7 +1273,8 @@
         "chat",
         "platform",
         "content",
-        "affinity"
+        "affinity",
+        "feedback"
       ]
     },
     {
@@ -1284,7 +1287,8 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "affinity",
-        "platform"
+        "platform",
+        "feedback"
       ]
     },
     {
@@ -1316,7 +1320,8 @@
         "events",
         "groups",
         "help",
-        "notifications"
+        "notifications",
+        "feedback"
       ]
     },
     {
@@ -1357,10 +1362,11 @@
         "content",
         "events",
         "community",
-        "campaigns"
+        "campaigns",
+        "feedback"
       ],
       "providedApis": [
-        "ServiceFeedbackCounters",
+        "FeedbackEvaluationCounters",
         "FeedCounts",
         "SupportCaseCounters",
         "MenuCounterUpdates"
@@ -1374,7 +1380,8 @@
       "propertyPrefix": "feedback-session",
       "credential": "feedbackSessionToken",
       "producerDomains": [
-        "events"
+        "events",
+        "feedback"
       ],
       "actorOperations": [
         {
@@ -1661,11 +1668,11 @@
       ]
     },
     {
-      "domain": "community",
-      "api": "CaseFeedbackPreparation",
-      "package": "community",
-      "configuration": "CaseFeedbackPreparation",
-      "propertyPrefix": "case-feedback-preparation",
+      "domain": "feedback",
+      "api": "FeedbackPreparation",
+      "package": "feedback",
+      "configuration": "FeedbackPreparation",
+      "propertyPrefix": "feedback-preparation",
       "credential": "caseFeedbackPreparationToken",
       "credentialProperty": "command-token",
       "producerDomains": [
@@ -2399,9 +2406,9 @@
       ]
     },
     {
-      "domain": "events",
+      "domain": "feedback",
       "api": "FeedbackEligibility",
-      "package": "events",
+      "package": "feedback",
       "configuration": "FeedbackEligibility",
       "propertyPrefix": "feedback-eligibility",
       "credential": "feedbackEligibilityToken",
@@ -2853,7 +2860,8 @@
       "credential": "casesToken",
       "credentialProperty": "command-token",
       "producerDomains": [
-        "integrations"
+        "integrations",
+        "feedback"
       ],
       "actorOperations": [
         {
@@ -2931,7 +2939,8 @@
       "credential": "serviceOfferingsToken",
       "credentialProperty": "command-token",
       "producerDomains": [
-        "integrations"
+        "integrations",
+        "feedback"
       ],
       "actorOperations": [
         {
@@ -2963,6 +2972,11 @@
           "audience": "community:service-offerings",
           "method": "POST",
           "path": "/_internal/v1/community/service-offerings/action_1"
+        },
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/visibleMetadata"
         }
       ]
     },
@@ -3107,7 +3121,8 @@
       "credential": "mingleEncountersToken",
       "credentialProperty": "command-token",
       "producerDomains": [
-        "integrations"
+        "integrations",
+        "feedback"
       ]
     },
     {
@@ -3181,6 +3196,30 @@
       "producerDomains": [
         "community",
         "notifications"
+      ]
+    },
+    {
+      "domain": "feedback",
+      "api": "FeedbackMeasurement",
+      "package": "feedback",
+      "configuration": "FeedbackMeasurement",
+      "propertyPrefix": "feedback-measurement",
+      "credential": "feedbackMeasurementToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "feedback",
+      "api": "FeedbackPrivacy",
+      "package": "feedback",
+      "configuration": "FeedbackPrivacy",
+      "propertyPrefix": "feedback-privacy",
+      "credential": "feedbackPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
       ]
     }
   ],

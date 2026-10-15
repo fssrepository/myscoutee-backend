@@ -8,8 +8,6 @@ import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.*;
 @RestController
 @RequestMapping("/community-cases")
 public class CommunityCasesController {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.service.ServiceFeedbackService feedback;
     private final CommunityCasesService cases;
     private final CommunityScheduledTasksService tasks;
     public CommunityCasesController(CommunityCasesService cases, CommunityScheduledTasksService tasks) { this.cases = cases; this.tasks = tasks; }
@@ -17,16 +15,6 @@ public class CommunityCasesController {
             @RequestParam(required=false) String caseType, @RequestParam(defaultValue="20") int pageSize, @RequestParam(required=false) String cursor,
             @RequestParam(required=false) String rangeStart, @RequestParam(required=false) String rangeEnd) {
         return cases.page(cases.actor(userId), status, caseType, pageSize, cursor, rangeStart, rangeEnd);
-    }
-    @GetMapping("/feedback") public Page<com.raxim.myscoutee.domain.community.service.ServiceFeedbackService.Item> feedback(@RequestParam String userId,
-            @RequestParam(defaultValue="pending") String bucket, @RequestParam(defaultValue="20") int pageSize, @RequestParam(required=false) String cursor) {
-        return feedback.page(cases.actor(userId),bucket,pageSize,cursor);
-    }
-    @PostMapping("/feedback/{id}") public void feedbackAction(@PathVariable String id, @RequestBody com.raxim.myscoutee.domain.community.service.ServiceFeedbackService.Command command) {
-        feedback.action(cases.actor(command.userId()),id,command);
-    }
-    @GetMapping("/feedback/stats/{provider}") public com.raxim.myscoutee.domain.community.service.ServiceFeedbackService.Stats feedbackStats(@RequestParam String userId,@PathVariable String provider) {
-        cases.actor(userId); return feedback.stats(provider);
     }
     @GetMapping("/{id}") public CaseItem detail(@RequestParam String userId, @PathVariable String id) { return cases.detail(cases.actor(userId), id); }
     @PostMapping public CaseItem save(@RequestBody SaveCase request) { return cases.save(cases.actor(request.userId()), request); }

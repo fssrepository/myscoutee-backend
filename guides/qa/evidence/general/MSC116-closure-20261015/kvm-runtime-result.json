@@ -1,0 +1,89 @@
+{
+  "stage": 82,
+  "origin": "http://localhost:18080",
+  "checks": [
+    {
+      "check": "native-auth",
+      "status": 200
+    },
+    {
+      "check": "central-feedback-page",
+      "status": 200,
+      "shape": [
+        "items",
+        "total",
+        "allItems",
+        "organizerItems",
+        "receivedEvents",
+        "state",
+        "counts",
+        "evaluations",
+        "evaluationCounts"
+      ]
+    },
+    {
+      "check": "oauth-consent",
+      "status": 200
+    },
+    {
+      "check": "oauth-exchange",
+      "status": 200
+    },
+    {
+      "check": "mcp-discovery",
+      "status": 200,
+      "eventsAdvertised": true
+    },
+    {
+      "check": "events-list",
+      "status": 200,
+      "names": [
+        "event.changed",
+        "event.encounters",
+        "asset.changed"
+      ]
+    },
+    {
+      "check": "mcp-domain-events-read",
+      "status": 200,
+      "toolError": false
+    },
+    {
+      "check": "invalid-event-subscription",
+      "status": 400,
+      "code": -32602
+    }
+  ],
+  "cleanup": {
+    "revoke": 200,
+    "revokedAccess": 401,
+    "mcpMode": "blocked",
+    "activeClients": 0
+  },
+  "databaseBoundary": {
+    "realOwnedTokens": 0,
+    "demoOwnedTokensBeforeRevoke": 1
+  },
+  "timing": {
+    "method": "events/list",
+    "concurrency": 1,
+    "warmup": 3,
+    "samples": 20,
+    "requestCount": 23,
+    "errors": 0,
+    "catalog": [
+      "asset.changed",
+      "event.changed",
+      "event.encounters"
+    ],
+    "meanMs": 101.97841494977474,
+    "medianMs": 97.064931999892,
+    "p95Ms": 121.1011839993298,
+    "maxMs": 135.52633399888873
+  },
+  "limitations": [
+    "Focused packaging/API sample; no full Feedback or application QA replay.",
+    "No equivalent retained Events-catalog CPU/latency baseline; no performance-parity claim.",
+    "Configured OAuth public origin is the retained localhost seed; requests use the KVM localhost:18080 forwarding endpoint."
+  ]
+}

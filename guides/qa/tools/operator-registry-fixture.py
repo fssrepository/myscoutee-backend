@@ -21,6 +21,7 @@ CHECKPOINT = 'OPERATOR-REGISTRY-LIFECYCLE-001'
 SCENARIO = 'operator-registry'
 RETAINED = Path(tempfile.gettempdir()) / 'myscoutee-qa-operator-registry'
 LOCAL_DIRS = ('registry-demo-keys', 'registry-demo-state')
+MONGO_ACTIONS = {}
 
 
 def run(*args, **kwargs):
@@ -48,10 +49,11 @@ def guard():
 
 
 def mongo(action):
+    command = MONGO_ACTIONS.get(action, action)
     return json.loads(subprocess.check_output([
-        'bash', str(HARNESS), action, SCENARIO, CHECKPOINT
+        'bash', str(HARNESS), command, SCENARIO, CHECKPOINT
     ])) if action != 'reset' else run(
-        'bash', str(HARNESS), action, SCENARIO, CHECKPOINT)
+        'bash', str(HARNESS), command, SCENARIO, CHECKPOINT)
 
 
 def archive_go(destination):
@@ -167,12 +169,19 @@ if __name__ == '__main__':
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('stage', 'status', 'reset'))
-    parser.add_argument('--checkpoint', choices=('registry', 'revenue'), default='registry')
+    parser.add_argument('--checkpoint', choices=('registry', 'revenue', 'mcp-events'), default='registry')
     args = parser.parse_args()
     if args.checkpoint == 'revenue':
         CHECKPOINT = 'OPERATOR-REVENUE-LIFECYCLE-001'
         SCENARIO = 'operator-revenue'
         RETAINED = Path(tempfile.gettempdir()) / 'myscoutee-qa-operator-revenue'
+    elif args.checkpoint == 'mcp-events':
+        CHECKPOINT = 'MSC115-WORK-COMMUNITY'
+        SCENARIO = 'work-community'
+        RETAINED = Path(tempfile.gettempdir()) / 'myscoutee-qa-mcp-events-registry'
+        MONGO_ACTIONS = {'stage': 'capture-integration-registry',
+                         'status': 'integration-registry-status',
+                         'reset': 'restore-integration-registry'}
     guard()
     if args.action == 'stage':
         stage()

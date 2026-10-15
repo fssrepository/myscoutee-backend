@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.email.service;
 
 import com.raxim.myscoutee.domain.accounts.api.AccountInactivity;
-import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
+import com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation;
 import com.raxim.myscoutee.domain.events.api.MemberAudience;
 import com.raxim.myscoutee.domain.localization.api.Translations;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
@@ -79,7 +79,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     public static final String ACTION_EVENT_STAGE_REMINDER = "event.stage.reminder";
     public static final String ACTION_CASE_FEEDBACK_PREPARE = "case.feedback.prepare";
     @org.springframework.beans.factory.annotation.Autowired
-    private CaseFeedbackPreparation serviceFeedback;
+    private FeedbackPreparation feedbackEvaluation;
 
     public static final String ACTION_EVENT_DEFINITION_CHANGED = "event.definition.changed";
 
@@ -562,7 +562,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         return saved;
     }
 
-    public void scheduleCaseFeedback(com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation.Request closed) {
+    public void scheduleCaseFeedback(com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Request closed) {
         String now = Instant.now().toString();
         ScheduledMessageTask task = new ScheduledMessageTask();
         task.setId(new ObjectId().toHexString()); task.setSyncKey(UUID.randomUUID().toString());
@@ -576,7 +576,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     }
 
     private TaskResult prepareCaseFeedback(ScheduledMessageTask task) throws tools.jackson.core.JacksonException {
-        return new TaskResult(STATUS_COMPLETED, serviceFeedback.prepareSnapshot(task.getPayload().get("closedCase")), "Case feedback prepared.");
+        return new TaskResult(STATUS_COMPLETED, feedbackEvaluation.prepareSnapshot(task.getPayload().get("closedCase")), "Case feedback prepared.");
     }
 
     public void acceptTaskMetadata(ScheduledMessageTask task) {

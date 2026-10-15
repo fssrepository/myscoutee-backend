@@ -52,9 +52,18 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
     private tools.jackson.databind.ObjectMapper objectMapper;
     private void scheduleFeedback(ServiceCase closed) {
         try {
-            scheduledMessages.scheduleCaseFeedback(new com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation.Request(
+            scheduledMessages.scheduleCaseFeedback(new com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Request(
                     closed.id(), closed.version(), closed.baseGroupId(), objectMapper.writeValueAsString(closed)));
         } catch (tools.jackson.core.JacksonException error) { throw new IllegalStateException(error); }
+    }
+    public com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Context feedbackContext(String snapshot) {
+        var closed=objectMapper.readValue(snapshot, ServiceCase.class);
+        var active=closed.activeParticipantAccountIds();
+        return new com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Context(closed.id(),closed.title(),closed.updatedAtIso(),
+            active.stream().filter(id -> closed.support().stream().noneMatch(s -> s.accountId().equals(id))
+                || closed.audienceAccountIds().contains(id) || id.equals(closed.ownerAccountId())).toList(),
+            closed.support().stream().filter(s -> "accepted".equals(s.status()) && active.contains(s.accountId()))
+                .map(s -> new com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Provider(s.accountId(),s.serviceId())).toList());
     }
     public String actor(String id) { return access.actor(id); }
     public boolean canManage(ServiceCase c, String actor) {

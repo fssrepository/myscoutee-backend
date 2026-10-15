@@ -4538,10 +4538,10 @@
               }
             ]
           },
-          "eventFeedback": {
+          "feedbackCounts": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_UserEventFeedbackCounterDeltaDto"
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_UserFeedbackCounterDeltaDto"
               },
               {
                 "type": "null"
@@ -4698,7 +4698,7 @@
         },
         "required": []
       },
-      "domain_events_dto_EventsDtos_UserEventFeedbackCounterDeltaDto": {
+      "domain_events_dto_EventsDtos_UserFeedbackCounterDeltaDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

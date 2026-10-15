@@ -865,9 +865,17 @@
                 }
               ]
             }
+          },
+          "eventId": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
-        "required": []
+        "required": [
+          "eventId"
+        ]
       },
       "domain_events_dto_MingleEncounterDtos_TableDto": {
         "type": "object",

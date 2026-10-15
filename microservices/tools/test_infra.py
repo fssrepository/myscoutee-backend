@@ -460,12 +460,12 @@ class WorkloadCredentialsTest(unittest.TestCase):
 
     def test_constants_and_nested_dtos_do_not_grant_a_remote_capability(self):
         from transport_usage import uses_api
-        api = 'com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation'
-        self.assertFalse(uses_api('import ' + api + '; class Reader { Object value = CaseFeedbackPreparation.CRITERIA; }', api))
-        self.assertFalse(uses_api('import ' + api + '; class Reader { CaseFeedbackPreparation.Request request; }', api))
-        self.assertTrue(uses_api('import ' + api + '; class Reader { private CaseFeedbackPreparation owner; }', api))
+        api = 'com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation'
+        self.assertFalse(uses_api('import ' + api + '; class Reader { Object value = FeedbackPreparation.CRITERIA; }', api))
+        self.assertFalse(uses_api('import ' + api + '; class Reader { FeedbackPreparation.Request request; }', api))
+        self.assertTrue(uses_api('import ' + api + '; class Reader { private FeedbackPreparation owner; }', api))
         self.assertTrue(uses_api('class Reader { Reader(' + api + ' owner) {} }', api))
-        self.assertTrue(uses_api('import ' + api + '; class Reader { private ObjectProvider<CaseFeedbackPreparation> owner; }', api))
+        self.assertTrue(uses_api('import ' + api + '; class Reader { private ObjectProvider<FeedbackPreparation> owner; }', api))
         self.assertTrue(uses_api('@Import(' + api + '.class) class Config {}', api))
 
     def test_shared_parameter_reader_gets_only_its_catalog_capability(self):

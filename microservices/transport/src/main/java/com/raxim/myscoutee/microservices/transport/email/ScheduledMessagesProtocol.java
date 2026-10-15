@@ -23,7 +23,7 @@ public final class ScheduledMessagesProtocol {
     public record Receipt(Boolean completed) {}
     public record Event(Scope scope, com.raxim.myscoutee.domain.events.dto.EventScheduleDto event, String actor) {}
     public record Suspend(Scope scope, String eventId, String actor) {}
-    public record Feedback(Scope scope, com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation.Request closed) {}
+    public record Feedback(Scope scope, com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Request closed) {}
     public record Change(Scope scope, String eventId, String title, java.util.Collection<String> audience, java.util.Collection<String> reasons, String actor) {}
     public record LifecycleOnce(String deliveryId, Change change) {}
     public record Result(Boolean resolved, com.raxim.myscoutee.domain.email.dto.ScheduledMessageTaskDto value) {}

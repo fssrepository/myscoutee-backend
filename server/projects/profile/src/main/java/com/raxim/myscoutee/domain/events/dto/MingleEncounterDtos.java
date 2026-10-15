@@ -10,8 +10,9 @@ public final class MingleEncounterDtos {
         @Override public String getStatus() { return status; }
         @Override public Integer getRevision() { return revision; }
     }
-    public record RoundDto(List<TableDto> tables) implements MingleEncounters.Round {
-        public static RoundDto from(MingleEncounters.Round value) { return new RoundDto(value.getTables() == null ? null : value.getTables().stream().map(t -> new TableDto(t.memberUserIds())).toList()); }
+    public record RoundDto(String eventId, List<TableDto> tables) implements MingleEncounters.Round {
+        public static RoundDto from(MingleEncounters.Round value) { return new RoundDto(value.getEventId(), value.getTables() == null ? null : value.getTables().stream().map(t -> new TableDto(t.memberUserIds())).toList()); }
+        @Override public String getEventId() { return eventId; }
         @Override public List<TableDto> getTables() { return tables; }
     }
     public record TableDto(List<String> memberUserIds) implements MingleEncounters.Table {}

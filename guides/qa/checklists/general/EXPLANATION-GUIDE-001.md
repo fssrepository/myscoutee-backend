@@ -1,3 +1,17 @@
+> **CLOSED / PASS — 2026-10-15, accepted scope.**
+> The completed guide checks are accepted through the MSC-115 closure and the
+> credited guide runs. The remaining first-visit introduction checks have moved
+> directly into MSC-116 AUTOMATIC_QA (steps 75–81), without a separate testcase;
+> API/feedback, call/volume and role checks
+> remain with MSC-116, MSC-117 and MSC-118 respectively, including assigned
+> checks not yet executed. Template and live checks retain their separate owners.
+> All checks retained in this closed case are PASS. Transferred checks are not
+> claimed as executed or passed by this closure and do not reopen this case.
+> The original checklist below is preserved unchanged for history, including
+> its earlier REOPENED / NOT RUN notes; those notes are superseded by this closure.
+> Continue the remaining independent work in
+> [MSC-116](../api/MSC-116_AUTOMATIC_QA.md), before its KVM block; do not replay this historical list.
+
 # EXPLANATION-GUIDE-001 — application-wide explanation guide click-through
 
 This case checks that the in-app explanation guide can be opened and completed

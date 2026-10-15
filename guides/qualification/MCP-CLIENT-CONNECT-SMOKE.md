@@ -38,3 +38,25 @@ one host does not prove another host or assistant session has access.
 Record PASS/FAIL/NOT RUN separately for each host, with revision, date, observed
 results and cleanup. A failed or unavailable host smoke does not reopen completed
 local API/provider QA. Do not count this guide as a manual-QA testcase.
+
+## MSC-119 live host, Events and publication remainder
+
+Status: NOT RUN unless an exact host/deployment result is recorded. These items
+are outside MSC-116/119 development QA and outside its matrix estimates.
+
+6. In an actually supported external host with a deployed HTTPS endpoint,
+   authorize two independent users and exercise subscribe → signed callback →
+   visible chat event → unsubscribe. The publisher's account is not reused.
+   Revocation stops delivery; ordinary MCP connection alone does not prove Events.
+7. Where supported by the chosen host, configure its real scheduled workflow,
+   observe execution and cancellation in that host, and check the documented
+   location/permissions. MyScoutee community recurring jobs and a paid host plan
+   do not by themselves prove host scheduling or Events interoperability.
+8. Qualify each actual target host independently, including external OAuth
+   consent/return, account/profile isolation and failed/cancelled setup. Record
+   support limitations rather than assuming every host implements every feature.
+9. Publication remains with the existing MCP publication handoff: publisher and
+   policy facts, deployed endpoints, reviewer access, recorded demo, portal scans,
+   attestations and submission/review. A validated development ZIP is not live
+   installation or publication acceptance. Do not submit/publish from a QA-only
+   request; preserve the user's separate publication instructions.

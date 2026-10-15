@@ -31,4 +31,8 @@ public final class RemoteEventDerivedUpdates extends RemoteReadTransport impleme
         return exchange(path, bytes, new TypeReference<EventDerivedUpdatesProtocol.Result>() {},
                 "event-projection.update", EventDerivedUpdatesProtocol.MAX_RESPONSE_BYTES, value -> value.matched() != null).matched();
     }
+    @Override public void markFeedbackProjected(java.util.Collection<String> sourceIds, boolean projected) {
+        var command = new EventDerivedUpdatesProtocol.FeedbackCommand(sourceIds, projected);
+        send(EventDerivedUpdatesProtocol.FEEDBACK, command, EventDerivedUpdatesProtocol.valid(command));
+    }
 }

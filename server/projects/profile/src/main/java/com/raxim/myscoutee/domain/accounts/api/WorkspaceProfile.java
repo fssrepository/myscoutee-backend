@@ -12,7 +12,7 @@ public interface WorkspaceProfile extends DiscoveryProfile, EmailProfile, AssetP
     String getPartitionKey();
     ActivityCounts getActivities();
     List<? extends Device> getDevices();
-    interface ActivityCounts extends EmailProfile.ActivityCounts { FeedbackCounts eventFeedback(); ChatCounts chat(); Integer adminJobs(); Integer events(); Integer hosting(); Integer game(); }
+    interface ActivityCounts extends EmailProfile.ActivityCounts { FeedbackCounts feedbackCounts(); ChatCounts chat(); Integer adminJobs(); Integer events(); Integer hosting(); Integer game(); }
     interface ChatCounts { Integer all(); SupportCounts supportCases(); }
     interface SupportCounts { Integer pending(); Integer warned(); Integer picked(); }
     interface Device extends EmailProfile.Device {

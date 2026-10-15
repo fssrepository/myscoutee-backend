@@ -33,7 +33,7 @@ public final class RemoteScheduledMessages extends RemoteReadTransport implement
                 "scheduled-messages.suspend", ScheduledMessagesProtocol.MAX_RESPONSE_BYTES, v -> true);
         return result;
     }
-    @Override public void scheduleCaseFeedback(com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation.Request closed) {
+    @Override public void scheduleCaseFeedback(com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Request closed) {
         var command = new ScheduledMessagesProtocol.Feedback(ScheduledMessagesProtocol.Scope.current(), closed);
         if (!ScheduledMessagesProtocol.valid(command)) throw new IllegalArgumentException("Invalid scheduled-messages request");
         byte[] bytes = mapper.writeValueAsBytes(command);

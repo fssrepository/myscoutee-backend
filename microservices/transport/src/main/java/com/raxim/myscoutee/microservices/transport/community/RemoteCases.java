@@ -85,4 +85,12 @@ public final class RemoteCases extends RemoteReadTransport implements Cases {
         }
     }
 
+    @Override public com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Context feedbackContext(String snapshot) {
+        var command = new CasesProtocol.FeedbackContext(CasesProtocol.Scope.current(), snapshot);
+        if (!CasesProtocol.valid(command)) throw new IllegalArgumentException("Invalid feedbackContext request");
+        byte[] bytes = mapper.writeValueAsBytes(command);
+        if (bytes.length > CasesProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("Request exceeds byte limit");
+        return ownerExchange(CasesProtocol.FEEDBACK_CONTEXT, bytes, new TypeReference<CasesProtocol.FeedbackContextResult>() {},
+            "cases.feedbackContext", CasesProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.resolved())).value();
+    }
 }

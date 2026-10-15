@@ -94,7 +94,7 @@ EXACT_DOMAIN_OVERRIDES = {
     "MSC115-TEMPLATE-REGRESSION": "General UI",
     "INTEGRATION-ACCESS-001": "API test",
     "MCP-EVENTS-001": "API test",
-    "SERVICE-FEEDBACK-UI-001": "Group",
+    "FEEDBACK-UI-001": "Group",
     "MSC115-LANDING": "Identity & access",
     "MSC115-INVITE": "Group",
     "MSC115-ADMIN": "Administration",

@@ -214,10 +214,9 @@ public class EventPrivacyService implements EventPrivacy {
     }
 
     public void anonymizeTicketAudit(String userId) { anonymizeUserFieldsByAnyField("eventTicketAudit", List.of("holderUserId", "actorUserId", "originalUsedByUserId"), userId); }
-    public void purgeFeedback(String userId) {
-        deleteDocumentsByAnyField("eventFeedbackAnswers", List.of("viewerUserId", "targetUserId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("eventFeedbackStates", List.of("viewerUserId", "createdUser", "updatedUser"), userId);
-    }
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.feedback.api.FeedbackPrivacy feedback;
+    public void purgeFeedback(String userId) { feedback.purgeFeedback(userId); }
     public void purgeLeaderboard(String userId) { deleteDocumentsByAnyField("eventLeaderboardEntries", List.of("memberId", "homeMemberId", "awayMemberId", "createdUser", "updatedUser"), userId); }
     public void anonymizeSchedulerMarkers(String userId) { anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId); }
 

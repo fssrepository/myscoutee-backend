@@ -35,8 +35,8 @@ public class AccountMenuCounterService implements MenuCounterUpdates {
             pipeline.set("activities.feedback").toValue(
                     (org.springframework.data.mongodb.core.aggregation.AggregationExpression) context ->
                             new org.bson.Document("$add", java.util.List.of(
-                                    new org.bson.Document("$ifNull", java.util.List.of("$activities.eventFeedback.pending", 0)),
-                                    new org.bson.Document("$ifNull", java.util.List.of("$activities.eventFeedback.ownEvents", 0)),
+                                    new org.bson.Document("$ifNull", java.util.List.of("$activities.feedbackCounts.pending", 0)),
+                                    new org.bson.Document("$ifNull", java.util.List.of("$activities.feedbackCounts.ownEvents", 0)),
                                     new org.bson.Document("$ifNull", java.util.List.of("$menuCounters.feedback", 0)))));
             counterUpdate = pipeline;
         }

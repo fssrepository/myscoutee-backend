@@ -211,7 +211,7 @@ class RecoveryCommandsHttpTest {
         @Bean com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters() { return mock(com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters.class); }
         @Bean ActivityCounters counters() { return mock(ActivityCounters.class); }
         @Bean MenuCounterUpdates menuCounters() { return mock(MenuCounterUpdates.class); }
-        @Bean ServiceFeedbackCounters feedback() { return mock(ServiceFeedbackCounters.class); }
+        @Bean FeedbackEvaluationCounters feedback() { return mock(FeedbackEvaluationCounters.class); }
         @Bean FeedCounts feeds() { return mock(FeedCounts.class); }
         @Bean AttachmentLifecycle attachments() { return mock(AttachmentLifecycle.class); }
         @Bean ScheduledMessages messages() { return mock(ScheduledMessages.class); }

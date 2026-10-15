@@ -1,0 +1,1922 @@
+[
+  {
+    "label": "local admin EN desktop parent",
+    "steps": [
+      {
+        "progress": "1 / 13",
+        "title": "Integration help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 13",
+        "title": "API destination",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 13",
+        "title": "Separate client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 13",
+        "title": "Create client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 13",
+        "title": "Connection and expiry",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 13",
+        "title": "API client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "7 / 13",
+        "title": "End client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "8 / 13",
+        "title": "What an AI client can do",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "9 / 13",
+        "title": "Manual client setup",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "10 / 13",
+        "title": "Connect through the URL",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "11 / 13",
+        "title": "Main MCP access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "12 / 13",
+        "title": "Approved AI clients",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "13 / 13",
+        "title": "Close integrations",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin EN desktop selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "Confirm selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "Four access levels",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "What this pack permits",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "Discard this selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin EN desktop help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enable and connect",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "Four permission packs",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "Choose what to monitor",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Role statistics and alerts",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "Manual client credentials",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "Close help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin EN mobile parent",
+    "steps": [
+      {
+        "progress": "1 / 13",
+        "title": "Integration help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 13",
+        "title": "API destination",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 13",
+        "title": "Separate client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 13",
+        "title": "Create client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 13",
+        "title": "Connection and expiry",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 13",
+        "title": "API client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "7 / 13",
+        "title": "End client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "8 / 13",
+        "title": "What an AI client can do",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "9 / 13",
+        "title": "Manual client setup",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "10 / 13",
+        "title": "Connect through the URL",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "11 / 13",
+        "title": "Main MCP access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "12 / 13",
+        "title": "Approved AI clients",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "13 / 13",
+        "title": "Close integrations",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin EN mobile selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "Confirm selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "Four access levels",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "What this pack permits",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "Discard this selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin EN mobile help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enable and connect",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "Four permission packs",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "Choose what to monitor",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Role statistics and alerts",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "Manual client credentials",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "Close help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin HU mobile parent",
+    "steps": [
+      {
+        "progress": "1 / 13",
+        "title": "Integr\u00e1ci\u00f3s s\u00fag\u00f3",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 13",
+        "title": "Az API c\u00e9lc\u00edme",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 13",
+        "title": "K\u00fcl\u00f6n klienshozz\u00e1f\u00e9r\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 13",
+        "title": "Klienshozz\u00e1f\u00e9r\u00e9s l\u00e9trehoz\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 13",
+        "title": "Kapcsol\u00f3d\u00e1s \u00e9s lej\u00e1rat",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 13",
+        "title": "API-kliens jogosults\u00e1ga",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "7 / 13",
+        "title": "Klienshozz\u00e1f\u00e9r\u00e9s megsz\u00fcntet\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "8 / 13",
+        "title": "Mit tud az AI-kliens?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "9 / 13",
+        "title": "K\u00e9zi kliensbe\u00e1ll\u00edt\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "10 / 13",
+        "title": "Kapcsol\u00f3d\u00e1s a c\u00edmmel",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "11 / 13",
+        "title": "MCP f\u0151 jogosults\u00e1g",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "12 / 13",
+        "title": "Enged\u00e9lyezett AI-kliensek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "13 / 13",
+        "title": "Integr\u00e1ci\u00f3k bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin HU mobile selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "V\u00e1laszt\u00e1s meger\u0151s\u00edt\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "N\u00e9gy jogosults\u00e1gi szint",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "Mit enged ez a csomag?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "V\u00e1laszt\u00e1s elvet\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin HU mobile help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enged\u00e9lyez\u00e9s \u00e9s csatlakoz\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "N\u00e9gy jogosults\u00e1gi csomag",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "V\u00e1laszd ki, mit figyeljen",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Szerepk\u00f6ri statisztik\u00e1k \u00e9s jelz\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "K\u00e9zi kliensadatok",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "S\u00fag\u00f3 bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin HU desktop parent",
+    "steps": [
+      {
+        "progress": "1 / 13",
+        "title": "Integr\u00e1ci\u00f3s s\u00fag\u00f3",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 13",
+        "title": "Az API c\u00e9lc\u00edme",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 13",
+        "title": "K\u00fcl\u00f6n klienshozz\u00e1f\u00e9r\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 13",
+        "title": "Klienshozz\u00e1f\u00e9r\u00e9s l\u00e9trehoz\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 13",
+        "title": "Kapcsol\u00f3d\u00e1s \u00e9s lej\u00e1rat",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 13",
+        "title": "API-kliens jogosults\u00e1ga",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "7 / 13",
+        "title": "Klienshozz\u00e1f\u00e9r\u00e9s megsz\u00fcntet\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "8 / 13",
+        "title": "Mit tud az AI-kliens?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "9 / 13",
+        "title": "K\u00e9zi kliensbe\u00e1ll\u00edt\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "10 / 13",
+        "title": "Kapcsol\u00f3d\u00e1s a c\u00edmmel",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "11 / 13",
+        "title": "MCP f\u0151 jogosults\u00e1g",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "12 / 13",
+        "title": "Enged\u00e9lyezett AI-kliensek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "13 / 13",
+        "title": "Integr\u00e1ci\u00f3k bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin HU desktop selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "V\u00e1laszt\u00e1s meger\u0151s\u00edt\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "N\u00e9gy jogosults\u00e1gi szint",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "Mit enged ez a csomag?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "V\u00e1laszt\u00e1s elvet\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local admin HU desktop help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enged\u00e9lyez\u00e9s \u00e9s csatlakoz\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "N\u00e9gy jogosults\u00e1gi csomag",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "V\u00e1laszd ki, mit figyeljen",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Szerepk\u00f6ri statisztik\u00e1k \u00e9s jelz\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "K\u00e9zi kliensadatok",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "S\u00fag\u00f3 bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member EN desktop parent",
+    "steps": [
+      {
+        "progress": "1 / 12",
+        "title": "Referral purchases",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 12",
+        "title": "Integration help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 12",
+        "title": "Registration attribution",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 12",
+        "title": "API destination",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 12",
+        "title": "Separate client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 12",
+        "title": "Create client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "7 / 12",
+        "title": "What an AI client can do",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "8 / 12",
+        "title": "Manual client setup",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "9 / 12",
+        "title": "Connect through the URL",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "10 / 12",
+        "title": "Main MCP access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "11 / 12",
+        "title": "Approved AI clients",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "12 / 12",
+        "title": "Close integrations",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member EN desktop selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "Confirm selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "Four access levels",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "What this pack permits",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "Discard this selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member EN desktop help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enable and connect",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "Four permission packs",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "Choose what to monitor",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Role statistics and alerts",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "Manual client credentials",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "Close help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member EN mobile parent",
+    "steps": [
+      {
+        "progress": "1 / 12",
+        "title": "Referral purchases",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 12",
+        "title": "Integration help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 12",
+        "title": "Registration attribution",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 12",
+        "title": "API destination",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 12",
+        "title": "Separate client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 12",
+        "title": "Create client access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "7 / 12",
+        "title": "What an AI client can do",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "8 / 12",
+        "title": "Manual client setup",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "9 / 12",
+        "title": "Connect through the URL",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "10 / 12",
+        "title": "Main MCP access",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "11 / 12",
+        "title": "Approved AI clients",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "12 / 12",
+        "title": "Close integrations",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member EN mobile selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "Confirm selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "Four access levels",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "What this pack permits",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "Discard this selection",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member EN mobile help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enable and connect",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "Four permission packs",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "Choose what to monitor",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Role statistics and alerts",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "Manual client credentials",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "Close help",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member HU mobile parent",
+    "steps": [
+      {
+        "progress": "1 / 12",
+        "title": "Megh\u00edvottak v\u00e1s\u00e1rl\u00e1sai",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 12",
+        "title": "Integr\u00e1ci\u00f3s s\u00fag\u00f3",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 12",
+        "title": "Regisztr\u00e1ci\u00f3 hozz\u00e1rendel\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 12",
+        "title": "Az API c\u00e9lc\u00edme",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 12",
+        "title": "K\u00fcl\u00f6n klienshozz\u00e1f\u00e9r\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 12",
+        "title": "Klienshozz\u00e1f\u00e9r\u00e9s l\u00e9trehoz\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "7 / 12",
+        "title": "Mit tud az AI-kliens?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "8 / 12",
+        "title": "K\u00e9zi kliensbe\u00e1ll\u00edt\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "9 / 12",
+        "title": "Kapcsol\u00f3d\u00e1s a c\u00edmmel",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "10 / 12",
+        "title": "MCP f\u0151 jogosults\u00e1g",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "11 / 12",
+        "title": "Enged\u00e9lyezett AI-kliensek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "12 / 12",
+        "title": "Integr\u00e1ci\u00f3k bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member HU mobile selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "V\u00e1laszt\u00e1s meger\u0151s\u00edt\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "N\u00e9gy jogosults\u00e1gi szint",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "Mit enged ez a csomag?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "V\u00e1laszt\u00e1s elvet\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member HU mobile help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enged\u00e9lyez\u00e9s \u00e9s csatlakoz\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "N\u00e9gy jogosults\u00e1gi csomag",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "V\u00e1laszd ki, mit figyeljen",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Szerepk\u00f6ri statisztik\u00e1k \u00e9s jelz\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "K\u00e9zi kliensadatok",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "S\u00fag\u00f3 bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member HU desktop parent",
+    "steps": [
+      {
+        "progress": "1 / 12",
+        "title": "Megh\u00edvottak v\u00e1s\u00e1rl\u00e1sai",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 12",
+        "title": "Integr\u00e1ci\u00f3s s\u00fag\u00f3",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 12",
+        "title": "Regisztr\u00e1ci\u00f3 hozz\u00e1rendel\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 12",
+        "title": "Az API c\u00e9lc\u00edme",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 12",
+        "title": "K\u00fcl\u00f6n klienshozz\u00e1f\u00e9r\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 12",
+        "title": "Klienshozz\u00e1f\u00e9r\u00e9s l\u00e9trehoz\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "7 / 12",
+        "title": "Mit tud az AI-kliens?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "8 / 12",
+        "title": "K\u00e9zi kliensbe\u00e1ll\u00edt\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "9 / 12",
+        "title": "Kapcsol\u00f3d\u00e1s a c\u00edmmel",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "10 / 12",
+        "title": "MCP f\u0151 jogosults\u00e1g",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "11 / 12",
+        "title": "Enged\u00e9lyezett AI-kliensek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "12 / 12",
+        "title": "Integr\u00e1ci\u00f3k bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member HU desktop selector",
+    "steps": [
+      {
+        "progress": "1 / 4",
+        "title": "V\u00e1laszt\u00e1s meger\u0151s\u00edt\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 4",
+        "title": "N\u00e9gy jogosults\u00e1gi szint",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 4",
+        "title": "Mit enged ez a csomag?",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 4",
+        "title": "V\u00e1laszt\u00e1s elvet\u00e9se",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  },
+  {
+    "label": "local member HU desktop help",
+    "steps": [
+      {
+        "progress": "1 / 6",
+        "title": "Enged\u00e9lyez\u00e9s \u00e9s csatlakoz\u00e1s",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "2 / 6",
+        "title": "N\u00e9gy jogosults\u00e1gi csomag",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "3 / 6",
+        "title": "V\u00e1laszd ki, mit figyeljen",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "4 / 6",
+        "title": "Szerepk\u00f6ri statisztik\u00e1k \u00e9s jelz\u00e9sek",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "5 / 6",
+        "title": "K\u00e9zi kliensadatok",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      },
+      {
+        "progress": "6 / 6",
+        "title": "S\u00fag\u00f3 bez\u00e1r\u00e1sa",
+        "cardFits": true,
+        "focusVisible": true,
+        "viewport": [
+          1280,
+          900
+        ]
+      }
+    ]
+  }
+]

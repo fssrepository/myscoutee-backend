@@ -289,7 +289,7 @@ public final class EventsDtos {
             UserChatCounterDeltaDto chat,
             UserEventCounterDeltaDto event,
             UserAssetCounterDeltaDto asset,
-            UserEventFeedbackCounterDeltaDto eventFeedback,
+            UserFeedbackCounterDeltaDto feedbackCounts,
             Integer adminJobs,
             Integer adminMetrics,
             Integer notifications) {
@@ -339,7 +339,7 @@ public final class EventsDtos {
             Integer tickets) {
     }
 
-    public record UserEventFeedbackCounterDeltaDto(
+    public record UserFeedbackCounterDeltaDto(
             Integer ownEvents,
             Integer pending,
             Integer feedbacked,
@@ -368,177 +368,6 @@ public final class EventsDtos {
             String stageFinalizedByUserId,
             Integer stageResultRevision,
             Boolean autoInviter) {
-    }
-
-    public record EventFeedbackAnswerDto(
-            String cardId,
-            String eventId,
-            String kind,
-            String targetUserId,
-            String targetRole,
-            String primaryValue,
-            String secondaryValue,
-            String eventComment,
-            List<String> personalityTraitIds,
-            List<String> tags,
-            String submittedAtIso) {
-    }
-
-    public record EventFeedbackStateDto(
-            String eventId,
-            Boolean removed,
-            String submittedAtIso,
-            String removedAtIso,
-            String organizerNote,
-            Map<String, EventFeedbackAnswerDto> answersByCardId) {
-    }
-
-    public record EventFeedbackReceivedEntryDto(
-            String viewerUserId,
-            String viewerName,
-            String viewerInitials,
-            String viewerGender,
-            String viewerImageUrl,
-            String eventId,
-            String submittedAtIso,
-            String updatedAtIso,
-            String organizerNote,
-            List<EventFeedbackAnswerDto> answers) {
-    }
-
-    public record EventFeedbackReceivedEventDto(
-            String eventId,
-            List<EventFeedbackReceivedEntryDto> entries) {
-    }
-
-    public record EventFeedbackNoteRequestDto(
-            String userId,
-            String eventId,
-            String text) {
-    }
-
-    public record EventFeedbackToggleRequestDto(
-            String userId,
-            String eventId) {
-    }
-
-    public record EventFeedbackPageQueryDto(
-            String userId,
-            String filter,
-            Integer page,
-            Integer pageSize,
-            String campaignId) {
-        public EventFeedbackPageQueryDto(String userId, String filter, Integer page, Integer pageSize) {
-            this(userId, filter, page, pageSize, null);
-        }
-
-    }
-
-    public record EventFeedbackQueryDto(
-            String userId,
-            String eventId) {
-    }
-
-    public record EventFeedbackStatQueryDto(
-            String userId,
-            String eventId) {
-    }
-
-    public record EventFeedbackStatOptionDto(
-            String key,
-            Integer count) {
-    }
-
-    public record EventFeedbackStatSectionDto(
-            String key,
-            Integer responseCount,
-            List<EventFeedbackStatOptionDto> options) {
-    }
-
-    public record EventFeedbackStatDto(
-            String eventId,
-            Integer totalResponses,
-            List<EventFeedbackStatSectionDto> sections) {
-    }
-
-    public record EventFeedbackPageCountsDto(
-            Integer ownEvents,
-            Integer pending,
-            Integer feedbacked,
-            Integer removed) {
-    }
-
-    public record EventFeedbackPageStateSnapshotDto(
-            Map<String, Boolean> submittedCardsById,
-            Map<String, EventFeedbackAnswerDto> submittedAnswersByCardId,
-            Map<String, String> submittedEventsById,
-            Map<String, Boolean> removedEventsById,
-            Map<String, String> removedEventDatesById,
-            Map<String, String> organizerNotesByEventId) {
-    }
-
-    public record EventFeedbackDto(
-            String eventId,
-            String title,
-            String subtitle,
-            String timeframe,
-            String imageUrl,
-            Long startAtMs,
-            Integer pendingCards,
-            Integer totalCards,
-            Boolean isRemoved,
-            Boolean isFeedbacked,
-            Long feedbackedAtMs,
-            Long removedAtMs,
-            Boolean isOwnEvent) {
-    }
-
-    public record EventFeedbackCardDto(
-            String id,
-            String eventId,
-            String kind,
-            String attendeeUserId,
-            String targetUserId,
-            String targetRole,
-            String eventTitle,
-            String eventSubtitle,
-            String eventImageUrl,
-            String eventTimeframe,
-            String eventStartAtIso,
-            String eventLabel,
-            String targetName,
-            Integer targetAge,
-            String targetCity,
-            String targetGender,
-            String targetTraitLabel,
-            String targetImageUrl,
-            String answerPrimary,
-            String answerSecondary,
-            String eventComment,
-            List<String> selectedTraitIds) {
-    }
-
-    public record EventFeedbackPageResultDto(
-            List<EventFeedbackDto> items,
-            Integer total,
-            List<EventFeedbackDto> allItems,
-            List<EventFeedbackDto> organizerItems,
-            List<EventFeedbackReceivedEventDto> receivedEvents,
-            EventFeedbackPageStateSnapshotDto state,
-            EventFeedbackPageCountsDto counts) {
-    }
-
-    public record EventFeedbackDetailDto(
-            String eventId,
-            String title,
-            String submittedAtIso,
-            String organizerNote,
-            List<EventFeedbackCardDto> cards) {
-    }
-
-    public record EventFeedbackSubmitRequestDto(
-            String userId,
-            EventFeedbackDetailDto feedback) {
     }
 
     public record EventDto(

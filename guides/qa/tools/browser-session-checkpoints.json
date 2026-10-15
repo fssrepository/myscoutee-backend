@@ -14,6 +14,31 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "INTEGRATION-ACCESS-LOCAL-001": {
+      "preserveOtherSessions": true,
+      "storageScope": "demo",
+      "entryUrl": "http://localhost/entry",
+      "targetUrl": "http://localhost/entry",
+      "bootstrapEntryConsent": true,
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC116 local Alex", "sessionKind": "anonymous", "expectedName": "Clean local Alex baseline", "autoDismissExplanationGuide": true },
+        { "actor": "MSC116 local Maya", "sessionKind": "anonymous", "expectedName": "Clean local Maya baseline", "autoDismissExplanationGuide": true }
+      ]
+    },
+    "INTEGRATION-ACCESS-001": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC116 Alex manager", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner", "autoDismissExplanationGuide": true },
+        { "actor": "MSC116 Maya member", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone", "autoDismissExplanationGuide": true }
+      ]
+    },
     "MSC122-COMPONENTS-SUBMODULE": {
       "preserveOtherSessions": true,
       "geolocation": { "latitude": 47.5075, "longitude": 19.0354, "accuracy": 10 },
@@ -2878,13 +2903,13 @@
       ]
     },
     "EXPLANATION-GUIDE-LANDING-001": {
-      "fixtureScenario": "event-rating",
-      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
-      "fixtureReadyPhase": "ready-for-manual-rating",
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
       "preserveOtherSessions": true,
       "entryUrl": "http://localhost/entry",
       "targetUrl": "http://localhost/entry",
-      "bootstrapEntryConsent": true,
+      "bootstrapEntryConsent": false,
       "sessions": [
         {
           "actor": "Landing guide anonymous coverage",

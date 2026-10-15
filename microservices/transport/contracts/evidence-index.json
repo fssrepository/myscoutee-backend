@@ -228,7 +228,7 @@
     ]
   ],
   [
-    "events/feedback-directory-v1",
+    "feedback/feedback-directory-v1",
     "feedback-directory",
     [
       200,
@@ -812,8 +812,8 @@
     ]
   ],
   [
-    "community/case-feedback-preparation-v1",
-    "case-feedback-preparation",
+    "feedback/feedback-preparation-v1",
+    "feedback-preparation",
     [
       200,
       400,
@@ -1449,7 +1449,7 @@
     ]
   ],
   [
-    "events/feedback-eligibility-v1",
+    "feedback/feedback-eligibility-v1",
     "feedback-eligibility",
     [
       200,
@@ -2432,6 +2432,32 @@
       400,
       401,
       403,
+      503
+    ]
+  ],
+  [
+    "feedback/feedback-measurement-v1",
+    "feedback-measurement",
+    [
+      200,
+      400,
+      401,
+      403,
+      413,
+      415,
+      503
+    ]
+  ],
+  [
+    "feedback/feedback-privacy-v1",
+    "feedback-privacy",
+    [
+      200,
+      400,
+      401,
+      403,
+      413,
+      415,
       503
     ]
   ]

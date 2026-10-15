@@ -4,6 +4,7 @@ import com.raxim.myscoutee.domain.events.dto.EventVersionDto;
 
 /** Version-qualified projection changes executed by the event owner. */
 public interface EventDerivedUpdates {
+    void markFeedbackProjected(java.util.Collection<String> sourceIds, boolean projected);
     boolean updateAffinityVersion(EventVersionDto version, double affinity, double boost);
     boolean updateStatusVersionIfCurrent(EventVersionDto version, String nextStatus, String previousStatus);
 }

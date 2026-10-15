@@ -1,9 +1,9 @@
 {
-  "name": "received event feedback",
+  "name": "received feedback",
   "group": "events",
   "order": 540,
   "method": "GET",
-  "path": "/api/activities/events/feedback/received",
+  "path": "/api/feedback/received",
   "requires": ["demoUser"],
   "headers": {
     "X-App-Session-Kind": "demo"

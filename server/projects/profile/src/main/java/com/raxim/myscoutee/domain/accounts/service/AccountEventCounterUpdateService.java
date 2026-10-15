@@ -55,7 +55,7 @@ public class AccountEventCounterUpdateService implements EventCounterUpdates {
                         count(existing == null || existing.event() == null ? null : existing.event().trash()),
                         count(existing == null || existing.event() == null ? null : existing.event().watchlist())),
                 existing == null ? null : existing.asset(),
-                existing == null ? null : existing.eventFeedback(),
+                existing == null ? null : existing.feedbackCounts(),
                 count(existing == null ? null : existing.adminJobs()),
                 count(existing == null ? null : existing.adminMetrics()),
                 count(existing == null ? null : existing.notifications()));

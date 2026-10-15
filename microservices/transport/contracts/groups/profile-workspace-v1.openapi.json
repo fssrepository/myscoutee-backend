@@ -1162,7 +1162,7 @@
                           }
                         }
                       },
-                      "eventFeedback": {
+                      "feedbackCounts": {
                         "type": [
                           "object",
                           "null"

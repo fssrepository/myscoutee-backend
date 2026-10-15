@@ -12,7 +12,7 @@ const selectedContexts = new Set(process.argv.slice(2));
 const contexts = {
   'profile-editor': ['profile-editor-basics', 'profile-editor-media', 'profile-editor-details', 'profile-editor-save'],
   'profile-view': ['profile-view-overview', 'profile-view-photos', 'profile-view-actions'],
-  'event-feedback': ['event-feedback-entry', 'event-feedback-categories', 'event-feedback-save'],
+  'feedback': ['feedback-entry', 'feedback-categories', 'feedback-save'],
   'home-game': ['affinity', 'affinity-network', 'profile', 'filters', 'history'],
   'activities-rates': ['activity-rate-filter', 'activity-header-controls', 'activity-score-badge', 'activity-fullscreen'],
   chats: ['activity-chat-list', 'activity-chat-card', 'activity-chat-channels', 'activity-chat-message-window', 'activity-chat-tools'],
@@ -160,7 +160,7 @@ function visualBody(lang, context, section, theme) {
   if (context === 'profile-editor' || context === 'profile-view') {
     return profileGuideVisual(lang, section);
   }
-  if (context === 'event-feedback') {
+  if (context === 'feedback') {
     return feedbackGuideVisual(lang, section);
   }
   switch (section) {

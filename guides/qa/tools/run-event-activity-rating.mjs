@@ -110,18 +110,18 @@ try {
     assert.equal(baseline.feedbackAnswers,0);
     await record('step7: friendship and feedback remain independent',baseline);
     const p=actors[1].page;await p.bringToFront();await dismissGuide(p);
-    const closes=p.locator('app-event-feedback-popup button[aria-label="Close"]:visible');
+    const closes=p.locator('app-feedback-popup button[aria-label="Close"]:visible');
     for(let i=0;i<3 && await closes.count();i++) { await closes.last().click(); await pause(400); }
     const activities=p.locator('button[aria-label="Close activities"]:visible');
     if(await activities.count()) await activities.click();
     const openMenu=p.getByRole('button',{name:'Open user menu',exact:true});
     if(await openMenu.count()) await openMenu.click();
     await p.getByRole('menuitem',{name:'Open feedback',exact:true}).click();
-    const cards=p.locator('app-event-feedback-popup app-info-card:visible');
+    const cards=p.locator('app-feedback-popup app-info-card:visible');
     await cards.first().waitFor();assert.equal(await cards.count(),1);
     const listText=await cards.innerText();assert.match(listText,/QA RATING · Speed meeting/);
     assert.match(listText,/1\/1 feedback items pending/);
-    await p.getByRole('button',{name:'Start event feedback',exact:true}).click();
+    await p.getByRole('button',{name:'Start feedback',exact:true}).click();
     const flow=p.locator('app-form-flow:visible');await flow.waitFor();
     await flow.getByText('Casey Rating QA · Host',{exact:true}).waitFor();
     const stepButtons=await flow.locator('button[aria-label]').evaluateAll(es=>es.map(e=>e.getAttribute('aria-label')));

@@ -155,25 +155,25 @@ public final class AccessPermissionsEndpoint {
         return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_LEADERBOARD_ENTRY, AccessPermissionsProtocol.CanCurrentActorSubmitLeaderboardEntryQuery.class,
                 AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorSubmitLeaderboardEntry(query.actorUserId(), query.eventId())));
     }
-    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_EVENT_FEEDBACK, produces = "application/json")
-    public ResponseEntity<?> canCurrentActorSubmitEventFeedback(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_EVENT_FEEDBACK, AccessPermissionsProtocol.CanCurrentActorSubmitEventFeedbackQuery.class,
-                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorSubmitEventFeedback(query.userId(), query.eventId())));
+    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_FEEDBACK, produces = "application/json")
+    public ResponseEntity<?> canCurrentActorSubmitFeedback(HttpServletRequest request) throws java.io.IOException {
+        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SUBMIT_FEEDBACK, AccessPermissionsProtocol.CanCurrentActorSubmitFeedbackQuery.class,
+                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorSubmitFeedback(query.userId(), query.eventId())));
     }
-    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SAVE_EVENT_FEEDBACK_NOTE, produces = "application/json")
-    public ResponseEntity<?> canCurrentActorSaveEventFeedbackNote(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SAVE_EVENT_FEEDBACK_NOTE, AccessPermissionsProtocol.CanCurrentActorSaveEventFeedbackNoteQuery.class,
-                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorSaveEventFeedbackNote(query.userId(), query.eventId())));
+    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SAVE_FEEDBACK_NOTE, produces = "application/json")
+    public ResponseEntity<?> canCurrentActorSaveFeedbackNote(HttpServletRequest request) throws java.io.IOException {
+        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_SAVE_FEEDBACK_NOTE, AccessPermissionsProtocol.CanCurrentActorSaveFeedbackNoteQuery.class,
+                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorSaveFeedbackNote(query.userId(), query.eventId())));
     }
-    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_REMOVE_EVENT_FEEDBACK, produces = "application/json")
-    public ResponseEntity<?> canCurrentActorRemoveEventFeedback(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_REMOVE_EVENT_FEEDBACK, AccessPermissionsProtocol.CanCurrentActorRemoveEventFeedbackQuery.class,
-                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorRemoveEventFeedback(query.userId(), query.eventId())));
+    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_REMOVE_FEEDBACK, produces = "application/json")
+    public ResponseEntity<?> canCurrentActorRemoveFeedback(HttpServletRequest request) throws java.io.IOException {
+        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_REMOVE_FEEDBACK, AccessPermissionsProtocol.CanCurrentActorRemoveFeedbackQuery.class,
+                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorRemoveFeedback(query.userId(), query.eventId())));
     }
-    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_RESTORE_EVENT_FEEDBACK, produces = "application/json")
-    public ResponseEntity<?> canCurrentActorRestoreEventFeedback(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_RESTORE_EVENT_FEEDBACK, AccessPermissionsProtocol.CanCurrentActorRestoreEventFeedbackQuery.class,
-                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorRestoreEventFeedback(query.userId(), query.eventId())));
+    @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_RESTORE_FEEDBACK, produces = "application/json")
+    public ResponseEntity<?> canCurrentActorRestoreFeedback(HttpServletRequest request) throws java.io.IOException {
+        return read(request, AccessPermissionsProtocol.CAN_CURRENT_ACTOR_RESTORE_FEEDBACK, AccessPermissionsProtocol.CanCurrentActorRestoreFeedbackQuery.class,
+                AccessPermissionsProtocol::valid, query -> new AccessPermissionsProtocol.Decision(owner.canCurrentActorRestoreFeedback(query.userId(), query.eventId())));
     }
     @PostMapping(value = AccessPermissionsProtocol.CAN_CURRENT_ACTOR_CREATE_CHAT_MESSAGE, produces = "application/json")
     public ResponseEntity<?> canCurrentActorCreateChatMessage(HttpServletRequest request) throws java.io.IOException {

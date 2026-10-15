@@ -136,7 +136,7 @@ final class LegacyQualifiedMauEvidence
                                 "booking:",
                                 new Document("$toString", "$_id"))))));
 
-        pipeline.add(union("eventFeedbackStates", List.of(
+        pipeline.add(union("feedbackStates", List.of(
                 match(new Document("removed", new Document("$ne", true))
                         .append("submittedAtIso", range(start, end))),
                 new Document("$lookup", new Document("from", "activityMembers")

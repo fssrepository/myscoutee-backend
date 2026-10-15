@@ -15,6 +15,11 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 @Service
 public class EventOwnershipService implements EventOwnership, com.raxim.myscoutee.domain.events.api.OrganizerEventReads {
     @org.springframework.beans.factory.annotation.Autowired private MongoTemplate mongo;
+    @Override public void markFeedbackProjected(java.util.Collection<String> sourceIds, boolean projected) {
+        if (sourceIds.isEmpty()) return;
+        mongo.updateMulti(Query.query(Criteria.where("sourceId").in(sourceIds)),
+            new Update().set("feedbackCountersProjected", projected), ActivityEvent.class);
+    }
     @Override public java.util.Optional<ActivityEvent> findByOwnerUserIdAndSourceId(String owner, String source) { return events.findByOwnerUserIdAndSourceId(owner,source); }
     @Override public boolean ownedExists(String owner,String source) { return mongo.exists(Query.query(Criteria.where("ownerUserId").is(owner).and("sourceId").is(source)),ActivityEvent.class); }
     @Override public List<ActivityEvent> findStoredFamilyBySourceId(String source) { return mongo.find(Query.query(Criteria.where("sourceId").is(source)),ActivityEvent.class); }

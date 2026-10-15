@@ -13,8 +13,8 @@ const ACTIVITY_STAGE_RUNTIME_PATH = path.join(DEMO_DB, 'activitySubEventStageRun
 const ASSET_REQUESTS_PATH = path.join(DEMO_DB, 'assetRequests.json');
 const CHATS_PATH = path.join(DEMO_DB, 'chats.json');
 const CHAT_MESSAGES_PATH = path.join(DEMO_DB, 'chatMessages.json');
-const EVENT_FEEDBACK_ANSWERS_PATH = path.join(DEMO_DB, 'eventFeedbackAnswers.json');
-const EVENT_FEEDBACK_STATES_PATH = path.join(DEMO_DB, 'eventFeedbackStates.json');
+const FEEDBACK_ANSWERS_PATH = path.join(DEMO_DB, 'feedbackAnswers.json');
+const FEEDBACK_STATES_PATH = path.join(DEMO_DB, 'feedbackStates.json');
 const USER_NOTIFICATIONS_PATH = path.join(DEMO_DB, 'userNotifications.json');
 const USER_REPORTS_PATH = path.join(DEMO_DB, 'userReports.json');
 const FRONTEND_HELPER_PATH = path.join(
@@ -477,8 +477,8 @@ let activityStageRuntime = JSON.parse(await readFile(ACTIVITY_STAGE_RUNTIME_PATH
 let assetRequests = JSON.parse(await readFile(ASSET_REQUESTS_PATH, 'utf8'));
 let chats = JSON.parse(await readFile(CHATS_PATH, 'utf8'));
 let chatMessages = JSON.parse(await readFile(CHAT_MESSAGES_PATH, 'utf8'));
-let eventFeedbackAnswers = JSON.parse(await readFile(EVENT_FEEDBACK_ANSWERS_PATH, 'utf8'));
-let eventFeedbackStates = JSON.parse(await readFile(EVENT_FEEDBACK_STATES_PATH, 'utf8'));
+let feedbackAnswers = JSON.parse(await readFile(FEEDBACK_ANSWERS_PATH, 'utf8'));
+let feedbackStates = JSON.parse(await readFile(FEEDBACK_STATES_PATH, 'utf8'));
 let userNotifications = JSON.parse(await readFile(USER_NOTIFICATIONS_PATH, 'utf8'));
 let userReports = JSON.parse(await readFile(USER_REPORTS_PATH, 'utf8'));
 
@@ -489,8 +489,8 @@ const fixtureProtectedEventIds = collectFixtureProtectedEventIds({
   events,
   activityMembers,
   activityStageRuntime,
-  eventFeedbackAnswers,
-  eventFeedbackStates,
+  feedbackAnswers,
+  feedbackStates,
   userReports
 });
 const canonicalEventIds = new Set(CANONICAL_EVENT_ID_BY_SLOT);
@@ -546,8 +546,8 @@ events = CANONICAL_EVENT_ID_BY_SLOT.map(eventId => {
   activityStageRuntime,
   chats,
   chatMessages,
-  eventFeedbackAnswers,
-  eventFeedbackStates,
+  feedbackAnswers,
+  feedbackStates,
   userNotifications,
   userReports
 } = pruneEventGraph({
@@ -559,8 +559,8 @@ events = CANONICAL_EVENT_ID_BY_SLOT.map(eventId => {
   activityStageRuntime,
   chats,
   chatMessages,
-  eventFeedbackAnswers,
-  eventFeedbackStates,
+  feedbackAnswers,
+  feedbackStates,
   userNotifications,
   userReports,
   oldEventTitleById
@@ -683,8 +683,8 @@ const expected = new Map([
   [ASSET_REQUESTS_PATH, `${JSON.stringify(assetRequests, null, 2)}\n`],
   [CHATS_PATH, `${JSON.stringify(chats, null, 2)}\n`],
   [CHAT_MESSAGES_PATH, `${JSON.stringify(chatMessages, null, 2)}\n`],
-  [EVENT_FEEDBACK_ANSWERS_PATH, `${JSON.stringify(eventFeedbackAnswers, null, 2)}\n`],
-  [EVENT_FEEDBACK_STATES_PATH, `${JSON.stringify(eventFeedbackStates, null, 2)}\n`],
+  [FEEDBACK_ANSWERS_PATH, `${JSON.stringify(feedbackAnswers, null, 2)}\n`],
+  [FEEDBACK_STATES_PATH, `${JSON.stringify(feedbackStates, null, 2)}\n`],
   [USER_NOTIFICATIONS_PATH, `${JSON.stringify(userNotifications, null, 2)}\n`],
   [USER_REPORTS_PATH, `${JSON.stringify(userReports, null, 2)}\n`],
   [FRONTEND_HELPER_PATH, frontendHelper],
@@ -1136,8 +1136,8 @@ function collectFixtureProtectedEventIds({
   events,
   activityMembers,
   activityStageRuntime,
-  eventFeedbackAnswers,
-  eventFeedbackStates,
+  feedbackAnswers,
+  feedbackStates,
   userReports
 }) {
   const eventIds = new Set(events.map(eventKey));
@@ -1149,8 +1149,8 @@ function collectFixtureProtectedEventIds({
   for (const eventId of collectQaUserRelatedStaticEventIds({ events, activityMembers })) protectedIds.add(eventId);
   for (const record of [
     ...activityStageRuntime,
-    ...eventFeedbackAnswers,
-    ...eventFeedbackStates,
+    ...feedbackAnswers,
+    ...feedbackStates,
     ...userReports.filter(report => report.sourceType === 'event')
   ]) {
     for (const candidate of [record.eventId, record.sourceId, record.ownerId]) {
@@ -1246,8 +1246,8 @@ function pruneEventGraph({
   activityStageRuntime,
   chats,
   chatMessages,
-  eventFeedbackAnswers,
-  eventFeedbackStates,
+  feedbackAnswers,
+  feedbackStates,
   userNotifications,
   userReports,
   oldEventTitleById
@@ -1267,8 +1267,8 @@ function pruneEventGraph({
     return Boolean(parentEventId(member.ownerId, keptEventIds));
   });
   chatMessages = chatMessages.filter(message => keptChatIds.has(message.chatId));
-  eventFeedbackAnswers = eventFeedbackAnswers.filter(answer => !removedEventIds.has(answer.eventId));
-  eventFeedbackStates = eventFeedbackStates.filter(state => !removedEventIds.has(state.eventId));
+  feedbackAnswers = feedbackAnswers.filter(answer => !removedEventIds.has(answer.eventId));
+  feedbackStates = feedbackStates.filter(state => !removedEventIds.has(state.eventId));
   userNotifications = userNotifications.filter(notification => !referencesAnyId(notification, removedEventIds));
   userReports = userReports.filter(report => !referencesAnyId(report, removedEventIds));
 
@@ -1297,8 +1297,8 @@ function pruneEventGraph({
     activityStageRuntime,
     chats: keptChats,
     chatMessages,
-    eventFeedbackAnswers,
-    eventFeedbackStates,
+    feedbackAnswers,
+    feedbackStates,
     userNotifications,
     userReports
   };

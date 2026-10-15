@@ -71,4 +71,10 @@ public final class CasesEndpoint {
         catch (RuntimeException unavailable) { return response(503, new CasesProtocol.Error("CASES_UNAVAILABLE")); }
     }
     private ResponseEntity<?> response(int status, Object body) { return ResponseEntity.status(status).cacheControl(CacheControl.noStore()).body(body); }
+    @PostMapping(value = CasesProtocol.FEEDBACK_CONTEXT, produces = "application/json")
+    public ResponseEntity<?> feedbackContext(HttpServletRequest request) throws java.io.IOException {
+        return read(request, CasesProtocol.FeedbackContext.class, CasesProtocol::valid, command ->
+            com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(),
+                () -> new CasesProtocol.FeedbackContextResult(true, owner.feedbackContext(command.snapshot()))));
+    }
 }

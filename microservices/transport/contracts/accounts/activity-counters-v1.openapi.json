@@ -1172,9 +1172,9 @@
         }
       }
     },
-    "/_internal/v1/accounts/activity-counters/service-feedback": {
+    "/_internal/v1/accounts/activity-counters/feedback-evaluation": {
       "post": {
-        "operationId": "service_feedback",
+        "operationId": "feedback_evaluation",
         "security": [
           {
             "serviceCapability": []
@@ -1199,7 +1199,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ServiceFeedbackQuery"
+                "$ref": "#/components/schemas/FeedbackEvaluationQuery"
               }
             }
           }
@@ -1981,7 +1981,7 @@
           }
         }
       },
-      "ServiceFeedbackQuery": {
+      "FeedbackEvaluationQuery": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

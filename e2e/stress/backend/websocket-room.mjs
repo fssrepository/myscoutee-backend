@@ -183,7 +183,7 @@ db.users.insertMany(userIds.map((userId, index) => ({
       supplies: 0,
       tickets: 0
     },
-    eventFeedback: {
+    feedbackCounts: {
       ownEvents: 0,
       pending: 0,
       feedbacked: 0,

@@ -75,51 +75,10 @@ public class EventMeasurementService implements EventMeasurement {
         pipeline.add(new Document("$sort", new Document("userId", 1).append("occurredAt", 1).append("actionType", 1).append("sourceId", 1)));
         return new MongoEvidenceCursor(mongo.getCollection("events").aggregate(pipeline).allowDiskUse(true).batchSize(1_000).iterator());
     }
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.feedback.api.FeedbackMeasurement feedback;
     public EvidenceCursor attendance(Instant startInclusive, Instant endExclusive) {
-        String start = startInclusive.toString(), end = endExclusive.toString();
-        List<Document> pipeline = new ArrayList<>();
-        pipeline.addAll(List.of(
-                match(new Document("removed", new Document("$ne", true))
-                        .append("submittedAtIso", range(start, end))),
-                new Document("$lookup", new Document("from", "activityMembers")
-                        .append("let", new Document("eventId", "$eventId")
-                                .append("userId", "$viewerUserId"))
-                        .append("pipeline", List.of(
-                                new Document("$match", new Document(
-                                        "$expr",
-                                        new Document("$and", List.of(
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$ownerType",
-                                                                "event")),
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$ownerId",
-                                                                "$$eventId")),
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$userId",
-                                                                "$$userId")),
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$status",
-                                                                "accepted")))))),
-                                new Document("$limit", 1)))
-                        .append("as", "acceptedMembership")),
-                match(new Document(
-                        "acceptedMembership.0",
-                        new Document("$exists", true))),
-                project(
-                        "$viewerUserId",
-                        ACTION_VERIFIED_ATTENDANCE,
-                        "$submittedAtIso",
-                        source("attendance:", "$eventId"))));
-        pipeline.add(new Document("$sort", new Document("userId", 1).append("occurredAt", 1).append("actionType", 1).append("sourceId", 1)));
-        return new MongoEvidenceCursor(mongo.getCollection("eventFeedbackStates").aggregate(pipeline).allowDiskUse(true).batchSize(1_000).iterator());
+        return feedback.attendance(startInclusive, endExclusive);
     }
     private static Document range(String start, String end) {
         return new Document("$gte", start).append("$lt", end);

@@ -663,10 +663,10 @@
     "updatedUser": "access-policy-seed"
   },
   {
-    "_id": "access-policy-event-feedback-submit",
-    "syncKey": "access-policy-event-feedback-submit",
-    "policyKey": "event.feedback.submit",
-    "permission": "event.feedback.submit",
+    "_id": "access-policy-feedback-submit",
+    "syncKey": "access-policy-feedback-submit",
+    "policyKey": "feedback.submit",
+    "permission": "feedback.submit",
     "resourceType": "event",
     "required": [
       "actorMatchesSubject",
@@ -684,10 +684,10 @@
     "updatedUser": "access-policy-seed"
   },
   {
-    "_id": "access-policy-event-feedback-note",
-    "syncKey": "access-policy-event-feedback-note",
-    "policyKey": "event.feedback.note",
-    "permission": "event.feedback.note",
+    "_id": "access-policy-feedback-note",
+    "syncKey": "access-policy-feedback-note",
+    "policyKey": "feedback.note",
+    "permission": "feedback.note",
     "resourceType": "event",
     "required": [
       "actorMatchesSubject",
@@ -705,10 +705,10 @@
     "updatedUser": "access-policy-seed"
   },
   {
-    "_id": "access-policy-event-feedback-remove",
-    "syncKey": "access-policy-event-feedback-remove",
-    "policyKey": "event.feedback.remove",
-    "permission": "event.feedback.remove",
+    "_id": "access-policy-feedback-remove",
+    "syncKey": "access-policy-feedback-remove",
+    "policyKey": "feedback.remove",
+    "permission": "feedback.remove",
     "resourceType": "event",
     "required": [
       "actorMatchesSubject",
@@ -726,10 +726,10 @@
     "updatedUser": "access-policy-seed"
   },
   {
-    "_id": "access-policy-event-feedback-restore",
-    "syncKey": "access-policy-event-feedback-restore",
-    "policyKey": "event.feedback.restore",
-    "permission": "event.feedback.restore",
+    "_id": "access-policy-feedback-restore",
+    "syncKey": "access-policy-feedback-restore",
+    "policyKey": "feedback.restore",
+    "permission": "feedback.restore",
     "resourceType": "event",
     "required": [
       "actorMatchesSubject",

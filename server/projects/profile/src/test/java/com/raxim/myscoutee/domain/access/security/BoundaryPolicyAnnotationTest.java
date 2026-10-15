@@ -24,10 +24,10 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventActionRequestDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackDetailDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackSubmitRequestDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackNoteRequestDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackToggleRequestDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackDetailDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackSubmitRequestDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackNoteRequestDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackToggleRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.PrivacyConsentSaveRequestDto;
 import com.raxim.myscoutee.domain.media.dto.MediaDtos.MediaImageImportRequestDto;
@@ -129,33 +129,33 @@ class BoundaryPolicyAnnotationTest {
     }
 
     @Test
-    void eventFeedbackMethodsDeclareFeedbackPolicies() throws Exception {
+    void feedbackMethodsDeclareFeedbackPolicies() throws Exception {
         assertMethodPolicy(
-                ActivitiesEventsController.class,
+                com.raxim.myscoutee.domain.feedback.controller.FeedbackController.class,
                 "submitFeedback",
-                new Class<?>[] { EventFeedbackSubmitRequestDto.class },
-                AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
+                new Class<?>[] { FeedbackSubmitRequestDto.class },
+                AccessPolicyKeys.FEEDBACK_SUBMIT,
                 "#request?.userId() ?: #actorUserId",
                 "#request?.feedback()?.eventId()");
         assertMethodPolicy(
-                ActivitiesEventsController.class,
+                com.raxim.myscoutee.domain.feedback.controller.FeedbackController.class,
                 "saveFeedbackNote",
-                new Class<?>[] { EventFeedbackNoteRequestDto.class },
-                AccessPolicyKeys.EVENT_FEEDBACK_NOTE,
+                new Class<?>[] { FeedbackNoteRequestDto.class },
+                AccessPolicyKeys.FEEDBACK_NOTE,
                 "#request?.userId() ?: #actorUserId",
                 "#request?.eventId()");
         assertMethodPolicy(
-                ActivitiesEventsController.class,
+                com.raxim.myscoutee.domain.feedback.controller.FeedbackController.class,
                 "removeFeedbackEvent",
-                new Class<?>[] { EventFeedbackToggleRequestDto.class },
-                AccessPolicyKeys.EVENT_FEEDBACK_REMOVE,
+                new Class<?>[] { FeedbackToggleRequestDto.class },
+                AccessPolicyKeys.FEEDBACK_REMOVE,
                 "#request?.userId() ?: #actorUserId",
                 "#request?.eventId()");
         assertMethodPolicy(
-                ActivitiesEventsController.class,
+                com.raxim.myscoutee.domain.feedback.controller.FeedbackController.class,
                 "restoreFeedbackEvent",
-                new Class<?>[] { EventFeedbackToggleRequestDto.class },
-                AccessPolicyKeys.EVENT_FEEDBACK_RESTORE,
+                new Class<?>[] { FeedbackToggleRequestDto.class },
+                AccessPolicyKeys.FEEDBACK_RESTORE,
                 "#request?.userId() ?: #actorUserId",
                 "#request?.eventId()");
     }

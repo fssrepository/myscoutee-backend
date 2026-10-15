@@ -1,0 +1,285 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee internal feedback-directory reads",
+    "version": "1.0.0",
+    "description": "Existing target-user feedback directory, preserving repository order and fields. Dedicated read credential and REAL/DEMO mode. No writes or delegated actor authority. Maximum response 2 MiB."
+  },
+  "paths": {
+    "/_internal/v1/feedback/feedback-directory": {
+      "get": {
+        "operationId": "readFeedbackDirectory",
+        "security": [
+          {
+            "feedback-directory": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Existing membership-policy facts; bounded to 2 MiB.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackDirectoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "FEEDBACK_DIRECTORY_UNAVAILABLE: owner failed; persistence details are not exposed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "feedback-directory": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_SESSION_MODE",
+              "INVALID_REQUEST",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "FEEDBACK_DIRECTORY_UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "FeedbackDirectoryResponse": {
+        "type": "array",
+        "items": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "syncKey",
+            "viewerUserId",
+            "eventId",
+            "cardId",
+            "kind",
+            "targetUserId",
+            "targetRole",
+            "primaryValue",
+            "secondaryValue",
+            "eventComment",
+            "personalityTraitIds",
+            "tags",
+            "submittedAtIso",
+            "createdDate",
+            "createdUser",
+            "updatedDate",
+            "updatedUser"
+          ],
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "syncKey": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "viewerUserId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "eventId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "cardId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "kind": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "targetUserId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "targetRole": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "primaryValue": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "secondaryValue": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "eventComment": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "personalityTraitIds": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "tags": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "submittedAtIso": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "createdDate": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "createdUser": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updatedDate": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updatedUser": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

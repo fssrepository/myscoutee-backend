@@ -9,7 +9,13 @@
       "scope": "Retained calendar palette, density, ellipsis and cell sizing changes; supported item/cell activation.",
       "source_evidence": "../work-community/MSC115-step40-45-services-20261014.json",
       "next": "Reconcile affected retained consumers and exact source/template revisions before the batch.",
-      "template_result": "NOT RUN"
+      "template_result": "NOT RUN",
+      "checklist_block": "TPL-CALENDAR",
+      "applicabilityReview": {
+        "date": "2026-10-15",
+        "owner": "myscoutee-template/frontend/src/app/member/components/showcase/showcase.component.ts and .html",
+        "result": "Four caller-owned palette values retained. Density configuration is commented out; no item/cell selection output is bound. Test palette/layout delta; density/navigation UI checks are N/A for this consumer, not missing product functionality. Runtime remains NOT RUN."
+      }
     },
     {
       "id": "empty-error-card",
@@ -20,7 +26,8 @@
       "propagation": "DONE",
       "source_result": "14 focused frontend tests and source HTTP/browser checks passed; see linked source evidence.",
       "source_evidence": "../work-community/MSC115-step40-45-services-20261014.json",
-      "template_result": "NOT RUN"
+      "template_result": "NOT RUN",
+      "checklist_block": "TPL-ERROR"
     },
     {
       "id": "frequency-badge-colours",
@@ -32,7 +39,9 @@
       "propagation": "DONE",
       "source_result": "Two focused Cases popup tests passed. HTTP browser showed Monthly amber, Quarterly violet, Yearly gold with computed CSS and screenshot.",
       "source_evidence": "/tmp/msc115-20261014/frequency-badge-colours.json",
-      "template_result": "NOT RUN"
+      "template_result": "NOT RUN",
+      "checklist_block": "TPL-PALETTES",
+      "applicabilityReview": "Product Cases schedule UI is omitted. Establish an actual retained frequency consumer before UI execution; otherwise record UI N/A and credit shared component proof separately."
     },
     {
       "id": "msc115-command-version-audit",
@@ -50,7 +59,8 @@
       "propagation": "DONE",
       "source_result": "10 shared and3 popup tests PASS; HTTP503/retry browser proof.",
       "source_evidence": "../work-community/MSC115-step40-45-services-20261014.json",
-      "template_result": "NOT RUN: collected for prescribed campaign batch."
+      "template_result": "NOT RUN: collected for prescribed campaign batch.",
+      "checklist_block": "TPL-ERROR"
     },
     {
       "id": "chat-lazy-load-errors",
@@ -70,7 +80,8 @@
         "A late successful response after timeout does not clear the error or reopen a closed popup; a new successful open clears the error and red indicator.",
         "No chat-read error is appended to the source channel list or shown in a separate notice dialog; verify EN/HU text.",
         "Spot-check another retained SmartList consumer: failure indicator survives completion; abort/close is not a failure; retry restores normal state."
-      ]
+      ],
+      "checklist_block": "TPL-ERROR"
     },
     {
       "id": "media-deletion-queue",
@@ -86,7 +97,9 @@
         "Verify job history reflects actual deleted/failed work and no duplicate processing across claims; restore disposable queue objects."
       ],
       "source_evidence": "../work-community/MSC115-step40-45-services-20261014.json",
-      "template_result": "NOT RUN: collected for checkpoint119."
+      "template_result": "NOT RUN: collected for checkpoint119.",
+      "checklist_block": "TPL-MEDIA",
+      "executionNote": "Use retained backend job configuration/history. Do not assume a template admin jobs UI exists. Reconcile historical working-tree propagation note with current revisions before runtime checks."
     },
     {
       "id": "payment-receipt-presentation",
@@ -117,7 +130,8 @@
       "source_components_revision": "a16b829",
       "template_components_revision": "a16b829",
       "source_frontend_revision": "fd6ca9e8",
-      "template_frontend_revision": "73eeb12"
+      "template_frontend_revision": "73eeb12",
+      "checklist_block": "TPL-POPUP"
     },
     {
       "id": "notification-contextual-row-palettes",
@@ -130,7 +144,8 @@
         "Retained template notifications render/read correctly with existing icons and colors.",
         "Existing non-palette SingleRow consumers retain layout and unread/read styling."
       ],
-      "template_result": "NOT RUN: prescribed campaign batch."
+      "template_result": "NOT RUN: prescribed campaign batch.",
+      "checklist_block": "TPL-PALETTES"
     },
     {
       "id": "guide-context-and-continuity",
@@ -147,7 +162,89 @@
       "source_frontend_revision": "84e58edaeb36db78672df60b74ee8fd665528e2b",
       "template_frontend_revision": "849f4ac6c1cf9bc64a540a164d07f34fab74bc7f",
       "source_components_revision": "65f5283234167d923662433b138ffc288bda0c84",
-      "template_components_revision": "65f5283234167d923662433b138ffc288bda0c84"
+      "template_components_revision": "65f5283234167d923662433b138ffc288bda0c84",
+      "checklist_block": "TPL-GUIDE"
+    },
+    {
+      "id": "infocard-contextual-palettes",
+      "checklist_block": "TPL-PALETTES",
+      "scope": "MSC-116 shared InfoCard green/amber/slate/violet static and interactive badge tokens; slate menu tokens. Retained rendering only, desktop/mobile and applicable local/HTTP. Omitted product feedback flows are N/A.",
+      "source_campaign": "MSC-116",
+      "source_evidence": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
+      "template_ledger_row": "T-SMARTLIST-001",
+      "propagation": "Recorded as propagated in the existing template ledger on 2026-10-15; exact source/template revisions or dirty hashes must be reconciled before execution.",
+      "template_result": "NOT RUN: existing ledger follow-up collected here; no test executed during checklist preparation."
+    },
+    {
+      "id": "role-oauth-consent-routing",
+      "checklist_block": "TPL-OAUTH",
+      "scope": "MSC-116 retained member/admin/operator OAuth consent route and query preservation, login return, role home/privacy consent and refusal gates, including bootstrap operator denial.",
+      "source_campaign": "MSC-116",
+      "source_evidence": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
+      "template_ledger_row": "T-INTEGRATION-009",
+      "propagation": "Recorded as propagated in the existing template ledger on 2026-10-15; exact source/template revisions or dirty hashes must be reconciled before execution.",
+      "template_result": "NOT RUN: existing ledger follow-up collected here; no test executed during checklist preparation."
+    },
+    {
+      "id": "events-delivery-realm",
+      "checklist_block": "TPL-EVENTS",
+      "scope": "MSC-116 signed operator.attention delivery with aliased REAL/DEMO databases and isolation with distinct databases; request realm and revocation checks. Retain template dispatcher ownership of all RETRY rows; source-only scheduler-test correction is N/A.",
+      "source_campaign": "MSC-116",
+      "source_evidence": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
+      "template_ledger_row": "T-INTEGRATION-008",
+      "propagation": "Recorded as propagated in the existing template ledger on 2026-10-15; exact source/template revisions or dirty hashes must be reconciled before execution.",
+      "template_result": "NOT RUN: existing ledger follow-up collected here; no test executed during checklist preparation."
+    },
+    {
+      "id": "subscription-admission-limit",
+      "checklist_block": "TPL-EVENTS",
+      "scope": "MSC-116 serialized post-verification subscription admission: concurrent 99-to-100 final slot, refresh at capacity and propagated callback-limiter regression.",
+      "source_campaign": "MSC-116",
+      "source_evidence": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
+      "template_ledger_row": "T-INTEGRATION-008",
+      "propagation": "Recorded as propagated in the existing template ledger on 2026-10-15; exact source/template revisions or dirty hashes must be reconciled before execution.",
+      "template_result": "NOT RUN: existing ledger follow-up collected here; no test executed during checklist preparation."
+    },
+    {
+      "id": "callback-ipv4-validation",
+      "checklist_block": "TPL-EVENTS",
+      "scope": "MSC-116 strict canonical numeric IPv4 validation; reject short, integer, leading-zero and hexadecimal forms. Credit matching focused template tests before scheduling any rerun.",
+      "source_campaign": "MSC-116",
+      "source_evidence": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
+      "template_ledger_row": "T-INTEGRATION-008",
+      "propagation": "Recorded as propagated in the existing template ledger on 2026-10-15; exact source/template revisions or dirty hashes must be reconciled before execution.",
+      "template_result": "NOT RUN: existing ledger follow-up collected here; no test executed during checklist preparation."
+    },
+    {
+      "id": "operator-release-discovery",
+      "checklist_block": "TPL-RELEASE-NOTICE",
+      "scope": "MSC-116 template-aware prepare-notification replay tool: project packageName, existing signing/client-tools, protected external QA key, signed inert artifact release discovery and operator notification only. Never install this artifact; do not repeat qualified update/install flows.",
+      "source_campaign": "MSC-116",
+      "source_evidence": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
+      "template_ledger_row": "T-OPERATOR-003",
+      "propagation": "Recorded as propagated in the existing template ledger on 2026-10-15; exact source/template revisions or dirty hashes must be reconciled before execution.",
+      "template_result": "NOT RUN: existing ledger follow-up collected here; no test executed during checklist preparation."
     }
-  ]
+  ],
+  "sourceCampaignRouting": {
+    "updated": "2026-10-15",
+    "campaigns": [
+      "MSC-115",
+      "MSC-116",
+      "MSC-117",
+      "MSC-118",
+      "MSC-119"
+    ],
+    "rule": "Collect new shared fixes here; template runtime is executed only in this separate checkpoint, never inside source development campaigns. Preserve existing pending items and accepted template baseline.",
+    "acceptedCallEvidence": "myscoutee-template/guides/qualification/evidence/MSC122_TEMPLATE_CHAT_PARITY_20261012.json and MSC122_TEMPLATE_KVM_20261012.json; repeat/long-call evidence credited, removed CALL-01 not reopened.",
+    "newCallOrRoleRetest": "Only after a relevant new source fix; no speculative blanket retest queued.",
+    "live": "Physical devices, external networks and actual providers are routed outside development QA."
+  },
+  "checklistPreparation": {
+    "date": "2026-10-15",
+    "scope": "Expanded the existing checklist to 32 numbered steps; documentation and read-only source/ledger review only. No runtime, fixture, browser or test execution.",
+    "evidenceCreditRule": "Per explicit user instruction, do not repeat completed tests. Credit matching template evidence first and execute only an uncovered boundary changed by a collected fix. Historical NOT RUN or an unrelated newer revision alone does not justify replay.",
+    "templateLedger": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
+    "executionStatusChanged": false
+  }
 }

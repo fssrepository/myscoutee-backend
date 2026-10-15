@@ -5,9 +5,10 @@ import com.raxim.myscoutee.domain.events.dto.EventVersionDto;
 public final class EventDerivedUpdatesProtocol {
     public static final String AFFINITY = "/_internal/v1/events/projections/affinity";
     public static final String STATUS = "/_internal/v1/events/projections/status";
+    public static final String FEEDBACK = "/_internal/v1/events/projections/feedback";
     public static final int MAX_REQUEST_BYTES = 16384, MAX_RESPONSE_BYTES = 16384;
     private EventDerivedUpdatesProtocol() {}
-    public static String[] paths() { return new String[]{AFFINITY, STATUS}; }
+    public static String[] paths() { return new String[]{AFFINITY, STATUS, FEEDBACK}; }
     public record AffinityCommand(EventVersionDto version, Double affinity, Double boost) {}
     public record StatusCommand(EventVersionDto version, String status, String previousStatus) {}
     public record Result(Boolean matched) {}
@@ -20,5 +21,10 @@ public final class EventDerivedUpdatesProtocol {
     }
     public static boolean valid(StatusCommand value) {
         return value != null && version(value.version()) && text(value.status()) && text(value.previousStatus());
+    }
+    public record FeedbackCommand(java.util.Collection<String> sourceIds, Boolean projected) {}
+    public static boolean valid(FeedbackCommand q) {
+        return q != null && q.projected() != null && q.sourceIds() != null && q.sourceIds().size() <= 1000
+            && q.sourceIds().stream().allMatch(id -> id != null && text(id));
     }
 }

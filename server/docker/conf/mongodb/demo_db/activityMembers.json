@@ -3,7 +3,7 @@
     "_id": {
       "$oid": "af3200000000000000000001"
     },
-    "syncKey": "seed-event-feedback-own-eszter:host",
+    "syncKey": "seed-feedback-own-eszter:host",
     "ownerType": "event",
     "ownerId": "af3000000000000000000002",
     "userId": "9f3b3f085e23af6c89dbc432",
@@ -24,7 +24,7 @@
     "_id": {
       "$oid": "af3200000000000000000002"
     },
-    "syncKey": "seed-event-feedback-own-eszter:attendee:maya",
+    "syncKey": "seed-feedback-own-eszter:attendee:maya",
     "ownerType": "event",
     "ownerId": "af3000000000000000000002",
     "userId": "1b1c70be2349b3359a8f6f94",
@@ -45,7 +45,7 @@
     "_id": {
       "$oid": "af3200000000000000000003"
     },
-    "syncKey": "seed-event-feedback-own-eszter:attendee:balazs",
+    "syncKey": "seed-feedback-own-eszter:attendee:balazs",
     "ownerType": "event",
     "ownerId": "af3000000000000000000002",
     "userId": "b29df68956f3fe15e04558de",
@@ -66,7 +66,7 @@
     "_id": {
       "$oid": "af3200000000000000000004"
     },
-    "syncKey": "seed-event-feedback-own-eszter:attendee:lucas-lane",
+    "syncKey": "seed-feedback-own-eszter:attendee:lucas-lane",
     "ownerType": "event",
     "ownerId": "af3000000000000000000002",
     "userId": "23820c1e76d3bd843f61c799",

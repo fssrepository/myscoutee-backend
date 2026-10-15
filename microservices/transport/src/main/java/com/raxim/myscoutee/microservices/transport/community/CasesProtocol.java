@@ -9,11 +9,12 @@ public final class CasesProtocol {
     public static final String PAGE_1 = "/_internal/v1/community/cases/page_1";
     public static final String SAVE_1 = "/_internal/v1/community/cases/save_1";
     public static final String ACTION_1 = "/_internal/v1/community/cases/action_1";
+    public static final String FEEDBACK_CONTEXT = "/_internal/v1/community/cases/feedbackContext";
     public static final int MAX_REQUEST_BYTES = 2 * 1024 * 1024, MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
     public static final String AUDIENCE = "community:cases";
     public static boolean delegated(String path) { return java.util.Set.of(ACTOR_1, DETAIL_1, READ_1, PAGE_1, SAVE_1, ACTION_1).contains(path); }
     private CasesProtocol() {}
-    public static String[] paths() { return new String[]{ACTOR_1, DETAIL_1, READ_1, PAGE_1, SAVE_1, ACTION_1}; }
+    public static String[] paths() { return new String[]{FEEDBACK_CONTEXT, ACTOR_1, DETAIL_1, READ_1, PAGE_1, SAVE_1, ACTION_1}; }
     public record Error(String code) {}
     public record Scope(Boolean active, String groupId) {
         public static Scope current() { return new Scope(com.raxim.myscoutee.domain.platform.api.JobGroupContext.isActive(), com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId()); }
@@ -40,4 +41,7 @@ public final class CasesProtocol {
     public record Action1(Scope scope, String actor, String id, com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.Command r) {}
     public static boolean valid(Action1 q) { return q!=null && scope(q.scope()) && text(q.actor(),8192) && text(q.id(),8192); }
     public record Action1Result(Boolean resolved, com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.CaseItem value) {}
+    public record FeedbackContext(Scope scope, String snapshot) {}
+    public static boolean valid(FeedbackContext q) { return q != null && scope(q.scope()) && q.snapshot() != null && text(q.snapshot(), 1048576); }
+    public record FeedbackContextResult(Boolean resolved, com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Context value) {}
 }

@@ -1,0 +1,347 @@
+[
+  {
+    "name": "admin-combined-settings.json",
+    "sha256": "1c2e29ba16acf04211eea69495dc47b5ad0590b7d9b924b75ffc5516192911cc",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "admin-role-catalog.json",
+    "sha256": "79967ea64492d7b6a37858b7f263ce23d821f4bdd594738e432f41332f72c744",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "central-feedback-local-result.json",
+    "sha256": "31611360729224ae41758ba84c75134e71b6e13bc37fd466dcda89e0d7e2e885",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-account-purge.json",
+    "sha256": "d12a7cafe178778e52b05cc9c3d8bebc882b59a3ee24d993500abe5c3573029e",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-authority-final.json",
+    "sha256": "23276ba669ebdbe733cea365c0d7887dfa59700a62d9d36438d3aab8b9783760",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-backlog-admission.json",
+    "sha256": "6fb919e8b49771304c7c462fe71b27b44c36cb13cc0ed94d7f765458c21aa848",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-bounds-regression.json",
+    "sha256": "482f4f1ffeea3bde540b627ce421b8db0e882b3501b7188cd8e7fb12837974e5",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-cache-expiry.json",
+    "sha256": "087327721ce7e50b65daa19398861db6e746e10c3634c8783b88e4cf97d3cd2b",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-cache-scope.json",
+    "sha256": "bb0dbf60df5a4c361b79123a02207ed3d3a161f99741bf5ffad99f38e0f29d76",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-challenge-results.json",
+    "sha256": "6923c7860c3586b1a292f4d4d0bf5bcd6b164aae73f4f43f6da8379e7deaa5dc",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-concurrency-held-status.json",
+    "sha256": "f1b060bc5ddd23e1672daf1544964428d3d8686bd75577a76de0eb2d178eb04a",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-concurrency.json",
+    "sha256": "900558e3cad2b554ee1807cb1a32d662365637ae2b31df0a0dd940a6d9e187ca",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-concurrent-unsubscribe.json",
+    "sha256": "bdd115ebb8d01edf6d6a57b85d89fc5bdfe810b3ffbf83bbdbb1d28b363555c6",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-crash-claim.json",
+    "sha256": "0f8651ce0e50b68b67f86df0dd56fbc1e7064eebdc643443fd5af5bed44c640e",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-crash-recovery.json",
+    "sha256": "8aa06b17c736331030c21bd996ab400472cbc443b894ad55a675253dd213a2df",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-delivery-faults.json",
+    "sha256": "581ab836ec5a67e57f721e3a596c13d6641837fe6b1aeb27b876c8459c3bd07a",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-dns-rebinding.json",
+    "sha256": "fe55c00af11cb0ad246f5a281f291229918125e164e8c9782699de3af2edaaab",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-encounters.json",
+    "sha256": "555407e2afac8fd7eb92667f78f01ab3d6d8e7052f4f94494b823de4898f4def",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-invalid-inputs.json",
+    "sha256": "7cb6d28bb004f49b98bcd11e3cab446992a58dfaaab7967d1f4f4d2cd3885022",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-key-boundaries.json",
+    "sha256": "165213962a327ad6088c7efa804b2799235bbf8a930ac2752af6fe9f3b278e66",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-key-rotation-delivery.json",
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-numeric-addresses-fixed.json",
+    "sha256": "67cbc5a6cce3f4a8d9cdb923545f38efc20de7953de306a26be3ff20e67b6e0d",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-oauth-refresh.json",
+    "sha256": "ccea0479362034c2406111f7c8fca45ee2c4c44b04be3d84dbf49aa9437888c1",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-pack-results.json",
+    "sha256": "5c7b31ea323e9ec99fac10ac7f103da75d27b189ee9a55743da7bf55d251f53d",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-publication.json",
+    "sha256": "49ff9114ee3578b77cb47954b90f1a3e6892f6ed8c2bfb3cb13e34280af8bb6c",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-realm-fix.json",
+    "sha256": "b1edf3b5209115a514218c17e2ee35059dc997e1ae810240d2fa6ef9908540f4",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-receiver-initial.json",
+    "sha256": "c0fc414b9c21d0d02c4f87a8ff64123339ebec966ae05cf850b3dd94f7f1877f",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-redirects.json",
+    "sha256": "9822f21368e1bbfbbeb5e031d39b9e9879d983170b2dfc58c6442bd0c902aba9",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-response-bounds.json",
+    "sha256": "73a505f3ca998117b937b74a3502347ead052df4246f56ab7e56f5f266fef09d",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-restart-state.json",
+    "sha256": "7de3206e646b60625ed2c7218d579e5c45a688dcb2b223942f7fbf9448c40da6",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-retention.json",
+    "sha256": "6518f975e6b46c3a364e5bfce2c140c47e54de8805f5522006a262f324033f26",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-retry-policy-context.json",
+    "sha256": "57a9bac752d022430e8e2bb8fca64a87f1ed7369e6bd8e23560bbd3831f6350a",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-revocation-counts.json",
+    "sha256": "20012600fea9529ca977f13122d99f9fadd3dca3a7c5de63da6f5b48311eb028",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-revoked-authority.json",
+    "sha256": "ce0bea90fc8bd68dd19f522c71f175426170c3f6453c8a8cdee38d5765d81a55",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-signatures-retry.json",
+    "sha256": "b4e79adbf78432c82f697d489d7c31aa1415150f81917a1fe17557a163b2cb53",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-subscription-admission-fixed.json",
+    "sha256": "5bcf3f1417b76a408ec2c298e4d4218410bd2130c6cdddc4145cebb65bf8f73f",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-subscription-admission-race.json",
+    "sha256": "2815e1042bdf90a2906e4c81f3b0f7e69e8cd1651647ddac2d4865894d6b729f",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-tls-hostname.json",
+    "sha256": "1c03a0d63f46e217b49e3a2b3f55f5de1754c72b2bceb4171cd4f9dee11a4432",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-ttl-state.json",
+    "sha256": "69ca1611928378fc543030ebc53b449c468aa451628af33426b79a3223cd2b84",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-ttl.json",
+    "sha256": "ce7561aae372262f63150ce17a4799a38db8c13bca90b5813e85a034b59037ac",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-unsubscribe.json",
+    "sha256": "00a0736ae615e2d812e12b3fc14151e463dd6fde13346c354e588e4cd99ec36f",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "events-verification-cap.json",
+    "sha256": "956c75d405feb8618c602d142968c118c52a964ec560d0316d69f4317f770b3b",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "guide-introduction-partial.json",
+    "sha256": "4a987218e25a9595c92fd6e3cfe918d6b71b579e983a50bbf649725429ace12a",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "guide-introduction-result.json",
+    "sha256": "e162d9373517b64bb9ab2ebb2d122419965fdf3de3b8c219392311a2d0edf465",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "guide-popup-transitions.json",
+    "sha256": "6c50d6a607809392d207e1ad087538c5ef0003899beada922158c53b0c56e432",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "guide-visual-transitions.json",
+    "sha256": "04f772e8993931f3ef732a1f1056acf14247e50c614637c32bd28809e5dcd5b4",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "integration-regression.json",
+    "sha256": "f6cece8b6e0b13af313d35e7f87dbb3ec647821b3f99a03f2ba6485a0821bfb9",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "kvm-catalog-resource-before.json",
+    "sha256": "b862a00110dfa990687c104deb93b6e79b88f1160627664ee2045f05d2d2d4e7",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "kvm-catalog-resources.json",
+    "sha256": "deb28094795df3945923f7da9f3524b15e405f9f39f76d86b283e496e2a10607",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "kvm-catalog-timing.json",
+    "sha256": "7c75b50f3e1c7ec1e14e9b8bc18888d3cfb51151ffbd7b4caceb20977b186d79",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "kvm-feedback-metrics-before.json",
+    "sha256": "76e30bdedde0e73fa84bc46b525f09a0c6eff885e7751b2783a2194872734bc7",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "kvm-feedback-remote-deltas.json",
+    "sha256": "6df14f958b0dceaa69fcf90e53e565ba418a51e97d0c9494ddd55befdfe520ef",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "kvm-runtime-result.json",
+    "sha256": "1288df16ac9146985c77a4617e8a1c259f5b68318f8380f294d4add4e95a064d",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "local-access-results.json",
+    "sha256": "2598f8bf8bbbe5992bf149fb3dfb31dddaef055f82f749f95c3c55a30bcd617c",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "local-guide-results.json",
+    "sha256": "72c6feae0315071fde41ed5a0c6a777ffb7e800685cd839f424413b01d108fc2",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "mcp-guide-review.json",
+    "sha256": "8ff2779fd22aeabb7fba748f7dac1b7cf5eb3b0a546f06e984213c2434b98559",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "monolith-access-cleanup.json",
+    "sha256": "094e88b6f07daf94f7ae82ad6540941a18855d7f55ff32a128cbe3867441e428",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "operator-role-catalog.json",
+    "sha256": "20159f856b3645b9dd29b3c8993ec7d79e74dd8cebbd65950648cb2753cfce9e",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "packaged-anonymous-review.json",
+    "sha256": "2ba660ff39cbb56d471af0412ddc7183dcbc3e70daed5a485c562866dcfc8168",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "role-events-catalog.json",
+    "sha256": "19cf6fd05ac8d79beeee969ff751507a184e00113466f47c238b845d73cb1b61",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "role-forbidden-http-writes.json",
+    "sha256": "21c3a143b255ed19e41153b74fc8f1aae5310366d75a60443aeaa08fad625a37",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "role-forbidden-mcp-writes.json",
+    "sha256": "482393f5574fba57906cd3d95483ac9d0c4fff06ea3850040583949364f9bc87",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "role-loss-reads.json",
+    "sha256": "f7c8e62b97779281bd779413272054314f93afa71f15c700db1635788d8963af",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "role-producers.json",
+    "sha256": "d625b675818f9bfa6a694d8ccd4d278583e449fbe8785525f8f3cf072669105a",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "role-queued-authority.json",
+    "sha256": "012e461e97dab00f33f91096fac1753880d235d33d8a4f6c97de4007757dc7d1",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "role-unsubscribe-read.json",
+    "sha256": "a57ca29b2673e175a20300c0610cf2669234ad8aed25869a3643e78f9e14ced1",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "service-feedback-form.json",
+    "sha256": "9595199f3f5f99b3fb509624a32b60e523be41af424e7b7a35d8be262269a6c1",
+    "use": "excluded synthetic UI fixture"
+  },
+  {
+    "name": "service-feedback-guides.json",
+    "sha256": "f1a1fdda35f9c19adf830eeb1cb1de0fa689864695c1f0124cec30085c7a72ce",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  },
+  {
+    "name": "service-feedback-load-recheck.json",
+    "sha256": "618d6145278f332f12254fcdedb42aeaddbb8a899532ce98a6f9cc982eaf7101",
+    "use": "retained campaign artifact; scope determined by closure summary"
+  }
+]

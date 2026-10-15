@@ -122,16 +122,16 @@ public final class AccessPolicyKeys {
     public static final String CHAT_SUPPORT_MANAGE = "chat.support.manage";
 
     // 41. Accepted participant may submit feedback.
-    public static final String EVENT_FEEDBACK_SUBMIT = "event.feedback.submit";
+    public static final String FEEDBACK_SUBMIT = "feedback.submit";
 
     // 42. Owner/admin may add feedback note.
-    public static final String EVENT_FEEDBACK_NOTE = "event.feedback.note";
+    public static final String FEEDBACK_NOTE = "feedback.note";
 
     // 43. Owner/admin may remove feedback.
-    public static final String EVENT_FEEDBACK_REMOVE = "event.feedback.remove";
+    public static final String FEEDBACK_REMOVE = "feedback.remove";
 
     // 44. Owner/admin may restore feedback.
-    public static final String EVENT_FEEDBACK_RESTORE = "event.feedback.restore";
+    public static final String FEEDBACK_RESTORE = "feedback.restore";
 
     // 45. Participant/system may submit leaderboard entry.
     public static final String EVENT_LEADERBOARD_ENTRY_SUBMIT = "event.leaderboard.entry.submit";

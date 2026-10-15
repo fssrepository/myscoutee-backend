@@ -311,20 +311,20 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
         return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_LEADERBOARD_ENTRY_SUBMIT, actorUserId, eventId);
     }
 
-    public boolean canCurrentActorSubmitEventFeedback(String userId, String eventId) {
-        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT, userId, eventId);
+    public boolean canCurrentActorSubmitFeedback(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.FEEDBACK_SUBMIT, userId, eventId);
     }
 
-    public boolean canCurrentActorSaveEventFeedbackNote(String userId, String eventId) {
-        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_NOTE, userId, eventId);
+    public boolean canCurrentActorSaveFeedbackNote(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.FEEDBACK_NOTE, userId, eventId);
     }
 
-    public boolean canCurrentActorRemoveEventFeedback(String userId, String eventId) {
-        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_REMOVE, userId, eventId);
+    public boolean canCurrentActorRemoveFeedback(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.FEEDBACK_REMOVE, userId, eventId);
     }
 
-    public boolean canCurrentActorRestoreEventFeedback(String userId, String eventId) {
-        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_RESTORE, userId, eventId);
+    public boolean canCurrentActorRestoreFeedback(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.FEEDBACK_RESTORE, userId, eventId);
     }
 
     public boolean canCurrentActorCreateChatMessage(String userId, String chatId) {

@@ -31,12 +31,12 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
+import com.raxim.myscoutee.domain.feedback.document.FeedbackState;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
+import com.raxim.myscoutee.domain.feedback.repository.FeedbackStatesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +51,7 @@ class UserActivityCountersServiceTest {
     @Mock
     private AssetsRepository assetsRepository;
     @Mock
-    private EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    private FeedbackStatesRepository feedbackStatesRepository;
     @Mock
     private com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     @Mock
@@ -66,10 +66,12 @@ class UserActivityCountersServiceTest {
 
     @BeforeEach
     void setUp() {
-        var eligibility = new com.raxim.myscoutee.domain.events.service.EventFeedbackEligibilityService(activityEventsRepository, eventFeedbackStatesRepository, mongoTemplate);
+        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
+        var eligibility = new com.raxim.myscoutee.domain.feedback.service.FeedbackEligibilityService(eventOwner, feedbackStatesRepository, mongoTemplate);
         @SuppressWarnings("unchecked") var counterProvider = (org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters>) org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
         org.mockito.Mockito.lenient().when(counterProvider.getObject()).thenAnswer(call -> service);
-        var work = new com.raxim.myscoutee.domain.events.service.FeedbackCounterWork(eventFeedbackStatesRepository, mongoTemplate, counterProvider, null);
+        var work = new com.raxim.myscoutee.domain.feedback.service.FeedbackCounterWork(feedbackStatesRepository, mongoTemplate, counterProvider, null);
         org.springframework.test.util.ReflectionTestUtils.setField(eligibility, "counterWork", work);
         service = new UserActivityCountersService(
                 usersRepository,
@@ -205,7 +207,7 @@ class UserActivityCountersServiceTest {
                 base.chat(),
                 new Users.UserEventCountersRecord(9, 3, 1, 2, 4, 5, 6),
                 base.asset(),
-                base.eventFeedback(),
+                base.feedbackCounts(),
                 base.adminJobs(),
                 base.adminMetrics(),
                 base.notifications()));
@@ -334,7 +336,7 @@ class UserActivityCountersServiceTest {
 
     @Test
     void applyFeedbackStateTransitionMovesStoredMenuAndPopupBuckets() {
-        ActivityEvent event = event("event-feedback", "host", "A");
+        ActivityEvent event = event("feedback", "host", "A");
         event.setOwnerUserId("host");
         event.setAdmins(List.of("host"));
         Users user = user("viewer", activitiesWithAssetAndFeedback(2, 2, 2, 0, 4, 3, 1, 0));
@@ -343,10 +345,10 @@ class UserActivityCountersServiceTest {
         service.applyFeedbackStateTransition(event, "viewer", false, false, true, false);
 
         Document fields = feedbackUpdatedFields("viewer");
-        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(4);
-        assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(2);
-        assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
-        assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
+        assertThat(fields.getInteger("activities.feedbackCounts.ownEvents")).isEqualTo(4);
+        assertThat(fields.getInteger("activities.feedbackCounts.pending")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.feedbackCounts.feedbacked")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.feedbackCounts.removed")).isZero();
 
     }
 
@@ -360,12 +362,12 @@ class UserActivityCountersServiceTest {
         eligible.setStartAtIso(now.minusSeconds(10_800L).toString());
         eligible.setEndAtIso(now.minusSeconds(10_800L).toString());
         Users viewer = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 4, 0, 2, 1));
-        EventFeedbackState alreadyTracked = state("event-eligible", "viewer", "", "");
+        FeedbackState alreadyTracked = state("event-eligible", "viewer", "", "");
         alreadyTracked.setEligible(true);
         alreadyTracked.setCounterTracked(true);
 
         when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(eligible));
-        when(eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(any()))
+        when(feedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(any()))
                 .thenReturn(List.of())
                 .thenReturn(List.of(alreadyTracked));
         when(mongoTemplate.updateFirst(any(Query.class), any(org.springframework.data.mongodb.core.aggregation.AggregationUpdate.class), eq(Users.class)))
@@ -375,8 +377,8 @@ class UserActivityCountersServiceTest {
 
         assertThat(firstUpdatedUsers).isEqualTo(1);
         assertThat(secondUpdatedUsers).isZero();
-        ArgumentCaptor<Iterable<EventFeedbackState>> stateCaptor = ArgumentCaptor.forClass(Iterable.class);
-        verify(eventFeedbackStatesRepository).saveAll(stateCaptor.capture());
+        ArgumentCaptor<Iterable<FeedbackState>> stateCaptor = ArgumentCaptor.forClass(Iterable.class);
+        verify(feedbackStatesRepository).saveAll(stateCaptor.capture());
         assertThat(stateCaptor.getValue())
                 .singleElement()
                 .satisfies(state -> {
@@ -405,10 +407,10 @@ class UserActivityCountersServiceTest {
         service.applyFeedbackStateTransition(event, "viewer", false, false, true, false);
 
         Document fields = feedbackUpdatedFields("host");
-        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(1);
-        assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(3);
-        assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(1);
-        assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
+        assertThat(fields.getInteger("activities.feedbackCounts.ownEvents")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.feedbackCounts.pending")).isEqualTo(3);
+        assertThat(fields.getInteger("activities.feedbackCounts.feedbacked")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.feedbackCounts.removed")).isZero();
 
     }
 
@@ -419,8 +421,8 @@ class UserActivityCountersServiceTest {
         captor.getValue().toPipeline(org.springframework.data.mongodb.core.aggregation.Aggregation.DEFAULT_CONTEXT)
                 .forEach(stage -> fields.putAll(stage.get("$set", Document.class)));
         assertThat(fields.get("activities.feedback")).isEqualTo(new Document("$add", List.of(
-                new Document("$ifNull", List.of("$activities.eventFeedback.pending", 0)),
-                new Document("$ifNull", List.of("$activities.eventFeedback.ownEvents", 0)),
+                new Document("$ifNull", List.of("$activities.feedbackCounts.pending", 0)),
+                new Document("$ifNull", List.of("$activities.feedbackCounts.ownEvents", 0)),
                 new Document("$ifNull", List.of("$menuCounters.feedback", 0)))));
         verify(mongoTemplate, never()).getCollection("users");
         return fields;
@@ -463,7 +465,7 @@ class UserActivityCountersServiceTest {
                 new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(cars, accommodation, supplies, tickets),
-                new Users.UserEventFeedbackCountersRecord(ownEvents, pending, feedbacked, removed),
+                new Users.UserFeedbackCountersRecord(ownEvents, pending, feedbacked, removed),
                 0,
                 0);
     }
@@ -497,8 +499,8 @@ class UserActivityCountersServiceTest {
         return event;
     }
 
-    private EventFeedbackState state(String eventId, String viewerUserId, String submittedAtIso, String organizerNote) {
-        EventFeedbackState state = new EventFeedbackState();
+    private FeedbackState state(String eventId, String viewerUserId, String submittedAtIso, String organizerNote) {
+        FeedbackState state = new FeedbackState();
         state.setEventId(eventId);
         state.setViewerUserId(viewerUserId);
         state.setSubmittedAtIso(submittedAtIso);

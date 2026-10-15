@@ -18,17 +18,17 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventInvitationContextDt
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventWatchActionResultDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackQueryDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackDetailDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackReceivedEventDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackNoteRequestDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackPageQueryDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackPageResultDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackStateDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackStatDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackStatQueryDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackSubmitRequestDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackToggleRequestDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackQueryDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackDetailDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackReceivedEventDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackNoteRequestDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackPageQueryDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackPageResultDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackStateDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackStatDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackStatQueryDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackSubmitRequestDto;
+import com.raxim.myscoutee.domain.feedback.dto.FeedbackDtos.FeedbackToggleRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotsQueryDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotsResultDto;
@@ -40,23 +40,19 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventFeedbackService;
 
 @RestController
 @RequestMapping("/activities/events")
 public class ActivitiesEventsController implements com.raxim.myscoutee.domain.payments.api.PaymentProviderResponse {
     private final ActivitiesEventsService activitiesEventsService;
-    private final ActivitiesEventFeedbackService activitiesEventFeedbackService;
     private final CurrentPaymentProvider currentPaymentProviderService;
     private final EventWatchService eventWatchService;
 
     public ActivitiesEventsController(
             ActivitiesEventsService activitiesEventsService,
-            ActivitiesEventFeedbackService activitiesEventFeedbackService,
             CurrentPaymentProvider currentPaymentProviderService,
             EventWatchService eventWatchService) {
         this.activitiesEventsService = activitiesEventsService;
-        this.activitiesEventFeedbackService = activitiesEventFeedbackService;
         this.currentPaymentProviderService = currentPaymentProviderService;
         this.eventWatchService = eventWatchService;
     }
@@ -245,71 +241,6 @@ public class ActivitiesEventsController implements com.raxim.myscoutee.domain.pa
             skipWhenAuthenticationOptional = true)
     public EventStageActionResultDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
         return activitiesEventsService.applyStageAction(request);
-    }
-
-    @GetMapping("/feedback")
-    public List<EventFeedbackStateDto> queryFeedback(@RequestParam("userId") String userId) {
-        return activitiesEventFeedbackService.queryStates(userId);
-    }
-
-    @GetMapping("/feedback/received")
-    public List<EventFeedbackReceivedEventDto> queryReceivedFeedback(@RequestParam("userId") String userId) {
-        return activitiesEventFeedbackService.queryReceivedEvents(userId);
-    }
-
-    @PostMapping("/feedback/page")
-    public EventFeedbackPageResultDto loadFeedbackPage(@RequestBody EventFeedbackPageQueryDto request) {
-        return activitiesEventFeedbackService.loadPage(request);
-    }
-
-    @PostMapping("/feedback/stat")
-    public EventFeedbackStatDto loadFeedbackStat(@RequestBody EventFeedbackStatQueryDto request) {
-        return activitiesEventFeedbackService.loadStatById(request);
-    }
-
-    @PostMapping("/feedback/detail")
-    public EventFeedbackDetailDto loadFeedbackDetail(@RequestBody EventFeedbackQueryDto request) {
-        return activitiesEventFeedbackService.loadDetail(request);
-    }
-
-    @PostMapping("/feedback/submit")
-    @RequiresPolicy(
-            key = AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
-            subject = "#request?.userId() ?: #actorUserId",
-            resourceId = "#request?.feedback()?.eventId()",
-            skipWhenAuthenticationOptional = true)
-    public EventFeedbackDetailDto submitFeedback(@RequestBody EventFeedbackSubmitRequestDto request) {
-        return activitiesEventFeedbackService.submit(request);
-    }
-
-    @PostMapping("/feedback/note")
-    @RequiresPolicy(
-            key = AccessPolicyKeys.EVENT_FEEDBACK_NOTE,
-            subject = "#request?.userId() ?: #actorUserId",
-            resourceId = "#request?.eventId()",
-            skipWhenAuthenticationOptional = true)
-    public void saveFeedbackNote(@RequestBody EventFeedbackNoteRequestDto request) {
-        activitiesEventFeedbackService.saveNote(request);
-    }
-
-    @PostMapping("/feedback/remove")
-    @RequiresPolicy(
-            key = AccessPolicyKeys.EVENT_FEEDBACK_REMOVE,
-            subject = "#request?.userId() ?: #actorUserId",
-            resourceId = "#request?.eventId()",
-            skipWhenAuthenticationOptional = true)
-    public void removeFeedbackEvent(@RequestBody EventFeedbackToggleRequestDto request) {
-        activitiesEventFeedbackService.markRemoved(request, true);
-    }
-
-    @PostMapping("/feedback/restore")
-    @RequiresPolicy(
-            key = AccessPolicyKeys.EVENT_FEEDBACK_RESTORE,
-            subject = "#request?.userId() ?: #actorUserId",
-            resourceId = "#request?.eventId()",
-            skipWhenAuthenticationOptional = true)
-    public void restoreFeedbackEvent(@RequestBody EventFeedbackToggleRequestDto request) {
-        activitiesEventFeedbackService.markRemoved(request, false);
     }
 
     @PostMapping("/sync")

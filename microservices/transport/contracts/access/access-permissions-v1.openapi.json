@@ -2996,7 +2996,7 @@
         "operationId": "canCurrentActorSubmitLeaderboardEntry"
       }
     },
-    "/_internal/v1/access/permissions/can-current-actor-submit-event-feedback": {
+    "/_internal/v1/access/permissions/can-current-actor-submit-feedback": {
       "post": {
         "security": [
           {
@@ -3031,7 +3031,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CanCurrentActorSubmitEventFeedbackQuery"
+                "$ref": "#/components/schemas/CanCurrentActorSubmitFeedbackQuery"
               }
             }
           }
@@ -3108,10 +3108,10 @@
             }
           }
         },
-        "operationId": "canCurrentActorSubmitEventFeedback"
+        "operationId": "canCurrentActorSubmitFeedback"
       }
     },
-    "/_internal/v1/access/permissions/can-current-actor-save-event-feedback-note": {
+    "/_internal/v1/access/permissions/can-current-actor-save-feedback-note": {
       "post": {
         "security": [
           {
@@ -3146,7 +3146,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CanCurrentActorSaveEventFeedbackNoteQuery"
+                "$ref": "#/components/schemas/CanCurrentActorSaveFeedbackNoteQuery"
               }
             }
           }
@@ -3223,10 +3223,10 @@
             }
           }
         },
-        "operationId": "canCurrentActorSaveEventFeedbackNote"
+        "operationId": "canCurrentActorSaveFeedbackNote"
       }
     },
-    "/_internal/v1/access/permissions/can-current-actor-remove-event-feedback": {
+    "/_internal/v1/access/permissions/can-current-actor-remove-feedback": {
       "post": {
         "security": [
           {
@@ -3261,7 +3261,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CanCurrentActorRemoveEventFeedbackQuery"
+                "$ref": "#/components/schemas/CanCurrentActorRemoveFeedbackQuery"
               }
             }
           }
@@ -3338,10 +3338,10 @@
             }
           }
         },
-        "operationId": "canCurrentActorRemoveEventFeedback"
+        "operationId": "canCurrentActorRemoveFeedback"
       }
     },
-    "/_internal/v1/access/permissions/can-current-actor-restore-event-feedback": {
+    "/_internal/v1/access/permissions/can-current-actor-restore-feedback": {
       "post": {
         "security": [
           {
@@ -3376,7 +3376,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CanCurrentActorRestoreEventFeedbackQuery"
+                "$ref": "#/components/schemas/CanCurrentActorRestoreFeedbackQuery"
               }
             }
           }
@@ -3453,7 +3453,7 @@
             }
           }
         },
-        "operationId": "canCurrentActorRestoreEventFeedback"
+        "operationId": "canCurrentActorRestoreFeedback"
       }
     },
     "/_internal/v1/access/permissions/can-current-actor-create-chat-message": {
@@ -7799,7 +7799,7 @@
           }
         }
       },
-      "CanCurrentActorSubmitEventFeedbackQuery": {
+      "CanCurrentActorSubmitFeedbackQuery": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -7819,7 +7819,7 @@
           }
         }
       },
-      "CanCurrentActorSaveEventFeedbackNoteQuery": {
+      "CanCurrentActorSaveFeedbackNoteQuery": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -7839,7 +7839,7 @@
           }
         }
       },
-      "CanCurrentActorRemoveEventFeedbackQuery": {
+      "CanCurrentActorRemoveFeedbackQuery": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -7859,7 +7859,7 @@
           }
         }
       },
-      "CanCurrentActorRestoreEventFeedbackQuery": {
+      "CanCurrentActorRestoreFeedbackQuery": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

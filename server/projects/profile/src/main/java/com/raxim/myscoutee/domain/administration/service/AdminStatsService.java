@@ -256,7 +256,7 @@ public class AdminStatsService {
         long activeAssetCount = activeAssets.size();
         long assetCount = Math.max(activeAssetCount, knownAssets.size());
         long matchingOps = sum(counters, "rates.synced");
-        long eventInteractions = sum(counters, "event.members.changed", "event.member.joined", "event.member.invited", "event.feedback.submitted");
+        long eventInteractions = sum(counters, "event.members.changed", "event.member.joined", "event.member.invited", "feedback.submitted");
         long assetInteractions = sum(counters, "asset.requests.changed");
         long communicationOps = sum(counters, "chat.message.sent", "admin.user.warned");
         long moderationOps = sum(counters, "feedback.submitted", "report.submitted", "admin.user.blocked", "admin.user.unblocked");
@@ -312,7 +312,7 @@ public class AdminStatsService {
                 )),
                 segment("moderation", "stats.segment.moderation", "shield", moderationOps, List.of(
                         item("report.submitted", "stats.event.report.submitted", counters.getOrDefault("report.submitted", 0L), moderationOps, "report", "red"),
-                        item("feedback.submitted", "stats.event.feedback.submitted", counters.getOrDefault("feedback.submitted", 0L), moderationOps, "feedback", "purple"),
+                        item("feedback.submitted", "stats.feedback.submitted", counters.getOrDefault("feedback.submitted", 0L), moderationOps, "feedback", "purple"),
                         item("admin.user.blocked", "stats.event.admin.user.blocked", counters.getOrDefault("admin.user.blocked", 0L), moderationOps, "block", "red"),
                         item("admin.user.unblocked", "stats.event.admin.user.unblocked", counters.getOrDefault("admin.user.unblocked", 0L), moderationOps, "lock_open", "green")
                 ))

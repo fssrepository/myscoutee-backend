@@ -145,7 +145,7 @@ The [English guide](../guides/manuals/myscoutee-microservices-guide-en.html) and
 [branded PDF](../guides/manuals/MyScoutee_Microservices_Guide_EN.pdf) describe
 the actual deployment, operations, measurements and limits.
 
-`assets`, `events` and `eventFeedbackStates` now use optimistic document versions.
+`assets`, `events` and `feedbackStates` now use optimistic document versions.
 Their existing owners initialize missing versions to zero before accepting work.
 For this upgrade, stop all old backend writers before a context probe or new
 backend image deployment. The versioned command preserves supporting services:
@@ -242,7 +242,7 @@ Spring starters and initial memory budgets. It currently defines:
 | Service | Domains | Heap / proposed container limit |
 | --- | --- | --- |
 | identity | accounts, access, administration, platform, integrations | 512 / 1024 MiB |
-| community | groups, community, events, campaigns, content | 512 / 1024 MiB |
+| community | groups, community, events, feedback, campaigns, content | 512 / 1024 MiB |
 | communication | chat, notifications, email, localization | 384 / 768 MiB |
 | assets | assets, media | 384 / 768 MiB |
 | payments | payments | 384 / 768 MiB |
@@ -375,6 +375,11 @@ frontend bundle. All 31 canonical startup/index/cache components are present in 
 service JARs. Backend localization, settings and access-policy cache loaders
 and domain index initializers remain in their original owners; their runtime
 completion still depends on resolving the missing backend connections.
+
+DEMO OAuth in the owned lab uses `CONFIG_MCP_DEMO_ENABLED=true` from
+`deploy/runtime.json`, together with disabled Firebase authentication. This is an
+explicit lab realm selection; production keeps the default REAL realm, and
+request headers cannot select the OAuth token database.
 
 The other supporting images reuse the sibling repositories' canonical production
 Dockerfiles. Kubernetes probes for MCP, registry and payment simulator call their
@@ -948,3 +953,16 @@ canonical importer, preserves existing job overrides and runtime state, and
 records a separate migration receipt. It does not reset fixtures or assert that
 unrelated older catalogs have been upgraded. Production startup continues to
 use the canonical importer; this command operates only on the owned KVM lab.
+
+### Central Feedback domain (15 October 2026)
+
+The current source has 22 domains in eight backend assemblies. Feedback resides
+in the community assembly and exclusively owns `feedbackStates`, `feedbackAnswers`
+and `feedbackEvaluations`. Events and Community consume its API, including when
+co-located. Directory, preparation, eligibility, measurement and privacy contracts
+follow that owner. The combined screen page includes items, totals and counter
+buckets in one operation. Focused monolith and frontend-local checks passed;
+the serial MSC-116 KVM sample passed native authentication, combined Feedback
+pagination, OAuth/MCP Events discovery and a domain event read with all eight
+updated assemblies ready. It does not establish performance parity. Earlier
+21-domain qualification figures above remain historical evidence.

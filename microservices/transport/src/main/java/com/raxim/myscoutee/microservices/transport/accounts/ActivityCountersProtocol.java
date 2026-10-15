@@ -24,9 +24,9 @@ public final class ActivityCountersProtocol {
     public static final String MENU_CHANGE = ROOT + "/menu-change";
     public static final String FEEDBACK_RECEIPT = ROOT + "/feedback-receipt";
     public static final String FEEDBACK_TRANSITION = ROOT + "/feedback-transition";
-    public static final String SERVICE_FEEDBACK = ROOT + "/service-feedback";
+    public static final String FEEDBACK_EVALUATION = ROOT + "/feedback-evaluation";
     public static final String STORED_FEED = ROOT + "/stored-feed";
-    public static String[] paths() { return new String[]{SUPPORT_PRESENT, SUPPORT_REFRESH, FEED_REFRESH, EVENT_SOURCES, ASSET_REFRESH, EVENT_USERS, MEMBERSHIP_DELTAS, STORED_EVENTS, EXPIRE_FOLLOWING, FEEDBACK_ELIGIBILITY, FEEDBACK_TRANSITION, FEEDBACK_RECEIPT, SERVICE_FEEDBACK, STORED_FEED, MENU_CHANGE}; }
+    public static String[] paths() { return new String[]{SUPPORT_PRESENT, SUPPORT_REFRESH, FEED_REFRESH, EVENT_SOURCES, ASSET_REFRESH, EVENT_USERS, MEMBERSHIP_DELTAS, STORED_EVENTS, EXPIRE_FOLLOWING, FEEDBACK_ELIGIBILITY, FEEDBACK_TRANSITION, FEEDBACK_RECEIPT, FEEDBACK_EVALUATION, STORED_FEED, MENU_CHANGE}; }
     public record Scope(Boolean active, String groupId) {
         public static Scope current() { return new Scope(JobGroupContext.isActive(), JobGroupContext.groupId()); }
     }
@@ -41,7 +41,7 @@ public final class ActivityCountersProtocol {
             && q.changes().stream().allMatch(c -> c != null && c.valid()); }
     public record FeedbackReceipt(Scope scope, com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.Change change) {}
     public record FeedbackQuery(Scope scope, FeedbackOwnersDto owners, String userId, Boolean wasSubmitted, Boolean wasRemoved, Boolean isSubmitted, Boolean isRemoved) {}
-    public record ServiceFeedbackQuery(Scope scope, String userId, Integer count) {}
+    public record FeedbackEvaluationQuery(Scope scope, String userId, Integer count) {}
     public record FeedValue(Boolean resolved, Long revision, java.util.Map<String, Long> counts) {}
     public record Decision(Boolean value) {}
     public record Count(Integer value) {}
@@ -57,7 +57,7 @@ public final class ActivityCountersProtocol {
     public static boolean valid(MembershipQuery q) { return q != null && scope(q.scope()) && ids(q.added()) && ids(q.removed()); }
     public static boolean valid(InstantQuery q) { return q != null && scope(q.scope()); }
     public static boolean valid(EligibilityQuery q) { return q != null && scope(q.scope()) && ids(q.ids()); }
-    public static boolean valid(ServiceFeedbackQuery q) { return q != null && scope(q.scope()) && id(q.userId()) && q.count() != null; }
+    public static boolean valid(FeedbackEvaluationQuery q) { return q != null && scope(q.scope()) && id(q.userId()) && q.count() != null; }
     public static boolean valid(FeedbackReceipt q) {
         return q != null && scope(q.scope()) && q.change() != null && q.change().id() != null
                 && q.change().id().matches("[a-f0-9]{32}") && q.change().deltas() != null

@@ -1,264 +1,116 @@
-# CHAT-CALL-001 — közvetlen WebRTC hang- és videóhívás
+# MSC-117 — ordered automatic remaining WebRTC QA
 
-Külön teszteset az [MSC-117 WebRTC Project-feladathoz](https://github.com/fssrepository/myscoutee-roadmap/issues/155). Az eredmények és a dátumozott
-bizonyítékok a QA-mátrixba és az evidence könyvtárba kerülnek; ez stabil
-ellenőrzőlista. A böngészőket a verziózott launcher készíti elő, utána a tesztelő
-végzi a kattintásokat. A megnyitás önmagában nem PASS. Alice a dedikált fixture adminja; Bob és Carol normál tagok.
+Prepared on2026-10-15. Execute only after the user starts this campaign.
+Once delegated, proceed in numbered order, repair observed defects and retest
+affected behavior. Report progress by block/step and record results at block end.
+No other checklist is required to perform these development steps.
 
-## Template regression and fix propagation — MSC-122
+## Accepted evidence and scope
 
-Assess shared chat, WebSocket/signaling and retained call-backend corrections
-against the template, and run the applicable backend/transport and personal-chat
-regressions there. The template retains the native audio/video call service and
-window as a basic chat capability. Run the applicable call-window steps there
-as well; omit only product-specific invite/report/context actions. Its frontend-local
-adapter has no call transport, matching the source. Do not claim physical audio/video
-or cross-network evidence from a backend test or a synthetic-media browser test.
+Credit October6 WASM MLS/FFT, live signaling/authority/coordinator and own-STUN
+checks. Credit October12 template browser evidence for the shared call owner:
+two-way real RTP audio/video, non-relay ICE, mute/camera-off/track cleanup,
+immediate second call, ten successive calls, and35-second KVM media/socket
+continuity across delegation expiry. These used synthetic media, not physical
+microphone quality. Source and template call service/MLS/detector/popup files
+are currently identical; later shared error presentation still needs its own
+targeted check. Do not repeat the accepted call series.
 
-Follow the [shared template regression requirements](../README.md#template-regression-and-fix-propagation--msc-122).
-Record template impact, propagated revisions and its own targeted result for
-each defect; source PASS alone does not close the template follow-up.
+The former nonreproduced CALL-01 observation was explicitly removed from the
+open list by the user after successful tests. Do not reopen it as a closure gate.
+Three-/seven-party media, real viewport RTP suppression, remaining controls,
+call guides and source-specific integration are not proved by two-party calls.
 
-## Előkészítés
+Template execution stays in the existing template QA. Physical microphone,
+camera, external-network/NAT and installed/deployed-client qualification stay
+in the separate live checks outside the development QA ledger. Local-only mode
+has no call transport; unavailable calling there is expected, not a missing test.
 
-A meglévő dev stack és a `myscoutee-stun` konténer fusson. A fixture saját
-WebRTC Alice, WebRTC Bob és WebRTC Carol profilokat, valamint egy „WebRTC test
-chat” beszélgetést hoz létre, a másik QA fixture érintése nélkül.
+## Preparation
 
-```bash
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh stage chat-call CHAT-CALL-001
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh ready chat-call CHAT-CALL-001
-node guides/qa/tools/open-checkpoint-browser-sessions.mjs CHAT-CALL-001
-```
+Baseline: Existing MyScoutee monolith, owned STUN and disposable chat-call actors.
+Keep other retained fixtures untouched; KVM and monolith never run together.
 
-A `stage` egyszer szükséges; már előkészített fixture-nél a `ready` után lehet
-indítani. Dev-újraindítás és a szándékos demóreset után mindig ellenőrizd újra
-a baseline-t; a korábbi `fixture-ready` eredmény nem bizonyítja a jelenlegi
-állapotot. Az itt felsorolt parancsok az előkészítéshez tartoznak, nem maguk
-a böngészős tesztlépések. A két Chrome-profil külön bejelentkezést és teszt hang-/videóforrást
-kap, így ugyanazon a gépen nem versenyeznek a fizikai kameráért. A szintetikus
-kép/hang csak a helyi kapcsolatot igazolja. Fizikai eszközökkel és eltérő
-hálózatok között külön kell ellenőrizni a minőséget és a NAT-átjárhatóságot.
+1. Record source revisions, current call-owner differences from the credited evidence, running database/profile, health, CPU and memory. Reuse the running watchers; no second compiler or application stack.
 
-## Két résztvevő
+2. Inspect the existing chat-call fixture. If absent, stage once with `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh stage chat-call CHAT-CALL-001`. Verify with `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh ready chat-call CHAT-CALL-001`: Alice admin, Bob/Carol ordinary members, WebRTC test chat and zero persisted messages. A previous ready result is insufficient after restart/reset.
 
-1. Mindkét profilban nyisd meg: Aktivitások → Csevegések → „WebRTC test chat”.
-2. A második fejlécsorban, közvetlenül az avatarlista előtt zöld telefonikon
-   látszik. Az első sorban a bezárás mellett nincs hívásikon.
-3. Alice-nél kattints a telefonra. A lazy betöltött Hívás ablak rögtön hanghívást
-   indít; nincs köztes indítógomb, videó/hang választó vagy STUN-konfiguráció.
-4. Az ablak szélessége és magassága megegyezik az alatta lévő chattel. A saját
-   videóhely már engedélykérés közben is látszik. A csempék száma a csatlakozott
-   résztvevők számát követi, nincs plusz üres résztvevő; a vezérlők alul vannak. Külön állapotsor nem vesz el videóterületet,
-   a fejlécben nincs várakozási badge vagy hívásazonosító-gomb. Nézd meg kisebb képernyőn is.
-5. Bob ugyanebben a chatben bejövő hívást kap. Fogadd; mindkét oldalon megjelenik
-   a közvetlen kapcsolat állapota. A kezdeti hívás nem kér kameraengedélyt.
-6. Kapcsold be Alice kameráját a hívás gombjával. Bob látja a tesztképet; kapcsold
-   be Bob kameráját is. Kikapcsoláskor az adott videó helyére avatar kerül, a
-   helyi kamera track leáll; a bal felső mikrofonikon alatt piros áthúzott
-   kameraikon látszik. Újbóli bekapcsolás után ismét megjelenik a kép, a piros
-   kameraikon normál állapotra vált. A két sarokjelzés mindig ugyanott van és kattintható.
-   A saját csempe mikrofon- és kameraikonja ugyanazt kapcsolja, mint az alsó
-   gombsor; az „Én” blokk kameraikonja is ezekkel szinkronban van.
-   Adminnémítás alatt a saját mikrofon egyik helyről sem kapcsolható vissza.
-7. Némítsd, majd kapcsold vissza a mikrofont mindkét oldalon. A másik résztvevő
-   hangja ennek megfelelően megszűnik/visszatér. A hangszóró némítása csak a
-   helyi lejátszást állítja le; a másik fél tovább hallja a mikrofont.
-   A hangerőgomb fölé nyílik a kompakt `app-popup` panel, a videórács nem ugrik
-   feljebb. A cím és a keretes vezérlők között nincs nagy üres tér; sok
-   résztvevőnél a panel tartalma görgethető marad. A halvány alapszínű keretes blokkok címkéje „Én”, illetve a résztvevő
-   teljes neve; a címke a keret tetején, a csúszka, százalék és némítógomb
-   alatta egy sorban van. Desktopon két oszlopba férnek, mobilon egybe.
-   Az „Én” csúszka ennek a böngészőnek a közös lejátszási hangereje, a többi
-   az egyes résztvevőké. Állíts be eltérő hangerőket, némíts és oldd fel a
-   némítást: a százalék végig megmarad, a hang ugyanarra a szintre tér vissza.
-   Egy résztvevő helyi némítása csak őt hallgattatja el ezen a gépen.
-   Közös némításkor a panelen kívüli hangerőgomb háttere is piros, feloldáskor
-   visszaáll. A saját mikrofon némításakor a saját csempe, egy résztvevő helyi
-   vagy adminnémításakor az érintett csempe piros keretet kap a zöld beszédkeret
-   stílusában; a bal felső sarokban piros áthúzott mikrofon látszik. Beszédnél
-   zöld mikrofon jelenik meg ugyanott, feloldás után ismét a beszédjelzés dönti
-   el a zöld keretet. Nagyítva is megmaradnak a jelzések.
-   A név szerinti blokk kameraikonja és a másik résztvevő csempéjének
-   kameraikonja ugyanannak a résztvevőnek a videófogadását kapcsolja.
-   A másik csempe mikrofonikonja ugyanazt a helyi némítást vezérli, mint a
-   név szerinti blokk némítógombja. Nincs „Összes videó” gomb. Az „Én” kameraikon
-   a saját kamera küldését kapcsolja, ugyanúgy, mint az alsó kameragomb.
-   A hang tovább szól, a küldő saját előnézete és más résztvevők videója megmarad.
-   Visszakapcsoláskor visszatér a kép; saját kamerakapcsolgatás sem kerüli meg
-   a másik fél fogadási tiltását. A kézi tiltás lapozás vagy beszélőkövetés
-   után is megmarad; a rejtett résztvevő videójának visszaengedése csak akkor
-   indít újra továbbítást, amikor a csempéje láthatóvá válik.
-   WebRTC-statisztikában a célzott videó bejövő RTP byte-/frame-számlálója a
-   puffer kiürülése után érdemben nem nő, az audio számlálója tovább nő.
-   Három résztvevővel ellenőrizd, hogy a harmadik tovább kap videót. Próbáld
-   új résztvevő csatlakozásával és kameraki/be kapcsolásával is.
-8. Ha a böngésző blokkolja a lejátszást, a hang engedélyezése gomb után elindul.
-9. A fejlécben a bezárás mellett a közös app-menu „Beszélők követése”
-   kapcsolója van: ikon + felirat + switch. Bekapcsolva hover nélkül is telt
-   kék, nincs egyedi státuszpaletta. Bekapcsolva az aktuális beszélő és a
-   legutóbb beszélők kerülnek előre és a látható lapra; beszédszünetben a
-   legutóbbi sorrend megmarad. Kikapcsolva visszaáll a résztvevői sorrend.
-   A csempe `fullscreen` ikonjával nagyíts egy résztvevőt: egy nagy csempe marad,
-   a többiek hangja tovább szól. A `fullscreen_exit` visszaállítja a rácsot.
-   A gomb világos háttere és sötét ikonja állandó, nagyítva sem válik pirossá.
-   Fizikai mikrofonnal beszéljetek felváltva: a beszélő kap keretet és a csempe
-   alján tényleges FFT spektrumot (48 sáv, 40 px magas kijelzés). Csendben eltűnik; mikrofon- és adminnémításkor
-   nincs jelzés. A szintetikus tesztforrás folyamatos hangja folyamatos jelzést
-   adhat, ezért beszédszünetet és halk/zajos mikrofont fizikailag is ellenőrizz.
-10. Tedd le Alice-nél: a hívásablak bezárul, a helyi mikrofon/kamera felszabadul.
-    Bob is tegye le. A chat és az üzenetküldés működik, új hívás indítható.
-11. Ismételd meg az elutasítást Bobnál: kamera/mikrofon nem indul el, Alice
-    értesül az elutasításról. A chatből a telefonikon később újra használható.
-12. Ellenőrizd angolul és magyarul: nincsenek `chat.call.*` nyers kulcsok.
-    Mikrofonengedély elutasításakor érthető hiba és a videóhelyek látszanak;
-    bezárás és engedély megadása után a telefon újra indítja a hívást.
+3. Launch `node guides/qa/tools/open-checkpoint-browser-sessions.mjs CHAT-CALL-001-GROUP`. Use its three distinct profiles and synthetic media. Attach bounded getStats/track/socket/error capture to actual browser transports; never fabricate connected state, media counters or successful signaling.
 
-## Három résztvevő és koordinátorcsere
+4. For later paging, extend the existing fixture/launcher owner to seven distinct disposable authorized actors with retained cleanup if no larger baseline exists. The current owner provides three only. Do not duplicate an identity or pretend three actors prove a full mobile/laptop page. A missing larger baseline blocks only that block; prepare it during execution under the same fixture owner.
 
-```bash
-node guides/qa/tools/open-checkpoint-browser-sessions.mjs CHAT-CALL-001-GROUP
-```
+## MSC117-SOURCE — Source integration and untested controls
 
-13. Mindhárom profil nyissa meg ugyanazt a chatet. Alice indít, Bob és Carol
-    fogad. Mindenki látja/hallja a másik két résztvevőt. Pontosan három
-    csempe van; nagyítás/visszaállítás működik,
-    nagyított résztvevő kilépése visszaállítja a rácsot.
-    Alice adminnémítással némítsa Bobot: mindenkinél elhallgat Bob, Bob mikrofonja
-    letiltott és „Admin által némítva” látszik. Kilépés/visszacsatlakozás ugyanabba
-    a hívásba nem kerüli meg a némítást. Feloldáskor a mikrofon nem kapcsol be
-    magától; Bob kapcsolja vissza. Bob/Carol nem kap adminnémítási gombot.
-    A legkorábban csatlakozott résztvevő a koordinátor; koordinátorcsere önmagában
-    nem ad adminjogot.
-14. Alice tegye le, majd külön ismétlésben zárd be Alice böngészőjét. A bent
-    maradó Bob veszi át a koordinátor szerepét; Bob és Carol hívása működik
-    tovább. Bob csempéjén megjelenik a koordinátorjelzés, de nem kap
-    adminnémítási jogot. A fejlécben továbbra sincs ellenőrzőkód-gomb.
-15. Alice nyissa meg újra a chatet, a telefonnal csatlakozzon a még aktív
-    híváshoz. Mindhárom oldalon ismét három résztvevő és működő kapcsolat
-    látszik; nincs duplikált csempe vagy megkettőzött hang. A tagságváltozás
-    kulcsváltásának bizonyítékát külön jelzésrétegbeli ellenőrzés adja,
-    nem egy eltávolított felületi kód összehasonlítása.
-16. Zárd be a hívást engedélykérés/kapcsolódás közben is. Későn visszatérő
-    engedély vagy esemény nem nyitja újra az ablakot és nem tart aktív tracket.
+Baseline: Alice/Bob/Carol in Activities → Chats → WebRTC test chat.
 
-## Saját STUN, WebSocket és közvetlen média
+5. Verify the green phone sits in the second header row before avatars, not beside Close. Open it: the lazy call popup starts audio without a second Start control or camera prompt. Check chat-sized geometry, self tile during permission pending, bottom controls and no spare participant, waiting badge or verification-code button.
 
-17. Hívás nélkül állítsd le csak a saját STUN-konténert:
-    `docker stop myscoutee-stun`. A nyitott chat telefonja a következő
-    állapotjelzéskor piros, áthúzott és letiltott lesz; a kagyló iránya a zöldével
-    megegyezik, az áthúzott ikon vízszintesen tükrözött.
-18. `docker start myscoutee-stun`: a telefon újratöltés nélkül visszavált zöldre
-    és használható. Már létrejött közvetlen hívás a STUN kiesésétől önmagában
-    nem szakad meg. A végén mindig fusson újra a konténer.
-19. A WebSocket kapcsolat megszakításakor a helyi hívás és a trackek lezárulnak;
-    a többi résztvevő rosteréből eltűnik a kieső fél. Újracsatlakozás után az
-    állapot frissül, új hívás indítható.
-20. A böngésző WebRTC diagnosztikájában a kiválasztott ICE-pár `host`, `srflx`
-    vagy `prflx`; nem `relay`. A STUN a saját alkalmazáshost 3478-as portja.
-    Nincs külső Google STUN, TURN, SFU vagy szerveres médiatovábbítás.
-21. Eltérő hálózatokon is próbáld ki. Ha közvetlen ICE-kapcsolat nem építhető,
-    a hívás hibát mutat; nem vált relére és nem állít sikeres kapcsolódást.
-22. A fixture `status` eredményében a hívások után is nulla a mentett
-    chatüzenetek száma; a hívásjelzések nem lesznek chatüzenetek.
+6. Use one short source call to establish the current integration baseline and exercise the new shared popup error presentation. Bob declines a separate attempt: no live media tracks and Alice receives decline state. Deny microphone permission, verify translated readable error, close, restore permission and retry. Closing during permission/connection pending releases late tracks and cannot reopen the popup. Do not repeat the accepted ten-call campaign.
 
-## Látható videók és SmartList-lapozás
+7. Check own tile microphone/camera icons and Me panel camera reuse the bottom controls. Camera-off shows avatar/red crossed camera below the microphone; re-enable restores video. Remote tile mute/video icons and the named panel controls stay synchronized. No All videos control exists.
 
-A meglévő launcher legfeljebb három különböző szereplőt készít elő. A teljes
-mobil 2×2 rácshoz négy, a mobil túllapozáshoz legalább öt, a laptop 3×2
-rácsához és következő lapjához legalább hét különböző, jogosult résztvevővel
-előre elkészített hívás kell. Ezt a nagyobb baseline-t a háromszereplős
-fixture nem helyettesíti; hiányában a teljes rácsos lépések nem igazolhatók.
-A teszteléshez ne indíts több azonos identitású ablakot plusz résztvevő helyett.
+8. Open the compact upward volume popup: the grid does not jump. Me controls local playback, named full-name sections control individual peers; desktop two columns, mobile one, scrollable when needed. Change master and per-peer percentages, mute/unmute and verify retained levels. Local speaker mute leaves outgoing microphone/audio to others unaffected.
 
-23. A háromszereplős hívásban kapcsold ki a beszélőkövetést. Asztali nézetben
-    csökkentsd a hívásnak jutó szélességet/magasságot úgy, hogy két résztvevő
-    férjen egy lapra. A közös SmartList lapozójával menj oda-vissza: az összes
-    résztvevő elérhető, nincs összecsuklott, néhány pixel széles videóoszlop.
-24. A nagyobb baseline-nal mobilon négy résztvevő 2×2 rácsban jelenjen meg;
-    az ötödik a következő lapra kerüljön. A natív vízszintes swipe előre és
-    vissza működik. Laptopon elegendő hely mellett hat csempe 3×2 rácsot alkot,
-    a hetedik következő lapra kerül. Az utolsó részleges lapon nincs kitalált
-    üres résztvevő; átméretezés után is mindenki elérhető marad.
-25. Rögzítsd egy távoli résztvevő bejövő videó- és audio-RTP számlálóit.
-    Lapozd teljesen képernyőn kívülre: a videó byte-/frame-számlálója a puffer
-    kiürülése után érdemben nem nő, az audio tovább nő és hallható. Visszalapozva
-    a kép és a videószámláló is újraindul. A swipe közben részlegesen látható
-    két lap videói átmenetileg egyszerre mehetnek.
-26. Nagyíts ki egy résztvevőt. Csak ő látszik, a többi résztvevő videóforgalma
-    ugyanúgy szünetel, hangjuk tovább hallható. Állítsd vissza a rácsot, majd
-    méretezd át az ablakot: az újonnan látható videók visszatérnek, a hang nem
-    szakad meg. A nagyításikon végig jól látható és azonos színű marad.
-27. Tiltsd le Bob videójának fogadását a hangerőpanel Bob blokkjában, majd
-    lapozz el és vissza. A tiltás és a piros kameraikon megmarad; Carol képe
-    változatlanul fogadható. Bob csempéjén engedélyezd újra: a panel ikonja is
-    átáll. Rejtett csempe esetén az engedély önmagában még nem indít videóforgalmat.
-28. Kapcsold be a fejlécben a „Beszélők követése” kapcsolót. Egy másik lapon
-    lévő résztvevő beszéljen: a látható oldalra kerül. Ezután beszéljetek
-    felváltva; egyetlen aktív beszélő mellett a legutóbb beszélők töltsék ki
-    a többi helyet. Beszédszünetben ne ugráljon vissza a sorrend. A kézi
-    videótiltást a követés nem oldhatja fel. Kikapcsolva visszaáll a normál
-    résztvevői sorrend, és kézzel ismét lapozható.
-29. Másik lapon lévő résztvevő hangerejét és némítását is állítsd a név szerinti
-    hangerőpanelről. A beállítás azonnal hallható, visszalapozva a csempe
-    jelzése egyezik vele. Az egyik résztvevő némítása nem némítja a többieket;
-    feloldás után a korábban beállított százalék marad.
+9. Verify muted tile red border/crossed microphone, speaking green microphone/border and camera-off marker placement, including fullscreen. Fullscreen/restore stays light with a dark icon. Browser autoplay rejection uses the existing audio-unlock control and recovers normally.
 
-## Saját hang, fizikai eszközök és nyelv
+## MSC117-GROUP — Three-party media and authority
 
-30. Fizikai mikrofonnal, egyedül a hívásban beszélj a mikrofonba. A saját
-    beszédjelző és spektrum reagál, de az alkalmazás nem játssza vissza a
-    saját mikrofonodat. Kamera bekapcsolása sem ad saját hangot az előnézethez.
-31. Ugyanazon gép két böngészője ugyanazt a fizikai mikrofont is felveheti:
-    ilyenkor a másik kliens felől visszaérkező hang nem saját előnézeti lejátszás.
-    Egygépes fizikai próbán a második kliens mikrofonját és lejátszását némítsd;
-    a valódi kétirányú hangot két külön eszközön, fejhallgatóval ellenőrizd.
-    Beszéljetek normál és halk hangon, majd tartsatok szünetet: a beszédjelzés
-    kövesse a tényleges hangot. Jegyezd fel a késést, visszhangot vagy torzítást;
-    a szintetikus tesztforrás nem igazolja a fizikai hangminőséget.
-32. Ismételd meg a fejléc, beszélőkövetés, némítás, videótiltás, adminnémítás,
-    hangerőpanel és hibaállapotok megtekintését HU és EN nyelven, desktopon és
-    mobilon. A teljes nevek, százalékok és gombfeliratok olvashatók; nincs
-    nyers fordításkulcs, egymásra csúszó fejléc vagy levágott vezérlő.
+Baseline: Three distinct actors in one call, real browser media and getStats.
 
-## Kapcsolódó chat-visszaellenőrzések
+10. Alice starts; Bob and Carol join. Each receives audio/video from both others, exactly three tiles, no duplicate audio. Zoom a participant and restore; the others' audio continues. Departure of the focused participant restores the grid.
 
-33. Az Aktivitások → Csevegések típusmenüjét nézd meg a meglévő Dating, Work
-    és Community QA-környezetekben. Csak az adott munkatérben engedélyezett
-    funkciókhoz tartozó kategóriák látszódjanak. A pusztán üres lista nem
-    azonos a letiltott funkcióval; ne vezess be új elrejtési szabályt.
-34. Ügyhöz tartozó chatben hajtsd végre a
-    [MSC115-CASE-CHAT 4–6. lépését](../group/MSC-115_WORK_COMMUNITY_PAIR_QA.md#msc115-case-chat--shared-case-channel-and-permission-changes):
-    a „Feladatok” közvetlenül a feladattáblát nyitja meg, alatta nem nyílik új
-    ügylista és nem indul annak extra lista-/számlálóbetöltése. Ez külön,
-    létező ügyes baseline-t használ; a WebRTC Alice/Bob/Carol általános
-    tesztchatjében nincs ügyhöz kötött „Feladatok” gomb.
+11. Alice admin-mutes Bob. All recipients stop hearing him, his microphone controls are disabled and admin-mute text appears. Bob leaving/rejoining the same call cannot bypass it. Release does not enable his microphone automatically; Bob enables it. Bob/Carol cannot admin-mute.
 
-## Technikai ellenőrzési határ
+12. Alice hangs up; Bob becomes oldest surviving coordinator and retains the call with Carol without gaining admin authority. Repeat with Alice's browser closing. Rejoin Alice through the phone: three unique peers, no duplicate sound. Credit existing MLS epoch/authority tests; inspect actual roster/key-transition events for this browser flow.
 
-A csoport médiája mesh kapcsolat: minden résztvevő közvetlenül kapcsolódik
-minden másikhoz. A koordinátor MLS-tagságot kezel, nem továbbít videót.
-A résztvevők feltöltési igénye nő a létszámmal; a jelzésréteg legfeljebb
-16 résztvevőt enged. Az MLS védi a jelzéseket és kulcsváltásokat, a közvetlen
-médiát a WebRTC DTLS-SRTP védi. A koordinátorcsere nem master/child
-médiatovábbítás, és a nagyobb hívás méretezhetőségét önmagában nem bizonyítja.
+13. Disable only Bob's incoming video at Alice. After buffered frames drain, Alice's Bob video RTP bytes/frames stop materially increasing while Bob audio continues; Carol still receives Bob video. Re-enable restores Alice's video. Bob camera OFF/ON and a joining peer cannot override Alice's explicit receive prohibition.
 
-A 16., 22., 25–29. lépés után az ellenőrző személy rögzítse az érintett
-résztvevőket, a látható lapot, a video/audio RTP előtte-utána adatokat, valamint
-a hívás lezárásakor a felszabadult trackeket és a fixture üzenetszámát.
-A felületi kép eltűnése önmagában nem igazolja a hálózati videóforgalom leállását.
-A kézi eredmény és a gépi bizonyíték a meglévő CSV/XLSX-mátrixba és az evidence
-könyvtárba kerüljön, nem ebbe a stabil lépéssorba.
+## MSC117-PAGING — Visible video and continuous audio
 
-## Visszaállítás
+Baseline: Prepared seven-actor call. Use actual viewport geometry and RTP deltas;
+a vanished picture is insufficient proof that network video stopped.
 
-A teszt végén zárd be a dedikált ablakokat, majd csak ezt a fixture-t állítsd
-vissza. A korábbi QA kampány állapota és profiljai megmaradnak. A STUN-konténer
-a kiesési próba után ismét fusson. A kapcsolódó ügyes vagy nagyobb csoportos
-baseline-t a saját előkészítési/visszaállítási eljárása kezeli.
+14. With speaker following OFF, constrain the three-actor grid to two visible tiles and page both ways. No narrow/collapsed video column; all participants remain reachable.
 
-```bash
-node guides/qa/tools/open-checkpoint-browser-sessions.mjs CHAT-CALL-001 --close-only
-node guides/qa/tools/open-checkpoint-browser-sessions.mjs CHAT-CALL-001-GROUP --close-only
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh reset chat-call CHAT-CALL-001
-```
+15. In the seven-actor call, mobile shows2×2 with later peers on another page; laptop fits up to3×2 according to available space. Native horizontal swipe and shared SmartList navigation work both ways. During partial-page swipe, partially visible tiles may still receive video.
+
+16. Measure before/after RTP at settled pages: fully offscreen peer video pauses, visible video resumes, audio counters continue for all joined peers. Repeat resize and fullscreen/restore. Teardown closes actual peer connections and tracks.
+
+17. Disable Bob video, page away/back and toggle Follow speakers. The prohibition survives; Carol remains unaffected. Re-enable Bob while offscreen: video resumes only once visible. Panel and tile icons agree.
+
+18. Set volume/mute for an offscreen peer through their named panel section. Only that peer's playback changes; returning to the page preserves indicator and percentage. Use controlled synthetic source levels for measurable playback behavior, not a claim of physical audio quality.
+
+19. Enable Follow speakers through the standard icon/label/switch menu control. Active blue palette needs no hover. Controlled alternating speech brings current/recent speakers to the visible page, preserves recent order during gaps and respects explicit video prohibition. OFF restores participant order and manual paging. Verify48-band/40px FFT and speech indication with actual analyser input; mute/admin-mute suppress it.
+
+## MSC117-TRANSPORT — Availability and cleanup
+
+Baseline: Record original owned STUN/container state; preserve active unrelated work.
+
+20. With no call active, stop only `myscoutee-stun`. The phone becomes mirrored red/crossed/disabled on the next availability signal. Restart that same container; green/enabled returns without reload. Restore it even on failure. Already established direct media must survive a brief STUN outage.
+
+21. Break one actor's signaling WebSocket at the transport boundary. Their call and tracks close; peers remove them. Reconnect and start/join normally. Check selected ICE is host/srflx/prflx, never relay, and uses owned application-host STUN3478; no external STUN/TURN/SFU.
+
+22. Verify fixture chat-message count remains zero after call signaling and that all ended calls release tracks/peers. Run current focused MLS/signaling/runtime checks only for missing current-source proof or a related fix; do not substitute mocks for browser RTP.
+
+## MSC117-GUIDES — Remaining call Help and layout
+
+Baseline: Prepared waiting/self-only, incoming, joined, paged and focused states.
+Use EN/HU at1280×900,390×844 and short390×560; only rendered controls count.
+
+23. In ordinary and event chat, Guide includes the visible phone target and explains available/unavailable state. Check Dating/Work/Community revisions; Next does not start a call. Carry forward MSC-115 chat-category and case Tasks-navigation evidence; missing source-specific variants receive only targeted checks.
+
+24. Open call Guide in each prepared state. Cover participant grid, Follow speakers, own microphone/camera, peer mute/video, fullscreen, spectrum, bottom controls and Close. Omit absent accept/decline/admin/audio-unlock controls. Guide navigation never joins, declines, toggles media, moderates or hangs up.
+
+25. Open volume then Guide: context becomes chat.call.volume, Me explains incoming playback rather than microphone gain, peer highlights stay in their own visible block. Close Guide only, then volume; call remains and its context returns. End the functional call normally; parent chat guide returns without registrations/load loops.
+
+26. In paged/fullscreen states highlight only visible tiles, never the hidden page/chat. Run Next/Back/picker/Done; text fits five lines, no clipped controls/raw keys. Verify local/Mongo EN/HU field parity separately; offline local mode cannot supply a working call.
+
+## Closure
+
+Baseline: New development evidence plus precisely credited prior checks.
+
+27. Repair existing owners and retest affected boundaries. Route template impacts/revisions to the existing template regression record; no template execution in this campaign. If backend behavior changes, verify monolith/KVM serially with a focused sample, then restore original owners. No unrelated stress campaign.
+
+28. Restore STUN and only chat-call-owned records/sessions, then close both CHAT-CALL-001 and CHAT-CALL-001-GROUP launcher sessions with --close-only. Reset using `bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh reset chat-call CHAT-CALL-001`; verify only owned fixture records disappeared and no new process remains.
+
+29. Record each block with actor count, viewport/language, source/runtime, actual audio/video RTP deltas, track cleanup and limitations. Reconcile CHAT-CALL-001 and the guide umbrella once. Close development only when remaining development blocks pass; physical/live checks and template QA keep their independent status.

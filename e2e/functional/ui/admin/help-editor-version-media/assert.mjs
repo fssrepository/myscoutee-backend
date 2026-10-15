@@ -414,7 +414,7 @@ async function readRevisionByMarker(page, marker) {
       'assets.tickets',
       'events',
       'event.editor',
-      'event.feedback'
+      'feedback'
     ];
     let adminUserId = '';
     try {
@@ -576,7 +576,7 @@ async function waitForRevisionAbsent(page, marker, revisionId) {
         'assets.tickets',
         'events',
         'event.editor',
-        'event.feedback'
+        'feedback'
       ];
       let adminUserId = '';
       try {

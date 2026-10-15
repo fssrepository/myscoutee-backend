@@ -49,13 +49,13 @@ export async function assertUi({ page }) {
     initialMenu,
     expected
   });
-  assertBadgeMatches(initialMenu.feedback, expected.activities.eventFeedback.pending, 'Menu feedback counter should show pending event feedback on login', {
+  assertBadgeMatches(initialMenu.feedback, expected.activities.feedbackCounts.pending, 'Menu feedback counter should show pending feedback on login', {
     initialMenu,
     expected
   });
   assert(
-    normalizeCounter(expected.activities.feedback) === normalizeCounter(expected.activities.eventFeedback.pending),
-    'Top-level feedback counter should be the pending event-feedback counter',
+    normalizeCounter(expected.activities.feedback) === normalizeCounter(expected.activities.feedbackCounts.pending),
+    'Top-level feedback counter should be the pending feedback counter',
     { expected }
   );
 
@@ -119,7 +119,7 @@ export async function assertUi({ page }) {
     initialMenu,
     feedbackCounters
   });
-  await closePopup(page, '.event-feedback-list-popup');
+  await closePopup(page, '.feedback-list-popup');
   await assertMenuCountersUnchanged(page, initialMenu, 'opening the feedback popup');
 
   await assertNoDocumentHorizontalOverflow(page);
@@ -144,9 +144,9 @@ async function openAssetsPopupFromMenu(page) {
 async function openFeedbackPopupFromMenu(page) {
   await openNavigatorMenu(page);
   await page.clickVisible('.user-menu-panel.open button[aria-label="Open feedback"]');
-  await page.waitForSelector('.event-feedback-list-popup', { timeoutMs: 30000 });
+  await page.waitForSelector('.feedback-list-popup', { timeoutMs: 30000 });
   await closeExplanationPopupEventually(page, 10000);
-  await waitForBackendUiWindow(page, '.event-feedback-list-popup', 30000);
+  await waitForBackendUiWindow(page, '.feedback-list-popup', 30000);
 }
 
 async function readOpenMenuBadges(page) {
@@ -210,8 +210,8 @@ async function readAssetPopupCounters(page) {
 }
 
 async function readFeedbackPopupCounters(page) {
-  await page.mouseClickVisible('app-event-feedback-popup button[aria-label="Open event feedback filter"]');
-  const optionSelector = 'app-event-feedback-popup .app-menu__panel button';
+  await page.mouseClickVisible('app-feedback-popup button[aria-label="Open feedback filter"]');
+  const optionSelector = 'app-feedback-popup .app-menu__panel button';
   await page.waitForSelector(optionSelector, { timeoutMs: 10000 });
   const counters = await readOptionCountersByLabel(page, optionSelector, {
     ownEvents: 'Own Events',
@@ -219,7 +219,7 @@ async function readFeedbackPopupCounters(page) {
     feedbacked: 'Feedbacked',
     removed: 'Removed'
   });
-  await page.mouseClickVisible('app-event-feedback-popup button[aria-label="Open event feedback filter"]');
+  await page.mouseClickVisible('app-feedback-popup button[aria-label="Open feedback filter"]');
   return counters;
 }
 
@@ -317,7 +317,7 @@ async function readExpectedAppCounters(page) {
         hosting: event.hosting ?? activities.hosting,
         event,
         asset: activities.asset ?? {},
-        eventFeedback: activities.eventFeedback ?? {}
+        feedbackCounts: activities.feedbackCounts ?? {}
       }
     };
   });

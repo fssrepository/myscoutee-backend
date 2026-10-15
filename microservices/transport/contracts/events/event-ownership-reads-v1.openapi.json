@@ -2761,8 +2761,20 @@
                 "null"
               ]
             }
+          },
+          "pendingMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
-        }
+        },
+        "required": [
+          "pendingMemberUserIds"
+        ]
       },
       "MingleConfigurationDto": {
         "type": "object",

@@ -58,6 +58,10 @@ class IntegrationWebhookIdlePollingTest {
                     for (var mongo : List.of(real, demo)) {
                         for (String status : List.of("SENT", "FAILED")) save(mongo, status, Instant.now().minusSeconds(60));
                         for (String status : List.of("PENDING", "RETRY", "SENDING")) save(mongo, status, Instant.now().plusSeconds(3600));
+                        // Failed sends belong to the durable retry worker, not this dispatcher.
+                        var failedSend = save(mongo, "RETRY", Instant.now().minusSeconds(60));
+                        failedSend.setLastError("HttpTimeoutException");
+                        mongo.save(failedSend);
                     }
                     service.deliverPending();
                     verifyNoInteractions(jobs);
@@ -68,9 +72,14 @@ class IntegrationWebhookIdlePollingTest {
                         var mongo = mode == MongoSessionMode.REAL ? real : demo;
                         for (String status : List.of("PENDING", "RETRY", "SENDING")) {
                             var due = save(mongo, status, Instant.now().minusSeconds(60));
+                            if ("RETRY".equals(status)) {
+                                // Local admission throttling does not spend a delivery attempt.
+                                due.setLastError("throttled");
+                                mongo.save(due);
+                            }
                             scheduled.clear();
                             service.deliverPending();
-                            assertThat(scheduled).containsExactly(mode);
+                            assertThat(scheduled).as("%s %s", mode, status).containsExactly(mode);
                             assertThat(MongoSessionModeContext.currentMode()).isEqualTo(MongoSessionMode.DEMO);
                             mongo.remove(due);
                             scheduled.clear();

@@ -41,7 +41,7 @@ class QualifiedMauOwnerParityTest {
                         .append("status", "A").append("createdDate", start.plusSeconds(4).toString()));
                     template.getCollection("assetRequests").insertOne(new Document("userId", user).append("status", "accepted")
                         .append("booking", new Document("id", "b")).append("requestedAtIso", start.plusSeconds(5).toString()));
-                    template.getCollection("eventFeedbackStates").insertOne(new Document("viewerUserId", user).append("eventId", "e")
+                    template.getCollection("feedbackStates").insertOne(new Document("viewerUserId", user).append("eventId", "e")
                         .append("submittedAtIso", start.plusSeconds(6).toString()));
                 }
                 var rates = new ArrayList<Document>();
@@ -53,7 +53,7 @@ class QualifiedMauOwnerParityTest {
                 template.getCollection("userRates").insertMany(rates);
                 template.getCollection("chatMessages").insertOne(new Document("id", "deleted").append("chatId", "c")
                     .append("senderAvatar", new Document("id", "human")).append("sentAtIso", start.toString()).append("deletedAtIso", start.toString()));
-                template.getCollection("eventFeedbackStates").insertOne(new Document("viewerUserId", "human").append("eventId", "not-joined").append("submittedAtIso", start.toString()));
+                template.getCollection("feedbackStates").insertOne(new Document("viewerUserId", "human").append("eventId", "not-joined").append("submittedAtIso", start.toString()));
                 var expected = new ArrayList<QualifiedMauEvidenceRepository.QualifiedMauActionEvidence>();
                 new LegacyQualifiedMauEvidence(template).read(start, end, expected::add);
                 var actual = new ArrayList<QualifiedMauEvidenceRepository.QualifiedMauActionEvidence>();

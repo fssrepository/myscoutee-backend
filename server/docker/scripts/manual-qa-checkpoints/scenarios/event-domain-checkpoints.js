@@ -99,12 +99,12 @@
     const activities = saved && saved.activities && saved.activities.present
       ? saved.activities.value || {}
       : {};
-    const eventFeedback = activities.eventFeedback || {};
+    const feedbackCounts = activities.feedbackCounts || {};
     return {
-      ownEvents: normalizeActivityCount(eventFeedback.ownEvents),
-      pending: normalizeActivityCount(eventFeedback.pending),
-      feedbacked: normalizeActivityCount(eventFeedback.feedbacked),
-      removed: normalizeActivityCount(eventFeedback.removed)
+      ownEvents: normalizeActivityCount(feedbackCounts.ownEvents),
+      pending: normalizeActivityCount(feedbackCounts.pending),
+      feedbacked: normalizeActivityCount(feedbackCounts.feedbacked),
+      removed: normalizeActivityCount(feedbackCounts.removed)
     };
   }
 
@@ -127,10 +127,10 @@
     }, {
       $set: {
         "activities.feedback": next.pending + next.ownEvents,
-        "activities.eventFeedback.ownEvents": next.ownEvents,
-        "activities.eventFeedback.pending": next.pending,
-        "activities.eventFeedback.feedbacked": next.feedbacked,
-        "activities.eventFeedback.removed": next.removed
+        "activities.feedbackCounts.ownEvents": next.ownEvents,
+        "activities.feedbackCounts.pending": next.pending,
+        "activities.feedbackCounts.feedbacked": next.feedbacked,
+        "activities.feedbackCounts.removed": next.removed
       }
     });
     if (result.matchedCount !== 1) Q.fail(`feedback counter target '${userId}' disappeared.`);
@@ -138,7 +138,7 @@
 
   function insertPendingFeedbackEligibility(stagedAtIso, viewerUserId = participantUserId) {
     const normalizedViewerUserId = Q.text(viewerUserId);
-    Q.collection("eventFeedbackStates").insertOne({
+    Q.collection("feedbackStates").insertOne({
       _id: normalizedViewerUserId === participantUserId
         ? `${PREFIX}:feedback-state`
         : `${PREFIX}:feedback-state:${normalizedViewerUserId}`,
@@ -154,9 +154,9 @@
       removedAtIso: null,
       organizerNote: "",
       createdDate: stagedAtIso,
-      createdUser: "event-feedback-counter",
+      createdUser: "feedback-counter",
       updatedDate: stagedAtIso,
-      updatedUser: "event-feedback-counter"
+      updatedUser: "feedback-counter"
     });
   }
 
@@ -165,7 +165,7 @@
     if (stageKind === "feedback-empty") {
       insertPendingFeedbackEligibility(stagedAtIso);
     } else {
-      Q.collection("eventFeedbackStates").updateOne({
+      Q.collection("feedbackStates").updateOne({
         viewerUserId: participantUserId,
         eventId: EVENT_ID
       }, {
@@ -193,13 +193,13 @@
         || savedUserActivity(state, hostUserId)) return;
     const saved = userActivitiesSnapshot(hostUserId);
     const event = Q.collection("events").findOne(manualEventSelector()) || {};
-    const trackedOwners = Array.isArray(event.feedbackOwnEventCounterUserIds)
-      ? event.feedbackOwnEventCounterUserIds
+    const trackedOwners = Array.isArray(feedbackOwnEventCounterUserIds)
+      ? feedbackOwnEventCounterUserIds
       : [];
     if (saved.activities && saved.activities.present && trackedOwners.includes(hostUserId)) {
       const activities = saved.activities.value || {};
-      const counters = activities.eventFeedback || {};
-      activities.eventFeedback = {
+      const counters = activities.feedbackCounts || {};
+      activities.feedbackCounts = {
         ...counters,
         ownEvents: Math.max(0, normalizeActivityCount(counters.ownEvents) - 1)
       };
@@ -225,7 +225,7 @@
         { admins: userId }
       ]
     });
-    const viewerStates = Q.collection("eventFeedbackStates").find({
+    const viewerStates = Q.collection("feedbackStates").find({
       viewerUserId: userId,
       eventId: { $nin: excludedEventIds },
       eligible: true,
@@ -233,7 +233,7 @@
     }).toArray();
     const receivedStates = ownedEventSourceIds.length === 0
       ? []
-      : Q.collection("eventFeedbackStates").find({
+      : Q.collection("feedbackStates").find({
           eventId: { $in: ownedEventSourceIds },
           submittedAtIso: { $nin: [null, ""] },
           removed: { $ne: true }
@@ -268,7 +268,7 @@
       const activities = saved.activities.value || {};
       const baseline = projectedFeedbackBaselineOutsideFixture(userId);
       activities.feedback = baseline.pending + baseline.ownEvents;
-      activities.eventFeedback = baseline;
+      activities.feedbackCounts = baseline;
       saved.activities.value = activities;
     }
     state.userActivitySnapshots = snapshots;
@@ -753,23 +753,23 @@
     "EVENT-FEEDBACK-001": {
       stage: "feedback-boundary",
       why: "Verify the actual feedback eligibility boundary and its negative controls.",
-      action: "As the participant, open Event Feedback and compare the four staged event titles.",
+      action: "As the participant, open Feedback and compare the four staged event titles.",
       expected: "Only the eligible event appears: accepted, non-admin, non-trashed and at least two hours after its end. Locked, trashed and pending controls stay absent.",
       worker: "MUST NOT RUN: loading feedback eligibility is read-only."
     },
     "EVENT-FEEDBACK-002": {
       stage: "feedback-empty",
-      why: "Follow one persisted event-feedback mutation into organizer, notification, recompute and profile projections.",
+      why: "Follow one persisted feedback mutation into organizer, notification, recompute and profile projections.",
       action: "Submit feedback once as each of the two accepted participants, using distinguishable answers; keep both submissions on the same staged event.",
       expected: "Before submission the reloaded host profile has exact main feedback 0 with no red Feedback badge and Own Events count 0, while the Own Events list still contains exactly one staged zero-response event card. After the first and second participant submissions, the host Own Events and main Feedback counters become 1 and then 2 while the event-card count remains exactly 1; the card's response badge becomes 2.",
       checks: [
         "Open Activities -> My Events -> Past and compare its membership card with Members: Casey Admin plus both accepted participants must produce acceptedMembers=3 and an exact 3/8 capacity badge.",
-        "Reload the participant profile/menu: the main Feedback badge is exactly 1 because activities.feedback and eventFeedback.pending are both exactly 1; the independent Rates badge is not a substitute.",
-        "Reload the host profile/menu before submission: the main Feedback tile has no red badge because activities.feedback and eventFeedback.ownEvents are both exactly 0.",
-        "Open Event Feedback -> Own Events: its counter is 0 while exactly one staged event card remains visible with the persisted title and image before any response exists.",
+        "Reload the participant profile/menu: the main Feedback badge is exactly 1 because activities.feedback and feedbackCounts.pending are both exactly 1; the independent Rates badge is not a substitute.",
+        "Reload the host profile/menu before submission: the main Feedback tile has no red badge because activities.feedback and feedbackCounts.ownEvents are both exactly 0.",
+        "Open Feedback -> Own Events: its counter is 0 while exactly one staged event card remains visible with the persisted title and image before any response exists.",
         "Open View Feedbacks: the event identity remains visible and the zero-response detail contains no response rows or trait evidence.",
         "Repeat the read-only oracle after those openings: no answer, submitted state, affinity recompute, notification or notification outbox may have been created.",
-        "On the first event-feedback page enter a unique event opinion of at most 160 characters; pasted and typed values share the same backend-enforced limit.",
+        "On the first feedback page enter a unique event opinion of at most 160 characters; pasted and typed values share the same backend-enforced limit.",
         "After submission open View my feedback and the organizer received-feedback detail: both show the exact event opinion, and neither merges it with the separate note-to-organizer field.",
         "Submit a distinguishable response as the second accepted participant; after Casey reloads, require main Feedback=2 and Own Events=2 while exactly one event card remains and its response badge is 2."
       ],
@@ -799,7 +799,7 @@
     },
     "EVENT-IMPRESSION-001": {
       stage: "feedback-empty",
-      why: "Prove that event-feedback trait evidence reaches the correct Host or Attendee section of the target profile.",
+      why: "Prove that feedback trait evidence reaches the correct Host or Attendee section of the target profile.",
       action: "Capture the host Impressions popup, submit the staged host-target feedback as participant, then observe the normal realtime refresh and reopen the popup.",
       expected: "The distinctive trait evidence changes in Host only; Attendee is X. Persisted feedback and the popup must agree after the normal realtime window.",
       worker: "Feedback submit MUST RUN target recompute; opening or refreshing Impressions MUST NOT RUN a task."
@@ -2006,7 +2006,7 @@
 
   function insertSubmittedFeedback(stagedAtIso) {
     const submittedAtIso = new Date(new Date(stagedAtIso).getTime() - 60000).toISOString();
-    Q.collection("eventFeedbackStates").insertOne({
+    Q.collection("feedbackStates").insertOne({
       _id: `${PREFIX}:feedback-state`,
       syncKey: `${PREFIX}:feedback-state`,
       viewerUserId: participantUserId,
@@ -2020,7 +2020,7 @@
       updatedDate: submittedAtIso,
       updatedUser: participantUserId
     });
-    Q.collection("eventFeedbackAnswers").insertOne({
+    Q.collection("feedbackAnswers").insertOne({
       _id: `${PREFIX}:feedback-answer`,
       syncKey: `${PREFIX}:feedback-answer`,
       viewerUserId: participantUserId,
@@ -2156,8 +2156,8 @@
         { eventId: { $regex: `^${PREFIX}` } },
         { ownerId: { $regex: `^${PREFIX}` } }
       ] } },
-      { collection: "eventFeedbackStates", selector: { eventId: { $in: EVENT_IDS } } },
-      { collection: "eventFeedbackAnswers", selector: { eventId: { $in: EVENT_IDS } } },
+      { collection: "feedbackStates", selector: { eventId: { $in: EVENT_IDS } } },
+      { collection: "feedbackAnswers", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventCheckoutBasketItems", selector: { sourceId: { $in: EVENT_IDS } } },
       { collection: "payments", selector: { sourceId: { $in: EVENT_IDS } } },
       { collection: "eventTickets", selector: { eventId: { $in: EVENT_IDS } } },
@@ -2254,8 +2254,8 @@
       { ownerId: { $regex: `^${PREFIX}` } }
     ] });
     Q.collection("assetRequests").deleteMany({ assetId: { $regex: `^${PREFIX}` } });
-    Q.collection("eventFeedbackStates").deleteMany({ eventId: { $in: eventIds } });
-    Q.collection("eventFeedbackAnswers").deleteMany({ eventId: { $in: eventIds } });
+    Q.collection("feedbackStates").deleteMany({ eventId: { $in: eventIds } });
+    Q.collection("feedbackAnswers").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventCheckoutBasketItems").deleteMany({ sourceId: { $in: eventIds } });
     Q.collection("payments").deleteMany({ sourceId: { $in: eventIds } });
     Q.collection("eventTickets").deleteMany({ eventId: { $in: eventIds } });
@@ -3081,8 +3081,8 @@
       { ownerType: "event", ownerId: { $in: dynamicEventIds } },
       { ownerId: { $regex: `^${PREFIX}` } }
     ] }).toArray();
-    const feedbackStates = Q.collection("eventFeedbackStates").find({ eventId: { $in: dynamicEventIds } }).toArray();
-    const feedbackAnswers = Q.collection("eventFeedbackAnswers").find({ eventId: { $in: dynamicEventIds } }).toArray();
+    const feedbackStates = Q.collection("feedbackStates").find({ eventId: { $in: dynamicEventIds } }).toArray();
+    const feedbackAnswers = Q.collection("feedbackAnswers").find({ eventId: { $in: dynamicEventIds } }).toArray();
     const checkoutBasketItems = Q.collection("eventCheckoutBasketItems")
       .find({ sourceId: { $in: dynamicEventIds } })
       .sort({ createdAtIso: 1, _id: 1 })
@@ -3250,11 +3250,11 @@
       ] }
     }).sort({ ruleKey: 1 }).toArray();
     const feedbackNotificationOutbox = Q.collection("notificationOutbox").find({
-      notificationType: "event-feedback-submitted",
+      notificationType: "feedback-submitted",
       $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).toArray();
     const feedbackNotifications = Q.collection("userNotifications").find({
-      kind: "event-feedback-submitted",
+      kind: "feedback-submitted",
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).toArray();
     const feedbackRecomputeTasks = Q.collection("affinityRecomputeTasks").find({
@@ -3656,11 +3656,11 @@
                 user: Q.user(userId),
                 current: {
                   feedback: nestedNumber(currentActivities, "feedback"),
-                  eventFeedback: {
-                    ownEvents: nestedNumber(currentActivities, "eventFeedback.ownEvents"),
-                    pending: nestedNumber(currentActivities, "eventFeedback.pending"),
-                    feedbacked: nestedNumber(currentActivities, "eventFeedback.feedbacked"),
-                    removed: nestedNumber(currentActivities, "eventFeedback.removed")
+                  feedbackCounts: {
+                    ownEvents: nestedNumber(currentActivities, "feedbackCounts.ownEvents"),
+                    pending: nestedNumber(currentActivities, "feedbackCounts.pending"),
+                    feedbacked: nestedNumber(currentActivities, "feedbackCounts.feedbacked"),
+                    removed: nestedNumber(currentActivities, "feedbackCounts.removed")
                   }
                 }
               };
@@ -3892,7 +3892,7 @@
       feedbackHostZeroResponseBaseline: checkpointId === "EVENT-FEEDBACK-002"
         ? (() => {
             const hostActivities = feedbackTarget.activities || {};
-            const hostEventFeedback = hostActivities.eventFeedback || {};
+            const hostFeedback = hostActivities.feedbackCounts || {};
             const submittedStates = feedbackStates.filter(item => Boolean(item.submittedAtIso));
             const hostImpressions = summarizeImpressionsSection(
               feedbackTarget.impressions && feedbackTarget.impressions.host
@@ -3908,7 +3908,7 @@
               },
               current: {
                 mainFeedback: nestedNumber(hostActivities, "feedback"),
-                ownEvents: nestedNumber(hostActivities, "eventFeedback.ownEvents"),
+                ownEvents: nestedNumber(hostActivities, "feedbackCounts.ownEvents"),
                 stagedCardCount: Q.text(event.sourceId) === EVENT_ID ? 1 : 0,
                 eventId: Q.text(event.sourceId),
                 title: Q.text(event.title),
@@ -3922,7 +3922,7 @@
               },
               checks: {
                 mainBadgeMustBeAbsent: nestedNumber(hostActivities, "feedback") === 0,
-                ownEventsBucketMustBeZero: nestedNumber(hostActivities, "eventFeedback.ownEvents") === 0,
+                ownEventsBucketMustBeZero: nestedNumber(hostActivities, "feedbackCounts.ownEvents") === 0,
                 stagedIdentityMustMatch: Q.text(event.sourceId) === EVENT_ID
                   && Q.text(event.title) === EXPECTED_TITLE,
                 persistedImageMustExist: Boolean(Q.text(event.imageUrl)),
@@ -10186,7 +10186,7 @@
     });
     if (!user) Q.fail(`feedback aggregate target '${userId}' was not found.`);
     const activities = user.activities || {};
-    const counters = activities.eventFeedback || {};
+    const counters = activities.feedbackCounts || {};
     const feedback = normalizeActivityCount(counters.pending)
       + normalizeActivityCount(counters.ownEvents);
     Q.collection("users").updateOne({
@@ -10259,7 +10259,7 @@
       );
     }
 
-    const secondParticipantState = Q.collection("eventFeedbackStates").findOne({
+    const secondParticipantState = Q.collection("feedbackStates").findOne({
       viewerUserId: thirdUserId,
       eventId: EVENT_ID
     });
@@ -10281,7 +10281,7 @@
       secondParticipant: Q.user(thirdUserId),
       acceptedMembers: normalizeActivityCount(updatedEvent.acceptedMembers),
       acceptedMemberUserIds: sortedUnique(updatedEvent.acceptedMemberUserIds || []),
-      hostCounters: userActivitiesSnapshot(hostUserId).activities.value.eventFeedback,
+      hostCounters: userActivitiesSnapshot(hostUserId).activities.value.feedbackCounts,
       next: "Reload Casey: main Feedback must be 1 now. Then submit one distinguishable feedback as the second participant; Casey must end at main Feedback=2 and Own Events=2 with one event card whose response badge is 2."
     });
   }

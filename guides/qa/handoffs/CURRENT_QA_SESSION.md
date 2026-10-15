@@ -84,6 +84,35 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
+checkpoint: INTEGRATION-ACCESS-001
+status: CLOSED — delegated development scope
+checklist: ../checklists/api/MSC-116_AUTOMATIC_QA.md
+substage: Consolidated campaign completed through85; Feedback and guide introduction closed, serial KVM sample and cleanup complete.
+execution_authority: Preserve completed results. Do not replay this campaign or start another QA campaign automatically.
+next_action: None for this campaign; template runtime and external-host/publication work retain their separate owners.
+resume_gate: KVM stopped with data retained and no autostart. Original8 monolith containers were restored for cleanup, then stopped at the user's request. frontend-sync remains stopped. Managed campaign browsers, callback receiver and owned tunnels closed. Verify actual runtime before any later independent task.
+cleanup: Owning credential APIs and canonical Registry/work-community fixture resets completed. Details belong to campaign evidence.
+evidence: ../evidence/general/MSC116-closure-20261015/summary.json
+ledger: INTEGRATION-ACCESS-001, MCP-EVENTS-001 and FEEDBACK-UI-001 closed for their recorded development scope.
+```
+
+## Archived consolidated MSC-116 / MSC-119 execution — 2026-10-15
+
+The active MSC-116 checklist owns the remaining MSC-119 guide introduction
+in steps 75–81, before the single KVM sample and cleanup in 82–84 and final
+record reconciliation in 85. The standalone MSC-119 checklist is removed.
+The consolidated campaign is complete. Retain completed evidence and do not restart it.
+
+The existing API/MCP, Events and Feedback blocks already cover the overlapping
+MSC-119 scope. Record each result once. EXPLANATION-GUIDE-001 remains closed;
+its transferred introduction adds no testcase or matrix row. Call/volume and
+admin/operator guide checks remain with MSC-117 and MSC-118 respectively.
+Template QA and real external-host/publication qualification remain separate.
+Consolidation changes execution order, not test status or issue closure.
+
+## Archived closure — MSC-115, 2026-10-15
+
+```yaml
 checkpoint: MSC115-WORK-COMMUNITY
 status: CLOSED
 checklist: ../checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md
@@ -100,7 +129,7 @@ independent_qa: Template runtime and live-deployment qualification remain in the
 
 
 
-Current authority is the block above. Historical deferrals below describe only
+Current authority is the Active resume point block. Historical deferrals below describe only
 prior sessions. Transactional results remain in the campaign evidence and matrix.
 
 ## Archived resume point — 2026-10-06
@@ -130,7 +159,7 @@ The queued MCP research includes the shared MCP Events discussion and
 its verified official webhook/subscription contract. No new API/MCP permission
 code has been written.
 
-Current ledger (reconciled 2026-10-15): **146 cases; 139 passed/closed, 1 IN PROGRESS, 6 NOT RUN, 0 failed**. MSC-115 is closed for the accepted development scope. Independent template/live QA retains its own status. See `../evidence/QA_LEDGER_RECONCILIATION_20261015.json`. Historical evidence below remains valid only for its recorded scope.
+Historical ledger snapshot before the 2026-10-15 checklist reconciliation: **146 cases; 139 passed/closed, 1 IN PROGRESS, 6 NOT RUN, 0 failed**. Current counts and statuses are authoritative in the CSV/XLSX, not this snapshot. MSC-115 is closed for the accepted development scope. Independent template/live QA retains its own status. See `../evidence/QA_LEDGER_RECONCILIATION_20261015.json`. Historical evidence below remains valid only for its recorded scope.
 
 ## Archived resume point — 2026-09-30
 

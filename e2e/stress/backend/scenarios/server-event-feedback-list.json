@@ -17,8 +17,8 @@
   },
   "steps": [
     {
-      "name": "event feedback list first load",
-      "collectionCase": "events/event-feedback"
+      "name": "feedback list first load",
+      "collectionCase": "events/feedback"
     }
   ]
 }

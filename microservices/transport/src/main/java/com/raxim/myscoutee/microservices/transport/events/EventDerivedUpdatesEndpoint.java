@@ -39,4 +39,11 @@ public final class EventDerivedUpdatesEndpoint {
         catch (RuntimeException unavailable) { return response(503, new EventDerivedUpdatesProtocol.Error("EVENT_UPDATE_OUTCOME_UNKNOWN")); }
     }
     private ResponseEntity<?> response(int status, Object body) { return ResponseEntity.status(status).cacheControl(CacheControl.noStore()).body(body); }
+    @PostMapping(value = EventDerivedUpdatesProtocol.FEEDBACK, produces = "application/json")
+    public ResponseEntity<?> feedback(HttpServletRequest request) throws java.io.IOException {
+        return read(request, EventDerivedUpdatesProtocol.FeedbackCommand.class, EventDerivedUpdatesProtocol::valid, command -> {
+            owner.markFeedbackProjected(command.sourceIds(), command.projected());
+            return new EventDerivedUpdatesProtocol.Result(true);
+        });
+    }
 }

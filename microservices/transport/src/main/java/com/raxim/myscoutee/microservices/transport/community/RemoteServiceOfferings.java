@@ -85,4 +85,12 @@ public final class RemoteServiceOfferings extends RemoteReadTransport implements
         }
     }
 
+    @Override public java.util.List<com.raxim.myscoutee.domain.community.dto.ServiceOfferingDto> visibleMetadata(String actor, java.util.Collection<String> ids) {
+        var command = new ServiceOfferingsProtocol.VisibleMetadata(ServiceOfferingsProtocol.Scope.current(), actor, ids);
+        if (!ServiceOfferingsProtocol.valid(command)) throw new IllegalArgumentException("Invalid visibleMetadata request");
+        byte[] bytes = mapper.writeValueAsBytes(command);
+        if (bytes.length > ServiceOfferingsProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("Request exceeds byte limit");
+        return ownerExchange(ServiceOfferingsProtocol.VISIBLE_METADATA, bytes, new TypeReference<ServiceOfferingsProtocol.VisibleMetadataResult>() {},
+            "serviceofferings.visibleMetadata", ServiceOfferingsProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.resolved())).value();
+    }
 }

@@ -26,7 +26,7 @@
   } else if (command === 'prepare-rating-baseline') {
     const saved = Q.activeState(scenario, true), f = fixture();
     if (!f || saved.ratingBaselinePreparedAtIso) Q.fail('Rating baseline preparation already started or fixture missing');
-    if (Q.collection('eventFeedbackAnswers').countDocuments({viewerUserId:saved.context.actorUserId,eventId:saved.context.eventId})) Q.fail('Prepare the rating baseline before feedback submission');
+    if (Q.collection('feedbackAnswers').countDocuments({viewerUserId:saved.context.actorUserId,eventId:saved.context.eventId})) Q.fail('Prepare the rating baseline before feedback submission');
     if (Q.collection('affinityRecomputeTasks').countDocuments({targetId:{$in:saved.context.targetUserIds},status:{$in:['pending','running']}})) Q.fail('Target work already pending');
     const now=Q.nowIso();
     for (const userId of saved.context.targetUserIds) {
@@ -39,7 +39,7 @@
     if (saved.ratingBaseline) Q.fail('Rating baseline already captured');
     const tasks=Q.collection('affinityRecomputeTasks').find({targetId:{$in:saved.context.targetUserIds}}).toArray();
     if(tasks.length!==saved.context.targetUserIds.length || tasks.some(t=>t.status!=='done')) Q.fail('Wait for all baseline tasks to finish');
-    if(Q.collection('eventFeedbackAnswers').countDocuments({viewerUserId:saved.context.actorUserId,eventId:saved.context.eventId})) Q.fail('Capture before submission');
+    if(Q.collection('feedbackAnswers').countDocuments({viewerUserId:saved.context.actorUserId,eventId:saved.context.eventId})) Q.fail('Capture before submission');
     const snapshot=f.snapshots.find(s=>s.collection==='userRates');
     Q.collection(Q.STATE_COLLECTION).updateOne({_id:saved._id},{$set:{ratingBaseline:Q.collection('userRates').find(snapshot.selector).toArray(),ratingBaselineCapturedAtIso:Q.nowIso()}});
   } else if (command === 'make-recompute-due') {

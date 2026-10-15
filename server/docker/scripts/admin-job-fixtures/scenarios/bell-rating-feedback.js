@@ -30,7 +30,7 @@
       };
     }
     return {
-      kind: "event-feedback-submitted",
+      kind: "feedback-submitted",
       sourceType: "event",
       sourceId: context.eventId,
       senderUserId: context.actorUserId
@@ -47,7 +47,7 @@
       };
     }
     return {
-      notificationType: "event-feedback-submitted",
+      notificationType: "feedback-submitted",
       entityType: "event",
       entityId: context.eventId,
       "payload.senderUserId": context.actorUserId
@@ -211,7 +211,7 @@
 
   function feedbackSetup() {
     const users = existingUserIds();
-    const answers = F.collection("eventFeedbackAnswers")
+    const answers = F.collection("feedbackAnswers")
       .find({
         viewerUserId: { $exists: true, $nin: ["", null] },
         targetUserId: { $exists: true, $nin: ["", null] }
@@ -234,7 +234,7 @@
         status: "accepted"
       });
       const hasTrackedOutbox = F.collection("notificationOutbox").countDocuments({
-        notificationType: "event-feedback-submitted",
+        notificationType: "feedback-submitted",
         entityType: "event",
         entityId: eventId,
         "payload.senderUserId": actorUserId,
@@ -335,11 +335,11 @@
           }
         },
         {
-          collection: "eventFeedbackStates",
+          collection: "feedbackStates",
           selector: { viewerUserId: context.actorUserId, eventId: context.eventId }
         },
         {
-          collection: "eventFeedbackAnswers",
+          collection: "feedbackAnswers",
           selector: { viewerUserId: context.actorUserId, eventId: context.eventId }
         }
       );
@@ -358,7 +358,7 @@
           : "After the actor resubmits feedback, exactly one logical outbox fanout and one unread bell per submitted other-party target appear with no duplicate or actor notification.",
         next: variation === "rating"
           ? "Use the existing demo app as the printed actor, select a non-zero rating for the target, and press Save exactly once. The slider only stages the value; Save queues it for the frontend's 30-second batch sync. The card remains with the selected score. After the batch reaches the backend, inspect the target bell, then run status bell-rating-feedback."
-          : "Use the existing demo app as the printed actor, submit event feedback, inspect a printed target bell, then run status bell-rating-feedback.",
+          : "Use the existing demo app as the printed actor, submit feedback, inspect a printed target bell, then run status bell-rating-feedback.",
         context,
         specs: pairSelectors(context)
       };
@@ -384,11 +384,11 @@
         );
         return;
       }
-      F.collection("eventFeedbackAnswers").deleteMany({
+      F.collection("feedbackAnswers").deleteMany({
         viewerUserId: context.actorUserId,
         eventId: context.eventId
       });
-      F.collection("eventFeedbackStates").deleteMany({
+      F.collection("feedbackStates").deleteMany({
         viewerUserId: context.actorUserId,
         eventId: context.eventId
       });
@@ -417,7 +417,7 @@
         );
       } else {
         print(
-          `[admin-job-fixtures] Manual action: submit event feedback for ${context.eventId} while acting as `
+          `[admin-job-fixtures] Manual action: submit feedback for ${context.eventId} while acting as `
             + `${context.actorUserId}; then inspect another target's bell.`
         );
       }
@@ -499,13 +499,13 @@
               : "WAITING: select a non-zero rating, press Save exactly once, and allow up to 35 seconds for the frontend batch sync."
         };
       }
-      const submissions = F.collection("eventFeedbackAnswers")
+      const submissions = F.collection("feedbackAnswers")
         .find({
           viewerUserId: context.actorUserId,
           eventId: context.eventId
         })
         .toArray();
-      const state = F.collection("eventFeedbackStates").findOne({
+      const state = F.collection("feedbackStates").findOne({
         viewerUserId: context.actorUserId,
         eventId: context.eventId
       });
@@ -534,7 +534,7 @@
         && outboxes[0].payload.eventId === context.eventId
         && outboxes[0].payload.eventTitle === expectedEventTitle
         && outboxes[0].payload.senderUserId === context.actorUserId
-        && outboxes[0].payload.type === "event-feedback-submitted"
+        && outboxes[0].payload.type === "feedback-submitted"
         && outboxes[0].payload.entityType === "event"
         && outboxes[0].payload.entityId === context.eventId;
       const exactBells = bells.length === submittedTargetUserIds.length
@@ -543,7 +543,7 @@
           submittedTargetUserIds
         )
         && bells.every(item =>
-          item.kind === "event-feedback-submitted"
+          item.kind === "feedback-submitted"
             && item.category === "event"
             && item.senderUserId === context.actorUserId
             && item.sourceType === "event"

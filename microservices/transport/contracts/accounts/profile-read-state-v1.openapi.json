@@ -391,10 +391,10 @@
               }
             ]
           },
-          "eventFeedback": {
+          "feedbackCounts": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/UserEventFeedbackCountersDto"
+                "$ref": "#/components/schemas/UserFeedbackCountersDto"
               },
               {
                 "type": "null"
@@ -659,7 +659,7 @@
           }
         }
       },
-      "UserEventFeedbackCountersDto": {
+      "UserFeedbackCountersDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

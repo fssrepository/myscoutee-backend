@@ -449,7 +449,7 @@ class BackendPaymentsConcurrencyE2ETest {
                 new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
-                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                new Users.UserFeedbackCountersRecord(0, 0, 0, 0),
                 0, 0));
         return user;
     }

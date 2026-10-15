@@ -282,7 +282,7 @@
     "_id": "demo-notification-eszter-014",
     "syncKey": "demo-notification-eszter-014",
     "recipientUserId": "9f3b3f085e23af6c89dbc432",
-    "kind": "event-feedback-ready",
+    "kind": "feedback-ready",
     "category": "event",
     "title": "Feedback is ready",
     "message": "You can now leave feedback for Lakeside Picnic.",

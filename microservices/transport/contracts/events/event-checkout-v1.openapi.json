@@ -1040,10 +1040,10 @@
               }
             ]
           },
-          "eventFeedback": {
+          "feedbackCounts": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/UserEventFeedbackCounterDeltaDto"
+                "$ref": "#/components/schemas/UserFeedbackCounterDeltaDto"
               },
               {
                 "type": "null"
@@ -1200,7 +1200,7 @@
         },
         "required": []
       },
-      "UserEventFeedbackCounterDeltaDto": {
+      "UserFeedbackCounterDeltaDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

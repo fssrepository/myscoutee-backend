@@ -3192,163 +3192,163 @@
     "order": 78
   },
   {
-    "_id": "event.feedback--event-feedback-filter:trigger",
-    "id": "event-feedback-filter:trigger",
-    "screenKey": "event.feedback",
+    "_id": "feedback--feedback-filter:trigger",
+    "id": "feedback-filter:trigger",
+    "screenKey": "feedback",
     "group": "menus",
-    "i18nKey": "guide.event.feedback.event.feedback.filter.trigger",
+    "i18nKey": "guide.feedback.feedback.filter.trigger",
     "order": 0
   },
   {
-    "_id": "event.feedback--feedback-list",
+    "_id": "feedback--feedback-list",
     "id": "feedback-list",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "card",
-    "i18nKey": "guide.event.feedback.feedback.list",
+    "i18nKey": "guide.feedback.feedback.list",
     "order": 1
   },
   {
-    "_id": "event.feedback--card-badge-end",
+    "_id": "feedback--card-badge-end",
     "id": "card-badge-end",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "card",
-    "i18nKey": "guide.event.feedback.card-badge-end",
+    "i18nKey": "guide.feedback.card-badge-end",
     "order": 2
   },
   {
-    "_id": "event.feedback--card-actions",
+    "_id": "feedback--card-actions",
     "id": "card-actions",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "card",
-    "i18nKey": "guide.event.feedback.card-actions",
+    "i18nKey": "guide.feedback.card-actions",
     "order": 3
   },
   {
-    "_id": "event.feedback--card-actions:startFeedback",
+    "_id": "feedback--card-actions:startFeedback",
     "id": "card-actions:startFeedback",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "menus",
     "i18nKey": "guide.card.action.startFeedback",
     "order": 4
   },
   {
-    "_id": "event.feedback--card-actions:viewSubmittedFeedback",
+    "_id": "feedback--card-actions:viewSubmittedFeedback",
     "id": "card-actions:viewSubmittedFeedback",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "menus",
     "i18nKey": "guide.card.action.viewSubmittedFeedback",
     "order": 5
   },
   {
-    "_id": "event.feedback--close",
+    "_id": "feedback--close",
     "id": "close",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "popup",
     "i18nKey": "guide.common.close",
     "order": 6
   },
   {
-    "_id": "event.feedback--card-pending-count",
+    "_id": "feedback--card-pending-count",
     "id": "card-pending-count",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "card",
-    "i18nKey": "guide.event.feedback.card-pending-count",
+    "i18nKey": "guide.feedback.card-pending-count",
     "order": 7
   },
   {
-    "_id": "event.feedback--card-status",
+    "_id": "feedback--card-status",
     "id": "card-status",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "card",
-    "i18nKey": "guide.event.feedback.card-status",
+    "i18nKey": "guide.feedback.card-status",
     "order": 8
   },
   {
-    "_id": "event.feedback--card-actions:addOrganizerNote",
+    "_id": "feedback--card-actions:addOrganizerNote",
     "id": "card-actions:addOrganizerNote",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "menus",
-    "i18nKey": "guide.event.feedback.card-actions.addOrganizerNote",
+    "i18nKey": "guide.feedback.card-actions.addOrganizerNote",
     "order": 9
   },
   {
-    "_id": "event.feedback--card-actions:editOrganizerNote",
+    "_id": "feedback--card-actions:editOrganizerNote",
     "id": "card-actions:editOrganizerNote",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "menus",
-    "i18nKey": "guide.event.feedback.card-actions.editOrganizerNote",
+    "i18nKey": "guide.feedback.card-actions.editOrganizerNote",
     "order": 10
   },
   {
-    "_id": "event.feedback--card-actions:removeFeedback",
+    "_id": "feedback--card-actions:removeFeedback",
     "id": "card-actions:removeFeedback",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "menus",
-    "i18nKey": "guide.event.feedback.card-actions.removeFeedback",
+    "i18nKey": "guide.feedback.card-actions.removeFeedback",
     "order": 11
   },
   {
-    "_id": "event.feedback--card-actions:restoreFeedback",
+    "_id": "feedback--card-actions:restoreFeedback",
     "id": "card-actions:restoreFeedback",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "menus",
-    "i18nKey": "guide.event.feedback.card-actions.restoreFeedback",
+    "i18nKey": "guide.feedback.card-actions.restoreFeedback",
     "order": 12
   },
   {
-    "_id": "event.feedback--form-progress",
+    "_id": "feedback--form-progress",
     "id": "form-progress",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "fields",
-    "i18nKey": "guide.event.feedback.form-progress",
+    "i18nKey": "guide.feedback.form-progress",
     "order": 13
   },
   {
-    "_id": "event.feedback--feedback-primary",
+    "_id": "feedback--feedback-primary",
     "id": "feedback-primary",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-primary",
+    "i18nKey": "guide.feedback.feedback-primary",
     "order": 14
   },
   {
-    "_id": "event.feedback--feedback-secondary",
+    "_id": "feedback--feedback-secondary",
     "id": "feedback-secondary",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-secondary",
+    "i18nKey": "guide.feedback.feedback-secondary",
     "order": 15
   },
   {
-    "_id": "event.feedback--feedback-traits",
+    "_id": "feedback--feedback-traits",
     "id": "feedback-traits",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-traits",
+    "i18nKey": "guide.feedback.feedback-traits",
     "order": 16
   },
   {
-    "_id": "event.feedback--feedback-comment",
+    "_id": "feedback--feedback-comment",
     "id": "feedback-comment",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-comment",
+    "i18nKey": "guide.feedback.feedback-comment",
     "order": 17
   },
   {
-    "_id": "event.feedback--form-navigation",
+    "_id": "feedback--form-navigation",
     "id": "form-navigation",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "fields",
-    "i18nKey": "guide.event.feedback.form-navigation",
+    "i18nKey": "guide.feedback.form-navigation",
     "order": 18
   },
   {
-    "_id": "event.feedback--form-save",
+    "_id": "feedback--form-save",
     "id": "form-save",
-    "screenKey": "event.feedback",
+    "screenKey": "feedback",
     "group": "fields",
-    "i18nKey": "guide.event.feedback.form-save",
+    "i18nKey": "guide.feedback.form-save",
     "order": 19
   },
   {
@@ -5584,35 +5584,35 @@
     "order": 21
   },
   {
-    "_id": "event.feedback.detail--feedback-detail",
+    "_id": "feedback.detail--feedback-detail",
     "id": "feedback-detail",
-    "screenKey": "event.feedback.detail",
+    "screenKey": "feedback.detail",
     "group": "card",
-    "i18nKey": "guide.event.feedback.detail.feedback-detail",
+    "i18nKey": "guide.feedback.detail.feedback-detail",
     "order": 0
   },
   {
-    "_id": "event.feedback.detail--feedback-answer-primary",
+    "_id": "feedback.detail--feedback-answer-primary",
     "id": "feedback-answer-primary",
-    "screenKey": "event.feedback.detail",
+    "screenKey": "feedback.detail",
     "group": "card",
-    "i18nKey": "guide.event.feedback.detail.feedback-answer-primary",
+    "i18nKey": "guide.feedback.detail.feedback-answer-primary",
     "order": 1
   },
   {
-    "_id": "event.feedback.detail--feedback-answer-secondary",
+    "_id": "feedback.detail--feedback-answer-secondary",
     "id": "feedback-answer-secondary",
-    "screenKey": "event.feedback.detail",
+    "screenKey": "feedback.detail",
     "group": "card",
-    "i18nKey": "guide.event.feedback.detail.feedback-answer-secondary",
+    "i18nKey": "guide.feedback.detail.feedback-answer-secondary",
     "order": 2
   },
   {
-    "_id": "event.feedback.detail--close",
+    "_id": "feedback.detail--close",
     "id": "close",
-    "screenKey": "event.feedback.detail",
+    "screenKey": "feedback.detail",
     "group": "popup",
-    "i18nKey": "guide.event.feedback.detail.close",
+    "i18nKey": "guide.feedback.detail.close",
     "order": 3
   },
   {
@@ -9992,67 +9992,67 @@
     "order": 3
   },
   {
-    "_id": "community.service-feedback--service-feedback-quality",
-    "id": "service-feedback-quality",
-    "screenKey": "community.service-feedback",
+    "_id": "feedback.evaluation--feedback-evaluation-quality",
+    "id": "feedback-evaluation-quality",
+    "screenKey": "feedback.evaluation",
     "group": "fields",
-    "i18nKey": "guide.community.service-feedback.service-feedback-quality",
+    "i18nKey": "guide.feedback.evaluation.feedback-evaluation-quality",
     "order": 1
   },
   {
-    "_id": "community.service-feedback--service-feedback-reliability",
-    "id": "service-feedback-reliability",
-    "screenKey": "community.service-feedback",
+    "_id": "feedback.evaluation--feedback-evaluation-reliability",
+    "id": "feedback-evaluation-reliability",
+    "screenKey": "feedback.evaluation",
     "group": "fields",
-    "i18nKey": "guide.community.service-feedback.service-feedback-reliability",
+    "i18nKey": "guide.feedback.evaluation.feedback-evaluation-reliability",
     "order": 2
   },
   {
-    "_id": "community.service-feedback--service-feedback-communication",
-    "id": "service-feedback-communication",
-    "screenKey": "community.service-feedback",
+    "_id": "feedback.evaluation--feedback-evaluation-communication",
+    "id": "feedback-evaluation-communication",
+    "screenKey": "feedback.evaluation",
     "group": "fields",
-    "i18nKey": "guide.community.service-feedback.service-feedback-communication",
+    "i18nKey": "guide.feedback.evaluation.feedback-evaluation-communication",
     "order": 3
   },
   {
-    "_id": "community.service-feedback--service-feedback-value",
-    "id": "service-feedback-value",
-    "screenKey": "community.service-feedback",
+    "_id": "feedback.evaluation--feedback-evaluation-value",
+    "id": "feedback-evaluation-value",
+    "screenKey": "feedback.evaluation",
     "group": "fields",
-    "i18nKey": "guide.community.service-feedback.service-feedback-value",
+    "i18nKey": "guide.feedback.evaluation.feedback-evaluation-value",
     "order": 4
   },
   {
-    "_id": "community.service-feedback--form-save",
+    "_id": "feedback.evaluation--form-save",
     "id": "form-save",
-    "screenKey": "community.service-feedback",
+    "screenKey": "feedback.evaluation",
     "group": "fields",
-    "i18nKey": "guide.community.service-feedback.form-save",
+    "i18nKey": "guide.feedback.evaluation.form-save",
     "order": 5
   },
   {
-    "_id": "community.service-feedback--close",
+    "_id": "feedback.evaluation--close",
     "id": "close",
-    "screenKey": "community.service-feedback",
+    "screenKey": "feedback.evaluation",
     "group": "popup",
-    "i18nKey": "guide.community.service-feedback.close",
+    "i18nKey": "guide.feedback.evaluation.close",
     "order": 6
   },
   {
-    "_id": "community.service-feedback--form-progress",
+    "_id": "feedback.evaluation--form-progress",
     "id": "form-progress",
-    "screenKey": "community.service-feedback",
+    "screenKey": "feedback.evaluation",
     "order": 7,
-    "i18nKey": "guide.community.service-feedback.form-progress",
+    "i18nKey": "guide.feedback.evaluation.form-progress",
     "group": "form"
   },
   {
-    "_id": "community.service-feedback--form-navigation",
+    "_id": "feedback.evaluation--form-navigation",
     "id": "form-navigation",
-    "screenKey": "community.service-feedback",
+    "screenKey": "feedback.evaluation",
     "order": 8,
-    "i18nKey": "guide.community.service-feedback.form-navigation",
+    "i18nKey": "guide.feedback.evaluation.form-navigation",
     "group": "form"
   },
   {

@@ -224,7 +224,7 @@ public class FirebaseService implements com.raxim.myscoutee.domain.accounts.api.
                 new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
-                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                new Users.UserFeedbackCountersRecord(0, 0, 0, 0),
                 0, 0, 0));
         try {
             return usersRepository.save(user);
@@ -272,7 +272,7 @@ public class FirebaseService implements com.raxim.myscoutee.domain.accounts.api.
                 new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
-                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                new Users.UserFeedbackCountersRecord(0, 0, 0, 0),
                 0, 0, 0));
         try {
             return usersRepository.save(user);

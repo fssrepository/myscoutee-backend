@@ -12193,7 +12193,7 @@
     "_id": {
       "$oid": "af3000000000000000000002"
     },
-    "syncKey": "seed-event-feedback-own-eszter",
+    "syncKey": "seed-feedback-own-eszter",
     "sourceId": "af3000000000000000000002",
     "ownerUserId": "9f3b3f085e23af6c89dbc432",
     "status": "I",
@@ -12219,7 +12219,7 @@
     "endAtIso": "2026-07-12T20:30:00.000Z",
     "distanceKm": 0,
     "imageUrl": "/media/public?key=images/demo-events/event-043/v1/large.webp",
-    "sourceLink": "https://example.com/event-feedback/af3000000000000000000002",
+    "sourceLink": "https://example.com/feedback/af3000000000000000000002",
     "location": "Seattle · open brick warehouse beside a harbor",
     "locationCoordinates": {
       "latitude": 47.6156,

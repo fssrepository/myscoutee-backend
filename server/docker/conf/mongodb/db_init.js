@@ -17,8 +17,8 @@ const requiredCollections = [
   'chatMessages',
   'events',
   'eventTickets',
-  'eventFeedbackStates',
-  'eventFeedbackAnswers',
+  'feedbackStates',
+  'feedbackAnswers',
   'ideaPosts',
   'appSettings',
   'notificationRuleConfigs',
@@ -589,50 +589,50 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'chat_message_qmau_window' }
   );
 
-  portalDb.eventFeedbackStates.createIndex(
+  portalDb.feedbackStates.createIndex(
     { syncKey: 1 },
-    { name: 'event_feedback_state_sync_key', unique: true, sparse: true }
+    { name: 'feedback_state_sync_key', unique: true, sparse: true }
   );
-  portalDb.eventFeedbackStates.createIndex(
+  portalDb.feedbackStates.createIndex(
     { viewerUserId: 1, eventId: 1 },
-    { name: 'event_feedback_state_user_event', unique: true }
+    { name: 'feedback_state_user_event', unique: true }
   );
-  portalDb.eventFeedbackStates.createIndex(
+  portalDb.feedbackStates.createIndex(
     { viewerUserId: 1, updatedDate: -1 },
-    { name: 'event_feedback_state_user_updated' }
+    { name: 'feedback_state_user_updated' }
   );
-  portalDb.eventFeedbackStates.createIndex(
+  portalDb.feedbackStates.createIndex(
     { eventId: 1, updatedDate: -1 },
-    { name: 'event_feedback_state_event_updated' }
+    { name: 'feedback_state_event_updated' }
   );
-  portalDb.eventFeedbackStates.createIndex(
+  portalDb.feedbackStates.createIndex(
     { removed: 1, submittedAtIso: 1, viewerUserId: 1, eventId: 1 },
-    { name: 'event_feedback_state_qmau_window' }
+    { name: 'feedback_state_qmau_window' }
   );
 
-  portalDb.eventFeedbackAnswers.createIndex(
+  portalDb.feedbackAnswers.createIndex(
     { syncKey: 1 },
-    { name: 'event_feedback_answer_sync_key', unique: true, sparse: true }
+    { name: 'feedback_answer_sync_key', unique: true, sparse: true }
   );
-  portalDb.eventFeedbackAnswers.createIndex(
+  portalDb.feedbackAnswers.createIndex(
     { viewerUserId: 1, eventId: 1, cardId: 1 },
-    { name: 'event_feedback_answer_user_event_card', unique: true }
+    { name: 'feedback_answer_user_event_card', unique: true }
   );
-  portalDb.eventFeedbackAnswers.createIndex(
+  portalDb.feedbackAnswers.createIndex(
     { viewerUserId: 1, eventId: 1 },
-    { name: 'event_feedback_answer_user_event' }
+    { name: 'feedback_answer_user_event' }
   );
-  portalDb.eventFeedbackAnswers.createIndex(
+  portalDb.feedbackAnswers.createIndex(
     { viewerUserId: 1, eventId: 1, submittedAtIso: -1 },
-    { name: 'event_feedback_answer_user_event_submitted' }
+    { name: 'feedback_answer_user_event_submitted' }
   );
-  portalDb.eventFeedbackAnswers.createIndex(
+  portalDb.feedbackAnswers.createIndex(
     { eventId: 1, submittedAtIso: -1 },
-    { name: 'event_feedback_answer_event_submitted' }
+    { name: 'feedback_answer_event_submitted' }
   );
-  portalDb.eventFeedbackAnswers.createIndex(
+  portalDb.feedbackAnswers.createIndex(
     { targetUserId: 1, submittedAtIso: -1 },
-    { name: 'event_feedback_answer_target_user_submitted' }
+    { name: 'feedback_answer_target_user_submitted' }
   );
 
   portalDb.ideaPosts.createIndex(

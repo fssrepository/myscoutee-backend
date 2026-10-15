@@ -5,7 +5,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.*;
 
 public interface EventOwnership extends EventJobScopes, EventMembershipFacts, EventHomeReads, EventOwnershipReads, EventDerivedUpdates {
     interface Event extends EventChatContext, EventChangeView, EventMembershipFacts.Event, EventHomeReads.Event, OrganizerEventReads.Event {
-        List<String> getAcceptedMemberUserIds(); List<String> getInvitedMemberUserIds(); List<String> getPendingRequestMemberUserIds(); String getStatusBeforeSuppression(); Boolean getTicketing();
+        List<String> getPendingMemberUserIds(); List<String> getAcceptedMemberUserIds(); List<String> getInvitedMemberUserIds(); List<String> getPendingRequestMemberUserIds(); String getStatusBeforeSuppression(); Boolean getTicketing();
     public static final String STATUS_ACTIVE = "A";
     public static final String STATUS_DRAFT = "DR";
     public static final String STATUS_TRASHED = "T";

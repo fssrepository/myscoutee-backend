@@ -13,7 +13,7 @@
       "event.created": 28,
       "event.updated": 31,
       "event.members.changed": 37,
-      "event.feedback.submitted": 11,
+      "feedback.submitted": 11,
       "asset.saved": 12,
       "asset.requests.changed": 14,
       "chat.message.sent": 417,

@@ -7,6 +7,6 @@ public interface MingleEncounters {
  List<? extends Session> pendingPublication();
  void acknowledgePublication(Session session);
  interface Session { String getId(); String getEventId(); String getStatus(); Integer getRevision(); }
- interface Round { List<? extends Table> getTables(); }
+ interface Round { String getEventId(); List<? extends Table> getTables(); }
  interface Table { List<String> memberUserIds(); }
 }

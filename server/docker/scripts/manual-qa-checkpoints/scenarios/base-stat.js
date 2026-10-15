@@ -6,7 +6,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const visibleCounterKeys = [
     "profile.registered", "profile.deleted", "rates.synced", "event.members.changed",
-    "event.member.joined", "event.member.invited", "event.feedback.submitted",
+    "event.member.joined", "event.member.invited", "feedback.submitted",
     "asset.requests.changed", "chat.message.sent", "admin.user.warned",
     "feedback.submitted", "report.submitted", "admin.user.blocked", "admin.user.unblocked"
   ];

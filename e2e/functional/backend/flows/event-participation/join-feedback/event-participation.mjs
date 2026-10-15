@@ -38,7 +38,7 @@ export async function assertResponse({ ctx, result, request }) {
 
   await moveEventIntoUnlockedFeedbackWindow(ctx, request, eventId);
 
-  const feedbackDetailResult = await ctx.http.post('/api/activities/events/feedback/detail', {
+  const feedbackDetailResult = await ctx.http.post('/api/feedback/detail', {
     headers: actorHeaders(request.headers, ctx.vars.e2eSecondUserId),
     json: {
       userId: ctx.vars.e2eSecondUserId,
@@ -51,7 +51,7 @@ export async function assertResponse({ ctx, result, request }) {
   const feedbackCards = expectArray(feedbackDetail.cards, 'participation feedback cards');
   assert(feedbackCards.length > 0, 'unlocked participation event should expose at least one feedback card', feedbackDetail);
 
-  const submitted = await ctx.http.post('/api/activities/events/feedback/submit', {
+  const submitted = await ctx.http.post('/api/feedback/submit', {
     headers: actorHeaders(request.headers, ctx.vars.e2eSecondUserId),
     json: {
       userId: ctx.vars.e2eSecondUserId,
@@ -83,7 +83,7 @@ export async function assertResponse({ ctx, result, request }) {
     submitted: true,
     removed: false
   });
-  await ctx.http.post('/api/activities/events/feedback/note', {
+  await ctx.http.post('/api/feedback/note', {
     headers: actorHeaders(request.headers, ctx.vars.e2eSecondUserId),
     params: { userId: ctx.vars.e2eSecondUserId },
     json: {
@@ -98,7 +98,7 @@ export async function assertResponse({ ctx, result, request }) {
     removed: false,
     organizerNote: 'E2E organizer note'
   });
-  await ctx.http.post('/api/activities/events/feedback/remove', {
+  await ctx.http.post('/api/feedback/remove', {
     headers: actorHeaders(request.headers, ctx.vars.e2eSecondUserId),
     params: { userId: ctx.vars.e2eSecondUserId },
     json: {
@@ -112,7 +112,7 @@ export async function assertResponse({ ctx, result, request }) {
     removed: true,
     organizerNote: 'E2E organizer note'
   });
-  await ctx.http.post('/api/activities/events/feedback/restore', {
+  await ctx.http.post('/api/feedback/restore', {
     headers: actorHeaders(request.headers, ctx.vars.e2eSecondUserId),
     params: { userId: ctx.vars.e2eSecondUserId },
     json: {
@@ -171,7 +171,7 @@ async function moveEventIntoUnlockedFeedbackWindow(ctx, request, eventId) {
 }
 
 async function assertFeedbackState(ctx, request, eventId, expected) {
-  const feedback = await ctx.http.get('/api/activities/events/feedback', {
+  const feedback = await ctx.http.get('/api/feedback', {
     headers: actorHeaders(request.headers, ctx.vars.e2eSecondUserId),
     params: {
       userId: ctx.vars.e2eSecondUserId

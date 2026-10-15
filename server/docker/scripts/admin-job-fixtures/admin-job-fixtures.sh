@@ -71,6 +71,7 @@ scheduled-messages
   inactive-user   due inactivity task that should inactivate its fixture user
   recent-user     due task that should reschedule because the user was active
 account-purge
+  with-mcp-events expired disposable account with owned Events rows and unrelated controls
   isolated        expired deleted fixture user
   with-reference  same plus a userRates document that must be cascaded away
 bell-rating-feedback
@@ -860,7 +861,7 @@ verify_bell_rating_feedback_api() {
           end' \
       <<<"${scenario_status}")"
   elif [ "${variation}" = "feedback" ]; then
-    expected_kind="event-feedback-submitted"
+    expected_kind="feedback-submitted"
     expected_source_type="event"
     expected_source_id="$(jq -r '.current.event.eventId // ""' <<<"${scenario_status}")"
   else

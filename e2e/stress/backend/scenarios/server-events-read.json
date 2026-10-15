@@ -34,8 +34,8 @@
     { "name": "attending", "collectionCase": "events/attending" },
     { "name": "hosting", "collectionCase": "events/hosting" },
     { "name": "invitations", "collectionCase": "events/invitations" },
-    { "name": "event feedback", "collectionCase": "events/event-feedback" },
-    { "name": "feedback received", "collectionCase": "events/event-feedback-received" },
+    { "name": "feedback", "collectionCase": "events/feedback" },
+    { "name": "feedback received", "collectionCase": "events/feedback-received" },
     { "name": "trash", "collectionCase": "events/trash" }
   ]
 }

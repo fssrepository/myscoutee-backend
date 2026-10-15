@@ -20,8 +20,8 @@
     {collection: "activityMingleSessions", selector: {eventId: inEvents}},
     {collection: "activityMingleRounds", selector: {eventId: inEvents}},
     {collection: "activitySubEventStageRuntime", selector: {ownerId: inEvents}},
-    {collection: "eventFeedbackStates", selector: {eventId: inEvents}},
-    {collection: "eventFeedbackAnswers", selector: {eventId: inEvents}},
+    {collection: "feedbackStates", selector: {eventId: inEvents}},
+    {collection: "feedbackAnswers", selector: {eventId: inEvents}},
     {collection: "userRates", selector: pairSelector},
     {collection: "userFriendships", selector: {$or: [{leftUserId: inUsers}, {rightUserId: inUsers}]}},
     {collection: "userAffinityEdges", selector: {$or: [{leftUserId: inUsers}, {rightUserId: inUsers}]}},
@@ -51,7 +51,7 @@
       rounds: Q.collection("activityMingleRounds").find({eventId: inEvents}, {_id: 0, roundNumber: 1, status: 1, meetingsProjected: 1}).toArray(),
       rates: Q.collection("userRates").find(pairSelector, {_id: 1, syncKey: 1, createdDate: 1, ownerUserId: 1, relatedUserId: 1, met: 1, metEventId: 1, eventName: 1, scoreGiven: 1, scoreReceived: 1}).toArray(),
       friendships: Q.collection("userFriendships").countDocuments(specs.find(s => s.collection === "userFriendships").selector),
-      feedbackAnswers: Q.collection("eventFeedbackAnswers").countDocuments({eventId: inEvents}),
+      feedbackAnswers: Q.collection("feedbackAnswers").countDocuments({eventId: inEvents}),
       timingRestored: state.timingRestored === true, baselineCaptured: !!state.baseline});
   }
   function stage() {

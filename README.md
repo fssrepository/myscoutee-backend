@@ -129,31 +129,34 @@ contains the task history, workstream effort and measurement method.
 ## Manual QA status
 
 As of **2026-10-15**, the [development QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
-contains **146 scenarios**, excluding four legend rows: **121 with recorded
-PASS results, 11 NOT RUN and fourteen IN PROGRESS**. Those
-results apply to their recorded scope; they do not establish that the new
-Work/Community and API/MCP extensions have passed.
+contains **146 scenarios**, excluding four legend rows: **143 complete,
+2 partial/in progress and1 not started**. Results apply only to their recorded
+scope. The19 MSC-115 rows represent its accepted, closed119-step development
+campaign; they are not additional pending runs.
 
-The 19 MSC-115 rows track the same 119-step campaign, not additional runs.
-Steps35–36 are closed; steps37–39 HTTP API controls and the list-counter repair are verified.
-Steps40–45 have recorded HTTP service/calendar checks; the requested follow-up fixes are committed.
-Step46 empty-audience persistence and48 permission controls passed over HTTP.
-Steps49–50 lifecycle/ownership and the read/command-version fixes have recorded HTTP verification.
-Steps52–57 provider quotations, distinct chats, notifications and access isolation have recorded HTTP verification;
-shared policy layout and quotation counters are repaired. Steps58–63 include retained task deletion,
-provider-calendar removal and accepted quotation terms. Steps64–69 have recorded HTTP/WebSocket
-chat access, unread and direct Tasks navigation/error-retry checks. The shared centered error card
-is propagated to the template; affected checks are collected in
-[MSC115-TEMPLATE-REGRESSION](guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md).
-Steps70–75 passed focused HTTP checks, including45-day controls and error/retry.
-Steps95–107 have recorded scoped checks; admin selector/reload repair passes8 frontend and7 backend tests.
-Guides108–113 are closed for source HTTP and the requested local spot checks; backend guide/translation keys match. Template propagation114 is complete; its runtime checks belong to separate template QA. KVM115–117 is assigned to another session.
-[Compilation optimization](guides/plans/FRONTEND_COMPILATION_OPTIMIZATION.md) is a separate workstream and adds no MSC-115 closure prerequisite.
-Broad local/HU, KVM and cleanup gates remain open.
-The Campaign API block, remaining local/HU checks, affected template runtime and KVM retain their recorded gaps.
-Four development tasks remain open (MSC-115/116/117/119); the closed MSC-118
-development task retains separate unexecuted role-guide/notification QA.
-Reconcile the shared ledger and checklists before execution. Use the
-[current handoff](guides/qa/handoffs/CURRENT_QA_SESSION.md),
-[Work/Community checklist](guides/qa/checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md)
-and [MSC-119 implementation record](guides/plans/MSC-119_MCP_READ_EVENTS_ROLE_GUIDANCE.md).
+The live Project has one open task: **MSC-117**.
+MSC-116 is closed for its consolidated development scope: access, Events,
+central Feedback and the remaining MSC-119 guide introduction. Its existing
+[checklist](guides/qa/checklists/api/MSC-116_AUTOMATIC_QA.md) records results through
+step85. MSC-119 remains closed; no separate QA run or testcase was added.
+Template runtime and real external-host/publication qualification retain their
+separate records. KVM and the monolith are stopped at the user's request.
+
+MSC-117 credits October12 shared two-party/repeated/KVM browser call evidence;
+its remaining group-media, paging/RTP, controls and call guides have an ordered
+[29-step checklist](guides/qa/checklists/general/CHAT-CALL-001.md).
+The closed MSC-118 implementation has user-requested remaining role QA in an
+ordered [39-step checklist](guides/qa/checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md),
+crediting today's MSC-115 common-guide/admin evidence.
+
+The sixth open ledger row is the separate existing
+[template regression queue](guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md),
+not another open product task. Template execution stays there. Physical devices,
+external networks and provider/deployed behavior stay in the
+[live qualification points](guides/qualification/MSC117_118_LIVE_CHECKS.md)
+and the existing MSC-115 live-deployment record, outside development acceptance.
+
+The [dated reconciliation](guides/qa/evidence/general/MSC117_118_QA_RECONCILIATION_20261015.json)
+records evidence, ownership and precise unproven boundaries. The active execution
+session owns its current step and final results; this reconciliation did not run
+new application tests or alter its handoff.

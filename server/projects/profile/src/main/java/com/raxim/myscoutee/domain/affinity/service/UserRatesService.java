@@ -9,7 +9,7 @@ import com.raxim.myscoutee.domain.accounts.api.ProfileCards;
 import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
 import com.raxim.myscoutee.domain.accounts.api.FollowingEvents;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
+import com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -875,7 +875,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
             case "campaign" -> Set.of("relevance", "appeal", "clarity", "collaboration");
             case "work" -> Set.of("fit", "interests", "communication", "collaboration");
             case "service-interest" -> Set.of("relevance", "clarity", "confidence", "value");
-            case "service" -> CaseFeedbackPreparation.CRITERIA;
+            case "service" -> FeedbackPreparation.CRITERIA;
             default -> Set.of();
         };
         if (!Integer.valueOf(1).equals(snapshot.version()) || keys.isEmpty() || snapshot.criteria() == null

@@ -71,8 +71,8 @@
       { collection: "notificationOutbox", selector: relatedSelector() },
       { collection: "userNotifications", selector: relatedSelector() },
       { collection: "affinityRecomputeTasks", selector: relatedSelector() },
-      { collection: "eventFeedbackStates", selector: { eventId: EVENT_ID } },
-      { collection: "eventFeedbackAnswers", selector: { eventId: EVENT_ID } },
+      { collection: "feedbackStates", selector: { eventId: EVENT_ID } },
+      { collection: "feedbackAnswers", selector: { eventId: EVENT_ID } },
       { collection: "schedulerPlanMarkers", selector: relatedSelector() },
       { collection: "notificationRuleConfigs", selector: { ruleKey: REVIEW_RULE_KEY } }
     ];
@@ -494,17 +494,17 @@
 
   function impressionEvidenceSnapshot() {
     const riley = Q.ensureUser(RILEY_ID, `${CHECKPOINT} Riley impression evidence user`);
-    const eventFeedback = (riley.activities && riley.activities.eventFeedback) || {};
+    const feedbackCounts = (riley.activities && riley.activities.feedbackCounts) || {};
     return {
       rileyStoredImpressions: riley.impressions || null,
-      rileyEventFeedback: {
-        ownEvents: Q.number(eventFeedback.ownEvents),
-        pending: Q.number(eventFeedback.pending),
-        feedbacked: Q.number(eventFeedback.feedbacked),
-        removed: Q.number(eventFeedback.removed)
+      rileyFeedback: {
+        ownEvents: Q.number(feedbackCounts.ownEvents),
+        pending: Q.number(feedbackCounts.pending),
+        feedbacked: Q.number(feedbackCounts.feedbacked),
+        removed: Q.number(feedbackCounts.removed)
       },
-      fixtureFeedbackStates: Q.collection("eventFeedbackStates").countDocuments({ eventId: EVENT_ID }),
-      fixtureFeedbackAnswers: Q.collection("eventFeedbackAnswers").countDocuments({ eventId: EVENT_ID }),
+      fixtureFeedbackStates: Q.collection("feedbackStates").countDocuments({ eventId: EVENT_ID }),
+      fixtureFeedbackAnswers: Q.collection("feedbackAnswers").countDocuments({ eventId: EVENT_ID }),
       fixtureAffinityTasks: Q.collection("affinityRecomputeTasks").countDocuments(relatedSelector())
     };
   }
@@ -700,16 +700,16 @@
       const countKeys = ["fixtureFeedbackStates", "fixtureFeedbackAnswers", "fixtureAffinityTasks"];
       const hasOwn = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
       return storedImpressionsMatch
-        && feedbackKeys.every(key => hasOwn(baseline.rileyEventFeedback, key)
-          && hasOwn(evidence.rileyEventFeedback, key)
-          && Q.number(baseline.rileyEventFeedback[key]) === Q.number(evidence.rileyEventFeedback[key]))
+        && feedbackKeys.every(key => hasOwn(baseline.rileyFeedback, key)
+          && hasOwn(evidence.rileyFeedback, key)
+          && Q.number(baseline.rileyFeedback[key]) === Q.number(evidence.rileyFeedback[key]))
         && countKeys.every(key => hasOwn(baseline, key)
           && hasOwn(evidence, key)
           && Q.number(baseline[key]) === Q.number(evidence[key]));
     }
     const evidence = current.impressionEvidence;
     return evidence.rileyStoredImpressions === null
-      && Q.sameJson(evidence.rileyEventFeedback, { ownEvents: 0, pending: 0, feedbacked: 0, removed: 0 })
+      && Q.sameJson(evidence.rileyFeedback, { ownEvents: 0, pending: 0, feedbacked: 0, removed: 0 })
       && evidence.fixtureFeedbackStates === 0
       && evidence.fixtureFeedbackAnswers === 0
       && evidence.fixtureAffinityTasks === 0;

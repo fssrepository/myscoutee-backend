@@ -762,19 +762,19 @@ class AccessControlServiceTest {
     }
 
     @Test
-    void eventFeedbackPoliciesAllowAcceptedEventParticipant() {
+    void feedbackPoliciesAllowAcceptedEventParticipant() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
 
-        assertThat(service.canCurrentActorSubmitEventFeedback("u1", "event-1")).isTrue();
-        assertThat(service.canCurrentActorSaveEventFeedbackNote("u1", "event-1")).isTrue();
-        assertThat(service.canCurrentActorRemoveEventFeedback("u1", "event-1")).isTrue();
-        assertThat(service.canCurrentActorRestoreEventFeedback("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorSubmitFeedback("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorSaveFeedbackNote("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorRemoveFeedback("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorRestoreFeedback("u1", "event-1")).isTrue();
     }
 
     @Test
-    void eventFeedbackPoliciesAllowEventManagerForOwnFeedbackState() {
+    void feedbackPoliciesAllowEventManagerForOwnFeedbackState() {
         authenticateAs("admin");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "admin"))
                 .thenReturn(Optional.empty());
@@ -782,28 +782,28 @@ class AccessControlServiceTest {
         when(activityEventsRepository.findBySourceId("event-1"))
                 .thenReturn(List.of(event("event-1", "creator", "admin")));
 
-        boolean allowed = service.canCurrentActorSaveEventFeedbackNote("admin", "event-1");
+        boolean allowed = service.canCurrentActorSaveFeedbackNote("admin", "event-1");
 
         assertThat(allowed).isTrue();
     }
 
     @Test
-    void eventFeedbackPoliciesRejectActorMismatchBeforeLookup() {
+    void feedbackPoliciesRejectActorMismatchBeforeLookup() {
         authenticateAs("u2");
 
-        boolean allowed = service.canCurrentActorSubmitEventFeedback("u1", "event-1");
+        boolean allowed = service.canCurrentActorSubmitFeedback("u1", "event-1");
 
         assertThat(allowed).isFalse();
         verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
     }
 
     @Test
-    void eventFeedbackDenyGrantOverridesAcceptedParticipation() {
+    void feedbackDenyGrantOverridesAcceptedParticipation() {
         authenticateAs("u1");
-        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "event.feedback.note", "event", "event-1", "deny")));
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "feedback.note", "event", "event-1", "deny")));
         service.refreshAccessControlCache();
 
-        boolean allowed = service.canCurrentActorSaveEventFeedbackNote("u1", "event-1");
+        boolean allowed = service.canCurrentActorSaveFeedbackNote("u1", "event-1");
 
         assertThat(allowed).isFalse();
         verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
@@ -1355,29 +1355,29 @@ class AccessControlServiceTest {
                         List.of("acceptedParticipation", "explicitAllow"),
                         null),
                 policy(
-                        AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
-                        "event.feedback.submit",
+                        AccessPolicyKeys.FEEDBACK_SUBMIT,
+                        "feedback.submit",
                         "event",
                         List.of("actorMatchesSubject", "noExplicitDeny"),
                         List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
                         null),
                 policy(
-                        AccessPolicyKeys.EVENT_FEEDBACK_NOTE,
-                        "event.feedback.note",
+                        AccessPolicyKeys.FEEDBACK_NOTE,
+                        "feedback.note",
                         "event",
                         List.of("actorMatchesSubject", "noExplicitDeny"),
                         List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
                         null),
                 policy(
-                        AccessPolicyKeys.EVENT_FEEDBACK_REMOVE,
-                        "event.feedback.remove",
+                        AccessPolicyKeys.FEEDBACK_REMOVE,
+                        "feedback.remove",
                         "event",
                         List.of("actorMatchesSubject", "noExplicitDeny"),
                         List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
                         null),
                 policy(
-                        AccessPolicyKeys.EVENT_FEEDBACK_RESTORE,
-                        "event.feedback.restore",
+                        AccessPolicyKeys.FEEDBACK_RESTORE,
+                        "feedback.restore",
                         "event",
                         List.of("actorMatchesSubject", "noExplicitDeny"),
                         List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),

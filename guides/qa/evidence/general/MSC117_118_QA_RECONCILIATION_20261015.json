@@ -1,0 +1,197 @@
+{
+  "date": "2026-10-15",
+  "kind": "Read-only evidence reconciliation and remaining-checklist preparation; no new application QA run",
+  "project": {
+    "name": "MyScoutee",
+    "number": 2,
+    "itemsRead": 120,
+    "openTasks": [
+      "MSC-116",
+      "MSC-117",
+      "MSC-119"
+    ],
+    "closedImplementationWithRequestedQa": [
+      "MSC-118"
+    ],
+    "MSC115": "closed; do not reopen accepted scope"
+  },
+  "sessionSearch": {
+    "dates": "2026-10-10 through 2026-10-15, plus original MSC-117 evidence",
+    "recoveredCallSession": "01a12538-f73c-72f0-8027-fe29e446d2c9",
+    "recoveredCallDate": "2026-10-12",
+    "acceptedGuidesSession": "01a138de-bd8e-7140-a59a-0c187ce44d32",
+    "acceptedGuidesDate": "2026-10-15",
+    "active116Session": "01a13f7a-821f-7d10-985a-b7cd98ff0fb8",
+    "privacy": "No private transcript text or credentials copied"
+  },
+  "MSC118": {
+    "status": "PARTIAL — inherited MSC115 browser coverage; remaining role campaign prepared",
+    "checklist": "guides/qa/checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md",
+    "steps": 39,
+    "catalogContexts": 37,
+    "catalogConditionalFields": 189,
+    "priorDeliveryFields": 136,
+    "credited": [
+      "Shared guide navigation, foreground ownership, parent restoration, launcher continuity",
+      "Recorded EN/HU desktop/mobile/short layouts and targeted repairs",
+      "Protected system context selector exclusion",
+      "Admin Home, Help Editor, article list/view/editor and nested image variants as recorded",
+      "Empty Reports HU mobile only",
+      "Accepted local member/admin samples, not a full cross-product",
+      "Cases notification target/read and shared worker results, not role-target/role-producer completion"
+    ],
+    "sources": [
+      "guides/qa/evidence/work-community/MSC115-guides-20261015/summary.json",
+      "guides/qa/evidence/work-community/MSC115-guides-20261015/admin-coverage.json",
+      "guides/qa/evidence/work-community/MSC115-guides-20261015/local-admin-final.json",
+      "guides/qa/evidence/work-community/MSC115-closure-20261015/summary.json",
+      "guides/qa/evidence/general/ROLE-GUIDES-NOTIFICATIONS-001-20261007.md"
+    ],
+    "remaining": [
+      "Uncovered operator/admin guide contexts and conditional Local/HTTP cells",
+      "All-role visibility/mute/read persistence and privileged targets",
+      "Current-source system guards and producer evidence reconciliation"
+    ],
+    "estimateMinutes": [
+      180,
+      425
+    ],
+    "estimateBasis": "Remaining multi-role/multi-adapter context journeys, setup, guarded writes, reload/oracle and cleanup; conservative planning estimate, not measured execution. Model upper bound ceil5(max(180*1.8*1.30,180*2.35))=425. Earlier 60/120 and chat 90-180 estimates did not account for the complete outstanding conditional matrix."
+  },
+  "MSC117": {
+    "status": "PARTIAL — recovered shared call evidence; do not close full development scope",
+    "checklist": "guides/qa/checklists/general/CHAT-CALL-001.md",
+    "steps": 29,
+    "credited": [
+      "October6 MLS/FFT, live signaling/authority/coordinator, STUN and compiled checks",
+      "October12 actual synthetic-media two-way browser RTP, non-relay ICE, mute, camera-off, track release and immediate repeat",
+      "Ten consecutive calls and 35-second KVM media/socket continuity across delegation expiry",
+      "MSC115 accepted chat categories and case Tasks-navigation where recorded"
+    ],
+    "sources": [
+      {
+        "repository": "myscoutee-backend",
+        "path": "guides/qa/evidence/CHAT-CALL-001-2026-10-06.json"
+      },
+      {
+        "repository": "myscoutee-template",
+        "path": "guides/qualification/evidence/MSC122_TEMPLATE_CHAT_PARITY_20261012.json"
+      },
+      {
+        "repository": "myscoutee-template",
+        "path": "guides/qualification/evidence/MSC122_TEMPLATE_KVM_20261012.json"
+      },
+      {
+        "repository": "myscoutee-template",
+        "path": "guides/qualification/evidence/MSC122_TEMPLATE_MINI_E2E_STRESS_20261012.json"
+      },
+      {
+        "repository": "myscoutee-template",
+        "path": "guides/qualification/evidence/MSC122_TEMPLATE_PRODUCTION_PAGES_20261012.json"
+      },
+      {
+        "repository": "myscoutee-template",
+        "path": "guides/qualification/MSC122_DEFERRED_OBSERVATIONS.md"
+      }
+    ],
+    "removedObservation": "CALL-01 removed by explicit user instruction on2026-10-12; not reopened",
+    "remaining": [
+      "Three-party media and actual admin-mute/coordinator browser behavior",
+      "Seven-actor baseline, viewport/paging receive-video RTP and continuous audio",
+      "Remaining volume/receive/speaker/fullscreen controls and source error presentation",
+      "Call/volume/phone Help, EN/HU responsive variants"
+    ],
+    "fixtureGap": "Existing chat-call fixture/launcher supplies three actors, not seven; extend that existing owner during delegated execution",
+    "estimateMinutes": [
+      120,
+      285
+    ],
+    "estimateBasis": "Development remainder only, credited two-party series excluded. Fixture/actor coordination, media-statistics samples, controls, guides and cleanup included. ceil5(max(120*1.8*1.30,120*2.35))=285; physical/live waiting excluded."
+  },
+  "guideUmbrella": {
+    "status": "PARTIAL",
+    "credited": [
+      "Accepted MSC115 guide source scope",
+      "Anonymous EN/HU consent, landing and demo picker across three viewports"
+    ],
+    "source": "guides/qa/evidence/work-community/MSC115-guides-20261015/anonymous-entry-guides.json",
+    "remainingIndependent": "First-visit introduction lifetime, dismissal/known-visitor/preference behavior; ordinary consent tour is already credited",
+    "ownedElsewhere": {
+      "MSC116": [
+        "API/MCP/OAuth/help guides",
+        "Service-feedback guides",
+        "Guide seed-preservation within existing steps18-20,37,67,73"
+      ],
+      "MSC117": [
+        "chat.call",
+        "chat.call.volume",
+        "chat phone target"
+      ],
+      "MSC118": [
+        "Role guides and launcher/preferences"
+      ]
+    },
+    "estimateMinutes": [
+      20,
+      65
+    ],
+    "notDoubleCounted": "Historical checklist preserved unchanged below closure note. Assigned MSC116/117/118 checks remain with owners, including not-yet-executed checks.",
+    "executionOwner": "EXPLANATION-GUIDE-001 closed for accepted scope; remainder embedded directly in MSC119 automatic steps1-9, without a separate testcase or ledger row"
+  },
+  "routing": {
+    "template": "Existing MSC115-TEMPLATE-REGRESSION checklist/evidence and template qualification ledger; no template runs inside MSC116/117/118/119 source campaigns",
+    "live": "guides/qualification/MSC117_118_LIVE_CHECKS.md",
+    "existingLive115": "guides/qa/checklists/group/MSC-115_LIVE_DEPLOYMENT_QA.md remains unchanged",
+    "notRunNow": "No browser, fixture mutation, application test, deployment, or Project state update",
+    "existingLiveMcp": "guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md"
+  },
+  "ledgerMapping": {
+    "INTEGRATION-ACCESS-001": "MSC116 checklist owner, including pending future steps; no MSC119 replay",
+    "MCP-EVENTS-001": "MSC116 checklist owner, including pending future steps; no MSC119 replay",
+    "FEEDBACK-UI-001": "MSC116 steps68-73 owner, including pending steps; no MSC119 replay",
+    "CHAT-CALL-001": "MSC117 development remainder",
+    "ROLE-GUIDES-NOTIFICATIONS-001": "MSC118 user-requested development remainder despite closed implementation issue",
+    "EXPLANATION-GUIDE-001": "CLOSED / PASS for accepted scope; original checklist preserved; transferred checks not claimed passed",
+    "MSC115-TEMPLATE-REGRESSION": "Separate template queue, not an additional open product task"
+  },
+  "countsExplanation": "Seven ledger rows are not seven independent campaigns: three assigned to MSC116, one MSC117, one requested MSC118, one small MSC119 delta and one separate template queue. Project has three open issues.",
+  "currentCallSourceParity": [
+    {
+      "path": "src/app/shared/core/base/services/chat/chat-call.service.ts",
+      "sourceSha256": "387aba0a60a305edb1c9fdd5632182d36f1ded4643f5b8e1b1ec1cda48c41f2d",
+      "templateSha256": "387aba0a60a305edb1c9fdd5632182d36f1ded4643f5b8e1b1ec1cda48c41f2d",
+      "identical": true
+    },
+    {
+      "path": "src/app/shared/core/base/services/chat/chat-call-mls.ts",
+      "sourceSha256": "4e93481f6d55ad7e7cd27faa1396d2bbb8484ffaa8be53b1f4ef58aca5045bc8",
+      "templateSha256": "4e93481f6d55ad7e7cd27faa1396d2bbb8484ffaa8be53b1f4ef58aca5045bc8",
+      "identical": true
+    },
+    {
+      "path": "src/app/shared/core/base/services/chat/chat-call-voice-activity.ts",
+      "sourceSha256": "9ce20ff994c9ff2a8bc84047d3dc121a7b57847bd07406e3b1d93d6fd9244b4a",
+      "templateSha256": "9ce20ff994c9ff2a8bc84047d3dc121a7b57847bd07406e3b1d93d6fd9244b4a",
+      "identical": true
+    },
+    {
+      "path": "src/app/shared/ui/components/chat-call-popup/chat-call-popup.component.ts",
+      "sourceSha256": "bb93e332b820ac755fc53512faa8c92997bf32b35f88b28361d6fe22029118b6",
+      "templateSha256": "bb93e332b820ac755fc53512faa8c92997bf32b35f88b28361d6fe22029118b6",
+      "identical": true
+    }
+  ],
+  "currentCallSourceParityLimit": "File identity supports reuse of shared-owner evidence, not a new source-specific full-browser PASS. Service includes preserved pending-rejoin repair; popup later moves error into existing Popup model. Other shared dependencies may differ.",
+  "continuationOwner": "One consolidated MSC116 campaign includes the remaining MSC119 introduction before its single KVM sample. Assigned overlap and accepted evidence are not replayed.",
+  "planningAuthority": "User clarified that existing checklist assignment, including future unexecuted steps, excludes duplicate work. Detailed execution evidence remains with the active agent.",
+  "MSC119": {
+    "checklist": "guides/qa/checklists/api/MSC-116_AUTOMATIC_QA.md",
+    "steps": 7,
+    "onlyIndependentRemainder": "First-visit introduction lifecycle and scoped cleanup/closure",
+    "excluded": "Every MSC116-assigned check even if not executed yet; accepted MSC115; MSC117 call guides; MSC118 role guide/inbox UI; separate template and live/publication work",
+    "closure": "Pending owner results remain required for eventual task closure but never create a duplicate test here.",
+    "stepRange": "75–81; final reconciliation in 85",
+    "standaloneQaRemoved": true
+  },
+  "guideClosureUserCorrection": "User requested preserving and closing the original guide checklist, then merging the remaining introduction into MSC116 before KVM and removing standalone MSC119 QA. No separate explanation-guide testcase or ledger row."
+}

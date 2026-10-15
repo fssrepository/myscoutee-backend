@@ -40,7 +40,7 @@ import com.raxim.myscoutee.domain.events.api.EventWatchDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
-public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.ActivityCounters {
+public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.FeedbackEvaluationCounters, com.raxim.myscoutee.domain.accounts.api.ActivityCounters {
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
     private final OrganizerFollowingService organizerFollowingService;
 
@@ -66,14 +66,14 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final long EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS = 2L * 60L * 60L;
-    private static final String FEEDBACK_COUNTER_PROJECTOR = "event-feedback-counter";
+    private static final long FEEDBACK_UNLOCK_DELAY_SECONDS = 2L * 60L * 60L;
+    private static final String FEEDBACK_COUNTER_PROJECTOR = "feedback-counter";
 
     private final UsersRepository usersRepository;
     private final EventOwnershipReads activityEventsRepository;
     private final MemberDirectory activityMembersRepository;
     private final AssetOwnershipReads assetsRepository;
-    private final com.raxim.myscoutee.domain.events.api.FeedbackEligibility feedbackEligibility;
+    private final com.raxim.myscoutee.domain.feedback.api.FeedbackEligibility feedbackEligibility;
     private final EventWatchDirectory eventWatchSubscriptionsRepository;
     private final ParticipationTickets eventParticipationTicketService;
     private final MongoTemplate mongoTemplate;
@@ -83,7 +83,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             EventOwnershipReads activityEventsRepository,
             MemberDirectory activityMembersRepository,
             AssetOwnershipReads assetsRepository,
-            com.raxim.myscoutee.domain.events.api.FeedbackEligibility feedbackEligibility,
+            com.raxim.myscoutee.domain.feedback.api.FeedbackEligibility feedbackEligibility,
             EventWatchDirectory eventWatchSubscriptionsRepository,
             ParticipationTickets eventParticipationTicketService,
             MongoTemplate mongoTemplate,
@@ -253,13 +253,13 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             String[] fields = {"ownEvents", "pending", "feedbacked", "removed"};
             int[] amounts = {delta.ownEvents(), delta.pending(), delta.feedbacked(), delta.removed()};
             for (int i = 0; i < fields.length; i++) values.put(fields[i], new org.bson.Document("$max", List.of(0,
-                    new org.bson.Document("$add", List.of(new org.bson.Document("$ifNull", List.of("$activities.eventFeedback." + fields[i], 0)), amounts[i])))));
+                    new org.bson.Document("$add", List.of(new org.bson.Document("$ifNull", List.of("$activities.feedbackCounts." + fields[i], 0)), amounts[i])))));
             var update = org.springframework.data.mongodb.core.aggregation.AggregationUpdate.update()
                     .set("activities").toValue((org.springframework.data.mongodb.core.aggregation.AggregationExpression) context ->
                             new org.bson.Document("$mergeObjects", List.of(new org.bson.Document("$ifNull", List.of("$activities", new org.bson.Document())),
-                                    new org.bson.Document("eventFeedback", values))))
+                                    new org.bson.Document("feedbackCounts", values))))
                     .set("activities.feedback").toValue((org.springframework.data.mongodb.core.aggregation.AggregationExpression) context ->
-                            new org.bson.Document("$add", List.of("$activities.eventFeedback.pending", "$activities.eventFeedback.ownEvents",
+                            new org.bson.Document("$add", List.of("$activities.feedbackCounts.pending", "$activities.feedbackCounts.ownEvents",
                                     new org.bson.Document("$ifNull", List.of("$menuCounters.feedback", 0)))))
                     .set(marker).toValue(true);
             var result = mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(entry.getKey()).and(marker).ne(true)), update, Users.class);
@@ -497,7 +497,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                         count(currentAsset.carsPending()),
                         count(currentAsset.accommodationPending()),
                         count(currentAsset.suppliesPending())),
-                safe.eventFeedback(),
+                safe.feedbackCounts(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
                 count(safe.notifications()));
@@ -550,7 +550,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                         counters.carsPending(),
                         counters.accommodationPending(),
                         counters.suppliesPending()),
-                safe.eventFeedback(),
+                safe.feedbackCounts(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
                 count(safe.notifications()));
@@ -593,7 +593,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 safe.chat(),
                 safe.event(),
                 safe.asset(),
-                new Users.UserEventFeedbackCountersRecord(
+                new Users.UserFeedbackCountersRecord(
                         counters.ownEvents(),
                         counters.pending(),
                         counters.feedbacked(),
@@ -608,19 +608,19 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         if (!StringUtils.hasText(normalizedUserId) || next == null) {
             return;
         }
-        Users.UserEventFeedbackCountersRecord feedback = next.eventFeedback() == null
-                ? emptyActivities().eventFeedback()
-                : next.eventFeedback();
+        Users.UserFeedbackCountersRecord feedback = next.feedbackCounts() == null
+                ? emptyActivities().feedbackCounts()
+                : next.feedbackCounts();
         var update = org.springframework.data.mongodb.core.aggregation.AggregationUpdate.update()
-                .set("activities.eventFeedback.ownEvents").toValue(count(feedback.ownEvents()))
-                .set("activities.eventFeedback.pending").toValue(count(feedback.pending()))
-                .set("activities.eventFeedback.feedbacked").toValue(count(feedback.feedbacked()))
-                .set("activities.eventFeedback.removed").toValue(count(feedback.removed()))
+                .set("activities.feedbackCounts.ownEvents").toValue(count(feedback.ownEvents()))
+                .set("activities.feedbackCounts.pending").toValue(count(feedback.pending()))
+                .set("activities.feedbackCounts.feedbacked").toValue(count(feedback.feedbacked()))
+                .set("activities.feedbackCounts.removed").toValue(count(feedback.removed()))
                 .set("activities.feedback").toValue(feedbackTotal());
         mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(normalizedUserId)), update, Users.class);
     }
 
-    public void updateServiceFeedbackPending(String userId, int pending) {
+    public void updateFeedbackEvaluationPending(String userId, int pending) {
         var update = org.springframework.data.mongodb.core.aggregation.AggregationUpdate.update()
                 .set("menuCounters.feedback").toValue(Math.max(0, pending))
                 .set("activities.feedback").toValue(feedbackTotal());
@@ -629,8 +629,8 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
 
     private static org.springframework.data.mongodb.core.aggregation.AggregationExpression feedbackTotal() {
         return context -> new Document("$add", List.of(
-                new Document("$ifNull", List.of("$activities.eventFeedback.pending", 0)),
-                new Document("$ifNull", List.of("$activities.eventFeedback.ownEvents", 0)),
+                new Document("$ifNull", List.of("$activities.feedbackCounts.pending", 0)),
+                new Document("$ifNull", List.of("$activities.feedbackCounts.ownEvents", 0)),
                 new Document("$ifNull", List.of("$menuCounters.feedback", 0))));
     }
 
@@ -649,13 +649,13 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
-                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                new Users.UserFeedbackCountersRecord(0, 0, 0, 0),
                 0, 0, 0);
     }
 
     private FeedbackCounters currentFeedbackCounters(Users.UserActivitiesRecord current) {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
-        Users.UserEventFeedbackCountersRecord feedback = safe.eventFeedback();
+        Users.UserFeedbackCountersRecord feedback = safe.feedbackCounts();
         return new FeedbackCounters(
                 count(feedback == null ? null : feedback.ownEvents()),
                 count(feedback == null ? null : feedback.pending()),

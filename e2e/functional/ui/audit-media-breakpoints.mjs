@@ -10,7 +10,7 @@ const allowedByFile = new Map(Object.entries({
   'frontend/src/app/activity/components/event-checkout-popup/event-promo-code-popup/event-promo-code-popup.component.scss': ['max-width:640'],
   'frontend/src/app/activity/components/event-checkout-slot-picker-popup/event-checkout-slot-picker-popup.component.scss': ['max-width:720'],
   'frontend/src/app/activity/components/event-editor-popup/event-payment-input/event-payment-input.component.scss': ['max-width:860', 'max-width:640'],
-  'frontend/src/app/activity/components/event-feedback-rated-detail-popup/event-feedback-rated-detail-popup.component.scss': ['max-width:700'],
+  'frontend/src/app/activity/components/feedback-rated-detail-popup/feedback-rated-detail-popup.component.scss': ['max-width:700'],
   'frontend/src/app/activity/components/event-resource-popup/asset-explore-borrow-dialog/event-resource-asset-explore-borrow-dialog.component.scss': ['max-width:640'],
   'frontend/src/app/activity/components/event-resource-popup/assigned-asset-join-dialog/event-resource-assigned-asset-join-dialog.component.scss': ['max-width:640'],
   'frontend/src/app/activity/components/event-subevent-definitions-panel/event-subevent-definitions-panel.component.scss': ['min-width:761'],

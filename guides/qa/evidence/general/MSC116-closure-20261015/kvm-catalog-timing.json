@@ -1,0 +1,17 @@
+{
+  "method": "events/list",
+  "concurrency": 1,
+  "warmup": 3,
+  "samples": 20,
+  "requestCount": 23,
+  "errors": 0,
+  "catalog": [
+    "asset.changed",
+    "event.changed",
+    "event.encounters"
+  ],
+  "meanMs": 101.97841494977474,
+  "medianMs": 97.064931999892,
+  "p95Ms": 121.1011839993298,
+  "maxMs": 135.52633399888873
+}

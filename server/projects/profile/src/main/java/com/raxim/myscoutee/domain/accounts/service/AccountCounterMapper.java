@@ -56,8 +56,8 @@ final class AccountCounterMapper {
                 asset == null ? 0 : normalizeCount(asset.suppliesPending()));
     }
 
-    static UserEventFeedbackCountersDto toUserEventFeedbackCountersDto(Users.UserEventFeedbackCountersRecord feedback) {
-        return new UserEventFeedbackCountersDto(
+    static UserFeedbackCountersDto toUserFeedbackCountersDto(Users.UserFeedbackCountersRecord feedback) {
+        return new UserFeedbackCountersDto(
                 feedback == null ? 0 : normalizeCount(feedback.ownEvents()),
                 feedback == null ? 0 : normalizeCount(feedback.pending()),
                 feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
@@ -70,7 +70,7 @@ final class AccountCounterMapper {
                 new UserChatCountersDto(0, 0, 0, 0, 0, 0),
                 new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                 new UserAssetCountersDto(0, 0, 0, 0),
-                new UserEventFeedbackCountersDto(0, 0, 0, 0),
+                new UserFeedbackCountersDto(0, 0, 0, 0),
                 0, 0, 0, 0);
     }
 

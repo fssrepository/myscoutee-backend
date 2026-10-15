@@ -54,8 +54,8 @@ import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackAnswersRepository;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
+import com.raxim.myscoutee.domain.feedback.repository.FeedbackAnswersRepository;
+import com.raxim.myscoutee.domain.feedback.repository.FeedbackStatesRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 import com.raxim.myscoutee.domain.accounts.document.UserFriendship;
@@ -71,7 +71,7 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventCountersDto;
-import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventFeedbackCountersDto;
+import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserFeedbackCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserRealtimeLongPollRequestDto;
@@ -107,9 +107,9 @@ class HomeUserProfileServiceTest {
     @Mock
     private EventParticipationTicketService eventParticipationTicketService;
     @Mock
-    private EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    private FeedbackStatesRepository feedbackStatesRepository;
     @Mock
-    private EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
+    private FeedbackAnswersRepository feedbackAnswersRepository;
     @Mock
     private UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
     @Mock
@@ -165,7 +165,7 @@ class HomeUserProfileServiceTest {
                 new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
                 new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
-                new com.raxim.myscoutee.domain.events.service.FeedbackDirectoryService(eventFeedbackAnswersRepository),
+                new com.raxim.myscoutee.domain.feedback.service.FeedbackDirectoryService(feedbackAnswersRepository),
                 scheduledMessageTaskService,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
@@ -214,7 +214,7 @@ class HomeUserProfileServiceTest {
     void impressionsCacheSeparatesModesAndRejectsAnInvalidatedLoad() {
         var calls = new java.util.concurrent.atomic.AtomicInteger();
         var user = new Users(); user.setId("same-id"); user.setUserId("same-id");
-        when(eventFeedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("same-id")).thenAnswer(invocation -> {
+        when(feedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("same-id")).thenAnswer(invocation -> {
             if (calls.incrementAndGet() == 1) org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "clearUserReadCaches");
             return List.of();
         });
@@ -1005,7 +1005,7 @@ class HomeUserProfileServiceTest {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
-        when(eventFeedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("active")).thenReturn(List.of());
+        when(feedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("active")).thenReturn(List.of());
 
         var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
 
@@ -1020,7 +1020,7 @@ class HomeUserProfileServiceTest {
         assertNestedCounters(snapshot.counters());
         assertThat(snapshot.offlineTicketSnapshot()).isEqualTo(new AssetTicketsPageDto(List.of(), 0));
         verify(assetsService).queryTicketPage("active", 0, 18, "upcoming");
-        verifyNoInteractions(chatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
+        verifyNoInteractions(chatsRepository, activityEventsRepository, feedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
     }
 
@@ -1075,7 +1075,7 @@ class HomeUserProfileServiceTest {
     void realtimeSnapshotAlwaysIncludesImpressionsObject() {
         Users active = user("realtime-empty-impressions", 0d);
         when(usersRepository.findByUserId("realtime-empty-impressions")).thenReturn(Optional.of(active));
-        when(eventFeedbackAnswersRepository
+        when(feedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-empty-impressions"))
                 .thenReturn(List.of());
 
@@ -1097,10 +1097,10 @@ class HomeUserProfileServiceTest {
                 null,
                 null,
                 null,
-                new Users.UserEventFeedbackCountersRecord(0, 0, 1, 0),
+                new Users.UserFeedbackCountersRecord(0, 0, 1, 0),
                 0, 0, 0));
         when(usersRepository.findByUserId("realtime-feedbacked-member")).thenReturn(Optional.of(active));
-        when(eventFeedbackAnswersRepository
+        when(feedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-feedbacked-member"))
                 .thenReturn(List.of());
 
@@ -1118,7 +1118,7 @@ class HomeUserProfileServiceTest {
     void realtimeSnapshotDoesNotReportProjectedImpressionsAsAWrite() {
         Users active = user("realtime-projected-impressions", 0d);
         when(usersRepository.findByUserId("realtime-projected-impressions")).thenReturn(Optional.of(active));
-        when(eventFeedbackAnswersRepository
+        when(feedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-projected-impressions"))
                 .thenReturn(List.of());
 
@@ -1140,7 +1140,7 @@ class HomeUserProfileServiceTest {
     void realtimeSnapshotReportsStoredImpressionsWriteExactlyOnce() {
         Users active = user("realtime-stored-impressions", 0d);
         when(usersRepository.findByUserId("realtime-stored-impressions")).thenReturn(Optional.of(active));
-        when(eventFeedbackAnswersRepository
+        when(feedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-stored-impressions"))
                 .thenReturn(List.of());
 
@@ -1204,7 +1204,7 @@ class HomeUserProfileServiceTest {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
-        when(eventFeedbackAnswersRepository
+        when(feedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("active"))
                 .thenReturn(List.of());
 
@@ -1254,7 +1254,7 @@ class HomeUserProfileServiceTest {
         assertFlatCounters(response.activities());
         assertNestedCounters(response.activities());
         assertThat(response.filterCount()).isEqualTo(3);
-        verifyNoInteractions(chatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
+        verifyNoInteractions(chatsRepository, activityEventsRepository, feedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
     }
 
@@ -1364,7 +1364,7 @@ class HomeUserProfileServiceTest {
                 new Users.UserChatCountersRecord(4, 1, 1, 1, 1, 0),
                 new Users.UserEventCountersRecord(20, 6, 2, 5, 7, 1, 3),
                 new Users.UserAssetCountersRecord(8, 9, 10, 11, 18, 19, 20),
-                new Users.UserEventFeedbackCountersRecord(4, 13, 14, 2),
+                new Users.UserFeedbackCountersRecord(4, 13, 14, 2),
                 15,
                 16,
                 17);
@@ -1445,21 +1445,21 @@ class HomeUserProfileServiceTest {
     }
 
     private void assertNestedCounters(UserRealtimeCountersDto counters) {
-        assertNestedCounters(counters.event(), counters.asset(), counters.eventFeedback());
+        assertNestedCounters(counters.event(), counters.asset(), counters.feedbackCounts());
     }
 
     private void assertNestedCounters(UserMenuCountersDto counters) {
-        assertNestedCounters(counters.event(), counters.asset(), counters.eventFeedback());
+        assertNestedCounters(counters.event(), counters.asset(), counters.feedbackCounts());
     }
 
     private void assertNestedCounters(UserActivitiesDto counters) {
-        assertNestedCounters(counters.event(), counters.asset(), counters.eventFeedback());
+        assertNestedCounters(counters.event(), counters.asset(), counters.feedbackCounts());
     }
 
     private void assertNestedCounters(
             UserEventCountersDto event,
             UserAssetCountersDto asset,
-            UserEventFeedbackCountersDto eventFeedback) {
+            UserFeedbackCountersDto feedbackCounts) {
         assertThat(event.all()).isEqualTo(20);
         assertThat(event.active()).isEqualTo(6);
         assertThat(event.pending()).isEqualTo(2);
@@ -1476,10 +1476,10 @@ class HomeUserProfileServiceTest {
         assertThat(asset.accommodationPending()).isEqualTo(19);
         assertThat(asset.suppliesPending()).isEqualTo(20);
 
-        assertThat(eventFeedback.ownEvents()).isEqualTo(4);
-        assertThat(eventFeedback.pending()).isEqualTo(13);
-        assertThat(eventFeedback.feedbacked()).isEqualTo(14);
-        assertThat(eventFeedback.removed()).isEqualTo(2);
+        assertThat(feedbackCounts.ownEvents()).isEqualTo(4);
+        assertThat(feedbackCounts.pending()).isEqualTo(13);
+        assertThat(feedbackCounts.feedbacked()).isEqualTo(14);
+        assertThat(feedbackCounts.removed()).isEqualTo(2);
     }
 
     private ActivityMember acceptedMember(String ownerId, String userId) {

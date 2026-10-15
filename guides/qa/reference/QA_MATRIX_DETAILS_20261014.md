@@ -8590,7 +8590,7 @@ Community service sheet and priority discovery
 
 ### Scenario
 
-MSC-115 steps 40–45, 95–99: Community service discovery, owned sheets, staff pills, service link and provider calendar; case-completion feedback worker, shared Feedback list and criterion statistics. Reuse SERVICE-FEEDBACK-UI-001 evidence for overlapping form checks. The numbered checklist is authoritative; this row tracks the same execution, not an additional run.
+MSC-115 steps 40–45, 95–99: Community service discovery, owned sheets, staff pills, service link and provider calendar; case-completion feedback worker, shared Feedback list and criterion statistics. Reuse FEEDBACK-UI-001 evidence for overlapping form checks. The numbered checklist is authoritative; this row tracks the same execution, not an additional run.
 
 ### Manual status
 
@@ -8896,11 +8896,11 @@ P1
 
 Closure 2026-10-15: [MSC-115 closure receipt](../evidence/work-community/MSC115-closure-20261015/summary.json). Earlier partial observations remain historical evidence; their old next-step pointers are superseded. Local NOT RUN/PARTIAL records coverage, not an open MSC-115 defect. Separate template/live QA does not block this task.
 
-## SERVICE-FEEDBACK-UI-001
+## FEEDBACK-UI-001
 
 ### ID
 
-SERVICE-FEEDBACK-UI-001
+FEEDBACK-UI-001
 
 ### Type
 
@@ -8956,7 +8956,7 @@ Focused regression source prepared; execution deferred by user.
 
 ### Next manual oracle
 
-Run checklists/general/SERVICE-FEEDBACK-UI-001.md with approved feedback fixture in HTTP/local modes. | Template baseline is closed; assess newly found defects, carry over affected fixes and run only their targeted template regression. | Shared execution with MSC-115 steps95–99: reuse matching evidence; run only checklist assertions not already proven there.
+Run checklists/general/FEEDBACK-UI-001.md with approved feedback fixture in HTTP/local modes. | Template baseline is closed; assess newly found defects, carry over affected fixes and run only their targeted template regression. | Shared execution with MSC-115 steps95–99: reuse matching evidence; run only checklist assertions not already proven there.
 
 ### Result
 

@@ -610,7 +610,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             UserChatCountersRecord chat,
             UserEventCountersRecord event,
             UserAssetCountersRecord asset,
-            UserEventFeedbackCountersRecord eventFeedback,
+            UserFeedbackCountersRecord feedbackCounts,
             Integer adminJobs,
             Integer adminMetrics,
             Integer notifications) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ActivityCounts {
@@ -629,7 +629,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
                 UserChatCountersRecord chat,
                 UserEventCountersRecord event,
                 UserAssetCountersRecord asset,
-                UserEventFeedbackCountersRecord eventFeedback,
+                UserFeedbackCountersRecord feedbackCounts,
                 Integer adminJobs,
                 Integer adminMetrics) {
             this(
@@ -647,7 +647,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
                     chat,
                     event,
                     asset,
-                    eventFeedback,
+                    feedbackCounts,
                     adminJobs,
                     adminMetrics,
                     0);
@@ -740,7 +740,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
         }
     }
 
-    public record UserEventFeedbackCountersRecord(
+    public record UserFeedbackCountersRecord(
             Integer ownEvents,
             Integer pending,
             Integer feedbacked,

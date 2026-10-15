@@ -1,0 +1,17 @@
+{
+  "scope": "Feedback page plus Events validation/tools discovery and normal background jobs; not exclusive request attribution.",
+  "deltas": {
+    "identity": {
+      "myscoutee_remote_requests_seconds_count{operation=\"integration-groups.actor_1\",outcome=\"success\",service=\"identity\"}": 2.0,
+      "myscoutee_remote_requests_seconds_count{operation=\"integration-groups.administeredgroups_1\",outcome=\"success\",service=\"identity\"}": 2.0
+    },
+    "community": {
+      "myscoutee_remote_requests_seconds_count{operation=\"actor-delegation.derive\",outcome=\"success\",service=\"community\"}": 3.0,
+      "myscoutee_remote_requests_seconds_count{operation=\"discovery-profiles.single\",outcome=\"success\",service=\"community\"}": 4.0,
+      "myscoutee_remote_requests_seconds_count{operation=\"feedback-session.resolve\",outcome=\"success\",service=\"community\"}": 1.0,
+      "myscoutee_remote_requests_seconds_count{operation=\"profile-summaries.batch\",outcome=\"success\",service=\"community\"}": 1.0,
+      "myscoutee_remote_requests_seconds_count{operation=\"public-authority.authorize\",outcome=\"success\",service=\"community\"}": 1.0,
+      "myscoutee_remote_requests_seconds_count{operation=\"selected-profile.resolve\",outcome=\"success\",service=\"community\"}": 2.0
+    }
+  }
+}

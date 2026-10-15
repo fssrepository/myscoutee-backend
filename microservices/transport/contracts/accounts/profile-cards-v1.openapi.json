@@ -894,8 +894,8 @@
           "asset": {
             "$ref": "#/components/schemas/UserAssetCountersDto"
           },
-          "eventFeedback": {
-            "$ref": "#/components/schemas/UserEventFeedbackCountersDto"
+          "feedbackCounts": {
+            "$ref": "#/components/schemas/UserFeedbackCountersDto"
           },
           "adminJobs": {
             "type": [
@@ -1154,7 +1154,7 @@
           }
         }
       },
-      "UserEventFeedbackCountersDto": {
+      "UserFeedbackCountersDto": {
         "type": [
           "object",
           "null"

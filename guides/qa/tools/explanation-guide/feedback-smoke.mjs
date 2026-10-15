@@ -8,7 +8,7 @@ process.env.GUIDE_RESULTS_PATH=`${out}/feedback-tours-${width}.jsonl`;
 fs.writeFileSync(process.env.GUIDE_RESULTS_PATH,'');
 const {p,browser,menu,pause,tour}=await import('./session.mjs');
 const checks=[],errors=[];p.on('pageerror',e=>errors.push(e.message));
-const form=p.locator('.event-feedback-form-flow');
+const form=p.locator('.feedback-form-flow');
 const active=()=>form.locator('.form-flow__slide.is-active');
 async function mark(name,expected){
  const before=await active().getAttribute('data-step-id');
@@ -22,7 +22,7 @@ async function mark(name,expected){
 }
 try {
  await menu('Open feedback');await p.setViewportSize({width,height:width===390?844:900});
- await p.getByRole('button',{name:'Start event feedback',exact:true}).first().click();await form.waitFor();await pause(400);
+ await p.getByRole('button',{name:'Start feedback',exact:true}).first().click();await form.waitFor();await pause(400);
  await mark('event-empty',['feedback-primary','feedback-secondary','feedback-traits','feedback-comment','form-progress','form-navigation']);
  assert(await form.getByRole('button',{name:'Complete required fields before continuing',exact:true}).isDisabled());
  for(let i=0;i<5;i++){
@@ -43,7 +43,7 @@ try {
   if(i<4)await mark(`participant-${i+1}`,['feedback-primary','feedback-secondary','feedback-traits','form-progress','form-navigation']);
  }
  await mark('overview',['form-save','form-progress']);
- assert(await form.getByRole('button',{name:'Submit event feedback',exact:true}).isEnabled());
+ assert(await form.getByRole('button',{name:'Submit feedback',exact:true}).isEnabled());
  checks.push({name:'all-five-cards-filled-overview-submit-enabled-not-clicked',passed:true});
  await form.locator('xpath=ancestor::app-popup').getByRole('button',{name:'Close',exact:true}).click();
  assert.deepEqual(errors,[]);console.log(JSON.stringify({width,status:'PASS',checks}));

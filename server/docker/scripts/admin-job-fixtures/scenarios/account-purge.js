@@ -10,7 +10,8 @@
   F.run({
     job,
     ruleKey: job,
-    variations: ["isolated", "with-reference"],
+    ruleScope: { baseGroupId: null },
+    variations: ["isolated", "with-reference", "with-mcp-events"],
     build(variation) {
       const isolatedUserIds = F.collection("users")
         .find({
@@ -39,6 +40,7 @@
           purgeJobId,
           rateId,
           withReference: variation === "with-reference",
+          withMcpEvents: variation === "with-mcp-events",
           isolatedUserIds,
           isolatedPurgeJobIds
         },
@@ -83,12 +85,15 @@
           { collection: "notificationOutbox", selector: { recipientUserIds: userId } },
           { collection: "userNotifications", selector: { recipientUserId: userId } },
           {
-            collection: "eventFeedbackAnswers",
+            collection: "feedbackAnswers",
             selector: { $or: [{ viewerUserId: userId }, { targetUserId: userId }] }
           },
-          { collection: "eventFeedbackStates", selector: { viewerUserId: userId } },
+          { collection: "feedbackStates", selector: { viewerUserId: userId } },
           { collection: "affinityRecomputeTasks", selector: { targetId: { $in: [userId, `USER:${userId}`] } } },
-          { collection: "shareTokens", selector: { ownerUserId: userId } }
+          { collection: "shareTokens", selector: { ownerUserId: userId } },
+          ...(variation === "with-mcp-events" ? ["mcpEventSubscriptions", "integrationWebhookDeliveries"].map(collection => ({
+            collection, selector: { _id: { $in: [F.fixtureId(job, "mcp-owned"), F.fixtureId(job, "mcp-control")] } }
+          })) : [])
         ]
       };
     },
@@ -146,6 +151,26 @@
         createdDate: now,
         updatedDate: now
       });
+      if (variation === "with-mcp-events") {
+        for (const control of [false, true]) {
+          const id = F.fixtureId(job, control ? "mcp-control" : "mcp-owned");
+          const owner = control ? F.fixtureId(job, "control-user") : userId;
+          F.collection("mcpEventSubscriptions").insertOne({
+            _id: id, ownerUserId: owner, name: "event.changed", resourceId: id,
+            tokenId: id, clientId: id, grantId: id, generation: id,
+            enabled: false, secret: null, expiresAt: new Date(Date.now() + 3600000),
+            deleteAfter: new Date(Date.now() + 8 * 86400000)
+          });
+          F.collection("integrationWebhookDeliveries").insertOne({
+            _id: id, ownerUserId: owner, subscriptionId: id, subscriptionGeneration: id,
+            protocol: "mcp-events", eventType: "event.changed", resourceType: "event", resourceExternalId: id,
+            status: "PENDING", attemptCount: 0, createdAtIso: now,
+            nextAttemptAtIso: new Date(Date.now() + 3600000).toISOString(),
+            payloadJson: JSON.stringify({ eventId: id, name: "event.changed", data: { fixture: true } }),
+            deleteAfter: new Date(Date.now() + 7 * 86400000)
+          });
+        }
+      }
       if (variation === "with-reference") {
         F.collection("userRates").insertOne({
           _id: rateId,
@@ -172,6 +197,12 @@
         quarantinedPreexistingDeletedUsers: (context.isolatedUserIds || []).length,
         quarantinedPreexistingPurgeJobs: (context.isolatedPurgeJobIds || []).length,
         userExists: F.collection("users").countDocuments({ _id: currentUserId }) === 1,
+        mcpEvents: context.withMcpEvents ? {
+          ownedSubscriptions: F.collection("mcpEventSubscriptions").countDocuments({ ownerUserId: currentUserId }),
+          ownedQueuedPayloads: F.collection("integrationWebhookDeliveries").countDocuments({ ownerUserId: currentUserId }),
+          controlSubscriptions: F.collection("mcpEventSubscriptions").countDocuments({ _id: F.fixtureId(job, "mcp-control") }),
+          controlQueuedPayloads: F.collection("integrationWebhookDeliveries").countDocuments({ _id: F.fixtureId(job, "mcp-control") })
+        } : null,
         relatedRateCount: F.collection("userRates").countDocuments({
           $or: [
             { _id: context.rateId || rateId },

@@ -53,7 +53,7 @@ const emptyActivities = {
   },
   event: { all: 0, active: 0, pending: 0, invitations: 0, hosting: 0, drafts: 0, trash: 0, watchlist: 0 },
   asset: { cars: 0, accommodation: 0, supplies: 0, tickets: 0, carsPending: 0, accommodationPending: 0, suppliesPending: 0 },
-  eventFeedback: { ownEvents: 0, pending: 0, feedbacked: 0, removed: 0 },
+  feedbackCounts: { ownEvents: 0, pending: 0, feedbacked: 0, removed: 0 },
   adminJobs: 0,
   adminMetrics: 0,
   paymentRefundsPending: 0,

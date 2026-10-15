@@ -25,6 +25,13 @@ import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class ServiceOfferingsService implements com.raxim.myscoutee.domain.community.api.ServiceOfferings {
+    public java.util.List<com.raxim.myscoutee.domain.community.dto.ServiceOfferingDto> visibleMetadata(String actor, java.util.Collection<String> ids) {
+        if(ids.isEmpty()) return List.of();
+        if(ids.size()>50) throw error(HttpStatus.BAD_REQUEST);
+        return services.findAllById(ids).stream().filter(s -> BaseGroups.COMMUNITY_BASE_ID.equals(s.baseGroupId())
+            && ("published".equals(s.status()) || actor.equals(s.ownerAccountId()) || s.staffAccountIds().contains(actor)))
+            .map(com.raxim.myscoutee.domain.community.dto.ServiceOfferingDto::from).toList();
+    }
     public static final List<String> CATEGORIES = List.of("maintenance", "plumbing", "electrical", "cleaning", "renovation", "fitness", "education", "other");
     public static final List<String> FREQUENCIES = List.of("One-time", "Daily", "Weekly", "Bi-weekly", "Monthly", "Yearly");
     private final ServiceOfferingsRepository services;

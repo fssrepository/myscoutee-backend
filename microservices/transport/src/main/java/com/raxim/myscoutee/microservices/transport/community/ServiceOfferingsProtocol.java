@@ -9,11 +9,12 @@ public final class ServiceOfferingsProtocol {
     public static final String PAGE_2 = "/_internal/v1/community/service-offerings/page_2";
     public static final String SAVE_1 = "/_internal/v1/community/service-offerings/save_1";
     public static final String ACTION_1 = "/_internal/v1/community/service-offerings/action_1";
+    public static final String VISIBLE_METADATA = "/_internal/v1/community/service-offerings/visibleMetadata";
     public static final int MAX_REQUEST_BYTES = 2 * 1024 * 1024, MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
     public static final String AUDIENCE = "community:service-offerings";
-    public static boolean delegated(String path) { return java.util.Set.of(ACTOR_1, DETAIL_1, PAGE_1, PAGE_2, SAVE_1, ACTION_1).contains(path); }
+    public static boolean delegated(String path) { return java.util.Set.of(VISIBLE_METADATA, ACTOR_1, DETAIL_1, PAGE_1, PAGE_2, SAVE_1, ACTION_1).contains(path); }
     private ServiceOfferingsProtocol() {}
-    public static String[] paths() { return new String[]{ACTOR_1, DETAIL_1, PAGE_1, PAGE_2, SAVE_1, ACTION_1}; }
+    public static String[] paths() { return new String[]{VISIBLE_METADATA, ACTOR_1, DETAIL_1, PAGE_1, PAGE_2, SAVE_1, ACTION_1}; }
     public record Error(String code) {}
     public record Scope(Boolean active, String groupId) {
         public static Scope current() { return new Scope(com.raxim.myscoutee.domain.platform.api.JobGroupContext.isActive(), com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId()); }
@@ -40,4 +41,7 @@ public final class ServiceOfferingsProtocol {
     public record Action1(Scope scope, String actor, String id, com.raxim.myscoutee.domain.community.dto.ServiceOfferingDtos.Command r) {}
     public static boolean valid(Action1 q) { return q!=null && scope(q.scope()) && text(q.actor(),8192) && text(q.id(),8192); }
     public record Action1Result(Boolean resolved, com.raxim.myscoutee.domain.community.dto.ServiceOfferingDtos.Item value) {}
+    public record VisibleMetadata(Scope scope, String actor, java.util.Collection<String> ids) {}
+    public static boolean valid(VisibleMetadata q) { return q != null && scope(q.scope()) && text(q.actor(),8192) && ids(q.ids()) && q.ids().size() <= 50; }
+    public record VisibleMetadataResult(Boolean resolved, java.util.List<com.raxim.myscoutee.domain.community.dto.ServiceOfferingDto> value) {}
 }

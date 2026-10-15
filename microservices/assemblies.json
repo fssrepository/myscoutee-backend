@@ -45,7 +45,8 @@
         "community",
         "events",
         "campaigns",
-        "content"
+        "content",
+        "feedback"
       ],
       "libraries": [
         "jsoup"
