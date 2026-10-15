@@ -97,6 +97,18 @@ class ExchangeRateTest {
         assertThatThrownBy(() -> ExchangeRateSource.parse("<Cube time='2026-09-18'><Cube currency='HUF' rate='0'/></Cube>".getBytes(StandardCharsets.UTF_8), "test"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+    @Test void displaySnapshotUsesOneCachedReadAndExistingFreshnessRules() {
+        var store = mock(ExchangeRateStore.class);
+        var today = LocalDate.now(java.time.ZoneOffset.UTC);
+        when(store.observations()).thenReturn(List.of(
+                new Document("_id", "default-v1").append("default", true).append("rates", new Document("HUF", "400")),
+                new Document("_id", today.plusDays(1).toString()).append("rates", new Document("HUF", "800")),
+                new Document("_id", today.toString()).append("rates", new Document("HUF", "500")),
+                new Document("_id", today.minusDays(8).toString()).append("rates", new Document("USD", "1.1"))));
+        var snapshot = paymentService(store).displayEuroRates();
+        assertThat(snapshot).containsEntry("EUR", 1D).containsEntry("HUF", 0.002D).doesNotContainKey("USD");
+        verify(store, times(1)).observations();
+    }
     private PaymentEuroService paymentService(ExchangeRateStore store) {
         var service = new PaymentEuroService(store, mock(MongoTemplate.class));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",

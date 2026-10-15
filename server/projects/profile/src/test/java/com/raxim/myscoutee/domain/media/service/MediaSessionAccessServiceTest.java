@@ -33,7 +33,9 @@ import jakarta.servlet.http.Cookie;
 @org.junit.jupiter.api.Tag("standard")
 class MediaSessionAccessServiceTest {
     private final MongoTemplate mongo = mock(MongoTemplate.class);
-    private final MediaSessionAccessService service = new MediaSessionAccessService(new com.raxim.myscoutee.domain.accounts.service.AccountMediaSessionService(mongo));
+    private final com.raxim.myscoutee.domain.accounts.repository.UsersRepository users = mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class);
+    private final com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService profiles = mock(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.class);
+    private final MediaSessionAccessService service = new MediaSessionAccessService(new com.raxim.myscoutee.domain.accounts.service.AccountMediaSessionService(mongo, users, profiles));
     private final UserSessionState.ActiveSession active = new UserSessionState.ActiveSession();
 
     @AfterEach
@@ -48,6 +50,19 @@ class MediaSessionAccessServiceTest {
         assertThat(service.authenticate(read).getName()).isEqualTo("viewer");
         active.setMediaTokenHash(null);
         assertThat(service.authenticate(read)).isNull();
+    }
+
+    @Test
+    void privateMediaUsesTheCurrentAuthorizedWorkspaceProfile() throws Exception {
+        Cookie cookie = issue(MongoSessionMode.DEMO, null);
+        var workspace = new com.raxim.myscoutee.domain.accounts.document.Users();
+        workspace.setUserId("group:work:viewer");
+        when(profiles.current(any())).thenReturn(workspace);
+        assertThat(service.authenticate(read(cookie)).getName()).isEqualTo("group:work:viewer");
+        active.setMediaTokenHash(null);
+        clearInvocations(profiles);
+        assertThat(service.authenticate(read(cookie))).isNull();
+        verifyNoInteractions(profiles);
     }
 
     @Test
@@ -99,6 +114,10 @@ class MediaSessionAccessServiceTest {
 
     private Cookie issue(MongoSessionMode mode, Object credentials) throws Exception {
         MongoSessionModeContext.set(mode);
+        var account = new com.raxim.myscoutee.domain.accounts.document.Users();
+        account.setUserId("viewer");
+        when(users.findByUserId("viewer")).thenReturn(java.util.Optional.of(account));
+        when(profiles.current(account)).thenReturn(account);
         active.setSessionId("session");
         UserSessionState state = new UserSessionState();
         state.setActiveSessions(List.of(active));

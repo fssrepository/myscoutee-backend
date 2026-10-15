@@ -14,6 +14,19 @@
     "screenHeight": 900
   },
   "checkpoints": {
+    "MSC115-KVM": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "bootstrapEntryConsent": true,
+      "targetUrl": "http://localhost:18080/game",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC115 KVM admin Alex", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner" },
+        { "actor": "MSC115 KVM member Maya", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone" }
+      ]
+    },
     "MSC121-QUALIFICATION": {
       "preserveOtherSessions": true,
       "layout": {

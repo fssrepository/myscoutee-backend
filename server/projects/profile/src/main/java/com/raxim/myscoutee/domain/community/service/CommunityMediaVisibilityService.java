@@ -24,4 +24,12 @@ public class CommunityMediaVisibilityService implements CommunityMediaVisibility
         Document value = mongo.findOne(query, Document.class, "serviceOfferings");
         return value == null ? null : new OfferingMediaVisibilityDto(value.getString("baseGroupId"), value.getString("status"));
     }
+    @Override public List<String> referencedDocuments(List<String> urls) {
+        if (urls == null || urls.isEmpty() || urls.size() > 32) throw new IllegalArgumentException("Invalid document reference batch");
+        Query query = Query.query(Criteria.where("attachments.url").in(urls));
+        // Distinct uses the attachment index; project only matching URLs, including drafts/trash.
+        return mongo.findDistinct(query, "attachments.url", "communityAnnouncements", String.class).stream()
+                .filter(urls::contains).toList();
+    }
+
 }

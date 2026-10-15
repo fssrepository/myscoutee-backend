@@ -289,6 +289,7 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
             criteria.add(Criteria.where("enabled").is(true));
         }
         Update update = new Update()
+                .unset("runState.lastRetryAttempt")
                 .set("runState.currentStatus", "running")
                 .set("runState.progressPercent", 0)
                 .set("runState.progressDetail", firstNonBlank(detail, "Starting scheduled process."))
@@ -406,6 +407,34 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
             socketSessionRegistry.broadcastRuleRuntime(saved);
         }
         return saved;
+    }
+
+    @Override public synchronized void recordRetryOutcome(RetryOutcome outcome) {
+        if (outcome == null || outcome.originalStartedAt() == null || outcome.attemptCount() < 2
+                || outcome.attemptCount() > 3 || outcome.status() == null || !java.util.Set.of("completed", "failed", "retry").contains(outcome.status()))
+            throw new IllegalArgumentException("Invalid retry outcome");
+        String started = outcome.originalStartedAt().toString();
+        String id = "retry:" + started + ":" + outcome.attemptCount();
+        String status = "completed".equals(outcome.status()) ? "completed" : "failed";
+        Instant now = Instant.now();
+        var history = runHistoryEntry(false, started, now.toString(),
+                Math.max(0, java.time.Duration.between(outcome.originalStartedAt(), now).toMillis()),
+                "completed".equals(status) ? 1 : 0, status, outcome.detail(), "outbound-retry");
+        history.setId(id);
+        // Retrying a lost receipt cannot duplicate history. Older deliveries cannot overwrite a newer run.
+        mongoTemplate.updateFirst(Query.query(new Criteria().andOperator(ruleCriteria(outcome.ruleKey()),
+                        Criteria.where("runHistory.id").ne(id))),
+                new Update().push("runHistory").atPosition(0).slice(RUN_HISTORY_LIMIT).each(history), NotificationRuleConfig.class);
+        var saved = mongoTemplate.findAndModify(Query.query(new Criteria().andOperator(ruleCriteria(outcome.ruleKey()),
+                        Criteria.where("runState.startedAtIso").is(started),
+                        new Criteria().orOperator(Criteria.where("runState.lastRetryAttempt").exists(false),
+                                Criteria.where("runState.lastRetryAttempt").lt(outcome.attemptCount())))),
+                new Update().set("runState.lastRetryAttempt", outcome.attemptCount())
+                        .set("runState.currentStatus", status).set("runState.lastRunStatus", status)
+                        .set("runState.lastRunDetail", outcome.detail()).set("runState.progressDetail", outcome.detail())
+                        .set("runState.finishedAtIso", now.toString()).set("runState.progressPercent", 100),
+                FindAndModifyOptions.options().returnNew(true), NotificationRuleConfig.class);
+        if (saved != null) socketSessionRegistry.broadcastRuleRuntime(saved);
     }
 
     public synchronized NotificationRuleConfig updateRunProgress(String ruleKey, int progressPercent, String detail, String actorUserId) {

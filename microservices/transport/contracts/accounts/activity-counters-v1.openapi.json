@@ -1490,6 +1490,117 @@
         },
         "description": "Applies each account counter delta and its immutable command receipt in one document update. An identical receipt replay is a no-op; no HTTP automatic retry is enabled."
       }
+    },
+    "/_internal/v1/accounts/activity-counters/menu-change": {
+      "post": {
+        "operationId": "applyMenuCounterChanges",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuChange"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stored counters and display profiles from the same atomic account writes, in request order. Source revisions make replay idempotent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/MenuSnapshot"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Owner unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Applies each account counter delta and its immutable command receipt in one document update. An identical receipt replay is a no-op; no HTTP automatic retry is enabled."
+      }
     }
   },
   "components": {
@@ -1981,6 +2092,252 @@
           },
           "change": {
             "$ref": "#/components/schemas/FeedbackChange"
+          }
+        }
+      },
+      "MenuChange": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scope",
+          "changes"
+        ],
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "changes": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/MenuDelta"
+            }
+          }
+        }
+      },
+      "MenuDelta": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "userId",
+          "workspaceGroupId",
+          "sourceKey",
+          "revision",
+          "deltas"
+        ],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "workspaceGroupId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 512
+          },
+          "sourceKey": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "deltas": {
+            "type": "object",
+            "minProperties": 1,
+            "maxProperties": 64,
+            "propertyNames": {
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_]{0,63}$"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": -1000000,
+              "maximum": 1000000
+            }
+          }
+        }
+      },
+      "MenuSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profile",
+          "counters"
+        ],
+        "properties": {
+          "profile": {
+            "$ref": "#/components/schemas/DiscoveryProfileDto"
+          },
+          "counters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "DiscoveryProfileDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "accountUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "workspaceGroupId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deletedAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "profileStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hostTier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "statusText": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "initials": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gender": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "images": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "age": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "headline": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "traitLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "about": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "locationCoordinates": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "latitude": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "longitude": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  }
+                },
+                "required": []
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "languages": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "affinity": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         }
       }

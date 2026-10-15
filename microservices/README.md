@@ -895,3 +895,56 @@ foreign-resource guards still protect other labs, even when they are stopped.
 Selected dependencies control optional support workloads and credentials.
 See `MSC122_LAB_CONFIGURATION_20261012.json` for the source comparison and the
 separate runtime qualification boundary.
+
+### Administration signals and bounded outbound retries
+
+Administration watches its own `adminWorkerSignals`, not the affinity, event or
+notification collections. Each producer retains revisions in its own
+`*AdminSignalOutbox` collection and pushes an acknowledged snapshot through
+`OperationalTelemetry.signalProjectionInputs`. The default schedule is hourly
+(`admin.stats.signal-push-delay-ms=3600000`); business actions do not send these
+statistics. The admin write uses `$max`, so replaying an acknowledged revision
+cannot move the projection backwards.
+
+`affinity-admin-signals`, `events-admin-signals` and
+`notifications-admin-signals` use the existing Jobs catalog and run history in
+Dating, Work and Community. Their source signal is database-wide. A normal job
+makes one attempt. Failure is durable; subsequent attempts belong to
+`OutboundRetryWorker`, not to the original scheduler.
+
+The common owner-local model is `common/delivery/OutboundRetryTask.java`:
+`operation`, `request`, originating `jobs`, `status`, `attemptCount`,
+`nextAttemptAt`, a leased `claim`, and a separately bounded outcome-report receipt.
+The maximum is **three total attempts including the original call**, with
+60-second and 120-second delays by default. Restart and duplicate failure
+reporting do not reset the count. Completed delivery is not repeated if only its
+Jobs status report fails. The pool has at most 10 concurrent tasks **per process**;
+it is not a cluster-wide rate limit. Atomic Mongo claims coordinate replicas.
+The request stores owner data, not credentials or arbitrary destination URLs.
+
+Current adapters are admin projection signals, integration webhooks and media
+object deletion. Media retries retain batching and only resend failed keys.
+Webhook idempotency and permanent-error handling remain with the webhook owner.
+Other business lifecycle/outbox state machines are not implicitly migrated by
+introducing this worker.
+
+Canonical seeds are under `server/docker/conf/mongodb/{myscoutee_db,demo_db,e2e_db}`:
+`adminWorkerSignals.json`, the three `*AdminSignalOutbox.json` files, the three
+`*AdminSignalOutboxRetries.json` files, `integrationWebhookRetries.json`,
+`mediaDeletionRetries.json`, `mediaDeletions.json`, and new rows in
+`notificationRuleConfigs.json` / `i18n_messages.json`. Empty retry arrays describe
+empty runtime collections; the shared Java record owns their persisted shape.
+The importer and runtime create due/report indexes and preserve retained tasks.
+
+For an already bootstrapped owned KVM lab, stop backend writers and use the
+explicit additive migration:
+
+```sh
+python3 microservices/tools/seed-mongo.py --add-retry-catalog --from-revision <source-before-this-change>
+```
+
+It validates the source delta, imports only missing new rows through the
+canonical importer, preserves existing job overrides and runtime state, and
+records a separate migration receipt. It does not reset fixtures or assert that
+unrelated older catalogs have been upgraded. Production startup continues to
+use the canonical importer; this command operates only on the owned KVM lab.

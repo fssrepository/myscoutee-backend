@@ -1,0 +1,310 @@
+{
+  "scope": "MSC115 step113 narrow local admin sample",
+  "actor": "Ava selected from Admin demo picker",
+  "origin": "http://localhost:4200",
+  "status": "PASS representative sampled paths only",
+  "evidence": [
+    {
+      "label": "read-only article settled guide",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 1280,
+        "h": 900
+      },
+      "guide": "1 / 3closeArticle previewCheck the article’s text, images and layout as a reader would see them. A draft preview lets you review pending edits; opening it does not save or publish them.arrow_backBackformat_list_numberedArticle preview expand_more arrow_forwardNext",
+      "card": {
+        "x": 60,
+        "y": 139.609375,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 123.21875
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "nested readonly image gallery guide",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 1280,
+        "h": 900
+      },
+      "guide": "1 / 2closeArticle imageView the article image in the read-only gallery. Opening the gallery does not change the article.arrow_backBackformat_list_numberedArticle image expand_more arrow_forwardNext",
+      "card": {
+        "x": 88.984375,
+        "y": 12,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 83.984375,
+          "y": 75.734375,
+          "w": 1112.03125,
+          "h": 786.375
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "article guide returns after gallery close",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 1280,
+        "h": 900
+      },
+      "guide": "1 / 3closeArticle previewCheck the article’s text, images and layout as a reader would see them. A draft preview lets you review pending edits; opening it does not save or publish them.arrow_backBackformat_list_numberedArticle preview expand_more arrow_forwardNext",
+      "card": {
+        "x": 60,
+        "y": 139.609375,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 123.21875
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "local unsaved editor guide",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 390,
+        "h": 560
+      },
+      "guide": "1 / 13closeEdit articleEdit the article for the selected language, including its title, text and images. Preview the result before saving, and use the saved article’s separate publication action when ready.arrow_backBackformat_list_numberedEdit article expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 70.578125,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "local short article-html",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 390,
+        "h": 560
+      },
+      "guide": "12 / 13closeArticle HTMLEdit the article body as HTML. Use Preview to check the result before saving.arrow_backBackformat_list_numberedArticle HTML expand_more arrow_forwardNext",
+      "card": {
+        "x": 28.5,
+        "y": 37.46875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 23.5,
+          "y": 248.46875,
+          "w": 328,
+          "h": 310
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "local short image-upload",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 390,
+        "h": 560
+      },
+      "guide": "10 / 13closeAdd imageChoose an image for an empty article slot. Saving the article retains its images.arrow_backBackformat_list_numberedAdd image expand_more arrow_forwardNext",
+      "card": {
+        "x": 33.984375,
+        "y": 316.296875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 28.984375,
+          "y": 101.71875,
+          "w": 316.96875,
+          "h": 207.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "nested editable image details guide",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 390,
+        "h": 560
+      },
+      "guide": "1 / 4closeApply image detailsApply these image details to the article draft. Save the article afterward to retain them.arrow_backBackformat_list_numberedApply image details expand_more arrow_forwardNext",
+      "card": {
+        "x": 46,
+        "y": 205.140625,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 294.28125,
+          "y": 154.140625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "editor returns after nested details close",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 390,
+        "h": 560
+      },
+      "guide": "1 / 13closeEdit articleEdit the article for the selected language, including its title, text and images. Preview the result before saving, and use the saved article’s separate publication action when ready.arrow_backBackformat_list_numberedEdit article expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 70.578125,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "empty trashed Article list guide",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 390,
+        "h": 560
+      },
+      "guide": "1 / 5closeArticlesManage article drafts, published articles and trash in the selected language. Editing saves the content; publication and featured placement are separate actions on the article card.arrow_backBackformat_list_numberedArticles expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 64.34375,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 62.34375
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "local Help no-guide message",
+      "url": "http://localhost:4200/admin",
+      "lang": "en",
+      "viewport": {
+        "w": 390,
+        "h": 560
+      },
+      "guide": "ExplanationscloseThere is no guide for this screen.",
+      "card": {
+        "x": 29,
+        "y": 231.8515625,
+        "w": 332,
+        "h": 96.296875
+      },
+      "focus": [],
+      "surfaces": [
+        "admin.home",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "no-guide X closes message only",
+      "guidePresent": 0,
+      "helpStillVisible": true
+    }
+  ],
+  "limitations": [
+    "EN only; desktop1280x900 and short390x560 representative contexts, no full matrix",
+    "Initial 1400ms captures were still pending and excluded from final evidence",
+    "No business save/publish/delete/media mutation; unsaved editor values unchanged",
+    "Passive full-gallery image can geometrically overlap guide card as previously recorded",
+    "New active-guide popup context-switch launcher continuity defect not retested by this sample; root owns"
+  ]
+}

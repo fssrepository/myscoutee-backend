@@ -1,0 +1,9 @@
+{
+  "deliveredAfterRestart": {
+    "_id": "operation:7ea5de31d6c8c74ff6a11bef51e6d340143992c85c21c857d0661e9ef6dcef85",
+    "firebaseDeliveryRequested": false,
+    "status": "sent",
+    "updatedDate": "2026-10-15T11:28:34.084030642Z"
+  },
+  "retainedApiEvent": 0
+}

@@ -76,7 +76,8 @@ public final class AuthDtos {
             Integer paymentRefundsPending,
             Integer contactRequestsPending,
             Integer notifications,
-            Integer cases) {
+            java.util.Map<String, Integer> menuCounters) {
+
         public UserMenuCountersDto(Integer game,
             Integer chats,
             Integer invitations,
@@ -97,7 +98,7 @@ public final class AuthDtos {
             Integer paymentRefundsPending,
             Integer contactRequestsPending,
             Integer notifications) {
-            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, contactRequestsPending, notifications, 0);
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, contactRequestsPending, notifications, java.util.Map.of());
         }
 
         public UserMenuCountersDto(Integer game, Integer chats, Integer invitations, Integer events, Integer hosting, Integer cars, Integer accommodation, Integer supplies, Integer tickets, Integer contacts, Integer feedback, UserChatCountersDto chat, UserEventCountersDto event, UserAssetCountersDto asset, UserEventFeedbackCountersDto eventFeedback, Integer adminJobs, Integer adminMetrics, Integer paymentRefundsPending, Integer notifications) {
@@ -274,7 +275,8 @@ public final class AuthDtos {
             Integer notifications,
             Boolean impressionsHostChanged,
             Boolean impressionsMemberChanged,
-            Integer cases) {
+            java.util.Map<String, Integer> menuCounters) {
+
         public UserRealtimeCountersDto(Integer game,
             Integer chats,
             Integer invitations,
@@ -297,7 +299,7 @@ public final class AuthDtos {
             Integer notifications,
             Boolean impressionsHostChanged,
             Boolean impressionsMemberChanged) {
-            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, contactRequestsPending, notifications, impressionsHostChanged, impressionsMemberChanged, 0);
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, contactRequestsPending, notifications, impressionsHostChanged, impressionsMemberChanged, java.util.Map.of());
         }
 
         public UserRealtimeCountersDto(Integer game, Integer chats, Integer invitations, Integer events, Integer hosting, Integer cars, Integer accommodation, Integer supplies, Integer tickets, Integer contacts, Integer feedback, UserChatCountersDto chat, UserEventCountersDto event, UserAssetCountersDto asset, UserEventFeedbackCountersDto eventFeedback, Integer adminJobs, Integer adminMetrics, Integer paymentRefundsPending, Integer notifications, Boolean impressionsHostChanged, Boolean impressionsMemberChanged) {
@@ -627,6 +629,9 @@ public final class AuthDtos {
             com.raxim.myscoutee.domain.content.dto.ContentModerationDtos.Snapshot contentModeration,
             com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord feedCounters,
             boolean paymentCardsAvailable,
+            List<String> paymentCurrencies,
+            java.util.Map<String, Double> paymentExchangeRates,
+            String paymentSummaryCurrency,
             UserMenuCountersDto accountCounters) {
     }
 

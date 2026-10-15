@@ -1,0 +1,416 @@
+{
+  "date": "2026-10-13",
+  "scope": "User-authorized ledger synchronization: remove the replaced appointment testcase, align surviving scenarios with the active checklist, and record existing results; no new QA execution.",
+  "github": {
+    "openTasks": [
+      "MSC-115",
+      "MSC-116",
+      "MSC-117",
+      "MSC-119"
+    ],
+    "closedTaskWithOutstandingQa": {
+      "task": "MSC-118",
+      "qa": "ROLE-GUIDES-NOTIFICATIONS-001",
+      "url": "https://github.com/fssrepository/myscoutee-roadmap/issues/156",
+      "closedAt": "2026-10-07T02:30:23Z",
+      "reason": "Issue explicitly closes implementation while manual browser QA remains NOT RUN."
+    },
+    "template": "MSC-122 is closed and has no standalone row in this product matrix. Only new affected defects require propagation and targeted retest."
+  },
+  "sourceEvidence": [
+    "guides/qa/evidence/work-community/MSC-115_AUTOMATIC_20261013.json",
+    "guides/qa/evidence/work-community/MSC115-step35-local-invite-confirmations-20261013.json",
+    "guides/qa/evidence/work-community/MSC115-step35-http-feedback-mobile-20261013.json",
+    "guides/qa/evidence/work-community/MSC115-step36-random-work-exclusion-20261013.json",
+    "guides/qa/evidence/work-community/MSC115-template-runtime-20261013.json",
+    "guides/qa/evidence/general/EXPLANATION-GUIDE-001-20261007.md",
+    "guides/qa/evidence/general/ROLE-GUIDES-NOTIFICATIONS-001-20261007.md",
+    "guides/qa/evidence/CHAT-CALL-001-2026-10-06.json"
+  ],
+  "changes": [
+    {
+      "id": "MSC115-CAMPAIGN-API",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "INTEGRATION-ACCESS-001",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MCP-EVENTS-001",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-LANDING",
+      "before": "IN PROGRESS",
+      "after": "IN PROGRESS",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "ROLE-GUIDES-NOTIFICATIONS-001",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-WORK-EVENT",
+      "before": "IN PROGRESS",
+      "after": "IN PROGRESS",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-PAYMENT",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-MIXING",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-WORK-CHAT",
+      "before": "NOT RUN",
+      "after": "IN PROGRESS",
+      "reason": "HTTP question chat created/reopened once; recipient-only message notification and unread clear checked. Local message persisted/reopened once. Real Event group chat remains separate and keeps View Event."
+    },
+    {
+      "id": "MSC115-CASE-CHAT",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "CHAT-CALL-001",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-INVITE",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-WORK-CAMPAIGN",
+      "before": "NOT RUN",
+      "after": "IN PROGRESS",
+      "reason": "HTTP campaign create/edit/publish/unpublish/trash/restore and document save/download passed. Local/HTTP Details-to-Organizer and published campaign picker checked."
+    },
+    {
+      "id": "MSC115-WORK-RATING",
+      "before": "NOT RUN",
+      "after": "IN PROGRESS",
+      "reason": "HTTP and local 8/9 person mean8.5, revision to9.5, campaign history state and HTTP unchanged-rating notification dedup passed. Aggregate has no fabricated criteria."
+    },
+    {
+      "id": "MSC115-SERVICE",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-CASE",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-CASE-PROVIDER",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-SCHEDULE",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-VOTING",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "SERVICE-FEEDBACK-UI-001",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-ANNOUNCEMENT",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-ADMIN",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "MSC115-JOBS",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    },
+    {
+      "id": "EXPLANATION-GUIDE-001",
+      "before": "NOT RUN",
+      "after": "IN PROGRESS",
+      "reason": "Actual isolated browser consent-close/mode-switch/Login behavior passed desktop/mobile; consent Help and24 EN/HU header cases passed. These later browser checks supersede the initial NOT RUN statement only for their recorded scope."
+    },
+    {
+      "id": "MSC115-GUIDES",
+      "before": "NOT RUN",
+      "after": "NOT RUN",
+      "reason": "Current next-action/evidence reconciliation; result unchanged."
+    }
+  ],
+  "counts": {
+    "scenarios": 145,
+    "done": 120,
+    "pending": 6,
+    "notStarted": 19,
+    "failed": 0
+  },
+  "openCaseOwners": [
+    {
+      "id": "MSC115-CAMPAIGN-API",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "INTEGRATION-ACCESS-001",
+      "tasks": [
+        "MSC-116",
+        "MSC-119"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MCP-EVENTS-001",
+      "tasks": [
+        "MSC-116",
+        "MSC-119"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-LANDING",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "IN PROGRESS"
+    },
+    {
+      "id": "ROLE-GUIDES-NOTIFICATIONS-001",
+      "tasks": [
+        "MSC-118"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-WORK-EVENT",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "IN PROGRESS"
+    },
+    {
+      "id": "MSC115-PAYMENT",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-MIXING",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-WORK-CHAT",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "IN PROGRESS"
+    },
+    {
+      "id": "MSC115-CASE-CHAT",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "CHAT-CALL-001",
+      "tasks": [
+        "MSC-117"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-INVITE",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-WORK-CAMPAIGN",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "IN PROGRESS"
+    },
+    {
+      "id": "MSC115-WORK-RATING",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "IN PROGRESS"
+    },
+    {
+      "id": "MSC115-SERVICE",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-CASE",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-CASE-PROVIDER",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-SCHEDULE",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-VOTING",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "SERVICE-FEEDBACK-UI-001",
+      "tasks": [
+        "MSC-115",
+        "MSC-116"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-ANNOUNCEMENT",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-ADMIN",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "MSC115-JOBS",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    },
+    {
+      "id": "EXPLANATION-GUIDE-001",
+      "tasks": [
+        "MSC-115",
+        "MSC-117",
+        "MSC-118",
+        "MSC-119"
+      ],
+      "result": "IN PROGRESS"
+    },
+    {
+      "id": "MSC115-GUIDES",
+      "tasks": [
+        "MSC-115"
+      ],
+      "result": "NOT RUN"
+    }
+  ],
+  "limits": [
+    "No completed September testcase reopened.",
+    "No unit/AOT result substituted for required browser QA.",
+    "Step35, step36 and completed template checks remain closed; historical partial notes retained as dated observations.",
+    "Newer shared fixes retain their own recorded verification limits; no blanket template rerun queued."
+  ],
+  "removedCases": [
+    {
+      "id": "MSC115-APPOINTMENT",
+      "reason": "User requested deletion, not a retained obsolete/closed row. Current task dates/calendar checks remain in MSC-115 steps58–63 under MSC115-CASE."
+    }
+  ],
+  "msc115StepMapping": {
+    "MSC115-LANDING": "4–17",
+    "MSC115-INVITE": "18–20",
+    "MSC115-WORK-CAMPAIGN": "21–24",
+    "MSC115-WORK-RATING": "25–29",
+    "MSC115-WORK-CHAT": "30–32",
+    "MSC115-WORK-EVENT": "33–36",
+    "MSC115-CAMPAIGN-API": "37–39",
+    "MSC115-SERVICE": "40–45, 95–99",
+    "MSC115-CASE": "46–51, 58–63",
+    "MSC115-CASE-PROVIDER": "52–57",
+    "MSC115-CASE-CHAT": "64–69",
+    "MSC115-SCHEDULE": "70–75",
+    "MSC115-ANNOUNCEMENT": "76–81, 100",
+    "MSC115-VOTING": "82–87",
+    "MSC115-PAYMENT": "88–91",
+    "MSC115-MIXING": "92–94",
+    "MSC115-ADMIN": "101–104",
+    "MSC115-JOBS": "105–107",
+    "MSC115-GUIDES": "108–114"
+  },
+  "closedSteps": {
+    "35": "MSC115-step35-local-invite-confirmations-20261013.json; MSC115-step35-http-feedback-mobile-20261013.json",
+    "36": "MSC115-step36-random-work-exclusion-20261013.json"
+  },
+  "verification": {
+    "csvXlsx": "Exact cell parity checked against the existing generator output; removed ID absent from workbook.",
+    "counts": "145 scenarios:120 passed,6 pending,19 not started,0 failed.",
+    "historicalPass": "All120 previously passed rows unchanged.",
+    "msc115Mapping": "Steps4–114 covered exactly once by19 surviving rows; preparation1–3 and closure115–119 remain campaign-level.",
+    "nativeRecalculation": "Isolated LibreOffice Calc recalculated every formula; summary values matched and no cell errors. Original workbook not overwritten by Calc."
+  }
+}

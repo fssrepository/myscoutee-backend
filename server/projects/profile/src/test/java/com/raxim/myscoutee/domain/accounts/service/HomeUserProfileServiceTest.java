@@ -16,10 +16,12 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
@@ -63,7 +65,6 @@ import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepos
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
-import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
@@ -131,8 +132,6 @@ class HomeUserProfileServiceTest {
     private AccessControlService accessControlService;
     @Mock
     private AssetsService assetsService;
-    @Mock
-    private NotificationCatalog notificationCatalog;
 
     @Mock
     private UserFriendshipsRepository userFriendshipsRepository;
@@ -181,7 +180,7 @@ class HomeUserProfileServiceTest {
                 new com.raxim.myscoutee.domain.content.service.UserFeedbackService(userFeedbackSubmissionsRepository),
                 new com.raxim.myscoutee.domain.content.service.CommunityReportService(userReportSubmissionsRepository, adminTelemetryService),
                 adminTelemetryService);
-        var counters = new ProfileMenuCountersService(usersRepository, new SelectedProfileService(usersRepository), java.util.Optional.empty());
+        var counters = new ProfileMenuCountersService(usersRepository, new SelectedProfileService(usersRepository));
         var lifecycle = new AccountLifecycleService(usersRepository, userSessionActionsRepository,
                 new SelectedProfileService(usersRepository),
                 new ProfileStatusWork(usersRepository, org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class),
@@ -193,9 +192,6 @@ class HomeUserProfileServiceTest {
                 usersRepository, new SelectedProfileService(usersRepository), accessControlService,
                 countryPartitionService, regionSecurityProperties, new ProfileReadStateService(counters, java.util.List.of(service))));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "menuCounters", counters);
-        service.setNotificationCatalog(notificationCatalog);
-        lenient().when(notificationCatalog.countUnread("active"))
-                .thenReturn(17L);
     }
 
     @Test
@@ -1003,6 +999,9 @@ class HomeUserProfileServiceTest {
 
     @Test
     void realtimeSnapshotUsesStoredActivityCountersAndAuthoritativeNotifications() {
+        var paymentMethods = mock(com.raxim.myscoutee.domain.payments.api.PaymentMethods.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "savedPaymentMethods", paymentMethods);
+        when(paymentMethods.options()).thenReturn(new com.raxim.myscoutee.domain.payments.api.PaymentMethods.Options(true, List.of("EUR", "HUF", "USD"), java.util.Map.of("EUR", 1D, "HUF", 0.0025D)));
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
@@ -1011,6 +1010,12 @@ class HomeUserProfileServiceTest {
         var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
 
         assertThat(snapshot.profileStatus()).isEmpty();
+        assertThat(snapshot.paymentCurrencies()).containsExactly("EUR", "HUF", "USD");
+        assertThat(snapshot.paymentExchangeRates()).containsEntry("HUF", 0.0025D);
+        assertThat(snapshot.paymentSummaryCurrency()).isEqualTo("EUR");
+        assertThat(snapshot.paymentCardsAvailable()).isTrue();
+        verify(paymentMethods, times(1)).options();
+        verifyNoMoreInteractions(paymentMethods);
         assertFlatCounters(snapshot.counters());
         assertNestedCounters(snapshot.counters());
         assertThat(snapshot.offlineTicketSnapshot()).isEqualTo(new AssetTicketsPageDto(List.of(), 0));
@@ -1195,20 +1200,18 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
-    void realtimeSnapshotUsesAuthoritativeUnreadNotificationCount() {
+    void realtimeSnapshotUsesStoredUnreadNotificationCount() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
         when(eventFeedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("active"))
                 .thenReturn(List.of());
-        when(notificationCatalog.countUnread("active"))
-                .thenReturn(41L);
 
         var snapshot = service.queryRealtimeSnapshot(
                 new UserRealtimeLongPollRequestDto("active", null));
 
-        assertThat(snapshot.counters().notifications()).isEqualTo(41);
+        assertThat(snapshot.counters().notifications()).isEqualTo(17);
     }
 
     @Test

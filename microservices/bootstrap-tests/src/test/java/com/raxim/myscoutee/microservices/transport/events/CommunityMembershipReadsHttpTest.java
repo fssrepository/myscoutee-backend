@@ -128,6 +128,15 @@ class CommunityMembershipReadsHttpTest {
             return repository;
         }
         @Bean CommunityMembershipService members(ActivityMembersRepository repository) {return new CommunityMembershipService(repository);}
+        @Bean com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates counters() {
+            return mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class);
+        }
+        @Bean org.springframework.data.mongodb.core.MongoTemplate mongo() {
+            return mock(org.springframework.data.mongodb.core.MongoTemplate.class);
+        }
+        @Bean com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes() {
+            return mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        }
     }
     static ActivityMember member(String groupId) {
         if("fail".equals(groupId))throw new IllegalStateException("private db details");

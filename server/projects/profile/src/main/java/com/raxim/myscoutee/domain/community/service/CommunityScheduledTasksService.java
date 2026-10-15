@@ -29,6 +29,10 @@ import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class CommunityScheduledTasksService implements com.raxim.myscoutee.domain.community.api.ScheduledCases {
+    @org.springframework.beans.factory.annotation.Autowired
+    private CommunityCaseCounterWork counterWork;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.accounts.api.ProfileSummaries profiles;
     public static final String RULE = "community-scheduled-cases";
     public static final int LEAD_DAYS = 45;
     private final CommunityScheduledTasksRepository tasks;
@@ -57,7 +61,8 @@ public class CommunityScheduledTasksService implements com.raxim.myscoutee.domai
         var roster = ids.isEmpty() ? Map.<String, Set<String>>of() : members.forGroups(ids).stream().filter(m -> "accepted".equals(m.getStatus()))
                 .collect(Collectors.groupingBy(CommunityMember::getOwnerId, Collectors.mapping(CommunityMember::getUserId, Collectors.toSet())));
         var context = new HashMap<String, Long>(); for (var key : List.of("active", "paused", "trash")) context.put(key, 0L);
-        tasks.counters(BaseGroups.COMMUNITY_BASE_ID, actor, managed, joined).forEach(row -> context.put(row.status(), row.count()));
+        var stored = profiles.findByUserId(actor).map(com.raxim.myscoutee.domain.accounts.api.ProfileSummary::getMenuCounters).orElse(Map.of());
+        for (var key : List.of("active", "paused", "trash")) context.put(key, stored.getOrDefault("communityTask_" + key, 0).longValue());
         context.put("total", context.get("active") + context.get("paused"));
         long total = context.get(status);
         return new Page<>(records.stream().map(t -> {
@@ -93,17 +98,17 @@ public class CommunityScheduledTasksService implements com.raxim.myscoutee.domai
         var task = new CommunityScheduledTask(old == null ? UUID.randomUUID().toString() : old.id(), BaseGroups.COMMUNITY_BASE_ID,
                 groupId, old == null ? actor : old.ownerAccountId(), r.title().trim(), r.description().trim(), r.caseType(), groupId != null && r.audienceAll(),
                 groupId != null && r.audienceAll() ? List.of() : audience, start, next, r.frequency(), old == null || old.enabled(), false, old == null ? now : old.createdAtIso(), now, old == null ? null : old.version());
-        try { return dto(tasks.save(task), actor); }
+        try { return dto(counterWork.saveTask(task, old), actor); }
         catch (org.springframework.dao.OptimisticLockingFailureException failure) { throw error(HttpStatus.CONFLICT); }
     }
     public TaskItem action(String actor, String id, TaskCommand command) {
         var old = tasks.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND)); requireManage(old, actor);
-        if (!Objects.equals(old.version(), command.version())) throw error(HttpStatus.CONFLICT);
+        // Commands use current state; editor saves and concurrent persistence retain version guards.
         String action = command.action();
         if (!(old.deleted() ? "restore".equals(action) : "trash".equals(action) || (old.enabled() ? "pause" : "resume").equals(action))) throw error(HttpStatus.CONFLICT);
         var updated = new CommunityScheduledTask(old.id(), old.baseGroupId(), old.communityId(), old.ownerAccountId(), old.title(), old.description(), old.caseType(), old.audienceAll(), old.audienceAccountIds(),
                 old.startAtIso(), old.nextDueAtIso(), old.frequency(), "resume".equals(action) || "restore".equals(action), "trash".equals(action), old.createdAtIso(), Instant.now().toString(), old.version());
-        try { return dto(tasks.save(updated), actor); }
+        try { return dto(counterWork.saveTask(updated, old), actor); }
         catch (org.springframework.dao.OptimisticLockingFailureException failure) { throw error(HttpStatus.CONFLICT); }
     }
     public Instant nextScheduledWakeup() {
@@ -139,15 +144,16 @@ public class CommunityScheduledTasksService implements com.raxim.myscoutee.domai
                 var candidate = new ServiceCase(caseId, BaseGroups.COMMUNITY_BASE_ID, task.communityId(), task.communityId() == null ? task.ownerAccountId() : null,
                         task.title(), task.description(), task.caseType(), "open", task.audienceAll(), audience, List.copyOf(participants),
                         List.copyOf(participants), List.of(), List.of(), List.of(), task.id(), task.nextDueAtIso(), now.toString(), now.toString(), null, participants.stream().collect(Collectors.toMap(id -> id, id -> task.communityId() == null ? "accepted" : "invited")), List.of(), List.of());
-                try { c = cases.insert(candidate); created++; }
+                try { c = counterWork.insert(candidate, roster.stream().filter(m -> "Admin".equals(m.getRole())).map(CommunityMember::getUserId).toList()); created++; }
                 catch (org.springframework.dao.DuplicateKeyException duplicate) { c = cases.findById(caseId).orElseThrow(() -> duplicate); }
             }
+            counterWork.finish(c);
             caseService.notifyChange(c, RULE, "reminder", caseId);
             String next = nextDue(task.nextDueAtIso(), task.frequency());
             try {
-                tasks.save(new CommunityScheduledTask(task.id(), task.baseGroupId(), task.communityId(), task.ownerAccountId(), task.title(),
+                counterWork.saveTask(new CommunityScheduledTask(task.id(), task.baseGroupId(), task.communityId(), task.ownerAccountId(), task.title(),
                         task.description(), task.caseType(), task.audienceAll(), task.audienceAccountIds(), task.startAtIso(), next == null ? task.nextDueAtIso() : next,
-                        task.frequency(), next != null, false, task.createdAtIso(), now.toString(), task.version()));
+                        task.frequency(), next != null, false, task.createdAtIso(), now.toString(), task.version()), task);
             } catch (org.springframework.dao.OptimisticLockingFailureException changed) {
                 // A concurrent edit wins; the committed occurrence and reminder remain idempotent.
             }

@@ -75,6 +75,9 @@ public interface NotificationJobs {
     void restoreClaimedPendingCount(String ruleKey, int claimedCount, String unit);
     void restoreClaimedPendingCount(String ruleKey, int claimedCount, String unit, Instant startedAt);
 
+    record RetryOutcome(String ruleKey, Instant originalStartedAt, int attemptCount, String status, String detail) {}
+    void recordRetryOutcome(RetryOutcome outcome);
+
     interface Configuration {
         Boolean getEnabled();
         List<? extends Parameter> getParameters();

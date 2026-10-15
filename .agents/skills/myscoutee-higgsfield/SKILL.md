@@ -1,13 +1,13 @@
 ---
 name: myscoutee-higgsfield
-description: Continue MyScoutee Higgsfield film work using the established prompt, Element import, MCP verification, media editing and production tracking decisions. Use for this project's Cinema Studio workflow and its history recovery, not application manual QA.
+description: MyScoutee Higgsfield/Cinema Studio production and history recovery. Routes project-specific guidance; not application manual QA.
 ---
 
 # MyScoutee Higgsfield continuity
 
 Read [the Higgsfield trust entrypoint](../../trust/higgsfield/README.md).
-It owns the workflow rules; keep this skill as a pointer rather than a second
-copy. Load the entrypoint's topic links only for the requested work.
+It owns the workflow rules. Load only task-relevant topics and reuse them during
+the task; read history only for recovery or a disputed historical decision.
 
 This route is separate from application manual QA. Do not load the QA campaign
 handoff, launch its browsers or use its checklist for Higgsfield asset checks.

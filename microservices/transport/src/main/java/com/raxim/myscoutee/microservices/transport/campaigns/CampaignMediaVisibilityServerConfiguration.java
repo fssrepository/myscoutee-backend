@@ -22,12 +22,12 @@ public class CampaignMediaVisibilityServerConfiguration {
     SecurityFilterChain campaignMediaReadAccess(HttpSecurity http,
             @Value("${myscoutee.remote.campaigns-media.read-token}") String token) throws Exception {
         var filter = new com.raxim.myscoutee.microservices.transport.common.InternalReadCredentialFilter(token, "campaigns:media:read");
-        return http.securityMatcher(CampaignMediaVisibilityProtocol.PATH)
+        return http.securityMatcher(CampaignMediaVisibilityProtocol.PATH, CampaignMediaVisibilityProtocol.DOCUMENTS_PATH)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .requestCache(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(rules -> rules
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, CampaignMediaVisibilityProtocol.PATH)
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, CampaignMediaVisibilityProtocol.PATH, CampaignMediaVisibilityProtocol.DOCUMENTS_PATH)
                         .hasAuthority("campaigns:media:read").anyRequest().denyAll())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(errors -> errors.accessDeniedHandler((request, response, error) ->

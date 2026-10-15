@@ -1,0 +1,152 @@
+[
+  {
+    "progress": "1 / 6",
+    "title": "Save receipt",
+    "body": "Check the member, method, amount and currency, then save. The payment appears in both histories and the payer receives a notification.",
+    "box": {
+      "x": 46,
+      "y": 52.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 304.296875,
+        "y": 3.3125,
+        "w": 42,
+        "h": 42
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 6",
+    "title": "Payer",
+    "body": "Choose the member whose payment you received.",
+    "box": {
+      "x": 27.390625,
+      "y": 213.734375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 142.734375,
+        "w": 345.21875,
+        "h": 64
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "3 / 6",
+    "title": "Amount received",
+    "body": "Enter the amount you actually received. This value is added to the payment history totals in the selected currency.",
+    "box": {
+      "x": 27.390625,
+      "y": 277.734375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 208.734375,
+        "w": 345.21875,
+        "h": 62
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "4 / 6",
+    "title": "Currency",
+    "body": "Use the currency that was handed over. The saved history entry and any later refund calculation use this amount and currency together.",
+    "box": {
+      "x": 27.390625,
+      "y": 17.734375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 272.734375,
+        "w": 345.21875,
+        "h": 64
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 6",
+    "title": "Note",
+    "body": "Add a short reference such as what the payment covers. The note stays with this history entry so it is easier to recognize later.",
+    "box": {
+      "x": 27.390625,
+      "y": 83.734375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 338.734375,
+        "w": 345.21875,
+        "h": 109.671875
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 6",
+    "title": "Close receipt form",
+    "body": "Close this form without saving the receipt. You return to payment history, where you can open the form again if needed.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

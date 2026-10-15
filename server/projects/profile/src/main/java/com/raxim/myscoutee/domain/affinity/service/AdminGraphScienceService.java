@@ -31,6 +31,26 @@ import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 
 @Service
 public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affinity.api.GraphScience {
+    private com.raxim.myscoutee.common.config.mongo.AdminProjectionSignalOutbox adminSignals;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchAdminProjectionInputs(org.springframework.data.mongodb.core.MongoTemplate signalMongo,
+            com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases,
+            com.raxim.myscoutee.domain.administration.api.OperationalTelemetry admin,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs jobs,
+            com.raxim.myscoutee.common.delivery.OutboundRetryWorker retryWorker) {
+        adminSignals = new com.raxim.myscoutee.common.config.mongo.AdminProjectionSignalOutbox(signalMongo, changes, databases, admin, "affinity",
+                com.raxim.myscoutee.domain.affinity.document.AffinityAdminSignalOutbox.class, jobs, retryWorker);
+        adminSignals.watch("affinity-admin-derived", java.util.Set.of("userAffinityEdges", "userRates"),
+                java.util.Set.of(), com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.ProjectionInput.DERIVED);
+        adminSignals.watch("affinity-admin-queues", java.util.Set.of("affinityRecomputeTasks"),
+                java.util.Set.of(), com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.ProjectionInput.QUEUES);
+    }
+
+    @org.springframework.scheduling.annotation.Scheduled(fixedDelayString="${admin.stats.signal-push-delay-ms:3600000}", initialDelayString="${admin.stats.signal-push-delay-ms:3600000}")
+    public void pushAdminProjectionSignals() { adminSignals.flush(); }
+
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String STATUS_ACCEPTED = "accepted";
     private static final int TIMELINE_DAYS = 14;

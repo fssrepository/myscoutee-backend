@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "affinity",
+    "derivedRevision": 0,
+    "queuesRevision": 0
+  },
+  {
+    "_id": "events",
+    "derivedRevision": 0,
+    "queuesRevision": 0
+  },
+  {
+    "_id": "notifications",
+    "derivedRevision": 0,
+    "queuesRevision": 0
+  }
+]

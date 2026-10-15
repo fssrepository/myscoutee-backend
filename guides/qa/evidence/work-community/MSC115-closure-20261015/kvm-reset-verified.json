@@ -1,0 +1,95 @@
+{
+  "checks": [
+    {
+      "collection": "users",
+      "count": 12,
+      "pass": true
+    },
+    {
+      "collection": "activityMembers",
+      "count": 637,
+      "pass": true
+    },
+    {
+      "collection": "campaigns",
+      "count": 6,
+      "pass": true
+    },
+    {
+      "collection": "communityGroups",
+      "count": 8,
+      "pass": true
+    },
+    {
+      "collection": "serviceOfferings",
+      "count": 2,
+      "pass": true
+    },
+    {
+      "collection": "serviceCases",
+      "count": 0,
+      "pass": true
+    },
+    {
+      "collection": "communityScheduledTasks",
+      "count": 0,
+      "pass": true
+    },
+    {
+      "collection": "communityAnnouncements",
+      "count": 0,
+      "pass": true
+    },
+    {
+      "collection": "chats",
+      "count": 211,
+      "pass": true
+    },
+    {
+      "collection": "chatMessages",
+      "count": 0,
+      "pass": true
+    },
+    {
+      "collection": "userNotifications",
+      "count": 92,
+      "pass": true
+    },
+    {
+      "collection": "notificationOutbox",
+      "count": 75,
+      "pass": true
+    },
+    {
+      "collection": "privacyConsents",
+      "count": 2,
+      "pass": true
+    },
+    {
+      "collection": "userExperienceProfiles",
+      "count": 0,
+      "pass": true
+    },
+    {
+      "collection": "userFilterPreferences",
+      "count": 4,
+      "pass": true
+    },
+    {
+      "collection": "userPageFilterPreferences",
+      "count": 0,
+      "pass": true
+    },
+    {
+      "collection": "serviceCases",
+      "count": 3,
+      "pass": true
+    },
+    {
+      "collection": "communityScheduledTasks",
+      "count": 1,
+      "pass": true
+    }
+  ],
+  "passed": true
+}

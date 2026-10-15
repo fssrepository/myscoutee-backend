@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-15",
+  "status": "PASS — MSC115-GUIDES source scope closed",
+  "scope": "MSC115-GUIDES108–113 source HTTP matrix and user-requested local spot checks;114 propagation complete, template runtime separately owned",
+  "revisions": {
+    "source_frontend": "84e58edaeb36db78672df60b74ee8fd665528e2b",
+    "components": "65f5283234167d923662433b138ffc288bda0c84",
+    "template_frontend": "849f4ac6c1cf9bc64a540a164d07f34fab74bc7f",
+    "template": "853fb3aab2e2d3d40af1a2729f5c7304a47b3060",
+    "backend": "Containing [MSC-115] consolidation commit; source tree/catalog verified before documentation-only consolidation."
+  },
+  "working_tree": "Canonical components and both consuming repositories aligned to published origin commits; no cherry-pick copies. Consecutive task commits consolidated with remote backup refs and force-with-lease.",
+  "fixes": [
+    {
+      "area": "Opening/step/context launcher continuity",
+      "result": "PASS",
+      "evidence": [
+        "final-launcher-continuity-verified.json",
+        "context-launcher-final.json"
+      ],
+      "details": "118 frames over3 step transitions: no missing button/card/shade or inactive launcher palette. Final launcher binding uses popupOpen during loading/positioning, not hasVisiblePopup. Fresh Campaign editor Guide opening:52 frames,0 hidden,0 inactive palette."
+    },
+    {
+      "area": "Foreground context and complete guide targets",
+      "result": "PASS",
+      "evidence": [
+        "member-work-coverage.json",
+        "manager-matrix-followup.json",
+        "article-final-targeted-retest.json"
+      ],
+      "details": "Work sidebar31 common+Work steps; actual conditional repeated Members owners Grant6/14 and Revoke11/14. Existing admin/article/image, Voting and payment fields extended. Only-Close uses existing no-guide message. No replacement menu or business flow."
+    },
+    {
+      "area": "Short mobile placement",
+      "result": "PASS targeted",
+      "evidence": "article-short-final-retest.json",
+      "details": "Existing compact guide card reused at short mobile size. HTML/upload/replace: EN/HU390x560 each7px clearance. Passive fullscreen image highlight may geometrically contain the guide card; it is not an obscured action."
+    },
+    {
+      "area": "Members menu contextual surfaces",
+      "result": "PASS targeted",
+      "evidence": "manager-matrix-followup.json",
+      "details": "All4 existing actions tinted with canonical palettes: Grant/Revoke and Report warning, Promote blue, Remove danger. No new custom menu styling."
+    }
+  ],
+  "coverage": {
+    "108": "PASS scoped source inventory:21 member families ×6 EN/HU viewport cells; manager private Home/announcement/Voting/Members/payment/receipt/Cases/editors/schedules; populated Campaign history; admin and anonymous entry/consent/demo surfaces. Exact conditional controls recorded in actor evidence.",
+    "109": "PASS HTTP EN/HU desktop/mobile/short variants and targeted final repairs. Existing successful tours not replayed after unrelated changes. No claim for every possible business-state cross-product.",
+    "110": "PASS Back/picker/Done, nested ownership/restoration and context continuity in recorded surfaces. Guide navigation performed no business save/vote/rate/publish.",
+    "111": "PASS observed omissions repaired through existing guide registrations; repeated menu owners and meaningful nested controls verified. Short-screen three-field failure repaired and retested only there.",
+    "112": "PASS EN/HU cold/repeat no-guide message and X/Escape/Back/shade/Guide dismissal; actual HTTP load failure distinct from no-guide and retry succeeds.",
+    "113": "PASS HTTP pending-close/workspace isolation plus local spot checks as explicitly narrowed by user after key parity. Local member:Dating Home14,Work sidebar31,Campaign list10/editor12/readonly9. Local admin:readonly3/gallery2/editor13/image-details4,parent restoration,empty list5,Help no-guide,short HTML/upload. No full local matrix rerun.",
+    "114": "Propagation DONE to template849f4ac/components65f5283; final template local/HTTP runtime NOT RUN and tracked solely in MSC115-TEMPLATE-REGRESSION per user instruction."
+  },
+  "remaining": [],
+  "deployment": {
+    "canonical_catalog": "138 revision rows,62 field records,242 messages and2bundle versions deployed with scoped upserts;4obsolete vote IDs removed; unrelated hashes unchanged.",
+    "frontend_sync": "Same original container restored after local sample; final compilation tracked in runtime-final.json.",
+    "fixture": "Retained work-community fixture, no reset/reseed or business data hack.",
+    "mongodb_sync": "Remains stopped.",
+    "resources": "Local owner stopped and descendants exited before original frontend-sync restart. No duplicate build owner or new CPU cap.",
+    "local_execution": "Dedicated local serve used unnecessarily; user correctly noted existing HTTP build falls back to local after backend stop. Future samples reuse that behavior."
+  },
+  "evidence_files": [
+    "admin-coverage.json",
+    "admin-no-guide-pending.json",
+    "admin-remaining-variants.json",
+    "admin-targeted-retest.json",
+    "anonymous-entry-guides.json",
+    "article-final-targeted-retest.json",
+    "article-short-final-retest.json",
+    "context-launcher-final.json",
+    "dating-en-mobile-tour.json",
+    "final-guide-deployment.log",
+    "final-key-parity.json",
+    "final-launcher-continuity-verified.json",
+    "frontend-tests-menu-owners.log",
+    "frontend-tests-menu-stable-order.log",
+    "local-admin-final.json",
+    "local-member-final.json",
+    "manager-case-editor-tour.json",
+    "manager-cases-tour.json",
+    "manager-matrix-followup.json",
+    "manager-quotation-editor-tour.json",
+    "manager-quotations-tour.json",
+    "manager-schedule-editor-tour.json",
+    "manager-schedules-tour.json",
+    "manager-task-board-tour.json",
+    "manager-task-editor-tour.json",
+    "member-work-coverage.json",
+    "mixing93-followup.json",
+    "payment-method-guide-final.json",
+    "payment-method-guide-hu-final.json",
+    "payment-receipt-tour.json",
+    "payment-tour.json",
+    "runtime-final.json",
+    "step-popup-persistence-final.json",
+    "voting-guide-final.json",
+    "voting-list-tour.json",
+    "voting-status-guide-final.json",
+    "voting-status-guide-hu-final.json"
+  ],
+  "separate_work": {
+    "KVM115–117": "User transferred to another session on2026-10-15. Not run here; no KVM PASS implied.",
+    "Template QA": "Separate MSC115-TEMPLATE-REGRESSION; not a guide/MSC115 closure blocker.",
+    "Campaign119": "Overall fixture/integration-key cleanup remains with campaign closure; preserve retained records for KVM handoff. Guide-owned anonymous/local and HTTP actor browser sessions closed using versioned launcher.",
+    "Compilation optimization": "Separate guides/plans/FRONTEND_COMPILATION_OPTIMIZATION.md; outside MSC115."
+  },
+  "key_parity": {
+    "status": "PASS",
+    "contexts": 118,
+    "fields": 1513,
+    "mongoSeeds": {
+      "demo_db": "exact field records match",
+      "e2e_db": "exact field records match",
+      "myscoutee_db": "exact field records match"
+    },
+    "liveDemo": "exact field records match",
+    "i18n": "audit-i18n-mongo-seed.js PASS: 2 source bundles / 15240 messages / 3 Mongo seeds",
+    "liveI18n": "PASS: all 15240 canonical EN/HU message keys and values match live demo_db"
+  },
+  "verification": {
+    "focused_source": "7/7 guide tests, then6/6 positioning tests after deterministic-owner ordering; final2-binding launcher change compiled by sole local owner and52-frame browser probe.",
+    "compiled_service": "Foreground sidebar/late background/null modal/nested/disposal ordering PASS.",
+    "template": "Earlier6/6 focused tests before final repeated-owner/short changes; final runtime deliberately separate."
+  }
+}

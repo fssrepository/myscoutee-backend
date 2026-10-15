@@ -1,0 +1,227 @@
+[
+  {
+    "progress": "1 / 9",
+    "title": "Status buckets",
+    "body": "Select a status in the header. Red counters follow successful changes immediately; reopening the dropdown is not required.",
+    "box": {
+      "x": 12,
+      "y": 494.609375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 705.609375,
+        "w": 387.21875,
+        "h": 137
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 9",
+    "title": "Schedule a task",
+    "body": "Create a personal task or, with the group’s management permission, a group task visible to its members. Set the start and recurrence in the editor.",
+    "box": {
+      "x": 46,
+      "y": 104.09375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 341.328125,
+        "y": 51.09375,
+        "w": 46,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "3 / 9",
+    "title": "Scheduled tasks",
+    "body": "Active, Suspended and Deleted buckets separate schedules. Open details, Edit, suspend or delete through the three-dot menu. Critical changes ask for confirmation.",
+    "box": {
+      "x": 12,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 93.484375,
+        "w": 387.21875,
+        "h": 749.125
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "4 / 9",
+    "title": "Item actions",
+    "body": "Use the three-dot menu to open or edit an item and perform the available lifecycle actions. The whole row is not a button.",
+    "box": {
+      "x": 12,
+      "y": 435.53125,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 646.53125,
+        "w": 387.21875,
+        "h": 197.453125
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 9",
+    "title": "Details",
+    "body": "Inspect this scheduled task’s purpose, Audience, start time and recurrence in a read-only form. Use Edit if you need to change its schedule.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 674.375,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 9",
+    "title": "Edit",
+    "body": "Change this scheduled task’s description, audience or timing. Review the start time and recurrence, then save the form to apply the schedule changes.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 712.921875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 9",
+    "title": "Suspend",
+    "body": "Confirm suspension in the warning-colored dialog. The task moves to Suspended and will not generate occurrences while paused.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 751.46875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 9",
+    "title": "Delete",
+    "body": "Confirm in the red dialog to move the schedule to Deleted.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 790.015625,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "9 / 9",
+    "title": "Close",
+    "body": "Return from scheduled tasks to the case list. Closing this view does not pause active schedules; use the task’s pause action for that.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

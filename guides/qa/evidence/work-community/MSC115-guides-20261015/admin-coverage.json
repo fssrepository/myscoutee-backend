@@ -1,0 +1,1838 @@
+{
+  "summary": {
+    "actor": "Ava Moderation",
+    "runtime": "existing MSC115-APP-ADMIN browser; http://localhost/admin; monolith HTTP",
+    "scope": "Partial Guides108-114 admin coverage only",
+    "defects": [
+      {
+        "id": "admin-content-actions",
+        "repro": "Admin menu > Content > Help revision > Edit revision; Guide",
+        "actual": "List and inline editor expose only five guide steps; visible revision/editor/media explanatory actions omitted",
+        "details": "Edit/Delete/Toggle revision, Save/Cancel draft, header color, Canonical screen, add/icon/HTML/remove/toggle section unannotated. image-upload and image-pages annotated but omitted."
+      },
+      {
+        "id": "admin-article-gallery",
+        "repro": "Admin menu > Article > card actions > Read more > Guide",
+        "actual": "Article preview has2 steps: overview and Close. Visible gallery1/8 lacks step."
+      },
+      {
+        "id": "hu-six-lines",
+        "repro": "Browser locale hu-HU,hu; Admin Home or Content Editor > Guide",
+        "actual": "HU home and Content Editor overview body121.78125px at20.3px line-height =6 lines",
+        "viewports": [
+          "1280x900 Content Editor",
+          "390x844 Content Editor",
+          "390x560 Home and Content Editor"
+        ]
+      },
+      {
+        "id": "hu-home-mixed-copy",
+        "actual": "Review jelentette users, support chats, and application feedback with the same app tools. felhasználót",
+        "scope": "Adjacent observed home copy, not guide body"
+      }
+    ],
+    "passed": [
+      "Content Editor EN mobile five-step Next/Done, Back and picker; Done retained editor",
+      "HU Content Editor all5 steps1280x900 and390x560; step1 390x844, localized with noted6-line failure",
+      "Article editor EN390x844 all5 steps, Done retains parent on explicit replay",
+      "Article Read more nested system guide ownership;2steps EN390x560; X/Escape guide close retains child; child close returns parent guide",
+      "Editable guide picker excludes admin system contexts while those run on actual surfaces",
+      "HU empty Reports all4 visible steps390x844; no invented row steps",
+      "Observed guide-only network window has GET and realtime long-poll POST only; no business save/publish/job/notification-read requests"
+    ],
+    "notRun": [
+      "Full admin surface inventory and every language/viewport combination",
+      "No-guide empty-message112 (admin Article preview legitimately has system guide)",
+      "Real load error/retry, close while pending and profile/mode-switch race",
+      "Local adapter/KVM/template runtime checks",
+      "Full readonly/populated admin variants; blocked users nested disabled",
+      "Screenshot frame proof of no transition flash (root owns)"
+    ],
+    "requests": {
+      "nonGet": [
+        "POST /api/auth/me/realtime/long-poll"
+      ],
+      "total": 106
+    },
+    "restored": {
+      "locale": {
+        "languages": [
+          "en-GB",
+          "en-US",
+          "en"
+        ],
+        "lang": "en"
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "url": "http://localhost/admin"
+    }
+  },
+  "results": [
+    {
+      "label": "EN1280 Content Editor help list",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "card": null,
+      "focus": [],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": null
+    },
+    {
+      "label": "EN1280 Content Editor help stable",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "1 / 5closeContent editorMaintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor.arrow_backBackformat_list_numberedContent editor expand_more arrow_forwardNext",
+      "card": {
+        "x": 60,
+        "y": 88.15625,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 71.765625
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 77,
+        "y": 173.109375,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN1280 help list Next 2",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "2 / 5closeDocumentSelect the document type or editable guide you intend to maintain. For an explanation, also check its target screen so the saved steps belong to the right part of the app.arrow_backBackformat_list_numberedDocument expand_more arrow_forwardNext",
+      "card": {
+        "x": 671.453125,
+        "y": 26.765625,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 1010.453125,
+          "y": 21.765625,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 688.453125,
+        "y": 111.71875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN1280 help list Next 3",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "3 / 5closeNew revisionPrepare a new revision of the selected document and language. Save it first, then activate the revision when it should replace the version users currently see.arrow_backBackformat_list_numberedNew revision expand_more arrow_forwardNext",
+      "card": {
+        "x": 671.453125,
+        "y": 26.765625,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 1010.453125,
+          "y": 21.765625,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 688.453125,
+        "y": 111.71875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN1280 help list Next 4",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "4 / 5closeLanguageChoose the content language before editing. Each language has separate revisions and an active version, so changing this selection does not translate or publish the other language.arrow_backBackformat_list_numberedLanguage expand_more arrow_forwardNext",
+      "card": {
+        "x": 751.609375,
+        "y": 82.546875,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 1090.609375,
+          "y": 77.546875,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 768.609375,
+        "y": 167.5,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN1280 help list Next 5",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "5 / 5closeCloseReturn to the previous surface.arrow_backBackformat_list_numberedClose expand_more doneDone",
+      "card": {
+        "x": 835.609375,
+        "y": 27.765625,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 1174.609375,
+          "y": 22.765625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 852.609375,
+        "y": 112.71875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN1280 picker selected Content editor",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "1 / 5closeContent editorMaintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor.arrow_backBackformat_list_numberedContent editor expand_more arrow_forwardNext",
+      "card": {
+        "x": 60,
+        "y": 88.15625,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 71.765625
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 77,
+        "y": 173.109375,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN1280 editable explanation revision form",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "1 / 5closeContent editorMaintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor.arrow_backBackformat_list_numberedContent editor expand_more arrow_forwardNext",
+      "card": {
+        "x": 60,
+        "y": 88.15625,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 71.765625
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 77,
+        "y": 173.109375,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "Content editor missing explanatory actions",
+      "observed": "Same five-step guide in list and inline edit",
+      "missing": [
+        "Edit revision",
+        "Delete revision",
+        "Toggle revision",
+        "Save revision",
+        "Cancel editing",
+        "Header color",
+        "Canonical screen",
+        "Add explanation section",
+        "Change section icon",
+        "Switch to preview",
+        "Remove explanation section",
+        "Toggle explanation section",
+        "image-upload",
+        "image-pages"
+      ],
+      "disabled": [
+        "Activate revision"
+      ]
+    },
+    {
+      "label": "EN390x844 Content Editor 1",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "1 / 5closeContent editorMaintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor.arrow_backBackformat_list_numberedContent editor expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 70.578125,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 155.53125,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390x844 Content Editor 2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "2 / 5closeDocumentSelect the document type or editable guide you intend to maintain. For an explanation, also check its target screen so the saved steps belong to the right part of the app.arrow_backBackformat_list_numberedDocument expand_more arrow_forwardNext",
+      "card": {
+        "x": 46,
+        "y": 56.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 157.984375,
+          "y": 3.3125,
+          "w": 148.875,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 141.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390x844 Content Editor 3",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "3 / 5closeNew revisionPrepare a new revision of the selected document and language. Save it first, then activate the revision when it should replace the version users currently see.arrow_backBackformat_list_numberedNew revision expand_more arrow_forwardNext",
+      "card": {
+        "x": 46,
+        "y": 54.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 303.890625,
+          "y": 3.3125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 139.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390x844 Content Editor 4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "4 / 5closeLanguageChoose the content language before editing. Each language has separate revisions and an active version, so changing this selection does not translate or publish the other language.arrow_backBackformat_list_numberedLanguage expand_more arrow_forwardNext",
+      "card": {
+        "x": 46,
+        "y": 112.328125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 259.328125,
+          "y": 59.328125,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 197.28125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390x844 Content Editor 5",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "5 / 5closeCloseReturn to the previous surface.arrow_backBackformat_list_numberedClose expand_more doneDone",
+      "card": {
+        "x": 46,
+        "y": 54.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 343.328125,
+          "y": 3.3125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 139.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390 Article list",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "1 / 5closeArticlesManage article drafts, published articles and trash in the selected language. Editing saves the content; publication and featured placement are separate actions on the article card.arrow_backBackformat_list_numberedArticles expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 64.34375,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 62.34375
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 149.296875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390 Article list step 2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "2 / 5closeFilterChoose drafts for unfinished work, published or featured articles for visible content, or trash to recover a removed article. The filter changes the list without publishing or deleting anything.arrow_backBackformat_list_numberedFilter expand_more arrow_forwardNext",
+      "card": {
+        "x": 46,
+        "y": 56.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 178.859375,
+          "y": 3.3125,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 141.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390 Article list step 3",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "3 / 5closeNew articleStart a new article in the selected language. Prepare its title, text and images, preview it, then save; publication is a separate action on the saved article.arrow_backBackformat_list_numberedNew article expand_more arrow_forwardNext",
+      "card": {
+        "x": 46,
+        "y": 54.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 303.890625,
+          "y": 3.3125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 139.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390 Article list step 4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "4 / 5closeLanguageSelect which language’s articles to list and edit. Check this before creating a draft or changing text so the content is saved for the intended readers.arrow_backBackformat_list_numberedLanguage expand_more arrow_forwardNext",
+      "card": {
+        "x": 46,
+        "y": 106.09375,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 259.328125,
+          "y": 53.09375,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 191.046875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390 Article list step 5",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "5 / 5closeCloseReturn to the previous surface.arrow_backBackformat_list_numberedClose expand_more doneDone",
+      "card": {
+        "x": 46,
+        "y": 54.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 343.328125,
+          "y": 3.3125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 139.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390 Article nested popup empty cold",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "1 / 2closeArticle previewCheck the article’s text, images and layout as a reader would see them. A draft preview lets you review pending edits; opening it does not save or publish them.arrow_backBackformat_list_numberedArticle preview expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 176.296875,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 174.296875
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 261.25,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390 Article empty repeat",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "1 / 2closeArticle previewCheck the article’s text, images and layout as a reader would see them. A draft preview lets you review pending edits; opening it does not save or publish them.arrow_backBackformat_list_numberedArticle preview expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 176.296875,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 174.296875
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 261.25,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390x560 Article preview",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "1 / 2closeArticle previewCheck the article’s text, images and layout as a reader would see them. A draft preview lets you review pending edits; opening it does not save or publish them.arrow_backBackformat_list_numberedArticle preview expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 176.296875,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 174.296875
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 261.25,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390x560 Article preview Close",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "2 / 2closeCloseReturn to the previous surface.arrow_backBackformat_list_numberedClose expand_more doneDone",
+      "card": {
+        "x": 46,
+        "y": 55.265625,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 338.53125,
+          "y": 4.265625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 140.21875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "EN390x560 parent Article editor context returns",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "1 / 5closeArticlesManage article drafts, published articles and trash in the selected language. Editing saves the content; publication and featured placement are separate actions on the article card.arrow_backBackformat_list_numberedArticles expand_more arrow_forwardNext",
+      "card": {
+        "x": 12,
+        "y": 64.34375,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 62.34375
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 149.296875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390x560 admin home",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "1 / 1closeAdminisztrációAz avatármenüben válassz feladatot: tartalomellenőrzés, felhasználói bejelentések, visszajelzések, háttérfeladatok vagy monitorozás. Mindegyik saját felületet nyit; ugyanitt éred el a személyes értesítéseket és az útmutatók kapcsolóját.arrow_backVisszaformat_list_numberedAdminisztráció expand_more doneKész",
+      "card": {
+        "x": 31.375,
+        "y": 12,
+        "w": 332,
+        "h": 273.734375
+      },
+      "focus": [
+        {
+          "x": 26.375,
+          "y": 97.15625,
+          "w": 337.25,
+          "h": 456.828125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 48.375,
+        "y": 96.953125,
+        "w": 298,
+        "h": 121.78125,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390x560 Content Editor 1",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "1 / 5closeTartalomszerkesztőItt kezelheted a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld, amikor a felhasználóknak szánod. Az alkalmazás által kezelt rendszerútmutatók nem szerepelnek ebben a szerkesztőben.arrow_backVisszaformat_list_numberedTartalomszerkesztő expand_more arrow_forwardTovább",
+      "card": {
+        "x": 12,
+        "y": 70.578125,
+        "w": 332,
+        "h": 273.734375
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 155.53125,
+        "w": 298,
+        "h": 121.78125,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390x560 Content Editor 2",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "2 / 5closeDokumentumVálaszd ki a kezelendő dokumentumtípust vagy szerkeszthető útmutatót. Magyarázatnál ellenőrizd a célképernyőt is, hogy a mentett lépések az alkalmazás megfelelő részéhez tartozzanak.arrow_backVisszaformat_list_numberedDokumentum expand_more arrow_forwardTovább",
+      "card": {
+        "x": 46,
+        "y": 56.3125,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 176.21875,
+          "y": 3.3125,
+          "w": 130.640625,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 141.265625,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390x560 Content Editor 3",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "3 / 5closeÚj verzióKészíts új verziót a kiválasztott dokumentumhoz és nyelvhez. Először mentsd el, majd akkor aktiváld, amikor le szeretnéd váltani a felhasználóknak jelenleg látható változatot.arrow_backVisszaformat_list_numberedÚj verzió expand_more arrow_forwardTovább",
+      "card": {
+        "x": 46,
+        "y": 54.3125,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 303.890625,
+          "y": 3.3125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 139.265625,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390x560 Content Editor 4",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "4 / 5closeNyelvSzerkesztés előtt válaszd ki a tartalom nyelvét. Minden nyelvhez külön verziók és aktív változat tartozik, ezért a választás nem fordítja le és nem publikálja a másik nyelvű tartalmat.arrow_backVisszaformat_list_numberedNyelv expand_more arrow_forwardTovább",
+      "card": {
+        "x": 46,
+        "y": 112.328125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 259.328125,
+          "y": 59.328125,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 197.28125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390x560 Content Editor 5",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "text": "5 / 5closeBezárásVisszatérés az előző felülethez.arrow_backVisszaformat_list_numberedBezárás expand_more doneKész",
+      "card": {
+        "x": 46,
+        "y": 54.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 343.328125,
+          "y": 3.3125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 139.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU1280 Content Editor 1",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "1 / 5closeTartalomszerkesztőItt kezelheted a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld, amikor a felhasználóknak szánod. Az alkalmazás által kezelt rendszerútmutatók nem szerepelnek ebben a szerkesztőben.arrow_backVisszaformat_list_numberedTartalomszerkesztő expand_more arrow_forwardTovább",
+      "card": {
+        "x": 60,
+        "y": 88.15625,
+        "w": 332,
+        "h": 273.734375
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 71.765625
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 77,
+        "y": 173.109375,
+        "w": 298,
+        "h": 121.78125,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU1280 Content Editor 2",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "2 / 5closeDokumentumVálaszd ki a kezelendő dokumentumtípust vagy szerkeszthető útmutatót. Magyarázatnál ellenőrizd a célképernyőt is, hogy a mentett lépések az alkalmazás megfelelő részéhez tartozzanak.arrow_backVisszaformat_list_numberedDokumentum expand_more arrow_forwardTovább",
+      "card": {
+        "x": 668.8125,
+        "y": 26.765625,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 1007.8125,
+          "y": 21.765625,
+          "w": 130.640625,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 685.8125,
+        "y": 111.71875,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU1280 Content Editor 3",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "3 / 5closeÚj verzióKészíts új verziót a kiválasztott dokumentumhoz és nyelvhez. Először mentsd el, majd akkor aktiváld, amikor le szeretnéd váltani a felhasználóknak jelenleg látható változatot.arrow_backVisszaformat_list_numberedÚj verzió expand_more arrow_forwardTovább",
+      "card": {
+        "x": 796.171875,
+        "y": 27.765625,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 1135.171875,
+          "y": 22.765625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 813.171875,
+        "y": 112.71875,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU1280 Content Editor 4",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "4 / 5closeNyelvSzerkesztés előtt válaszd ki a tartalom nyelvét. Minden nyelvhez külön verziók és aktív változat tartozik, ezért a választás nem fordítja le és nem publikálja a másik nyelvű tartalmat.arrow_backVisszaformat_list_numberedNyelv expand_more arrow_forwardTovább",
+      "card": {
+        "x": 751.609375,
+        "y": 82.546875,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 1090.609375,
+          "y": 77.546875,
+          "w": 128,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 768.609375,
+        "y": 167.5,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU1280 Content Editor 5",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "text": "5 / 5closeBezárásVisszatérés az előző felülethez.arrow_backVisszaformat_list_numberedBezárás expand_more doneKész",
+      "card": {
+        "x": 835.609375,
+        "y": 27.765625,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 1174.609375,
+          "y": 22.765625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 852.609375,
+        "y": 112.71875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390x844 Content Editor overview",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "1 / 5closeTartalomszerkesztőItt kezelheted a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld, amikor a felhasználóknak szánod. Az alkalmazás által kezelt rendszerútmutatók nem szerepelnek ebben a szerkesztőben.arrow_backVisszaformat_list_numberedTartalomszerkesztő expand_more arrow_forwardTovább",
+      "card": {
+        "x": 12,
+        "y": 70.578125,
+        "w": 332,
+        "h": 273.734375
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 155.53125,
+        "w": 298,
+        "h": 121.78125,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390 Reports empty",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "1 / 4closeBejelentésekNyiss meg egy bejelentést az indok, az érintett felhasználó és a forrás ellenőrzéséhez. A bizonyítékok átnézése után a felhasználó menüjében indíthatsz figyelmeztetést vagy korlátozást; a megnyitás ezt nem végzi el.arrow_backVisszaformat_list_numberedBejelentések expand_more arrow_forwardTovább",
+      "card": {
+        "x": 12,
+        "y": 90.578125,
+        "w": 332,
+        "h": 253.4375
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 88.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.reports",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 29,
+        "y": 175.53125,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390 empty Reports 2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "2 / 4closeLetiltott fiókokMegnyitja a korlátozott felhasználók listáját a meglévő tiltások áttekintéséhez. A felhasználó menüje feloldást kínál, és meglévő támogatási beszélgetés esetén annak megnyitását is.arrow_backVisszaformat_list_numberedLetiltott fiókok expand_more arrow_forwardTovább",
+      "card": {
+        "x": 46,
+        "y": 56.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 301.890625,
+          "y": 3.3125,
+          "w": 46,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.reports",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 141.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390 empty Reports 3",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "3 / 4closeSzűrésVálts a figyelmet igénylő, megoldatlan bejelentések és az újra áttekintendő lezárt bejelentések között. Ez a sor kiválasztása, nem a bejelentések állapotának módosítása.arrow_backVisszaformat_list_numberedSzűrés expand_more arrow_forwardTovább",
+      "card": {
+        "x": 46,
+        "y": 132.328125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 236.4375,
+          "y": 79.328125,
+          "w": 150.890625,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.reports",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 217.28125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU390 empty Reports 4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "text": "4 / 4closeBezárásVisszatérés az előző felülethez.arrow_backVisszaformat_list_numberedBezárás expand_more doneKész",
+      "card": {
+        "x": 46,
+        "y": 55.3125,
+        "w": 332,
+        "h": 248
+      },
+      "focus": [
+        {
+          "x": 343.328125,
+          "y": 4.3125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.reports",
+        "landing.guide"
+      ],
+      "body": {
+        "x": 63,
+        "y": 140.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      }
+    },
+    {
+      "label": "HU empty reports full guide",
+      "result": "Four steps valid; no row actions rendered. Blocked users control disabled, nested branch not run."
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/explanation"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/ideas"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/ideas"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deployment/configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtime-status/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/i18n/bundle"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/i18n/bundle"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/help/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/terms/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/consents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/help"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/explanation"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deployment/configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtime-status/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/i18n/bundle"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/help/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/terms/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/consents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    }
+  ]
+}

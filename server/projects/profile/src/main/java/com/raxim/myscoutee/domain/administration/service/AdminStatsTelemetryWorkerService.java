@@ -77,14 +77,12 @@ public class AdminStatsTelemetryWorkerService {
 
     @org.springframework.beans.factory.annotation.Autowired
     void watchInputs(MongoChangeStreamService changes) {
-        changes.watch("admin-stat-inputs", Set.of("users", "userAffinityEdges", "userRates", "activityMembers"),
+        changes.watch("admin-stat-inputs", Set.of("users"),
                 Set.of(), () -> null, this::invalidateDerived, this::invalidateDerived);
-        changes.watch("admin-queue-inputs", Set.of("affinityRecomputeTasks", "notificationOutbox"),
-                Set.of(), () -> null, this::invalidateQueues, this::invalidateQueues);
-        // Failure counts depend on the last terminal result. A claim only sets running;
-        // watching that would make this worker invalidate itself on every successful run.
-        changes.watch("admin-job-results", Set.of("notificationRuleConfigs"),
-                Set.of("baseGroupId", "ruleKey", "runState.lastRunStatus"), () -> null,
+        changes.watch("admin-derived-signals", Set.of("adminWorkerSignals"),
+                Set.of("derivedRevision"), () -> null, this::invalidateDerived, this::invalidateDerived);
+        changes.watch("admin-queue-inputs", Set.of("adminWorkerSignals"),
+                Set.of("queuesRevision"), () -> null,
                 this::invalidateQueues, this::invalidateQueues);
     }
 

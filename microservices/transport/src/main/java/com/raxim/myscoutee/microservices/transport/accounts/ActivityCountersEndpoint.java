@@ -11,6 +11,8 @@ import tools.jackson.databind.*;
 
 @RestController
 public final class ActivityCountersEndpoint {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates menuCounters;
     private final ActivityCounters owner;
     private final com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters;
     private final ObjectMapper mapper;
@@ -20,6 +22,12 @@ public final class ActivityCountersEndpoint {
             com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters,
             com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters feedback, com.raxim.myscoutee.domain.accounts.api.FeedCounts feed) {
         this.owner = owner; this.mapper = mapper; this.supportCounters = supportCounters; this.feedback = feedback; this.feed = feed;
+    }
+    @PostMapping(value = ActivityCountersProtocol.MENU_CHANGE, produces = "application/json")
+    public ResponseEntity<?> menuChange(HttpServletRequest request) throws java.io.IOException {
+        return read(request, ActivityCountersProtocol.MenuChange.class, ActivityCountersProtocol::valid,
+                query -> com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(query.scope().active(), query.scope().groupId(),
+                        () -> menuCounters.applyAll(query.changes())));
     }
     @PostMapping(value = ActivityCountersProtocol.FEEDBACK_RECEIPT, produces = "application/json")
     public ResponseEntity<?> feedbackReceipt(HttpServletRequest request) throws java.io.IOException {

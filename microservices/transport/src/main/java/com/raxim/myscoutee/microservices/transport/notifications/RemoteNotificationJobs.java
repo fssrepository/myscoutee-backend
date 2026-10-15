@@ -55,6 +55,12 @@ public final class RemoteNotificationJobs extends RemoteReadTransport implements
         var command = new NotificationJobsProtocol.RecordCommand(NotificationJobsProtocol.Scope.current(), ruleKey, count, status, detail, actorUserId, startedAt);
         return rule(NotificationJobsProtocol.RECORD, command, NotificationJobsProtocol.valid(command));
     }
+    @Override public void recordRetryOutcome(RetryOutcome outcome) {
+        var command = new NotificationJobsProtocol.RetryOutcomeCommand(NotificationJobsProtocol.Scope.current(), outcome);
+        exchange(NotificationJobsProtocol.RETRY_OUTCOME, body(command, NotificationJobsProtocol.valid(command)),
+                new TypeReference<NotificationJobsProtocol.Receipt>() {}, "jobs.retry-outcome", 16384,
+                result -> Boolean.TRUE.equals(result.completed()));
+    }
     @Override public JobRuleDto adjustPendingCount(String ruleKey, int delta, String unit) {
         var command = new NotificationJobsProtocol.PendingCommand(NotificationJobsProtocol.Scope.current(), ruleKey, delta, unit);
         return rule(NotificationJobsProtocol.ADJUST, command, NotificationJobsProtocol.valid(command));

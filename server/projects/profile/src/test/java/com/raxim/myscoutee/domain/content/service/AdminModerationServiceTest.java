@@ -131,6 +131,30 @@ class AdminModerationServiceTest {
         verify(usersRepository, org.mockito.Mockito.times(4)).findByUserId("admin-demo-ava");
     }
 
+    @Test
+    void dashboardKeepsOtherBaseGroupsReviewCountsWithoutReturningTheirReports() {
+        Users admin = new Users(); admin.setUserId("admin-demo-ava"); admin.setWorkspaceGroupId("myscoutee-work");
+        Users datingUser = new Users(); datingUser.setUserId("dating-user");
+        Users workUser = new Users(); workUser.setUserId("work-user"); workUser.setWorkspaceGroupId("myscoutee-work");
+        UserReportSubmission datingReport = new UserReportSubmission(); datingReport.setUserId("dating-user");
+        UserFeedbackSubmission workFeedback = new UserFeedbackSubmission(); workFeedback.setUserId("work-user");
+        when(usersRepository.findByUserId("admin-demo-ava")).thenReturn(Optional.of(admin));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(datingUser, workUser));
+        when(reportsRepository.findAllByOrderByCreatedDateDesc()).thenReturn(List.of(datingReport));
+        when(feedbackRepository.findAllByOrderByCreatedDateDesc()).thenReturn(List.of(workFeedback));
+
+        var dashboard = service.dashboard("admin-demo-ava");
+
+        assertThat(dashboard.reportedUsers()).isEmpty();
+        assertThat(dashboard.reviewCounts().reportsUnresolved()).isZero();
+        assertThat(dashboard.reviewCounts().feedbackUnresolved()).isEqualTo(1);
+        assertThat(dashboard.reviewCountsByScope().get("main").reportsUnresolved()).isEqualTo(1);
+        assertThat(dashboard.reviewCountsByScope().get("myscoutee-work").feedbackUnresolved()).isEqualTo(1);
+        assertThat(dashboard.reviewCountsByScope().get("myscoutee-community").reportsUnresolved()).isZero();
+        verify(reportsRepository).findAllByOrderByCreatedDateDesc();
+        verify(feedbackRepository).findAllByOrderByCreatedDateDesc();
+    }
+
 
 
     @Test

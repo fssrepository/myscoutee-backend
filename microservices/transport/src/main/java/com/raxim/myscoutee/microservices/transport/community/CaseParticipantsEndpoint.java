@@ -29,11 +29,11 @@ public final class CaseParticipantsEndpoint {
         if (!CaseParticipantsProtocol.validId(caseId)) return response(400, new Error("INVALID_REQUEST"));
         return read(() -> cases.activeAccounts(caseId).orElse(null));
     }
-    @PostMapping(value = CaseParticipantsProtocol.COUNT, produces = "application/json")
-    public ResponseEntity<?> count(HttpServletRequest request) throws IOException {
+    @PostMapping(value = CaseParticipantsProtocol.ADMINS_CHANGED, produces = "application/json")
+    public ResponseEntity<?> adminsChanged(HttpServletRequest request) throws IOException {
         try {
             var query = CaseParticipantsProtocol.read(request, mapper);
-            return read(() -> cases.visibleCount(query.baseGroupId(), query.accountId(), query.managedGroupIds()));
+            return read(() -> { cases.groupAdminsChanged(query.groupId(), query.adminAccountIds()); return true; });
         } catch (RejectedQuery invalid) { return response(invalid.status(), new Error(invalid.code())); }
     }
     private ResponseEntity<?> read(Supplier<?> read) {

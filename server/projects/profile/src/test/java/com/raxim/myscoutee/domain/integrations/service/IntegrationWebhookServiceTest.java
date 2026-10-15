@@ -113,7 +113,7 @@ class IntegrationWebhookServiceTest {
         }
         deliverySubscription("http://127.0.0.1:" + port + "/callback");
         var delivery = pendingDelivery();
-        long[] delays = {5, 30};
+        long[] delays = {60, 120};
         for (int attempt = 1; attempt <= 3; attempt++) {
             var before = Instant.now();
             // Exercise each delivery attempt directly; no production wait or fabricated HTTP response.
@@ -205,6 +205,7 @@ class IntegrationWebhookServiceTest {
                 true,
                 100,
                 100);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "retryQueue", org.mockito.Mockito.mock(com.raxim.myscoutee.common.delivery.OutboundRetryQueue.class));
         var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
         org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);

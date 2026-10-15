@@ -4,7 +4,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.dto.CaseDetails;
-import com.raxim.myscoutee.domain.community.dto.CaseVisibilityQueryDto;
+import com.raxim.myscoutee.domain.community.service.CommunityCaseCounterWork;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
 import com.raxim.myscoutee.domain.community.service.CaseParticipantsService;
 import com.raxim.myscoutee.microservices.bootstrap.ServiceSecurityConfiguration;
@@ -85,27 +85,24 @@ class CaseParticipantsHttpTest {
         assertEquals(List.of("owner", "resident", "provider-b"), conversation.offerChatParticipantAccountIds("offer-b"));
         assertEquals(Optional.of(List.of()), remote.activeAccounts("empty"));
     }
-    @Test void countsKeepTrashExclusionIntegerCapAndNullEmptyOrLargeManagedGroupInputs() throws Exception {
-        var local = server.getBean(CaseParticipantsService.class);
+    @Test void administratorWritesRetainModesAndUnicodeIdentifiers() throws Exception {
+        var writer = server.getBean(CommunityCaseCounterWork.class);
         for (var mode : List.of(MongoSessionMode.REAL, MongoSessionMode.DEMO)) {
             MongoSessionModeContext.set(mode);
-            for (var base : List.of("base&é/?", "large", "empty")) {
-                var ids = List.of("g&é/?", "g-two");
-                assertEquals(local.visibleCount(base, "account&é/?", ids), remote.visibleCount(base, "account&é/?", ids));
-                assertEquals(200, request(CaseParticipantsProtocol.COUNT, "", query(base, "account&é/?", ids), TOKEN, mode.name(), "POST", "application/json", false).statusCode());
-            }
+            var ids = List.of("admin&é/?", "other-admin");
+            doAnswer(call -> { assertEquals(mode, MongoSessionModeContext.currentMode()); return null; })
+                    .when(writer).groupAdminsChanged("homes&é/?", ids);
+            remote.groupAdminsChanged("homes&é/?", ids);
+            assertEquals(200, request(CaseParticipantsProtocol.ADMINS_CHANGED, "", query("homes&é/?", ids), TOKEN, mode.name(), "POST", "application/json", false).statusCode());
         }
-        assertEquals(Integer.MAX_VALUE, remote.visibleCount("large", "id", List.of()));
-        var repository = server.getBean(ServiceCasesRepository.class);
-        remote.visibleCount(null, "", null); remote.visibleCount("", null, List.of());
-        verify(repository).bucketCounts(null, "", null); verify(repository).bucketCounts("", null, List.of());
-        assertEquals(local.visibleCount("base", "id", Collections.nCopies(100, "x".repeat(500))),
-                remote.visibleCount("base", "id", Collections.nCopies(100, "x".repeat(500))));
+        verify(writer, times(4)).groupAdminsChanged("homes&é/?", List.of("admin&é/?", "other-admin"));
+        remote.groupAdminsChanged("homes", List.of());
+        verify(writer).groupAdminsChanged("homes", List.of());
     }
     @Test void allOperationsRequireTheirOwnCredentialModeAndMethod() throws Exception {
         for (var path : CaseParticipantsProtocol.paths()) {
-            String method = path.equals(CaseParticipantsProtocol.COUNT) ? "POST" : "GET";
-            String body = query("base", "id", List.of());
+            String method = path.equals(CaseParticipantsProtocol.ADMINS_CHANGED) ? "POST" : "GET";
+            String body = query("base", List.of());
             for (var token : new String[]{null, "test-only-community-media-token-0000000000000000000"})
                 assertEquals(401, request(path, "", body, token, "REAL", method, "application/json", false).statusCode());
             for (var mode : new String[]{null, "demo", "ANY"})
@@ -113,34 +110,34 @@ class CaseParticipantsHttpTest {
             assertEquals(403, request(path, "", body, TOKEN, "REAL", method.equals("GET") ? "POST" : "GET", "application/json", false).statusCode());
         }
     }
-    @Test void malformedOversizedAndChunkedCountQueriesCannotBecomeZeroCounts() throws Exception {
-        var path = CaseParticipantsProtocol.COUNT;
+    @Test void malformedOversizedAndChunkedWritesAreRejected() throws Exception {
+        var path = CaseParticipantsProtocol.ADMINS_CHANGED;
         for (var body : List.of("{", "null", "{}", "{\"baseGroupId\":7,\"accountId\":null,\"managedGroupIds\":[]}",
                 "{\"baseGroupId\":null,\"accountId\":null,\"managedGroupIds\":[7]}",
                 "{\"baseGroupId\":null,\"accountId\":null,\"managedGroupIds\":{},\"extra\":true}",
-                query("base", "id", Collections.nCopies(4097, "g")), query("x".repeat(513), "id", List.of()),
-                query("base", "id", List.of()) + " {}"))
+                query("base", Collections.nCopies(4097, "g")), query("x".repeat(513), List.of()),
+                query("base", List.of()) + " {}"))
             assertEquals(400, request(path, "", body, TOKEN, "REAL", "POST", "application/json", false).statusCode());
         assertEquals(415, request(path, "", "{}", TOKEN, "REAL", "POST", "text/plain", false).statusCode());
         for (var chunked : List.of(false, true))
             assertEquals(413, request(path, "", " ".repeat(CaseParticipantsProtocol.MAX_QUERY_BYTES + 1), TOKEN, "REAL", "POST", "application/json", chunked).statusCode());
         for (var getPath : List.of(CaseParticipantsProtocol.CONVERSATION, CaseParticipantsProtocol.ACTIVE))
             assertEquals(400, request(getPath, "?caseId=" + "x".repeat(513), "", TOKEN, "REAL", "GET", "application/json", false).statusCode());
-        assertThrows(IllegalArgumentException.class, () -> remote.visibleCount("base", "id", Collections.nCopies(4097, "g")));
+        assertThrows(IllegalArgumentException.class, () -> remote.groupAdminsChanged("base", Collections.nCopies(4097, "g")));
     }
     @Test void ownerFailuresRemainUnavailableInsteadOfAbsenceOrZero() throws Exception {
         for (var path : CaseParticipantsProtocol.paths()) {
-            boolean count = path.equals(CaseParticipantsProtocol.COUNT);
-            var response = request(path, count ? "" : "?caseId=fail", query("fail", "id", List.of()), TOKEN, "REAL", count ? "POST" : "GET", "application/json", false);
+            boolean count = path.equals(CaseParticipantsProtocol.ADMINS_CHANGED);
+            var response = request(path, count ? "" : "?caseId=fail", query("fail", List.of()), TOKEN, "REAL", count ? "POST" : "GET", "application/json", false);
             assertEquals(503, response.statusCode());
             assertEquals("{\"code\":\"CASE_PARTICIPANTS_UNAVAILABLE\"}", response.body());
         }
         assertEquals(503, assertThrows(RemoteReadException.class, () -> remote.conversation("fail")).status());
         assertEquals(503, assertThrows(RemoteReadException.class, () -> remote.activeAccounts("fail")).status());
-        assertEquals(503, assertThrows(RemoteReadException.class, () -> remote.visibleCount("fail", "id", List.of())).status());
+        assertEquals(503, assertThrows(RemoteReadException.class, () -> remote.groupAdminsChanged("fail", List.of())).status());
     }
-    static String query(String base, String account, List<String> groups) {
-        return new JsonMapper().writeValueAsString(new CaseVisibilityQueryDto(base, account, groups));
+    static String query(String groupId, List<String> admins) {
+        return new JsonMapper().writeValueAsString(new CaseParticipantsProtocol.AdminChange(groupId, admins));
     }
     static HttpResponse<String> request(String path, String suffix, String body, String token, String mode, String method, String contentType, boolean chunked) throws Exception {
         var builder = HttpRequest.newBuilder(origin.resolve(path + suffix)).timeout(Duration.ofSeconds(3)).header("Content-Type", contentType);
@@ -150,7 +147,7 @@ class CaseParticipantsHttpTest {
         var response = http.send(builder.method(method, publisher).build(), HttpResponse.BodyHandlers.ofString());
         assertEquals("no-store", response.headers().firstValue("Cache-Control").orElseThrow());
         Files.writeString(evidence.resolve("response-" + sequence.incrementAndGet() + ".json"), new JsonMapper().writeValueAsString(
-                Map.of("path", path, "method", path.equals(CaseParticipantsProtocol.COUNT) ? "post" : "get", "status", response.statusCode(), "body", new JsonMapper().readTree(response.body()))));
+                Map.of("path", path, "method", path.equals(CaseParticipantsProtocol.ADMINS_CHANGED) ? "post" : "get", "status", response.statusCode(), "body", new JsonMapper().readTree(response.body()))));
         return response;
     }
     @SpringBootConfiguration
@@ -173,18 +170,25 @@ class CaseParticipantsHttpTest {
                         List.of(offer("offer-a", "provider-a"), offer("offer-b", "provider-b")), null, null, "now", "now", 1L,
                         Map.of("invited", "invited", "removed", "removed"), List.of(), List.of("provider-b")));
             });
-            when(repository.bucketCounts(nullable(String.class), nullable(String.class), nullable(Collection.class))).thenAnswer(call -> {
-                String base = call.getArgument(0);
-                if ("fail".equals(base)) throw new IllegalStateException("secret database details");
-                if ("empty".equals(base)) return List.of();
-                return List.of(new ServiceCasesRepository.CaseBucket("open", "maintenance", "large".equals(base) ? Integer.MAX_VALUE : MongoSessionModeContext.currentMode() == MongoSessionMode.REAL ? 3 : 7),
-                        new ServiceCasesRepository.CaseBucket("completed", "maintenance", 2), new ServiceCasesRepository.CaseBucket("trash", "maintenance", 10));
-            });
             return repository;
         }
         static CaseDetails.Offer offer(String id, String provider) {
             return new CaseDetails.Offer(id, provider, "service", 25, "EUR", "", "accepted", "now", null, null, List.of(), List.of());
         }
+        @Bean com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes() {
+            return mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        }
+        @Bean CommunityCaseCounterWork writer() {
+            var writer = mock(CommunityCaseCounterWork.class);
+            doThrow(new IllegalStateException("secret database details")).when(writer).groupAdminsChanged(eq("fail"), anyList());
+            return writer;
+        }
         @Bean CaseParticipantsService owner(ServiceCasesRepository repository) { return new CaseParticipantsService(repository); }
+        @Bean com.raxim.myscoutee.domain.community.repository.CommunityScheduledTasksRepository tasks() {
+            return mock(com.raxim.myscoutee.domain.community.repository.CommunityScheduledTasksRepository.class);
+        }
+        @Bean com.raxim.myscoutee.domain.community.service.CommunityVoteCounterWork votes() {
+            return mock(com.raxim.myscoutee.domain.community.service.CommunityVoteCounterWork.class);
+        }
     }
 }

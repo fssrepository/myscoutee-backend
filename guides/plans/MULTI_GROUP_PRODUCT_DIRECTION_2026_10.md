@@ -359,7 +359,7 @@ Review notes: case/task pages batch their group/member projections; calendar vie
 
 #### QA handoff and completion boundaries
 
-The [20-scenario pair-QA checklist](../qa/checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md) covers the complete Work/Community/shared delivery with numbered steps. Its rows were added to the existing [CSV ledger](../qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) and [XLSX ledger](../qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx); all new manual scenarios are **NOT RUN**. Existing ledger rows were preserved. No checkpoint or browser session was started.
+The [20-scenario pair-QA checklist](../qa/checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md) covers the complete Work/Community/shared delivery with numbered steps. Its rows were added to the existing [CSV ledger](../qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) and [XLSX ledger](../qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx); all new manual scenarios are **NOT RUN**. Existing ledger rows were preserved. No checkpoint or browser session was started.
 
 The existing opt-in manual-QA launcher remains the entry point for future pair QA. Unit/build/seed evidence does not prove live MongoDB import/aggregation, Redis/push delivery, external storage, production migration or desktop/mobile interaction. Registry was unchanged; the earlier client/MCP/simulator commits retain their recorded scope. Per-campaign filtering of the whole chat list, promotional base-group cards and operator editing of landing-mode definitions remain separately recorded refinements, rather than claims of completed UI.
 
@@ -420,7 +420,7 @@ Implementation and manual-QA evidence for this revision must be recorded separat
 
 The case and service card descriptions are limited to 120 characters. Cases require a residential group; there is no Personal case option. The Park Court meter-replacement seed includes Farkas Anna as an accepted provider, her pending EUR 360 quotation, four tasks across all three statuses, resident assignments and prerequisite links. Browser-local and Mongo fixtures are generated from the same source; embedded Mongo task/offer identifiers use `_id`.
 
-The common member picker restores its provided persisted selection, retains selected members across paging/sorting, and lets the header tick commit an empty selection to unassign everyone. Assignment, quotation invitation and offer submission continue through the existing case notification pipeline. Focused verification and outstanding manual checks are recorded in [the updated pair-QA checklist](../qa/checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md#focused-implementation-evidence--2026-10-06).
+The common member picker restores its provided persisted selection, retains selected members across paging/sorting, and lets the header tick commit an empty selection to unassign everyone. Assignment, quotation invitation and offer submission continue through the existing case notification pipeline. Focused verification and outstanding manual checks are recorded in [the updated pair-QA checklist](../qa/checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md#focused-implementation-evidence--2026-10-06).
 
 Task editing uses the existing event/asset DateInput range block. Assignees and prerequisites appear in separate shared FormFlow list blocks with + actions that open the existing pickers; these supersede the compact toolbar triggers. Status is advanced through Start/Complete/Reopen on the task card menu, never through a duplicate editor selector.
 

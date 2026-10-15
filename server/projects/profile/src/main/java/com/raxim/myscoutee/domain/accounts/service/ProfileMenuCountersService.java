@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
 import static com.raxim.myscoutee.domain.accounts.service.AccountCounterMapper.*;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -13,13 +12,11 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 public class ProfileMenuCountersService {
     private final UsersRepository usersRepository;
     private final SelectedProfileService selectedProfile;
-    private final Optional<ProfileCommunityCounters> communityCounters;
 
-    public ProfileMenuCountersService(UsersRepository usersRepository, SelectedProfileService selectedProfile,
-            Optional<ProfileCommunityCounters> communityCounters) {
+
+    public ProfileMenuCountersService(UsersRepository usersRepository, SelectedProfileService selectedProfile) {
         this.usersRepository = usersRepository;
         this.selectedProfile = selectedProfile;
-        this.communityCounters = communityCounters;
     }
 
     public UserMenuCountersDto queryMenuCounters(String requestedUserId) {
@@ -56,7 +53,15 @@ public class ProfileMenuCountersService {
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()),
                 normalizeCount(user.getPaymentRefundsPending()),
                 normalizeCount(account == null ? null : account.getContactRequestsPending()),
-                activities == null ? 0 : normalizeCount(activities.notifications()), communityCounters.map(counter -> counter.count(user)).orElse(0));
+                accountActivities == null ? 0 : normalizeCount(accountActivities.notifications()),
+                moduleCounters(user, account));
+    }
+
+    private java.util.Map<String, Integer> moduleCounters(Users user, Users account) {
+        var values = new java.util.LinkedHashMap<String, Integer>();
+        if (account != null) values.putAll(account.getMenuCounters());
+        values.putAll(user.getMenuCounters());
+        return java.util.Map.copyOf(values);
     }
 
     private Users findUser(String userId) {

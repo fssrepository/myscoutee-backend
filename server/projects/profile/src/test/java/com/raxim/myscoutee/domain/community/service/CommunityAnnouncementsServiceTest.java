@@ -40,6 +40,7 @@ class CommunityAnnouncementsServiceTest {
         records=mock(CommunityAnnouncementsRepository.class);
         access=mock(CommunityAccessService.class);mongo=mock(MongoTemplate.class);users=mock(UsersRepository.class);notifications=mock(NotificationOutboxService.class);
         service=new CommunityAnnouncementsService(records,access,mongo,new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),notifications);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "voteCounters", mock(CommunityVoteCounterWork.class));
         groups = mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groups", groups);
         when(groups.activeCommunityIds(anyCollection())).thenReturn(Set.of("homes"));
@@ -62,13 +63,49 @@ class CommunityAnnouncementsServiceTest {
         assertThatThrownBy(()->service.action("resident","vote",new Command("resident","vote","no",0L))).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         assertThatThrownBy(()->service.action("resident","vote",new Command("resident","vote","yes",0L))).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
     }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"vote", "close", "unpublish", "publish", "trash", "restore"})
+    void commandsUseCurrentBallotsAndVersion(String action) {
+        var original = announcement(null, List.of(new CommunityAnnouncement.Ballot("other", "no", "2026-10-05T09:00:00.000Z")));
+        var current = new CommunityAnnouncement(original.id(), original.communityId(), original.authorAccountId(), original.title(), original.body(), original.attachments(), original.status(),
+                original.voting(), original.deadlineIso(), null, null, original.ballots(), original.publishedAtIso(), original.createdAtIso(), original.updatedAtIso(), 6L);
+        when(records.findById("vote")).thenReturn(Optional.of(current));
+        when(mongo.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(CommunityAnnouncement.class))).thenReturn(current);
+        String actor = "vote".equals(action) ? "resident" : "admin";
+        var result = service.action(actor, "vote", new Command(actor, action, "yes", 0L));
+        assertThat(result.results().get("no")).isEqualTo(1);
+        var query = ArgumentCaptor.forClass(Query.class);
+        verify(mongo).findAndModify(query.capture(), any(Update.class), any(FindAndModifyOptions.class), eq(CommunityAnnouncement.class));
+        assertThat(query.getValue().getQueryObject().get("version")).isEqualTo(6L);
+        assertThatThrownBy(() -> service.save("admin", new Save("admin", "vote", "homes", "Stale title", "Body", List.of(), true, current.deadlineIso(), 0L)))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class, e -> assertThat(e.getStatusCode().value()).isEqualTo(409));
+        when(mongo.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(CommunityAnnouncement.class))).thenReturn(null);
+        assertThatThrownBy(() -> service.action(actor, "vote", new Command(actor, action, "yes", 0L)))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class, e -> assertThat(e.getStatusCode().value()).isEqualTo(409));
+    }
     @Test void reopeningPreservesFinalMemberBallotsAndDoesNotNotifyEditingAdmin() {
         var a=announcement("2026-10-05T10:00:00.000Z",List.of(new CommunityAnnouncement.Ballot("resident","yes","2026-10-05T09:00:00.000Z")));
         when(records.findById("vote")).thenReturn(Optional.of(a));
+        when(mongo.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(CommunityAnnouncement.class)))
+                .thenReturn(new CommunityAnnouncement(a.id(), a.communityId(), a.authorAccountId(), "Updated", "Body", List.of(), "published", true,
+                        "2099-02-01T18:00:00.000Z", null, null, a.ballots(), a.publishedAtIso(), a.createdAtIso(), a.updatedAtIso(), 1L));
         var result=service.save("admin",new Save("admin","vote","homes","Updated","Body",List.of(),true,"2099-02-01T18:00:00Z",0L));
         assertThat(result.closed()).isFalse();assertThat(result.results().get("yes")).isEqualTo(1);assertThat(result.eligibleMembers()).isEqualTo(2);
-        verify(notifications).enqueueOnce(eq("announcement-reopened:vote:0"),argThat(n->n.recipientUserIds().equals(List.of("group:homes:resident"))));
+        verify(notifications).enqueueOnce(eq("announcement-reopened:vote:1"),argThat(n->n.recipientUserIds().equals(List.of("group:homes:resident"))));
         assertThatThrownBy(()->service.save("admin",new Save("admin","vote","homes","Updated","Body",List.of(),false,null,0L))).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+    }
+    @Test void removedAttachmentAndDurableDeletionIntentAreSavedAtomically() {
+        var original = announcement(null, List.of());
+        var file = new com.raxim.myscoutee.domain.media.dto.DocumentAttachment("a.txt", "/api/media/private?key=private/documents/admin/vote/a.txt", "text/plain", 10);
+        var current = new CommunityAnnouncement(original.id(), original.communityId(), original.authorAccountId(), original.title(), original.body(),
+                List.of(file), "draft", false, null, null, null, List.of(), null, original.createdAtIso(), original.updatedAtIso(), 0L);
+        when(records.findById("vote")).thenReturn(Optional.of(current));
+        when(mongo.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(CommunityAnnouncement.class))).thenReturn(current);
+        service.save("admin", new Save("admin", "vote", "homes", "Updated", "Body", List.of(), false, null, 0L));
+        var update = ArgumentCaptor.forClass(Update.class);
+        verify(mongo).findAndModify(any(Query.class), update.capture(), any(FindAndModifyOptions.class), eq(CommunityAnnouncement.class));
+        assertThat(update.getValue().getUpdateObject().get("$set").toString()).contains("attachments=[]", "documentCleanupPending=true");
+        assertThat(update.getValue().getUpdateObject().get("$addToSet").toString()).contains(file.url());
     }
     @Test void closureRetriesItsOutboxBeforeAcknowledgingAndNeverRunsForWork() {
         var a=announcement("2026-10-05T10:00:00.000Z",List.of());

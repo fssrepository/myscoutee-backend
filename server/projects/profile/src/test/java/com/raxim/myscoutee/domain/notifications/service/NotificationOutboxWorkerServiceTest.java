@@ -36,6 +36,48 @@ import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
 
 @org.junit.jupiter.api.Tag("standard")
 class NotificationOutboxWorkerServiceTest {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = {false, true})
+    void wakeupSkipsRemotePolicyForEmptyGroupsAndPreservesPendingDueTime(boolean pending) {
+        var service = service(org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class));
+        var mongo = (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate");
+        var authentication = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.AuthenticationMode.class);
+        var policy = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.NotificationPolicy.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "configProperties", authentication);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "platformParametersService", policy);
+        var registry = org.mockito.Mockito.mock(NotificationRuleRegistryService.class);
+        @SuppressWarnings("unchecked") ObjectProvider<NotificationRuleRegistryService> provider = org.mockito.Mockito.mock(ObjectProvider.class);
+        when(provider.getIfAvailable()).thenReturn(registry);
+        service.setNotificationRuleRegistryServiceProvider(provider);
+        org.mockito.Mockito.doAnswer(call -> {
+            com.raxim.myscoutee.domain.platform.api.JobGroupContext.run("myscoutee-work", call.getArgument(1, Runnable.class));
+            return null;
+        }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
+        var rule = new NotificationRuleConfig(); rule.setEnabled(true);
+        when(registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX)).thenReturn(Optional.of(rule));
+        when(mongo.exists(any(Query.class), eq(NotificationOutboxItem.class))).thenReturn(pending);
+        var due = Instant.now().plusSeconds(120);
+        if (pending) {
+            @SuppressWarnings("unchecked") com.mongodb.client.MongoCollection<org.bson.Document> collection = org.mockito.Mockito.mock(com.mongodb.client.MongoCollection.class);
+            @SuppressWarnings("unchecked") com.mongodb.client.AggregateIterable<org.bson.Document> aggregate = org.mockito.Mockito.mock(com.mongodb.client.AggregateIterable.class);
+            when(mongo.getCollectionName(NotificationOutboxItem.class)).thenReturn("notificationOutbox");
+            when(mongo.getCollection("notificationOutbox")).thenReturn(collection);
+            when(collection.aggregate(any(List.class))).thenReturn(aggregate);
+            when(aggregate.first()).thenReturn(new org.bson.Document("due", java.util.Date.from(due)), null);
+        }
+        Instant next = org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "nextOutboxWakeup");
+        var query = ArgumentCaptor.forClass(Query.class);
+        verify(mongo).exists(query.capture(), eq(NotificationOutboxItem.class));
+        assertThat(query.getValue().getQueryObject()).containsEntry("baseGroupId", "myscoutee-work")
+                .containsEntry("status", NotificationOutboxItem.STATUS_PENDING);
+        if (pending) assertThat(next).isEqualTo(Instant.ofEpochMilli(due.toEpochMilli()));
+        else {
+            assertThat(next).isNull();
+            verifyNoInteractions(authentication, policy);
+            verify(mongo, never()).getCollection(any(String.class));
+        }
+    }
+
     @Test
     void inactiveFirebaseStillRecordsTheEnabledScheduledRuleWithoutTouchingPendingWork() {
         ConfigProperties configProperties = new ConfigProperties();

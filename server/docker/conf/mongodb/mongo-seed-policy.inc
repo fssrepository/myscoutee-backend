@@ -1,9 +1,19 @@
 # Project-owned collection policy. Sourced by mongo_import.sh; not a Mongo entrypoint.
 # Keep product migrations and indexes here; the import engine is shared.
 
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,landingSlides,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,communityGroups,deploymentConfigurations,exchangeRates;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,landingSlides,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,communityGroups,deploymentConfigurations,exchangeRates}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,landingSlides,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminWorkerSignals,affinityAdminSignalOutbox,eventAdminSignalOutbox,notificationAdminSignalOutbox,affinityAdminSignalOutboxRetries,eventAdminSignalOutboxRetries,notificationAdminSignalOutboxRetries,integrationWebhookRetries,mediaDeletionRetries,mediaDeletions,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,communityGroups,deploymentConfigurations,exchangeRates;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,landingSlides,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminWorkerSignals,affinityAdminSignalOutbox,eventAdminSignalOutbox,notificationAdminSignalOutbox,affinityAdminSignalOutboxRetries,eventAdminSignalOutboxRetries,notificationAdminSignalOutboxRetries,integrationWebhookRetries,mediaDeletionRetries,mediaDeletions,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,communityGroups,deploymentConfigurations,exchangeRates}"
 
 declare -A seed_import_handlers=(
+  [adminWorkerSignals]=import_insert_only_seed
+  [affinityAdminSignalOutbox]=import_insert_only_seed
+  [eventAdminSignalOutbox]=import_insert_only_seed
+  [notificationAdminSignalOutbox]=import_insert_only_seed
+  [affinityAdminSignalOutboxRetries]=import_insert_only_seed
+  [eventAdminSignalOutboxRetries]=import_insert_only_seed
+  [notificationAdminSignalOutboxRetries]=import_insert_only_seed
+  [integrationWebhookRetries]=import_insert_only_seed
+  [mediaDeletionRetries]=import_insert_only_seed
+  [mediaDeletions]=import_insert_only_seed
   [appSettings]=import_app_settings_seed
   [exchangeRates]=import_exchange_rate_seed
   [deploymentConfigurations]=import_deployment_configuration_seed
@@ -35,6 +45,16 @@ collection_should_replace_on_import() {
   if [ "${collection_name}" = "adminUsers" ] \
       || [ "${collection_name}" = "appSettings" ] \
       || [ "${collection_name}" = "deploymentConfigurations" ] \
+      || [ "${collection_name}" = "adminWorkerSignals" ] \
+      || [ "${collection_name}" = "affinityAdminSignalOutbox" ] \
+      || [ "${collection_name}" = "eventAdminSignalOutbox" ] \
+      || [ "${collection_name}" = "notificationAdminSignalOutbox" ] \
+      || [ "${collection_name}" = "affinityAdminSignalOutboxRetries" ] \
+      || [ "${collection_name}" = "eventAdminSignalOutboxRetries" ] \
+      || [ "${collection_name}" = "notificationAdminSignalOutboxRetries" ] \
+      || [ "${collection_name}" = "integrationWebhookRetries" ] \
+      || [ "${collection_name}" = "mediaDeletionRetries" ] \
+      || [ "${collection_name}" = "mediaDeletions" ] \
       || [ "${collection_name}" = "exchangeRates" ]; then
     return 1
   fi
@@ -245,6 +265,10 @@ if (typeof source === "string") {
 }
 
 import_exchange_rate_seed() {
+  import_insert_only_seed "$1" "$2"
+}
+
+import_insert_only_seed() {
   local target_db="$1"
   local jsonfile="$2"
 
@@ -256,7 +280,7 @@ import_exchange_rate_seed() {
     --authenticationDatabase "${target_db}" --quiet "${target_db}" --eval '
 const seeds = EJSON.parse(require("fs").readFileSync(process.env.MONGO_EXCHANGE_SEED_PATH, "utf8"));
 for (const seed of seeds) {
-  db.getCollection("exchangeRates").updateOne(
+  db.getCollection(require("path").basename(process.env.MONGO_EXCHANGE_SEED_PATH, ".json")).updateOne(
     { _id: seed._id }, { $setOnInsert: seed }, { upsert: true }
   );
 }
@@ -308,6 +332,20 @@ ensure_collection_indexes() {
   local collection_name="$2"
 
   case "${collection_name}" in
+    mediaDeletions)
+      mongosh --host "${mongo_host}" --port "${mongo_port}" \
+        --username "${mongo_username}" --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" --quiet "${target_db}" \
+        --eval "db.getCollection('mediaDeletions').createIndex({retryTaskId:1,status:1},{name:'media_deletion_retry_batch'}); db.getCollection('mediaDeletions').createIndex({status:1,nextAttemptAt:1},{name:'media_deletion_handoff_due'});" >/dev/null
+      ;;
+
+    mediaDeletionRetries|integrationWebhookRetries|affinityAdminSignalOutboxRetries|eventAdminSignalOutboxRetries|notificationAdminSignalOutboxRetries)
+      mongosh --host "${mongo_host}" --port "${mongo_port}" \
+        --username "${mongo_username}" --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" --quiet "${target_db}" \
+        --eval "db.getCollection('${collection_name}').createIndex({operation:1,status:1,nextAttemptAt:1,_id:1},{name:'outbound_retry_due'}); db.getCollection('${collection_name}').createIndex({operation:1,reportAt:1,_id:1},{name:'outbound_retry_report_due'});" >/dev/null
+      ;;
+
     accountDeletionWarnings)
       mongosh \
         --host "${mongo_host}" \
@@ -1035,6 +1073,12 @@ db.getCollection('helpCenterGuideFields').createIndex({ screenKey: 1, order: 1 }
 ensure_runtime_indexes() {
   local target_db="$1"
 
+  ensure_collection_indexes "${target_db}" "affinityAdminSignalOutboxRetries"
+  ensure_collection_indexes "${target_db}" "eventAdminSignalOutboxRetries"
+  ensure_collection_indexes "${target_db}" "notificationAdminSignalOutboxRetries"
+  ensure_collection_indexes "${target_db}" "integrationWebhookRetries"
+  ensure_collection_indexes "${target_db}" "mediaDeletionRetries"
+  ensure_collection_indexes "${target_db}" "mediaDeletions"
   # One invocation creates all integration indexes; no seed data.
   ensure_collection_indexes "${target_db}" "integrationTokens"
   ensure_collection_indexes "${target_db}" "accountDeletionWarnings"

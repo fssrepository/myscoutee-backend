@@ -46,6 +46,26 @@ import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploy
 
 @Service
 public class NotificationOutboxService implements com.raxim.myscoutee.domain.notifications.api.NotificationDelivery {
+    private com.raxim.myscoutee.common.config.mongo.AdminProjectionSignalOutbox adminSignals;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchAdminProjectionInputs(org.springframework.data.mongodb.core.MongoTemplate signalMongo,
+            com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases,
+            com.raxim.myscoutee.domain.administration.api.OperationalTelemetry admin,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs jobs,
+            com.raxim.myscoutee.common.delivery.OutboundRetryWorker retryWorker) {
+        adminSignals = new com.raxim.myscoutee.common.config.mongo.AdminProjectionSignalOutbox(signalMongo, changes, databases, admin, "notifications",
+                com.raxim.myscoutee.domain.notifications.document.NotificationAdminSignalOutbox.class, jobs, retryWorker);
+        adminSignals.watch("notifications-admin-queues", java.util.Set.of("notificationOutbox"),
+                java.util.Set.of(), com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.ProjectionInput.QUEUES);
+        adminSignals.watch("notifications-admin-jobs", java.util.Set.of("notificationRuleConfigs"),
+                java.util.Set.of("baseGroupId", "ruleKey", "runState.lastRunStatus"), com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.ProjectionInput.QUEUES);
+    }
+
+    @org.springframework.scheduling.annotation.Scheduled(fixedDelayString="${admin.stats.signal-push-delay-ms:3600000}", initialDelayString="${admin.stats.signal-push-delay-ms:3600000}")
+    public void pushAdminProjectionSignals() { adminSignals.flush(); }
+
     public static final String WAKEUP_STREAM_KEY = "notification:outbox:wakeups";
     public static String wakeupStreamKey() {
         return WAKEUP_STREAM_KEY + ":" + com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name() + ":" + JobGroupContext.key();

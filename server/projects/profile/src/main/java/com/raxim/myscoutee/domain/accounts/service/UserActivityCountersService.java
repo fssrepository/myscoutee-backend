@@ -260,7 +260,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                                     new org.bson.Document("eventFeedback", values))))
                     .set("activities.feedback").toValue((org.springframework.data.mongodb.core.aggregation.AggregationExpression) context ->
                             new org.bson.Document("$add", List.of("$activities.eventFeedback.pending", "$activities.eventFeedback.ownEvents",
-                                    new org.bson.Document("$ifNull", List.of("$activities.serviceFeedbackPending", 0)))))
+                                    new org.bson.Document("$ifNull", List.of("$menuCounters.feedback", 0)))))
                     .set(marker).toValue(true);
             var result = mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(entry.getKey()).and(marker).ne(true)), update, Users.class);
             updated += (int) result.getModifiedCount();
@@ -500,8 +500,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
-                count(safe.notifications()),
-                count(safe.serviceFeedbackPending()));
+                count(safe.notifications()));
     }
 
     private void updateEventCounters(String userId, Users.UserActivitiesRecord next) {
@@ -554,8 +553,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
-                count(safe.notifications()),
-                count(safe.serviceFeedbackPending()));
+                count(safe.notifications()));
     }
 
     private void updateAssetCounters(String userId, Users.UserActivitiesRecord next) {
@@ -591,7 +589,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 count(safe.supplies()),
                 count(safe.tickets()),
                 count(safe.contacts()),
-                Math.max(0, counters.pending() + counters.ownEvents() + count(safe.serviceFeedbackPending())),
+                Math.max(0, counters.pending() + counters.ownEvents()),
                 safe.chat(),
                 safe.event(),
                 safe.asset(),
@@ -602,8 +600,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                         counters.removed()),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
-                count(safe.notifications()),
-                count(safe.serviceFeedbackPending()));
+                count(safe.notifications()));
     }
 
     private void updateFeedbackCounters(String userId, Users.UserActivitiesRecord next) {
@@ -614,27 +611,27 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         Users.UserEventFeedbackCountersRecord feedback = next.eventFeedback() == null
                 ? emptyActivities().eventFeedback()
                 : next.eventFeedback();
-        Update update = new Update()
-                .set("activities.feedback", count(next.feedback()))
-                .set("activities.eventFeedback.ownEvents", count(feedback.ownEvents()))
-                .set("activities.eventFeedback.pending", count(feedback.pending()))
-                .set("activities.eventFeedback.feedbacked", count(feedback.feedbacked()))
-                .set("activities.eventFeedback.removed", count(feedback.removed()));
-        updateUserActivityFields(normalizedUserId, update);
-        refreshFeedbackTotal(normalizedUserId);
+        var update = org.springframework.data.mongodb.core.aggregation.AggregationUpdate.update()
+                .set("activities.eventFeedback.ownEvents").toValue(count(feedback.ownEvents()))
+                .set("activities.eventFeedback.pending").toValue(count(feedback.pending()))
+                .set("activities.eventFeedback.feedbacked").toValue(count(feedback.feedbacked()))
+                .set("activities.eventFeedback.removed").toValue(count(feedback.removed()))
+                .set("activities.feedback").toValue(feedbackTotal());
+        mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(normalizedUserId)), update, Users.class);
     }
 
     public void updateServiceFeedbackPending(String userId, int pending) {
-        updateUserActivityFields(userId, new Update().set("activities.serviceFeedbackPending", Math.max(0,pending)));
-        refreshFeedbackTotal(userId);
+        var update = org.springframework.data.mongodb.core.aggregation.AggregationUpdate.update()
+                .set("menuCounters.feedback").toValue(Math.max(0, pending))
+                .set("activities.feedback").toValue(feedbackTotal());
+        mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(userId)), update, Users.class);
     }
 
-    private void refreshFeedbackTotal(String userId) {
-        // Derive the total atomically from the latest independent bucket projections.
-        var fields=java.util.List.of("$activities.eventFeedback.pending", "$activities.eventFeedback.ownEvents", "$activities.serviceFeedbackPending");
-        var terms=fields.stream().map(f->new org.bson.Document("$ifNull",java.util.List.of(f,0))).toList();
-        mongoTemplate.getCollection("users").updateOne(new org.bson.Document("userId",userId),
-            java.util.List.of(new org.bson.Document("$set",new org.bson.Document("activities.feedback",new org.bson.Document("$add",terms)))));
+    private static org.springframework.data.mongodb.core.aggregation.AggregationExpression feedbackTotal() {
+        return context -> new Document("$add", List.of(
+                new Document("$ifNull", List.of("$activities.eventFeedback.pending", 0)),
+                new Document("$ifNull", List.of("$activities.eventFeedback.ownEvents", 0)),
+                new Document("$ifNull", List.of("$menuCounters.feedback", 0))));
     }
 
 

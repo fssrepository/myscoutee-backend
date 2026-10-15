@@ -10,11 +10,30 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 /** Bounded existing bulk upserts; validate the complete input before sending the first batch. No retries. */
-public final class RemoteActivityCounters extends RemoteReadTransport implements ActivityCounters, com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters, com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.FeedCounts {
+public final class RemoteActivityCounters extends RemoteReadTransport implements ActivityCounters, com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates, com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters, com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.FeedCounts {
     private final ObjectMapper mapper;
     public RemoteActivityCounters(URI origin, String token, boolean allowHttp, Duration connectTimeout,
             Duration requestTimeout, ObjectMapper mapper, MeterRegistry metrics) {
         super(origin, token, allowHttp, connectTimeout, requestTimeout, mapper, metrics); this.mapper = mapper;
+    }
+    @Override public com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Snapshot apply(
+            com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change change) {
+        return applyAll(java.util.List.of(change)).getFirst();
+    }
+    @Override public java.util.List<com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Snapshot> applyAll(
+            java.util.List<com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change> changes) {
+        var query = new ActivityCountersProtocol.MenuChange(ActivityCountersProtocol.Scope.current(), changes);
+        if (!ActivityCountersProtocol.valid(query)) throw new IllegalArgumentException("Invalid menu counter change");
+        byte[] bytes = mapper.writeValueAsBytes(query);
+        if (bytes.length > ActivityCountersProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("Menu counter request exceeds byte limit");
+        return exchange(ActivityCountersProtocol.MENU_CHANGE, bytes,
+                new TypeReference<java.util.List<com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Snapshot>>() {},
+                "activity-counters.menu-change", ActivityCountersProtocol.MAX_MENU_RESPONSE_BYTES,
+                values -> values.size() == changes.size() && java.util.stream.IntStream.range(0, values.size()).allMatch(i -> {
+                    var value = values.get(i); var change = changes.get(i);
+                    return value != null && value.profile() != null && change.userId().equals(value.profile().userId())
+                        && java.util.Objects.equals(change.workspaceGroupId(), value.profile().workspaceGroupId()) && value.counters() != null;
+                }));
     }
     @Override public int applyFeedbackReceipt(com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.Change change) {
         var query = new ActivityCountersProtocol.FeedbackReceipt(ActivityCountersProtocol.Scope.current(), change);

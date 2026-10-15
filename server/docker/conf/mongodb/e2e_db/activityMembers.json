@@ -97940,7 +97940,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-seattle-friends:9f3b3f085e23af6c89dbc432",
@@ -97960,7 +97965,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-seattle-friends:1b1c70be2349b3359a8f6f94",
@@ -97980,7 +97990,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "pending",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-design-circle:af0436815ab38f4864dd1e24",
@@ -98000,7 +98015,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-design-circle:178e8d0cbe164fa3fede5884",
@@ -98020,7 +98040,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-design-circle:cdd937e0adcbd1a5e38f3ceb",
@@ -98040,7 +98065,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "invitations",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-trail-club:9f3b3f085e23af6c89dbc432",
@@ -98060,7 +98090,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "9f3b3f085e23af6c89dbc432",
-    "updatedUser": "9f3b3f085e23af6c89dbc432"
+    "updatedUser": "9f3b3f085e23af6c89dbc432",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-trail-club:7822c5f99eff99d63abe8933",
@@ -98080,7 +98115,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "9f3b3f085e23af6c89dbc432",
-    "updatedUser": "9f3b3f085e23af6c89dbc432"
+    "updatedUser": "9f3b3f085e23af6c89dbc432",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-trail-club:bf057de7c586eede7e84bdc7",
@@ -98100,7 +98140,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "9f3b3f085e23af6c89dbc432",
-    "updatedUser": "9f3b3f085e23af6c89dbc432"
+    "updatedUser": "9f3b3f085e23af6c89dbc432",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
@@ -98120,7 +98165,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
-    "updatedUser": "1b1c70be2349b3359a8f6f94"
+    "updatedUser": "1b1c70be2349b3359a8f6f94",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-language-lab:b29df68956f3fe15e04558de",
@@ -98140,7 +98190,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
-    "updatedUser": "1b1c70be2349b3359a8f6f94"
+    "updatedUser": "1b1c70be2349b3359a8f6f94",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-photo-walks:178e8d0cbe164fa3fede5884",
@@ -98160,7 +98215,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
-    "updatedUser": "178e8d0cbe164fa3fede5884"
+    "updatedUser": "178e8d0cbe164fa3fede5884",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-photo-walks:af0436815ab38f4864dd1e24",
@@ -98180,7 +98240,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
-    "updatedUser": "178e8d0cbe164fa3fede5884"
+    "updatedUser": "178e8d0cbe164fa3fede5884",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-photo-walks:9f3b3f085e23af6c89dbc432",
@@ -98200,7 +98265,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
-    "updatedUser": "178e8d0cbe164fa3fede5884"
+    "updatedUser": "178e8d0cbe164fa3fede5884",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-makers:cdd937e0adcbd1a5e38f3ceb",
@@ -98220,7 +98290,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
-    "updatedUser": "cdd937e0adcbd1a5e38f3ceb"
+    "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-makers:af0436815ab38f4864dd1e24",
@@ -98240,7 +98315,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
-    "updatedUser": "cdd937e0adcbd1a5e38f3ceb"
+    "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "pending",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-makers:178e8d0cbe164fa3fede5884",
@@ -98260,7 +98340,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
-    "updatedUser": "cdd937e0adcbd1a5e38f3ceb"
+    "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-game-night:7822c5f99eff99d63abe8933",
@@ -98280,7 +98365,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "7822c5f99eff99d63abe8933",
-    "updatedUser": "7822c5f99eff99d63abe8933"
+    "updatedUser": "7822c5f99eff99d63abe8933",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-game-night:af0436815ab38f4864dd1e24",
@@ -98300,7 +98390,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "7822c5f99eff99d63abe8933",
-    "updatedUser": "7822c5f99eff99d63abe8933"
+    "updatedUser": "7822c5f99eff99d63abe8933",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "invitations",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-game-night:cdd937e0adcbd1a5e38f3ceb",
@@ -98320,7 +98415,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "7822c5f99eff99d63abe8933",
-    "updatedUser": "7822c5f99eff99d63abe8933"
+    "updatedUser": "7822c5f99eff99d63abe8933",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
@@ -98340,7 +98440,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "9f3b3f085e23af6c89dbc432",
-    "updatedUser": "9f3b3f085e23af6c89dbc432"
+    "updatedUser": "9f3b3f085e23af6c89dbc432",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
@@ -98360,7 +98465,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "9f3b3f085e23af6c89dbc432",
-    "updatedUser": "9f3b3f085e23af6c89dbc432"
+    "updatedUser": "9f3b3f085e23af6c89dbc432",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-book-circle:bf057de7c586eede7e84bdc7",
@@ -98380,7 +98490,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
-    "updatedUser": "bf057de7c586eede7e84bdc7"
+    "updatedUser": "bf057de7c586eede7e84bdc7",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-book-circle:b29df68956f3fe15e04558de",
@@ -98400,7 +98515,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
-    "updatedUser": "bf057de7c586eede7e84bdc7"
+    "updatedUser": "bf057de7c586eede7e84bdc7",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-study-buddies:b29df68956f3fe15e04558de",
@@ -98420,7 +98540,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
-    "updatedUser": "b29df68956f3fe15e04558de"
+    "updatedUser": "b29df68956f3fe15e04558de",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-study-buddies:af0436815ab38f4864dd1e24",
@@ -98440,7 +98565,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
-    "updatedUser": "b29df68956f3fe15e04558de"
+    "updatedUser": "b29df68956f3fe15e04558de",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:seed-community-study-buddies:bf057de7c586eede7e84bdc7",
@@ -98460,7 +98590,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
-    "updatedUser": "b29df68956f3fe15e04558de"
+    "updatedUser": "b29df68956f3fe15e04558de",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "pending",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:af0436815ab38f4864dd1e24",
@@ -98480,7 +98615,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:bf057de7c586eede7e84bdc7",
@@ -98500,7 +98640,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:b29df68956f3fe15e04558de",
@@ -98520,7 +98665,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:9f3b3f085e23af6c89dbc432",
@@ -98540,7 +98690,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:1b1c70be2349b3359a8f6f94",
@@ -98560,7 +98715,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:178e8d0cbe164fa3fede5884",
@@ -98580,7 +98740,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:f4b2ebd8f56628ab7df58221",
@@ -98600,7 +98765,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:cdd937e0adcbd1a5e38f3ceb",
@@ -98620,7 +98790,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:1d7d3545ba5e0f1d63918589",
@@ -98640,7 +98815,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:7822c5f99eff99d63abe8933",
@@ -98660,7 +98840,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:d182041b8a54132d5168034f",
@@ -98680,7 +98865,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:d04cd419e735549e3f312977",
@@ -98700,7 +98890,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:eb1ca0b761885bb0763e2929",
@@ -98720,7 +98915,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:fcad6954169063f106a7a240",
@@ -98740,7 +98940,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:2d520f3c98b0440c1556f4af",
@@ -98760,7 +98965,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:0216b1ceb256d6f2c89073b8",
@@ -98780,7 +98990,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:eac11b0685f9799953a40dd4",
@@ -98800,7 +99015,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:7313a9379f60200cba7b9f71",
@@ -98820,7 +99040,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:f6f22ba0a6f14cfcf4585d47",
@@ -98840,7 +99065,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:0c3ab5da9af33d4e688e809c",
@@ -98860,7 +99090,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:76da95a9109da485555c0d25",
@@ -98880,7 +99115,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:0b8e5df4ec85d858c304a350",
@@ -98900,7 +99140,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:4da20eb049179e73d4757808",
@@ -98920,7 +99165,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:9184901a15076d32ea8b626f",
@@ -98940,7 +99190,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:e1dccfc3443239865c6ac69a",
@@ -98960,7 +99215,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:e76d63199eff33a6945cb797",
@@ -98980,7 +99240,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:f01086c19a00a6f46b6d41a7",
@@ -99000,7 +99265,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:admin-demo-ava",
@@ -99020,7 +99290,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-work:admin-demo-noel",
@@ -99040,7 +99315,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "event:work-event-product-team:group:myscoutee-work:af0436815ab38f4864dd1e24",
@@ -99197,7 +99477,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:bf057de7c586eede7e84bdc7",
@@ -99218,7 +99503,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:b29df68956f3fe15e04558de",
@@ -99239,7 +99529,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:9f3b3f085e23af6c89dbc432",
@@ -99260,7 +99555,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:1b1c70be2349b3359a8f6f94",
@@ -99281,7 +99581,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:178e8d0cbe164fa3fede5884",
@@ -99302,7 +99607,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:cdd937e0adcbd1a5e38f3ceb",
@@ -99323,7 +99633,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:1d7d3545ba5e0f1d63918589",
@@ -99344,7 +99659,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:7822c5f99eff99d63abe8933",
@@ -99365,7 +99685,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:admin-demo-ava",
@@ -99386,7 +99711,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:myscoutee-community:admin-demo-noel",
@@ -99407,7 +99737,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:community-riverside:af0436815ab38f4864dd1e24",
@@ -99428,7 +99763,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:community-riverside:1b1c70be2349b3359a8f6f94",
@@ -99449,7 +99789,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:community-riverside:178e8d0cbe164fa3fede5884",
@@ -99470,7 +99815,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:community-riverside:cdd937e0adcbd1a5e38f3ceb",
@@ -99491,7 +99841,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:community-park-court:af0436815ab38f4864dd1e24",
@@ -99512,7 +99867,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "hosting",
+      "pending": null
+    }
   },
   {
     "_id": "community:community-park-court:1b1c70be2349b3359a8f6f94",
@@ -99533,7 +99893,12 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   },
   {
     "_id": "community:community-park-court:1d7d3545ba5e0f1d63918589",
@@ -99554,6 +99919,11 @@
     "createdDate": "2026-09-20T12:00:00.000Z",
     "updatedDate": "2026-09-20T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
-    "updatedUser": "af0436815ab38f4864dd1e24"
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "groupCounterState": {
+      "revision": 1,
+      "bucket": "participation",
+      "pending": null
+    }
   }
 ]

@@ -9,6 +9,7 @@ import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 public final class ActivityCountersProtocol {
     public static final String ROOT = "/_internal/v1/accounts/activity-counters";
     public static final int MAX_REQUEST_BYTES = 2 * 1024 * 1024, MAX_RESPONSE_BYTES = 16384;
+    public static final int MAX_MENU_RESPONSE_BYTES = 2 * 1024 * 1024;
     private ActivityCountersProtocol() {}
     public static final String SUPPORT_PRESENT = ROOT + "/support-present";
     public static final String SUPPORT_REFRESH = ROOT + "/support-refresh";
@@ -20,11 +21,12 @@ public final class ActivityCountersProtocol {
     public static final String STORED_EVENTS = ROOT + "/stored-events";
     public static final String EXPIRE_FOLLOWING = ROOT + "/expire-following";
     public static final String FEEDBACK_ELIGIBILITY = ROOT + "/feedback-eligibility";
+    public static final String MENU_CHANGE = ROOT + "/menu-change";
     public static final String FEEDBACK_RECEIPT = ROOT + "/feedback-receipt";
     public static final String FEEDBACK_TRANSITION = ROOT + "/feedback-transition";
     public static final String SERVICE_FEEDBACK = ROOT + "/service-feedback";
     public static final String STORED_FEED = ROOT + "/stored-feed";
-    public static String[] paths() { return new String[]{SUPPORT_PRESENT, SUPPORT_REFRESH, FEED_REFRESH, EVENT_SOURCES, ASSET_REFRESH, EVENT_USERS, MEMBERSHIP_DELTAS, STORED_EVENTS, EXPIRE_FOLLOWING, FEEDBACK_ELIGIBILITY, FEEDBACK_TRANSITION, FEEDBACK_RECEIPT, SERVICE_FEEDBACK, STORED_FEED}; }
+    public static String[] paths() { return new String[]{SUPPORT_PRESENT, SUPPORT_REFRESH, FEED_REFRESH, EVENT_SOURCES, ASSET_REFRESH, EVENT_USERS, MEMBERSHIP_DELTAS, STORED_EVENTS, EXPIRE_FOLLOWING, FEEDBACK_ELIGIBILITY, FEEDBACK_TRANSITION, FEEDBACK_RECEIPT, SERVICE_FEEDBACK, STORED_FEED, MENU_CHANGE}; }
     public record Scope(Boolean active, String groupId) {
         public static Scope current() { return new Scope(JobGroupContext.isActive(), JobGroupContext.groupId()); }
     }
@@ -34,6 +36,9 @@ public final class ActivityCountersProtocol {
     public record MembershipQuery(Scope scope, Collection<String> added, Collection<String> removed) {}
     public record InstantQuery(Scope scope, Instant now) {}
     public record EligibilityQuery(Scope scope, Collection<String> ids, Instant now) {}
+    public record MenuChange(Scope scope, java.util.List<com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change> changes) {}
+    public static boolean valid(MenuChange q) { return q != null && scope(q.scope()) && q.changes() != null && q.changes().size() <= 100
+            && q.changes().stream().allMatch(c -> c != null && c.valid()); }
     public record FeedbackReceipt(Scope scope, com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.Change change) {}
     public record FeedbackQuery(Scope scope, FeedbackOwnersDto owners, String userId, Boolean wasSubmitted, Boolean wasRemoved, Boolean isSubmitted, Boolean isRemoved) {}
     public record ServiceFeedbackQuery(Scope scope, String userId, Integer count) {}

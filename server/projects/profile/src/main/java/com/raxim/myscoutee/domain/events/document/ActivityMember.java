@@ -66,6 +66,11 @@ public class ActivityMember implements com.raxim.myscoutee.domain.events.api.Mem
     public void setCommunityAction(String value) { communityAction = value; }
     public String getCommunityActor() { return communityActor; }
     public void setCommunityActor(String value) { communityActor = value; }
+    public record GroupCounterState(long revision, String bucket,
+            com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change pending) {}
+    private GroupCounterState groupCounterState;
+    public GroupCounterState getGroupCounterState() { return groupCounterState; }
+    public void setGroupCounterState(GroupCounterState value) { groupCounterState = value; }
     private Long communityUpdates;
     public Long getCommunityUpdates() { return communityUpdates; }
     public void setCommunityUpdates(Long value) { communityUpdates = value; }

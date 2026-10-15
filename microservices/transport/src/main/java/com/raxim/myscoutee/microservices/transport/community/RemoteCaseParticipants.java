@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import com.raxim.myscoutee.domain.community.api.CaseParticipants;
 import com.raxim.myscoutee.domain.community.dto.CaseConversation;
-import com.raxim.myscoutee.domain.community.dto.CaseVisibilityQueryDto;
 import com.raxim.myscoutee.microservices.transport.common.RemoteReadTransport;
 import io.micrometer.core.instrument.MeterRegistry;
 import tools.jackson.core.type.TypeReference;
@@ -34,9 +33,9 @@ public final class RemoteCaseParticipants extends RemoteReadTransport implements
             throw failure;
         }
     }
-    @Override public int visibleCount(String baseId, String accountId, Collection<String> managedGroups) {
-        var query = new CaseVisibilityQueryDto(baseId, accountId, managedGroups == null ? null : new java.util.ArrayList<>(managedGroups));
-        return exchange(CaseParticipantsProtocol.COUNT, CaseParticipantsProtocol.encode(query, mapper), new TypeReference<Integer>() {},
-                "community.case-visible-count", 4096, value -> value >= 0);
+    @Override public void groupAdminsChanged(String groupId, List<String> adminAccountIds) {
+        var query = new CaseParticipantsProtocol.AdminChange(groupId, adminAccountIds);
+        exchange(CaseParticipantsProtocol.ADMINS_CHANGED, CaseParticipantsProtocol.encode(query, mapper), new TypeReference<Boolean>() {},
+                "community.case-admins-changed", 4096, Boolean.TRUE::equals);
     }
 }

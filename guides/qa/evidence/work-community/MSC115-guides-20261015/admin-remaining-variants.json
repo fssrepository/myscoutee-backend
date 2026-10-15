@@ -1,0 +1,297 @@
+{
+  "observations": [
+    {
+      "case": "EN1280 empty call-volume guide context",
+      "surface": "Content Editor\n\nNo active explanation revision\n\ntips_and_updates\nExplanation\nexpand_more\nadd\nclose\n🇬🇧 English\nexpand_more\ntips_and_updates\nNo explanation revisions\n\nCreate a revision to enable the explanation popup.\n\nadd\nCreate revision",
+      "guide": "1 / 5\nclose\nContent editor\n\nMaintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor.\n\narrow_back\nBack\nformat_list_numbered\nContent editor\nexpand_more\narrow_forward\nNext"
+    },
+    {
+      "case": "HU390x560 empty call-volume guide context",
+      "surface": "Tartalomszerkesztő\n\nNincs aktív magyarázatverzió\n\ntips_and_updates\nMagyarázat\nexpand_more\nadd\nclose\n🇬🇧 English\nexpand_more\ntips_and_updates\nNincs magyarázatverzió\n\nHozz létre egy verziót a magyarázó ablak engedélyezéséhez.\n\nadd\nVerzió létrehozása",
+      "guide": "1 / 5\nclose\nTartalomszerkesztő\n\nKezeld a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld. Az alkalmazás rendszerútmutatói itt nem szerkeszthetők.\n\narrow_back\nVissza\nformat_list_numbered\nTartalomszerkesztő\nexpand_more\narrow_forward\nTovább",
+      "geometry": {
+        "progress": "1 / 5",
+        "title": "Tartalomszerkesztő",
+        "text": "Kezeld a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld. Az alkalmazás rendszerútmutatói itt nem szerkeszthetők.",
+        "body": {
+          "x": 29,
+          "y": 175.53125,
+          "w": 298,
+          "h": 96.046875,
+          "lineHeight": "20.3px"
+        },
+        "focus": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 390,
+            "h": 88.578125
+          }
+        ],
+        "surfaces": [
+          "admin.home",
+          "admin.help-editor",
+          "landing.guide"
+        ]
+      }
+    }
+  ],
+  "articleMissing": [
+    {
+      "fields": [
+        {
+          "field": "overview",
+          "label": null
+        },
+        {
+          "field": "image-details",
+          "label": "Image details"
+        },
+        {
+          "field": "image-remove",
+          "label": "Remove image"
+        },
+        {
+          "field": "image-replace",
+          "label": "Replace image slot 1"
+        },
+        {
+          "field": "image-upload",
+          "label": "Upload image slot 2"
+        },
+        {
+          "field": "image-upload",
+          "label": "Upload image slot 3"
+        },
+        {
+          "field": "image-upload",
+          "label": "Upload image slot 4"
+        },
+        {
+          "field": "image-upload",
+          "label": "Upload image slot 5"
+        },
+        {
+          "field": "image-upload",
+          "label": "Upload image slot 6"
+        },
+        {
+          "field": "image-upload",
+          "label": "Upload image slot 7"
+        },
+        {
+          "field": "image-upload",
+          "label": "Upload image slot 8"
+        },
+        {
+          "field": "image-pages",
+          "label": "Image pages"
+        }
+      ],
+      "controls": [
+        {
+          "id": "article-save",
+          "field": null,
+          "label": null
+        },
+        {
+          "id": "article-preview",
+          "field": null,
+          "label": "Preview article"
+        },
+        {
+          "id": "article-close",
+          "field": null,
+          "label": "Close editor"
+        },
+        {
+          "id": "article-language",
+          "field": null,
+          "label": null
+        }
+      ],
+      "inputs": [
+        {
+          "name": "ideaTitle",
+          "field": null
+        },
+        {
+          "name": "ideaExcerpt",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "",
+          "field": null
+        },
+        {
+          "name": "ideaContentHtml",
+          "field": null
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "label": "Unrun populated Article editor EN1280",
+      "progress": "1 / 3",
+      "title": "Edit article",
+      "text": "Edit the article for the selected language, including its title, text and images. Preview the result before saving, and use the saved article’s separate publication action when ready.",
+      "body": {
+        "x": 77,
+        "y": 173.109375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 71.765625
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "Unrun readonly populated Article gallery EN1280",
+      "progress": "1 / 1",
+      "title": "Close",
+      "text": "Return to the previous surface.",
+      "body": {
+        "x": 847.484375,
+        "y": 113.734375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 1169.484375,
+          "y": 23.78125,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN1280 privacy optional control conditional",
+      "progress": "20 / 25",
+      "title": "Privacy requirement",
+      "text": "Choose whether accepting this privacy section is optional or required. Review the requirement before activating the revision.",
+      "body": {
+        "x": 634.578125,
+        "y": 561.6875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 476.671875,
+          "y": 471.734375,
+          "w": 133.90625,
+          "h": 40
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU390x560 empty revision list",
+      "progress": "1 / 5",
+      "title": "Tartalomszerkesztő",
+      "text": "Kezeld a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld. Az alkalmazás rendszerútmutatói itt nem szerkeszthetők.",
+      "body": {
+        "x": 29,
+        "y": 175.53125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 88.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN390 image-details nested missing controls",
+      "progress": "1 / 1",
+      "title": "Close",
+      "text": "Close the editor and discard its unsaved draft. Save first if you want to keep the current text and media changes.",
+      "body": {
+        "x": 63,
+        "y": 126.09375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 333.71875,
+          "y": 296.140625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    }
+  ],
+  "proposal": "/tmp/msc115-guides-20261015/article-editor-guide-proposal.json"
+}

@@ -409,12 +409,15 @@ public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.Even
     }
 
     public void refreshTournamentCurrentStage() {
-        List<SubEventItem> stages = (subEvents == null ? List.<SubEventItem>of() : subEvents).stream()
+        currentStage = tournamentCurrentStage(subEvents);
+    }
+
+    public static TournamentCurrentStageDto tournamentCurrentStage(List<SubEventItem> items) {
+        List<SubEventItem> stages = (items == null ? List.<SubEventItem>of() : items).stream()
                 .filter(ActivityEvent::isTournamentStage)
                 .toList();
         if (stages.isEmpty()) {
-            currentStage = null;
-            return;
+            return null;
         }
         int currentIndex = 0;
         while (currentIndex + 1 < stages.size()
@@ -422,7 +425,7 @@ public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.Even
             currentIndex += 1;
         }
         SubEventItem stage = stages.get(currentIndex);
-        currentStage = new TournamentCurrentStageDto(
+        return new TournamentCurrentStageDto(
                 normalizeText(stage.id()),
                 normalizeText(stage.name()),
                 currentIndex + 1,

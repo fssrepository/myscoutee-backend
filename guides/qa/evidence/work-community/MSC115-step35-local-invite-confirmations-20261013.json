@@ -1,0 +1,602 @@
+{
+  "date": "2026-10-13",
+  "step": 35,
+  "scope": "Local Work invitation/acceptance following previously verified removal; code-only confirmation audit after user ended browser testing.",
+  "workAfterInvite": {
+    "at": "2026-10-13T16:29:29.204Z",
+    "events": [
+      {
+        "id": "work-event-company-introductions",
+        "accepted": [
+          "group:myscoutee-work:u32"
+        ],
+        "pending": [
+          "group:myscoutee-work:u1"
+        ],
+        "invited": [
+          "group:myscoutee-work:u1"
+        ]
+      }
+    ],
+    "notifications": [
+      {
+        "id": "event-member-removed:work-event-company-introductions:group:myscoutee-work:u1:c454d36e-81ae-44d6-aac7-2c5249acfb08:target",
+        "kind": "event-member-removed",
+        "sender": "group:myscoutee-work:u32",
+        "recipient": "u1",
+        "read": null
+      },
+      {
+        "id": "event-invite:work-event-company-introductions:group:myscoutee-work:u1:31276d91-b822-45c8-80d3-f7703f2c6e4e",
+        "kind": "event-invite",
+        "sender": "group:myscoutee-work:u32",
+        "recipient": "u1",
+        "read": null
+      }
+    ],
+    "counts": [
+      {
+        "id": "u1",
+        "stored": 29,
+        "unread": 29
+      },
+      {
+        "id": "u32",
+        "stored": 27,
+        "unread": 27
+      }
+    ]
+  },
+  "workAfterAccept": {
+    "at": "2026-10-13T16:29:52.518Z",
+    "events": [
+      {
+        "id": "work-event-company-introductions",
+        "accepted": [
+          "group:myscoutee-work:u32",
+          "group:myscoutee-work:u1"
+        ],
+        "pending": [],
+        "invited": []
+      }
+    ],
+    "notifications": [
+      {
+        "id": "event-member-removed:work-event-company-introductions:group:myscoutee-work:u1:c454d36e-81ae-44d6-aac7-2c5249acfb08:target",
+        "kind": "event-member-removed",
+        "sender": "group:myscoutee-work:u32",
+        "recipient": "u1",
+        "read": null
+      },
+      {
+        "id": "event-invite:work-event-company-introductions:group:myscoutee-work:u1:31276d91-b822-45c8-80d3-f7703f2c6e4e",
+        "kind": "event-invite",
+        "sender": "group:myscoutee-work:u32",
+        "recipient": "u1",
+        "read": "2026-10-13T16:29:50.550Z"
+      },
+      {
+        "id": "event-invitation-accepted:work-event-company-introductions:group:myscoutee-work:u32:5c10d700-965e-4f43-ade5-8d237de7c02b",
+        "kind": "event-invitation-accepted",
+        "sender": "group:myscoutee-work:u1",
+        "recipient": "u32",
+        "read": null
+      }
+    ],
+    "counts": [
+      {
+        "id": "u1",
+        "stored": 28,
+        "unread": 28
+      },
+      {
+        "id": "u32",
+        "stored": 28,
+        "unread": 28
+      }
+    ]
+  },
+  "workAfterReload": {
+    "at": "2026-10-13T16:30:09.339Z",
+    "events": [
+      {
+        "id": "work-event-company-introductions",
+        "invited": []
+      }
+    ],
+    "notifications": [
+      {
+        "id": "event-member-removed:work-event-company-introductions:group:myscoutee-work:u1:c454d36e-81ae-44d6-aac7-2c5249acfb08:target",
+        "kind": "event-member-removed",
+        "sender": "group:myscoutee-work:u32",
+        "recipient": "u1",
+        "read": null
+      },
+      {
+        "id": "event-invite:work-event-company-introductions:group:myscoutee-work:u1:31276d91-b822-45c8-80d3-f7703f2c6e4e",
+        "kind": "event-invite",
+        "sender": "group:myscoutee-work:u32",
+        "recipient": "u1",
+        "read": "2026-10-13T16:29:50.550Z"
+      },
+      {
+        "id": "event-invitation-accepted:work-event-company-introductions:group:myscoutee-work:u32:5c10d700-965e-4f43-ade5-8d237de7c02b",
+        "kind": "event-invitation-accepted",
+        "sender": "group:myscoutee-work:u1",
+        "recipient": "u32",
+        "read": null
+      }
+    ],
+    "counts": [
+      {
+        "id": "u1",
+        "stored": 28,
+        "unread": 28
+      },
+      {
+        "id": "u32",
+        "stored": 28,
+        "unread": 28
+      }
+    ]
+  },
+  "deleteBeforeTiming": [
+    {
+      "label": "trash",
+      "phase": "start",
+      "at": 206996.3999999985,
+      "route": "group:myscoutee-work:u1"
+    },
+    {
+      "label": "flush",
+      "phase": "start",
+      "at": 207070.79999999888
+    },
+    {
+      "label": "flush",
+      "phase": "end",
+      "at": 207220.69999999925,
+      "duration": 149.90000000037253
+    },
+    {
+      "label": "flush",
+      "phase": "start",
+      "at": 207297.69999999925
+    },
+    {
+      "label": "flush",
+      "phase": "end",
+      "at": 207386.8999999985,
+      "duration": 89.19999999925494
+    },
+    {
+      "label": "flush",
+      "phase": "start",
+      "at": 207387
+    },
+    {
+      "label": "flush",
+      "phase": "end",
+      "at": 207477.19999999925,
+      "duration": 90.19999999925494
+    },
+    {
+      "label": "delay",
+      "phase": "start",
+      "at": 207477.29999999888,
+      "route": "/activities/events"
+    },
+    {
+      "label": "delay",
+      "phase": "end",
+      "at": 208977.79999999888,
+      "duration": 1500.5
+    },
+    {
+      "label": "trash",
+      "phase": "end",
+      "at": 208977.79999999888,
+      "duration": 1981.4000000003725
+    }
+  ],
+  "deleteAfterTiming": [
+    {
+      "label": "trash",
+      "phase": "start",
+      "at": 27797.800000000745,
+      "route": "group:myscoutee-work:u1"
+    },
+    {
+      "label": "delay",
+      "phase": "start",
+      "at": 27798,
+      "route": "/activities/events"
+    },
+    {
+      "label": "flush",
+      "phase": "start",
+      "at": 27879.800000000745
+    },
+    {
+      "label": "flush",
+      "phase": "end",
+      "at": 27998.60000000149,
+      "duration": 118.80000000074506
+    },
+    {
+      "label": "flush",
+      "phase": "start",
+      "at": 28069.60000000149
+    },
+    {
+      "label": "flush",
+      "phase": "end",
+      "at": 28164.10000000149,
+      "duration": 94.5
+    },
+    {
+      "label": "flush",
+      "phase": "start",
+      "at": 28164.10000000149
+    },
+    {
+      "label": "flush",
+      "phase": "end",
+      "at": 28255.400000000373,
+      "duration": 91.29999999888241
+    },
+    {
+      "label": "delay",
+      "phase": "end",
+      "at": 29298.300000000745,
+      "duration": 1500.300000000745
+    },
+    {
+      "label": "trash",
+      "phase": "end",
+      "at": 29298.300000000745,
+      "duration": 1500.5
+    }
+  ],
+  "measurement": {
+    "beforeMs": 1981.4,
+    "afterMs": 1500.5,
+    "delayMs": 1500,
+    "scope": "One matched local service-call measurement each, same disposable event and 2 CPU frontend container limit. Not click-to-dialog-close timing or a stress test."
+  },
+  "verification": [
+    "Normal Work Share Event link followed through demo login as Farkas Anna; invitation visible as Invitations1.",
+    "Accepted through normal UI: Invitations0; membership Alex+Anna; exactly one acceptance notification to Alex.",
+    "Reload retains counters and notifications without duplication; Members2/12 observed.",
+    "Transparent timing wrappers removed. Temporary personal verification event h1791908483638 trashed through UI."
+  ],
+  "limits": [
+    "Local scheduled auto-inviter remains a demo count; no worker parity claim.",
+    "No whole confirmation-flow browser sweep; user explicitly requested code-only review.",
+    "No36 started.",
+    "Earlier HTTP feedback runtime gap is still unproven; current changes and local step35 chain do not constitute a full campaign PASS."
+  ],
+  "confirmationAudit": {
+    "mode": "Code review; no browser sweep or npm tests per user instruction.",
+    "changedProductMethods": [
+      {
+        "file": "events/events.service.ts",
+        "method": "saveCheckoutBasket",
+        "route": "LocalEventsService.EVENTS_CHECKOUT_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "updateCheckoutBasketState",
+        "route": "LocalEventsService.EVENTS_CHECKOUT_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "payEventCheckout",
+        "route": "LocalEventsService.EVENTS_CHECKOUT_ROUTE",
+        "removedSerialDelays": 2
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "submitEventFeedback",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "removeEventFeedbackEvent",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "restoreEventFeedbackEvent",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "cancelItem",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "publishItem",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "unpublishItem",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "restoreItem",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 2
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "setLocalEventWatchState",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "takeOverItem",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "applyMingleAction",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "saveTournamentGroup",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "deleteTournamentGroup",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "upsertSubEventLeaderboardEntry",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "requestJoin",
+        "route": "LocalEventsService.EVENTS_ROUTE",
+        "removedSerialDelays": 3
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "createCheckoutSession",
+        "route": "LocalEventsService.EVENTS_CHECKOUT_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "authorizeCheckout",
+        "route": "LocalEventsService.EVENTS_CHECKOUT_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "payCheckoutSession",
+        "route": "LocalEventsService.EVENTS_CHECKOUT_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "accounts/following.service.ts",
+        "method": "change",
+        "route": "'/activities/events'",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "accounts/contacts.service.ts",
+        "method": "changeChatAccess",
+        "route": "LocalContactsService.CONTACTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "accounts/contacts.service.ts",
+        "method": "deleteContact",
+        "route": "LocalContactsService.CONTACTS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "accounts/users.service.ts",
+        "method": "deleteUser",
+        "route": "LocalUsersService.USER_BY_ID_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "content/photo-feed.service.ts",
+        "method": "remove",
+        "route": "'/activities/feed'",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "content/admin-moderation.service.ts",
+        "method": "warnUser",
+        "route": "ADMIN_MODERATION_WARN_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "content/admin-moderation.service.ts",
+        "method": "blockUser",
+        "route": "ADMIN_MODERATION_BLOCK_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "content/admin-moderation.service.ts",
+        "method": "unblockUser",
+        "route": "ADMIN_MODERATION_UNBLOCK_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "administration/admin-workspace.service.ts",
+        "method": "setReportResolved",
+        "route": "ADMIN_REPORTS_RESOLVE_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "administration/admin-workspace.service.ts",
+        "method": "setFeedbackResolved",
+        "route": "ADMIN_FEEDBACK_RESOLVE_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "assets/assets.service.ts",
+        "method": "deleteOwnedAsset",
+        "route": "LocalAssetsService.ASSETS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "assets/assets.service.ts",
+        "method": "leaveOwnedAsset",
+        "route": "LocalAssetsService.ASSETS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "assets/assets.service.ts",
+        "method": "takeOverOwnedAsset",
+        "route": "LocalAssetsService.ASSETS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "assets/assets.service.ts",
+        "method": "makeAssetManager",
+        "route": "LocalAssetsService.ASSETS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "assets/assets.service.ts",
+        "method": "revokeAssetManager",
+        "route": "LocalAssetsService.ASSETS_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "payments/payment-methods.service.ts",
+        "method": "deleteCashReceipt",
+        "route": "LocalPaymentMethodsService.ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "payments/payment-methods.service.ts",
+        "method": "deletePaymentMethod",
+        "route": "LocalPaymentMethodsService.ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "payments/payment-methods.service.ts",
+        "method": "requestRefund",
+        "route": "LocalPaymentMethodsService.ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "payments/payment-methods.service.ts",
+        "method": "approveRefund",
+        "route": "LocalPaymentMethodsService.ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "integrations/integration.service.ts",
+        "method": "claimExternalInvite",
+        "route": "'/integrations'",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "integrations/integration.service.ts",
+        "method": "revokeToken",
+        "route": "`${INTEGRATIONS_ROUTE}/tokens`",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "chat/chats.service.ts",
+        "method": "updateSupportCase",
+        "route": "LocalChatsService.CHAT_ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "notifications/notifications.service.ts",
+        "method": "markRead",
+        "route": "LocalNotificationsService.ROUTE",
+        "removedSerialDelays": 1
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "trashItem",
+        "change": "Include local work in the existing simulated transport interval."
+      },
+      {
+        "file": "events/events.service.ts",
+        "method": "applyStageAction",
+        "change": "Include local work in the existing simulated transport interval."
+      },
+      {
+        "file": "accounts/user-experiences.service.ts",
+        "method": "saveUserExperiences",
+        "change": "Include local work in the existing simulated transport interval."
+      },
+      {
+        "file": "accounts/users.service.ts",
+        "method": "saveUserProfile",
+        "change": "Include local work in the existing simulated transport interval."
+      },
+      {
+        "file": "content/idea-posts.service.ts",
+        "method": "savePost",
+        "change": "Include local work in the existing simulated transport interval."
+      },
+      {
+        "file": "integrations/integration.service.ts",
+        "method": "createToken",
+        "change": "Include local work in the existing simulated transport interval."
+      },
+      {
+        "file": "notifications/notifications.service.ts",
+        "method": "updatePreferences",
+        "change": "Include local work in the existing simulated transport interval."
+      }
+    ],
+    "templateMethods": [
+      "saveUserProfile",
+      "deleteUser",
+      "createToken",
+      "revokeToken",
+      "markRead",
+      "updatePreferences"
+    ],
+    "unchangedCases": "Existing concurrent mutation/delay paths, clipboard-only confirmations and local form edits retained. Separate mutation followed by an authoritative roster query remains two requests; no UI roster approximation or local-only bypass was added.",
+    "verification": {
+      "templateBuild": "NG_BUILD_MAX_WORKERS=2 node scripts/with-components.mjs build --configuration dev; exit0 at2026-10-13T16:59:20Z. Product frontend-sync stopped for the whole build and restored afterward.",
+      "productBuild": "Existing frontend-sync final build/sync19:01:15 passed. No separate product build owner or npm tests."
+    }
+  },
+  "referenceReuse": {
+    "workHeader": "Compared Dating homeHeaderControlsReady/profileExt success and static Work headerItems. Removed only Work @defer; preserved existing profile gate and HomeHeader component. Ratings counterTone uses existing alert variant.",
+    "contextMenus": "Existing AppMenu action palette variables used by Dialog confirmation buttons; opt-in action surface for card menus. Same four files in product/template/standalone components.",
+    "mandatorySkillRule": "Added uppercase English instruction to inspect the user-named reference before changes; quick_validate.py passed."
+  },
+  "revisions": {
+    "beforeFrontend": "5f23a5da",
+    "components": "bf9e468",
+    "templateFrontend": "190a531",
+    "templateBackend": "05ed367",
+    "frontend": "6b1d5306"
+  }
+}

@@ -128,14 +128,32 @@ contains the task history, workstream effort and measurement method.
 
 ## Manual QA status
 
-As of **2026-10-07**, the [development QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
-contains **146 scenarios**, excluding four legend rows: **120 with recorded
-PASS results, 25 NOT RUN and one reopened explanation-guide case**. Those
+As of **2026-10-15**, the [development QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+contains **146 scenarios**, excluding four legend rows: **121 with recorded
+PASS results, 11 NOT RUN and fourteen IN PROGRESS**. Those
 results apply to their recorded scope; they do not establish that the new
 Work/Community and API/MCP extensions have passed.
 
-Full QA includes additions from the other Codex session. Reconcile the latest
-shared ledger and checklists before execution. Use the
+The 19 MSC-115 rows track the same 119-step campaign, not additional runs.
+Steps35–36 are closed; steps37–39 HTTP API controls and the list-counter repair are verified.
+Steps40–45 have recorded HTTP service/calendar checks; the requested follow-up fixes are committed.
+Step46 empty-audience persistence and48 permission controls passed over HTTP.
+Steps49–50 lifecycle/ownership and the read/command-version fixes have recorded HTTP verification.
+Steps52–57 provider quotations, distinct chats, notifications and access isolation have recorded HTTP verification;
+shared policy layout and quotation counters are repaired. Steps58–63 include retained task deletion,
+provider-calendar removal and accepted quotation terms. Steps64–69 have recorded HTTP/WebSocket
+chat access, unread and direct Tasks navigation/error-retry checks. The shared centered error card
+is propagated to the template; affected checks are collected in
+[MSC115-TEMPLATE-REGRESSION](guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md).
+Steps70–75 passed focused HTTP checks, including45-day controls and error/retry.
+Steps95–107 have recorded scoped checks; admin selector/reload repair passes8 frontend and7 backend tests.
+Guides108–113 are closed for source HTTP and the requested local spot checks; backend guide/translation keys match. Template propagation114 is complete; its runtime checks belong to separate template QA. KVM115–117 is assigned to another session.
+[Compilation optimization](guides/plans/FRONTEND_COMPILATION_OPTIMIZATION.md) is a separate workstream and adds no MSC-115 closure prerequisite.
+Broad local/HU, KVM and cleanup gates remain open.
+The Campaign API block, remaining local/HU checks, affected template runtime and KVM retain their recorded gaps.
+Four development tasks remain open (MSC-115/116/117/119); the closed MSC-118
+development task retains separate unexecuted role-guide/notification QA.
+Reconcile the shared ledger and checklists before execution. Use the
 [current handoff](guides/qa/handoffs/CURRENT_QA_SESSION.md),
-[Work/Community checklist](guides/qa/checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md)
+[Work/Community checklist](guides/qa/checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md)
 and [MSC-119 implementation record](guides/plans/MSC-119_MCP_READ_EVENTS_ROLE_GUIDANCE.md).

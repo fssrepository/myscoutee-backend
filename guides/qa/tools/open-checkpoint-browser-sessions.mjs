@@ -12,7 +12,9 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const geolocationHolderPath = path.join(scriptDirectory, 'hold-chrome-geolocation.mjs');
 const browserSessionCheckpointHarnessPath = path.resolve(
   scriptDirectory,
-  '../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh'
+  process.env.MANUAL_QA_MONGO_MODE === 'kvm'
+    ? '../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh'
+    : '../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh'
 );
 const configurationPath = process.env.QA_BROWSER_SESSION_CONFIG
   || path.join(scriptDirectory, 'browser-session-checkpoints.json');

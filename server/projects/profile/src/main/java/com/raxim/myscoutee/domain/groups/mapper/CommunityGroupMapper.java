@@ -20,6 +20,10 @@ public final class CommunityGroupMapper {
     }
     public static Group toDto(CommunityGroup group, DiscoveryProfile owner, DiscoveryProfile viewer,
             List<CommunityMember> members, long activity) {
+        return toDto(group, owner, viewer, members, activity, java.util.Map.of());
+    }
+    public static Group toDto(CommunityGroup group, DiscoveryProfile owner, DiscoveryProfile viewer,
+            List<CommunityMember> members, long activity, java.util.Map<String, Integer> menuCounters) {
         CommunityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && (List.of("accepted", "pending").contains(m.getStatus()) || restorableMembership(m))).findFirst().orElse(null);
         boolean admin = own != null && "accepted".equals(own.getStatus()) && "Admin".equals(own.getRole());
         return new Group(group.id(), group.ownerUserId(), owner.getName(), avatar(owner),
@@ -31,7 +35,7 @@ public final class CommunityGroupMapper {
                 (int)pendingMembers(group, own),
                 (own != null && "accepted".equals(own.getStatus()) ? activity : 0) + membersActivity(group, own)
                     + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
-                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own), canRestoreGroup(group, own), group.effectiveType());
+                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own), canRestoreGroup(group, own), group.effectiveType(), menuCounters);
     }
     public static boolean restorableMembership(CommunityMember member) {
         return member != null && ("blocked".equals(member.getStatus()) || "deleted".equals(member.getStatus()) && member.getRequestKind() == null

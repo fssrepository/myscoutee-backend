@@ -9,9 +9,9 @@ contracts -> base service/route selection -> local or HTTP adapter
 -> mapper/repository -> shared signal store -> presentation component
 ```
 
-For a popup/dialog/drawer/page surface containing a list or live collection,
+When creating or materially changing a list/live-collection surface,
 load [smart-list-live-surface.md](../patterns/smart-list-live-surface.md) before
-choosing optional behavior or implementing the list.
+implementing its behavior. A text-only edit does not trigger that card.
 
 ## Questions
 

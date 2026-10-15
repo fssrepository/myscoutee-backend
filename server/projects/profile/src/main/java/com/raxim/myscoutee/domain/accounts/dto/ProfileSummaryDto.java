@@ -19,9 +19,10 @@ public record ProfileSummaryDto(
         String city,
         String initials,
         String gender,
-        java.util.List<String> images) implements ProfileSummary {
+        java.util.List<String> images, java.util.Map<String, Integer> menuCounters) implements ProfileSummary {
     public ProfileSummaryDto {
         if (images != null) images = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(images));
+        menuCounters = menuCounters == null ? java.util.Map.of() : java.util.Map.copyOf(menuCounters);
     }
     public static ProfileSummaryDto from(ProfileSummary value) {
         return new ProfileSummaryDto(
@@ -40,7 +41,7 @@ public record ProfileSummaryDto(
                 value.getCity(),
                 value.getInitials(),
                 value.getGender(),
-                value.getImages());
+                value.getImages(), value.getMenuCounters());
     }
     @Override public String getUserId() { return userId; }
     @Override public String getAccountUserId() { return accountUserId; }
@@ -59,4 +60,5 @@ public record ProfileSummaryDto(
     @Override public String getInitials() { return initials; }
     @Override public String getGender() { return gender; }
     @Override public java.util.List<String> getImages() { return images; }
+    @Override public java.util.Map<String, Integer> getMenuCounters() { return menuCounters; }
 }

@@ -3,6 +3,7 @@
 import argparse
 import importlib
 import json
+import subprocess
 import sys
 
 import workloads as w
@@ -25,4 +26,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except subprocess.CalledProcessError as error:
+        # Report the Mongo/transport failure, not the full fixture command and data.
+        raise SystemExit(error.stderr.strip() or f'KVM fixture failed (exit {error.returncode}).')

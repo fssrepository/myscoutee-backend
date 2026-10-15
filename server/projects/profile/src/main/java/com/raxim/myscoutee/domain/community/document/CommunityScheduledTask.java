@@ -11,7 +11,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record CommunityScheduledTask(@Id String id, String baseGroupId, String communityId,
         String ownerAccountId, String title, String description, String caseType,
         boolean audienceAll, List<String> audienceAccountIds, String startAtIso, String nextDueAtIso, String frequency,
-        boolean enabled, boolean deleted, String createdAtIso, String updatedAtIso, @Version Long version) {
+        boolean enabled, boolean deleted, String createdAtIso, String updatedAtIso, @Version Long version, @com.fasterxml.jackson.annotation.JsonIgnore ServiceCase.CounterState counterState) {
+    public CommunityScheduledTask(String id, String baseGroupId, String communityId,
+            String ownerAccountId, String title, String description, String caseType,
+            boolean audienceAll, List<String> audienceAccountIds, String startAtIso, String nextDueAtIso, String frequency,
+            boolean enabled, boolean deleted, String createdAtIso, String updatedAtIso, Long version) {
+        this(id, baseGroupId, communityId, ownerAccountId, title, description, caseType, audienceAll,
+                audienceAccountIds, startAtIso, nextDueAtIso, frequency, enabled, deleted, createdAtIso, updatedAtIso, version, null);
+    }
+    public CommunityScheduledTask withCounterState(ServiceCase.CounterState state) {
+        return new CommunityScheduledTask(id, baseGroupId, communityId, ownerAccountId, title, description,
+                caseType, audienceAll, audienceAccountIds, startAtIso, nextDueAtIso, frequency, enabled, deleted,
+                createdAtIso, updatedAtIso, version, state);
+    }
     public CommunityScheduledTask {
         // Records saved before the start-date field used the first due date as their anchor.
         if (startAtIso == null) startAtIso = nextDueAtIso;

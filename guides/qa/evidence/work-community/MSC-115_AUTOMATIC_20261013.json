@@ -1,0 +1,691 @@
+{
+  "campaign": "MSC-115",
+  "started": "2026-10-13",
+  "status": "CLOSED / PASS — accepted development scope",
+  "authority": "Full automatic visible CDP QA, fixes, template project propagation, desktop/mobile, serial KVM samples; performance investigation only for conspicuous resource or UX failures.",
+  "revisions": {
+    "backend": "0e0c9e4026089431f4eab7cd6228ce44a33a557c",
+    "frontend": "68b43704780eb7b3de56a8ecfd1683bd9a1ae0c6",
+    "components": "7c6fd78b544ae7930e80c5fdb245345c90eee24c",
+    "templateBackend": "83acc88062964ce10a1238390b19aa0ac656b035",
+    "templateFrontend": "c0357677e07a6f6725590daada135de876aaffa9"
+  },
+  "runtime": {
+    "stack": "existing server/docker-compose-dev.yml monolith",
+    "database": "demo_db",
+    "buildOwners": [
+      "myscoutee",
+      "frontend-sync"
+    ],
+    "browser": "MSC115-UI-REGRESSION; visible managed Chrome; CDP via existing launcher",
+    "preflight": "No running Docker stacks before explicit existing Compose start. Existing backend and frontend watchers compiled/healthy. No second build process.",
+    "resourceSample": {
+      "apiCpuPercent": 5.65,
+      "apiGiB": 1.916,
+      "frontendWatcherCpuPercent": 5.48,
+      "frontendWatcherGiB": 2.927,
+      "mongoCpuPercent": 1.36,
+      "mongoMiB": 621.5
+    },
+    "preflightWorktrees": "Backend, frontend and template clean before this campaign; roadmap README modification from earlier request remains separate."
+  },
+  "steps": [
+    {
+      "step": 4,
+      "testcase": "MSC115-LANDING",
+      "result": "IN PROGRESS",
+      "actor": "anonymous",
+      "mode": "HTTP monolith",
+      "language": "EN",
+      "viewports": [
+        "1280x900",
+        "390x844"
+      ],
+      "observed": "Work/Community switching and stationary header verified; mobile hero wraps without clipping. Header y remains31.390625 desktop and5.59375 mobile; content scrollTop295/866, document scrollTop0. Complete mode/language/local coverage remains open.",
+      "architecture": {
+        "A01": {
+          "status": "PASS",
+          "evidence": "Fix stays in existing rendering directive/card; no repository or service moved into component."
+        },
+        "A02": {
+          "status": "N/A",
+          "reason": "HTTP landing/cache-paint observation adds no service operation or local delay; local path still pending."
+        },
+        "A03": {
+          "status": "PASS",
+          "evidence": "Existing lazy image spinner retained for first load; warm transitions have no spinner/reload."
+        },
+        "A04": {
+          "status": "N/A",
+          "reason": "These subchecks do not open a data popup."
+        },
+        "A05": {
+          "status": "NOT PROVEN",
+          "reason": "No store changes; landing cache revisit observed, complete actor/query checks pending."
+        },
+        "A06": {
+          "status": "N/A",
+          "reason": "Anonymous read-only landing; no data save."
+        },
+        "A07": {
+          "status": "N/A",
+          "reason": "Anonymous landing has no red domain counters."
+        },
+        "A08": {
+          "status": "PASS",
+          "evidence": "No atlas/content requests during measured full warm autoplay cycle; revisiting loaded modes caused no extra content GET."
+        },
+        "A09": {
+          "status": "PASS",
+          "evidence": "Existing SmartList autoplay retained; no new scheduler, poller, cache or list reload."
+        },
+        "A10": {
+          "status": "NOT PROVEN",
+          "reason": "HTTP mobile and desktop subchecks only; local/EN-HU/auth/persistence requirements remain open."
+        },
+        "A11": {
+          "status": "NOT PROVEN",
+          "reason": "Shared source propagated to separate template project; runtime verification remains open."
+        },
+        "A12": {
+          "status": "PASS",
+          "evidence": "Sole existing frontend-sync watcher built changes; no duplicate build. API CPU 9.79%,1.79GiB; frontend watcher20.78%,3.513GiB sampled after rebuild; no UI stall. KVM scheduled separately."
+        }
+      }
+    },
+    {
+      "step": 5,
+      "testcase": "MSC115-LANDING",
+      "result": "IN PROGRESS",
+      "actor": "anonymous",
+      "mode": "HTTP monolith",
+      "language": "EN",
+      "observed": "Four Work/Community slides and article cards present; content reuse observed. Mobile cached-atlas flicker fixed and retested. Incorrect campaign-capacity copy remains open; full articles/footer/guide and seed-state checks remain open.",
+      "architecture": {
+        "A01": {
+          "status": "PASS",
+          "evidence": "Fix stays in existing rendering directive/card; no repository or service moved into component."
+        },
+        "A02": {
+          "status": "N/A",
+          "reason": "HTTP landing/cache-paint observation adds no service operation or local delay; local path still pending."
+        },
+        "A03": {
+          "status": "PASS",
+          "evidence": "Existing lazy image spinner retained for first load; warm transitions have no spinner/reload."
+        },
+        "A04": {
+          "status": "N/A",
+          "reason": "These subchecks do not open a data popup."
+        },
+        "A05": {
+          "status": "NOT PROVEN",
+          "reason": "No store changes; landing cache revisit observed, complete actor/query checks pending."
+        },
+        "A06": {
+          "status": "N/A",
+          "reason": "Anonymous read-only landing; no data save."
+        },
+        "A07": {
+          "status": "N/A",
+          "reason": "Anonymous landing has no red domain counters."
+        },
+        "A08": {
+          "status": "PASS",
+          "evidence": "No atlas/content requests during measured full warm autoplay cycle; revisiting loaded modes caused no extra content GET."
+        },
+        "A09": {
+          "status": "PASS",
+          "evidence": "Existing SmartList autoplay retained; no new scheduler, poller, cache or list reload."
+        },
+        "A10": {
+          "status": "NOT PROVEN",
+          "reason": "HTTP mobile and desktop subchecks only; local/EN-HU/auth/persistence requirements remain open."
+        },
+        "A11": {
+          "status": "NOT PROVEN",
+          "reason": "Shared source propagated to separate template project; runtime verification remains open."
+        },
+        "A12": {
+          "status": "PASS",
+          "evidence": "Sole existing frontend-sync watcher built changes; no duplicate build. API CPU 9.79%,1.79GiB; frontend watcher20.78%,3.513GiB sampled after rebuild; no UI stall. KVM scheduled separately."
+        }
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "result": "CLOSED — later local invitation/acceptance and HTTP feedback evidence completes the step",
+      "verification": [
+        "Alex removed Anna from Meet the company through normal Members confirmation. Recipient Anna unread/stored27→28; actor Alex remains27. Exactly one event-member-removed notification.",
+        "Reload retained the one-member Alex roster and one notification; stored/unread counters remain28/28 for Anna and27/27 for Alex.",
+        "User clarified the apparent disappearance was opening Invite members, not a member-list reload defect. No reload behavior was changed."
+      ],
+      "remaining": "Manual invite picker is empty under the existing HTTP/local single-met eligibility rule; Alex Work has no met relationships. Local admin scheduled-run returns a demo count for event-auto-inviter rather than executing the HTTP worker. Local Work invitation/acceptance remains unproven; prior HTTP proof remains valid for its own scope. No new scheduler or changed eligibility introduced.",
+      "evidence": [
+        "MSC115-step35-local-removal-20261013.json"
+      ],
+      "retainedState": "Offline Alex Work, Meet the company Members popup open with Alex only. Anna remains removed by the tested UI action. Backend/mongodb-sync stopped; frontend-sync running. No36.",
+      "earlierResult": "LOCAL REMOVAL PASS; LOCAL INVITATION/ACCEPTANCE NOT PROVEN",
+      "closureEvidence": [
+        "MSC115-step35-local-invite-confirmations-20261013.json",
+        "MSC115-step35-http-feedback-mobile-20261013.json"
+      ],
+      "reconciliation": "Earlier observations/gaps below are retained history; closureEvidence and later followups supersede the old step35 invitation/feedback gap. Other campaign steps are not promoted."
+    },
+    {
+      "step": 36,
+      "testcase": "MSC115-WORK-EVENT",
+      "result": "PASS / CLOSED",
+      "evidence": "MSC115-step36-random-work-exclusion-20261013.json",
+      "scope": "Recorded Work random-room exclusion; campaign KVM remains at115–117."
+    }
+  ],
+  "defects": [
+    {
+      "id": "MSC115-QA-001",
+      "step": 4,
+      "summary": "Community hero result is one nowrap span and clips at 390px",
+      "before": {
+        "clientWidth": 334,
+        "scrollWidth": 371,
+        "spanWhiteSpace": "nowrap"
+      },
+      "owner": "frontend/src/app/entry/components/entry-landing/entry-landing.component.scss",
+      "fix": "Bounded inline-block wraps long hero result while preserving short result groups.",
+      "status": "PASS HTTP mobile 390x844: hero clientWidth/scrollWidth both 334 after watcher rebuild",
+      "templateImpact": {
+        "affected": false,
+        "reason": "Separate template project has a distinct entry-page implementation and no entry-hero-thesis/result or Work/Community hero text. Checked its HTML/SCSS at recorded templateFrontend revision."
+      }
+    },
+    {
+      "id": "MSC115-QA-002",
+      "step": 4,
+      "summary": "User requires logo/mode/Login outside landing scroll region",
+      "owner": "frontend/src/app/entry/components/entry-landing/entry-landing.component.html and .scss",
+      "fix": "Existing shell is a viewport-height flex layout; header sibling sits above independently scrolling content.",
+      "status": "PASS HTTP desktop/mobile: header rectangle unchanged while content scrolls; document scrollTop 0",
+      "templateImpact": {
+        "affected": "UNDER REVIEW",
+        "reason": "Template project owns separate entry-page layout; inspect actual constrained-height behavior before deciding applicability."
+      }
+    },
+    {
+      "id": "MSC115-QA-003",
+      "step": 5,
+      "summary": "Work slide still describes campaign capacity despite removed campaign capacity field",
+      "status": "OBSERVED; source correction pending",
+      "templateImpact": {
+        "affected": false,
+        "reason": "Template omits Work campaigns and this content catalog."
+      }
+    },
+    {
+      "id": "MSC115-QA-004",
+      "step": 5,
+      "summary": "Mobile carousel hides cached atlas during autoplay through lazy-bg-suspended, without downloading again",
+      "owner": "Shared LazyBgImageDirective and WarpImageCard",
+      "fix": "Existing directive gains opt-in retained loaded paint; WarpImageCard uses it. Cached atlas slices bypass fast-scroll deferral; ordinary image suspension remains unchanged.",
+      "status": "PASS warm mobile autoplay cycle: 1293 frames, no visible blank image, no image/content requests, no page errors. First-entry cycle had one 15px-wide unpainted frame; not recurring. Desktop/template runtime retest pending.",
+      "evidence": [
+        "MSC115-LANDING-carousel-before-20261013.json",
+        "MSC115-LANDING-carousel-after-mobile-20261013.json",
+        "MSC115-LANDING-carousel-after-mobile-warm-20261013.json"
+      ],
+      "templateImpact": {
+        "affected": true,
+        "reason": "Same shared component source; propagated identical directive, template and regression specs to template/frontend/components and standalone components checkout. Runtime check pending."
+      },
+      "validation": "Existing frontend-sync compiled shared library and application; focused regression specs added, not yet executed."
+    }
+  ],
+  "remaining": [],
+  "liveDeploymentFollowup": "guides/qa/checklists/group/MSC-115_LIVE_DEPLOYMENT_QA.md",
+  "currentBlock": {
+    "steps": [
+      115,
+      116,
+      117,
+      118,
+      119
+    ],
+    "checkpoint": "MSC115-WORK-COMMUNITY",
+    "result": "CLOSED / PASS",
+    "evidence": "MSC115-closure-20261015/summary.json",
+    "remaining": [],
+    "boundary": "Separate template/live qualification is not pending MSC-115 work; coverage limits are preserved in the closure receipt."
+  },
+  "executionBlocks": [
+    {
+      "steps": [
+        25,
+        26,
+        27,
+        29,
+        30,
+        31
+      ],
+      "result": "PARTIAL — remaining domains/local chat/KVM coverage open",
+      "frontendRevision": "63074c9a154f939f985cdb17d9f31fdc73a9e76a",
+      "evidence": {
+        "ratings": "UI scores 8 and 9 yield person mean8.5; revise8to10 yields9.5 in HTTP Maya→Anna and frontend-local Maya→Alex. HTTP unchanged10 retry leaves recipient notifications19. Campaign history preserves expanded rows through Organizer/Details.",
+        "images": "QA campaign482c89e0-544a-4f3b-bc65-8f16a6226e72 received team-building.png through gallery UI, saved and reopened1/4. Preserve user PDF draft98a1f8c8-5fec-4fdd-a931-47f6d736f658.",
+        "aggregateCriteria": "HTTP reload then Edit your rating9.5 shows Interest scalar dock without fabricated criterion detail. Individual campaign uses existing campaign criteria. Remaining rating domains/languages pending.",
+        "historyHeaders": "Both date headers retained. Reused Events mandatory snap: history initialscroll39 aligns sticky69.96875/group70.546875; group moves beneath sticky on realwheel.",
+        "chat": "UI Ask the organizer creates direct participant/organizer chat. Campaign list and reopen/reload show one conversation and one sent message. Anna recipient notifications19→20; Maya sender stays12. Recipient Chats/Campaigns unread1, cleared on opening. Campaign chat has no event relation; user confirmed View Event is meaningless here. Existing header exclusion extended to campaign; HTTP reload confirms button count0.",
+        "originalIntent": "User2026-10-05T04:52:04Z explicitly requested Campaign bucket for direct organizer questions, separate later real-event group chat;04:55 rating before question. Source archived rollout2026-10-05T06-07-28 lines312/341.",
+        "limitations": "Frontend-local chat parity, real event group-chat control, other criterion domains and KVM/template runtime still pending. No direct DB writes or new build owner."
+      }
+    },
+    {
+      "steps": [
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "result": "PARTIAL — feedback notifications, local full flow and KVM remain open",
+      "backendRevision": "fcc244255",
+      "frontendRevision": "956aa8a3",
+      "evidence": {
+        "event": "Created h1791884508020 entirely through Anna UI; selected campaign482c89e0-544a-4f3b-bc65-8f16a6226e72, image team-building.png, capacity2–5,2026-10-14T09:41Z–11:41Z. Independent Event chat keeps View Event; Campaign chat does not.",
+        "filter": "HTTP event detail retained campaignId but list projection omitted it; fixed existing includeEventListCardFields. Same saved event now appears under Campaign filter, clear returns3. Frontend-local selected product-team campaign shows1 matching event, clear2. Local Feedback filter shows matching completed Product idea roundtable.",
+        "localChat": "Maya local → Alex Ask the organizer; message saved/reopened once. Campaign chat has no View Event.",
+        "invitation": "Real EventScheduler scheduling-1 logged Auto-invited1 at2026-10-13T12:11:25.316+02:00 after organizer rating saved through UI. Maya open Invitations converged to1; repeated subsequent worker runs processed0. Accepted via normal confirmation: Invitations empty, Active Events1, card2/5. Anna notification19→20; Maya14→13 as invitation consumed.",
+        "removal": "Anna removed Maya through Members action and confirmation. Members2→1, card2/5→1/5; Maya Active Events becomes empty without reload. Recipient notification13→14; actor stays20.",
+        "schedule": "User-authorized fixture command schedule-auto-inviter temporarily changed Work job timing only to60s. restore-auto-inviter executed; verified shortened=false, intervalSeconds7200. User rejected broader scheduler/eligibility changes. All attempted30-minute source/seed changes reverted; no such change remains. Two-hour invitation opportunity semantics are user-defined; elapsed two-hour replacement is NOT PROVEN by this run.",
+        "runtimeLimitation": "Existing mongodb-sync imported notificationRuleConfigs automatically during the temporary30-minute seed edit and its reversal, resetting that collection run history to seed state. Original scheduler execution remains evidenced by runtime log. No event, rating or membership fixture mutation was used for these outcomes.",
+        "checks": "Existing dev watchers compiled successfully. Isolated standard JUnit ActivitiesEventsServiceTest68/68 and EventSchedulerTest36/36 passed. Fixture node --check, shell bash -n and git diff --check passed. No integration test DB writes.",
+        "fixtureCommands": "bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh schedule-auto-inviter work-community MSC115-WORK-COMMUNITY; counterpart restore-auto-inviter restores configuration only. Do not run general reset during active QA.",
+        "limitations": "No complete block PASS. KVM, full frontend-local invitation flow, HTTP feedback and other earlier incomplete cases remain. Template contains no event-auto-inviter capability."
+      }
+    },
+    {
+      "steps": [
+        21,
+        22,
+        23,
+        24
+      ],
+      "checkpoint": "MSC115-WORK-COMMUNITY",
+      "campaignId": "98a1f8c8-5fec-4fdd-a931-47f6d736f658",
+      "actor": "Anna / Work / existing seeded account",
+      "result": "IN PROGRESS",
+      "verified": [
+        "HTTP create with image and two 54-byte documents; save and reopen",
+        "edit then publish; authoritative counts returned within each mutation",
+        "unpublish, trash, restore to draft; live status counts and sidebar total",
+        "read-only attachment downloads successfully after media authentication resolves current workspace",
+        "internal scroll moves card trigger and menu by the same 180 px",
+        "Original UI save of EPAPIR-20261009-9876.pdf returned HTTP 200 with the same filename and 237139 bytes; reopened through card Details and downloaded with Chrome default behavior. Original and downloaded PDF SHA-256 both e9dd9ed5871c7ea1eca12127a799619982dabc78e6351b98051d08986b003a32. No post-download rename.",
+        "Editable attachments now use existing FormFlow table; uploaded a second text file, deleted it through its row-end Remove button, clicked Save: HTTP 200 retained exactly the original PDF.",
+        "35 focused standard JUnit tests passed: MediaSessionAccessService, MediaDocumentStorage, MediaPolicyFacts, CampaignCatalogService, CampaignsService, ProfileMenuCountersService. Isolated runner used with backend stopped, then existing backend restarted.",
+        "Frontend-local Home eye: popup visible at 68 ms with existing load-ring; local form data displayed at 1549 ms after configured 1500 ms adapter delay, no backend request. HTTP control: one campaign detail GET, 200 at 127 ms; form ready at 190 ms. No artificial HTTP delay.",
+        "Details → Organizer → Details completed through UI in frontend-local (Nagy Eszter, one existing profile load-ring) and HTTP (Kiss Balázs).",
+        "Event editor → Select campaign → select published card → Confirm completed in HTTP and frontend-local; selected campaign name shown in editor. No search, card three-dot menu or status chip in picker. Editors closed without saving.",
+        "Native backend-loss transition exercised earlier in this block. Maya local session retained after restarting backend; a separate anonymous managed browser was launched without demo-session preparation and Maya logged in through normal application UI for HTTP participant checks."
+      ],
+      "fixes": [
+        "Document uploads use private namespace even in demo mode",
+        "Media session authenticates the current authorized workspace profile in the existing token-check request",
+        "Upload-limit error is reserved for upload; no download size limit",
+        "Shared menu outlet captures nested scroll events",
+        "Removed custom attachment submenu and comma-separated display; direct existing table row actions for delete/edit and download/read-only.",
+        "Removed temporary QA download override; use normal Chrome downloads and noDefaults:true on subsequent Playwright CDP attachment.",
+        "CampaignsStore publishes editor loading state immediately and loads lazy component plus detail concurrently; close aborts detail request. Shared FormFlow uses the pre-existing load-ring in all three components checkouts."
+      ],
+      "remaining": [
+        "Complete campaign privacy and remaining authoring/local subchecks",
+        "Steps 25–119 and earlier unclosed checkpoints",
+        "Affected template runtime",
+        "Serial KVM sample"
+      ],
+      "scope": "No complete business testcase marked PASS.",
+      "testingConstraint": "User explicitly requires this current case and subsequent QA through application UI only, no direct database mutation, no download renaming or substituted app state.",
+      "loaderRevisions": {
+        "frontend": "d9494eb4",
+        "components": "f50c0d8",
+        "templateFrontend": "c9be0f4"
+      },
+      "loaderArchitecture": {
+        "A01": "PASS: lifecycle/abort/load state remain in CampaignsStore; component binds existing FormFlow loading input.",
+        "A02": "PASS observed one existing 1500 ms local detail delay; HTTP has no added delay.",
+        "A03": "PASS existing load-ring, no new component/timer.",
+        "A04": "PASS frontend-local popup shell precedes populated form by ~1.48 s.",
+        "A05": "NOT PROVEN: generation and AbortController guards reviewed; close-during-load runtime check pending.",
+        "A06": "N/A: this subcheck opens details without saving.",
+        "A07": "N/A: no counter mutation in detail/picker checks.",
+        "A08": "PASS HTTP detail action produced one detail GET; no second backend request for local mode.",
+        "A09": "N/A for detail load; picker uses existing list.",
+        "A10": "PARTIAL: read-only navigation and picker confirmed in both adapters; full persistence/privacy block remains open.",
+        "A11": "NOT PROVEN: shared indicator propagated; Template runtime pending.",
+        "A12": "PASS existing frontend-sync compilation at 10:34:03; no second build. Backend remains healthy; KVM pending."
+      },
+      "recordType": "Historical steps21–24 execution snapshot; retained evidence, not the active pointer."
+    }
+  ],
+  "followups": [
+    {
+      "step": 35,
+      "date": "2026-10-13",
+      "result": "PARTIAL — counter correction verified in monolith/local; remaining campaign QA open",
+      "scope": "Campaign write-maintained counters; shared notification poll read; compact Work/Community Ratings action",
+      "runtime": "Existing frontend-sync only; no npm test/build. Monolith stopped serially for frontend-local and isolated Java tests. KVM remains scheduled at115–117.",
+      "actors": "Anna HTTP Work, Maya frontend-local Work; existing managed visible CDP sessions retained",
+      "http": "Campaign482c89e0-544a-4f3b-bc65-8f16a6226e72: Move to drafts -> Trash -> Restore draft -> Publish through UI. Four POST200 responses, versions5/6/7/8; published/draft/trash counts1/2/0 ->1/1/1 ->1/2/0 ->2/1/0. No automatic Campaign GET after writes; GET only on explicit filter changes. Reload retained2/1/0 and sidebar3. User PDF draft preserved.",
+      "local": "Maya seeded A design team introduction: same four UI transitions, restored Published. Mobile390x844 and desktop1280x900; reload retained1 published/0 draft/0 trash and sidebar1. No Campaign HTTP requests. Popup observed at322ms before loaded cards; one click-to-removal sample2204ms includes UI transition; exact adapter duration not separately measured.",
+      "feedback": "Existing completed Product idea roundtable feedback submitted through normal UI, one POST200. Success shown and underlying Pending list became empty. Other participant notification assertions remain pending.",
+      "checks": {
+        "canonicalJUnit": "78/78, five focused classes including isolated embedded CampaignCounterRecoveryTest",
+        "transportJUnit": "11/11, RecoveryCommandsHttpTest and CampaignCatalogHttpTest",
+        "frontend": "Existing watcher sync successful2026-10-13 13:27:22; no separate npm process"
+      },
+      "compactRatings": "Existing compactOnMobile flag in Work and Community menu models. Mobile390:32px button,right347.06,accessible nameRatings; desktop retainsRatings text,width79.61. Mobile click opens Activities popup at222ms. Template omits these domains.",
+      "architecture": {
+        "A01": "PASS — counter writes remain owner service/repository; UI uses existing stores/menu configuration",
+        "A02": "PARTIAL — unchanged one local waitForRouteDelay with Promise.all; no Campaign HTTP in local; exact delay timing not isolated",
+        "A03": "PARTIAL — existing header loading line observed; compact action reuses common menu; complete loader cases remain",
+        "A04": "PASS for observed local list/action popup opening before data; full error/close coverage remains",
+        "A05": "PASS for observed status mutations — existing counter override signal/store; actor-switch race not exercised",
+        "A06": "PASS — card removed in place on status transition; no mutation-triggered list GET",
+        "A07": "PASS for tested status transitions and reload; embedded replay preserves unrelated counter and prevents duplicate increment; live stale-poll race not separately injected",
+        "A08": "PASS — four HTTP transitions/four POST; no extra count route, no Campaign HTTP in local; owner snapshot returned with internal write",
+        "A09": "PASS for tested mutations — existing SmartList patch/removal; no new frontend poller",
+        "A10": "PARTIAL — retained data verified after real UI writes/reload in both modes; full language/actor matrix pending",
+        "A11": "Campaign/Work/Community UI N/A in template. Shared notification poll fix transferred; template runtime pending",
+        "A12": "PARTIAL — one runtime/build owner, serial Java tests passed; KVM115–117 pending"
+      },
+      "pending": "Community counters still read-time and ProfileCommunityCounters still coupled; other MSC115–119 menu write-path review/fixes continue, UI checks at their own steps. Template shared notification runtime and KVM not yet run."
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "result": "IN PROGRESS",
+      "observed": [
+        "Community counters moved to mutation-time delivery; common profile reads generic stored map. No Community count endpoint remains.",
+        "Canonical focused JUnit76/76; transport12/12;55 CaseParticipants wire responses validated. Profiles/activity-counter schemas compile.",
+        "Existing frontend-sync compiled local corrections. Existing monolith restarted and compiled; UI and polls returned200.",
+        "Frontend-local390px Feedback Campaign picker: select A design team introduction, confirm, reopen, Remove and confirm; desktop1280px empty state also displayed. No feedback items in this local scenario.",
+        "Notification UI defect: Anna bell/profile poll12 versus list/sync20; Maya poll5 versus list14. No direct DB writes or seed changes used."
+      ],
+      "architecture": {
+        "A01": "PASS: domain writers/repositories and existing stores; no component data access",
+        "A02": "PASS source review: existing service-bound route delay retained",
+        "A03": "NOT PROVEN: full local loader timing not remeasured in this batch",
+        "A04": "PASS partial: feedback popup/picker opened in existing lazy flow; full Community UI pending",
+        "A05": "PASS source: generic stored map and existing ActivityStore signals",
+        "A06": "NOT PROVEN: Community in-place mutations queued at their QA points",
+        "A07": "FAIL notification discrepancy found; Community write/replay/status counters passed isolated Mongo test, UI pending",
+        "A08": "PASS source: profile/poll has no notification/Community count call; bounded100-recipient counter batches; mutation display reuses account write snapshots",
+        "A09": "PASS source: existing durable-work and shared UI patterns reused",
+        "A10": "PARTIAL: local mobile/desktop Feedback picker checked; HTTP recipient check ongoing",
+        "A11": "PENDING: template poll correction committed72319ec; runtime check pending",
+        "A12": "PASS: frontend watcher only; serial Java runs with monolith stopped, original monolith restarted afterwards; no stress run"
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "status": "IN_PROGRESS",
+      "verification": [
+        "Anna New pages:20 distinct notification IDs; all20 readAtIso empty. New total20/unread20; All total21 including one read chat notification. Account poll12 remains inconsistent; do not compare All total with unread badge.",
+        "Notification New/All menu now uses existing checked/showCheck options in product and template. Runtime menu renders done icon on selected New.",
+        "Notification SmartList uses existing sticky header and2.6rem scroll padding as Activity Events. Mobile runtime: header y111.71875 before and after scrollTop294. Group markers retained.",
+        "Existing frontend-sync compiled and synced at14:27:56; no separate npm build/test. Template source transferred; runtime not yet exercised."
+      ],
+      "architecture": {
+        "A01": "N/A no loader change",
+        "A02": "N/A popup startup unchanged",
+        "A03": "PASS no additional service call",
+        "A04": "N/A persistence unchanged",
+        "A05": "PASS existing signal bucket/check selection",
+        "A06": "PASS existing SmartList sticky header, group markers retained",
+        "A07": "FAIL stored unread12 differs from20 unread rows; diagnosis continues",
+        "A08": "PASS no new transport",
+        "A09": "PASS existing shared menu and SmartList options",
+        "A10": "PARTIAL mobile HTTP checked, desktop/local still pending for this narrow fix",
+        "A11": "PARTIAL same source fix transferred to template; runtime pending",
+        "A12": "PASS existing watcher only"
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "status": "IN_PROGRESS",
+      "verification": [
+        "Shared notification list: snap y mandatory; group-marker snap none; item-shell snap start; sticky header y111.71875 after scroll. Group markers retained.",
+        "Shared launcher: real eye hover changed eye y447.546875 to446.45593; guide stayed y337 and notification stayed y395. Activity Ratings panel bottom599.609375 and notification bottom543.40625 remain unchanged. Eye styles untouched.",
+        "Root cause proven by read-only Mongo oplog and mongodb-sync logs: at2026-10-13T06:10:03.294Z initial import inserted Anna users row with notifications6 while scheduler had already created notifications and incremented previous row. Import log finished08:10:03 local. Backend lacked mongodb-sync readiness dependency.",
+        "UI Mark as read on invitation-accepted notification6ace0577df2d1dc8af1927f6 returned200/readAtIso2026-10-13T12:39:06.391931420Z/unread19; row removed in place, later profile poll11. Existing eight-count gap remains.",
+        "Both product/template Compose now wait for mongodb-sync healthy; readiness marker is published after successful initial import/reconciliation, cleared at startup/exit. Bash fake-import regression suite passed; YAML parsed and dependencies verified. No live stack restart/reimport performed."
+      ],
+      "pending": "Explicit user approval requested for correcting only two corrupted current QA account counters. No database writes performed during diagnosis; approval pending. Continue independent checklist coverage. Template runtime and serial KVM remain pending.",
+      "architecture": {
+        "A01": "N/A source loader unchanged",
+        "A02": "PASS popup uses current lazy flow",
+        "A03": "PASS no new HTTP calls",
+        "A04": "PASS real UI read operation, no fabricated outcomes",
+        "A05": "PASS shared signal store unchanged",
+        "A06": "PASS shared sticky/snap and in-place read removal",
+        "A07": "FAIL existing seed-race data; source startup fix passed isolated shell checks, live recovery pending authorization",
+        "A08": "PASS no transport changes",
+        "A09": "PASS common launcher reused with panel anchor, no eye CSS change",
+        "A10": "PARTIAL mobile HTTP verified, desktop/local pending this narrow fix",
+        "A11": "PARTIAL identical shared fixes propagated to template; runtime pending",
+        "A12": "PASS shell test fake Mongo only, existing frontend compiler, no npm process"
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "status": "IN_PROGRESS",
+      "verification": [
+        "User explicitly directed normal Mongo JSON reseed; sole backend stopped, existing mongodb-sync rebuilt/restarted, full import completed15:10:36 local, backend restarted and healthy. No ad hoc DB updates.",
+        "Before and after backend restart: all56 account notification counters agree with unread rows; zero mismatches. Maya auth/me12, profile-ext12, realtime poll12, UI New12 and notification page total12.",
+        "Canonical product demo/e2e and template demo/e2e notification counts all match JSON rows. Existing system seed parity tools pass product49 and template15 baselines. Local Maya seeded account count also matches IndexedDB records (read-only audit).",
+        "Full seed import removed prior UI-created campaigns; earlier checkpoint evidence remains historical and prerequisites must be restored through UI.",
+        "No notification store/poll/filter rewrite, no importer recount addition, no new commit."
+      ],
+      "pending": "Continue35 using restored canonical baseline; frontend-local selected-workspace notification propagation remains unverified.",
+      "architecture": {
+        "A07": "HTTP seed counters now consistent for all56 accounts; UI reload/poll/list Maya12 agree",
+        "A08": "No application call path or HTTP request introduced"
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "result": "IN PROGRESS — source block verified by focused JUnit; browser verification pending",
+      "scope": "Finish inherited counters and feedback before step36; step36 explicitly not authorized for this session. Votes is a separate menu ID/action/counter, counting only eligible uncast open ballots. Remove Votes-related Rates reinterpretation.",
+      "verified": [
+        "26 focused standard/embedded JUnit tests passed with tools/run-backend-junit.sh local; no npm tests.",
+        "Service Feedback lost-reply replay, pending/remove/restore/submit and combined Event+Service total checked.",
+        "Scheduled task stored buckets, recipient membership changes, replay and version conflicts checked.",
+        "Votes publish/lost reply/replay/cast/permission change/deadline counters checked; Ratings game count remains unchanged."
+      ],
+      "runtime": "All containers were stopped after host interruption at resume. Frontend-sync kept stopped throughout source edits; now compiling alone with temporary 2 CPU/6GiB memory/7GiB memory+swap limit. Existing Mongo starting for read-only fixture verification; backend still stopped.",
+      "remaining": [
+        "Watch build then stop frontend-sync before any further code edit.",
+        "Finish35 Campaign event-feedback/recipient notification UI evidence with versioned managed launcher; no direct database correction.",
+        "Shared template verification; broader domain UI and KVM retain their own later checkpoint order."
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "result": "COUNTER SOURCE AND HTTP FEEDBACK CHECKS VERIFIED; LOCAL CHECKS CONTINUE",
+      "scope": "No step36. Preserve later domain UI/KVM checkpoint order. Shared fixes also belong in template where implementation exists.",
+      "verified": [
+        "Announcement/Votes page totals now read stored per-profile buckets; badges remain eligible uncast ballots. Expanded embedded test verifies published/notices/draft/trash/member removal and paging;5 focused JUnit passed.",
+        "Template HomeUserProfileServiceTest11/11 passed. Both product and template mongodb-seed-sync shell checks passed.",
+        "Monolith compiled/started, fixture-ready gate passed, managed launcher opened Anna/Maya on ports43005/34491. Retained Mongo data was not re-imported. Five announcement sources have completed projection state; eligible seeded profiles have votes1 and correct visible list buckets.",
+        "HTTP35: submitted Product idea roundtable reload retains Feedbacked1/Pending0. Campaign product-team filter selects correct event and can be cleared. Mobile500px and desktop1280px inspected.",
+        "Read-only recipient audit: Alex and Balazs each have exactly1 event-feedback-submitted notification; submitting Anna has0. Stored/unread totals agree:8/8,14/14,14/14."
+      ],
+      "homeDelay": {
+        "reported": "After avatar, Home line loader lasts3s in frontend-local.",
+        "before": "Same local Anna/Dating9 cards, page size10: two serial game-cards/query waits1503ms+1501ms after profile-ext1502ms. Config remained1500ms.",
+        "fix": "Suppress a redundant forced fetch only for page zero with a resolved initial total. Later page preloads retain the forced query even without a cursor; no additional final-card retry added, per user clarification. Product Dating Home has no template counterpart.",
+        "after": "Narrowed fix compiled/synced by existing frontend-sync at16:55:34. Real LocalGameService Anna/u1: initial9 cards issue exactly one game-cards/query1502ms after avatar. Six normal Go interactions reach index6 with2 cards remaining; existing preload issues a second game-cards/query1502ms. At index5/3 remaining only the initial query existed. Preload returned no new cards; actual dynamic growth not exercised. Temporary transparent timing wrapper restored/removed. No npm tests. Backend remains stopped.",
+        "dynamicPreload": {
+          "fix": "Append from actual SmartList visible count after short pages. A preload that added cards must not mark the stack exhausted merely because its cursor is null. Initial page-zero duplicate suppression retained.",
+          "build": "Existing frontend-sync compiled/synced17:00:16; no npm tests or second build owner.",
+          "evidence": "MSC115-home-preload-fixture-20261013.json",
+          "verification": "Six user-authorized temporary browser fixture scenarios passed actual CDP Go navigation:9+1+1+0,10+9+1+0,1+1+1+0,2+1+1+0,9+0,9+3+0. No missing/duplicate cards. For10+9+1+0, queries occur on cards8,17,18;19/20 do not query after empty response. Short1/2 initial stacks preload immediately while remaining<=2, bounded by growth beyond threshold or empty response.",
+          "cleanup": "All fixture method overrides removed and browser reloaded. Real LocalGameService restored, original remaining cards u36/u48. Fixture rating writes were suppressed. Backend remains stopped.",
+          "template": "Dating Home component is product-specific and absent from template; no shared component change required."
+        }
+      },
+      "runtime": "Backend stopped by explicit user request; remain offline for current checks. frontend-sync running; stop only for larger editing batches, small edits may use existing watcher. Shared template runtime and KVM remain queued; no completed full campaign PASS."
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "result": "CURRENT COUNTER/FIX BATCH VERIFIED; FULL CAMPAIGN STATUS REMAINS IN PROGRESS",
+      "scope": "User requested completing pre36 counters/defects and shared template propagation. No36 or later domain UI executed.",
+      "fixes": [
+        "Home initial query suppression limited to page0; short-page growth appended from actual visible count and growth keeps later two-card preload eligible. Six CDP fixture scenarios passed and fixture removed.",
+        "Work seed now reuses SeedUsersRepository counter stamping after its workspace events/ratings are created; retained completed event had Pending1 but stored feedback0 before fix, now1.",
+        "Local event feedback submit now appends idempotent recipient-only notifications through existing repository before shared IndexedDB flush; targets constrained to the existing undelayed detail projection.",
+        "Local realtime snapshot no longer manufactures game/chat/event/invitation/feedback/ticket or impression increments on cursor advances. Initial and poll responses reuse the same stored profile/account counter projection, including generic menuCounters.",
+        "Shared FormFlow plain header images and InfoCard overlay avatars use existing LazyBgImageDirective with centered spinner-ring. Product feedback organizer avatars use the same pattern. All5 shared files identical in product/template/standalone component repositories.",
+        "Template local realtime notifications read the write-maintained stored counter rather than recounting notifications."
+      ],
+      "verification": [
+        "Existing frontend-sync stopped for multi-file batch and restored; shared library compiled17:19:54, final application sync17:24:19. An intermediate UserDto typing error was fixed before final successful compile. No npm tests or second build owner.",
+        "Normal local UI feedback submission:pending1→0,feedbacked0→1. Exactly1 notification each to Alex/u32 and Balazs/u2, sender Anna/u1 stays27. Stored/unread3/3 and1/1. Reload/reopen preserve answers and2 total notifications.",
+        "Local Campaign filter selects correct Feedbacked1 event;390px screenshot inspected,document width390. Counter values game3/events3/feedback0 remain equal to stored across74 seconds and multiple realtime cursor advances.",
+        "Inherited counter batch previously passed26 focused JUnit; Votes/list extension5; shared template HomeUserProfile11; both seed-sync shell checks. No backend source changed in this followup."
+      ],
+      "evidence": [
+        "MSC115-home-preload-fixture-20261013.json",
+        "MSC115-step35-local-counters-20261013.json",
+        "MSC115-step35-local-feedback-mobile-20261013.png"
+      ],
+      "limits": [
+        "Shared image branches compiled and propagated; actual new avatar image pending→loaded transition not observed because current cards used initials/placeholders.",
+        "Template own-runtime rendering/poll check not rerun; KVM retained at115–117. Earlier full1–35 matrix gaps are not promoted to PASS.",
+        "Local feedback lost-reply retry not injected; reload/reopen dedup observed."
+      ],
+      "runtime": "Backend remains stopped, real offline Anna Work feedback open; frontend-sync running. No temporary card fixtures or timing wrappers remain.",
+      "commits": {
+        "frontend": "a26f1e60",
+        "sharedComponents": "b4e6fe5",
+        "templateFrontend": "ed27784",
+        "templateBackend": "6c9e887"
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "scope": "No36. User rejected small-avatar spinners; removed only added spinner markup/styles, preserving avatar hosts and unrelated pills/actions. Demo selector retains img tags and fixed dimensions; native lazy images stay hidden until load succeeds. Large-image loader retained.",
+      "verification": [
+        "Product frontend-sync compiled and synced18:10:23; no npm tests. User directed moving on rather than further avatar testing.",
+        "Template runtime before latest narrow avatar correction: HTTP unread11→10 via UI, reload10; local stored/visible/unread1/1/1 survives poll and reload. Mobile390px sticky header and snap verified.",
+        "Shared large InfoCard image request1200ms external delay: loader centered dx0/dy0, opacity1 during load→0 when loaded. Request override removed."
+      ],
+      "evidence": [
+        "MSC115-template-runtime-20261013.json",
+        "MSC115-feedback-image-loader-20261013.json"
+      ],
+      "remaining": "35 local invitation/acceptance/removal chain still open. Avatar/demo followup browser retest intentionally stopped by user. No full campaign PASS.",
+      "runtime": "Original product infrastructure/frontend-sync restored; backend and mongodb-sync stopped. Template services stopped. Managed product sessions retained."
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "result": "LOCAL INVITATION/ACCEPTANCE GAP CLOSED; CONFIRMATION/MENU FIX BATCH COMMITTED",
+      "verification": [
+        "Normal Work Share Event link: recipient Anna receives one invitation and Invitations1; Alex receives none. Acceptance clears invitation, sends exactly one acceptance notice to Alex; reload retains both account counters28/28 and no duplicate notifications. Earlier removal/feedback proof remains separate.",
+        "Matched local delete service timing1981.4ms before versus1500.5ms after: work now runs during the configured1500ms transport delay.",
+        "Code-only audit changed50 local mutation methods; common six operations and shared action-menu surface propagated to template. No confirmation browser sweep.",
+        "Product final frontend-sync compile/sync19:01:15 passed. Serial template dev build passed16:59:20Z with product watcher stopped; watcher restored. No npm tests.",
+        "Mandatory uppercase English reference-inspection rule added to frontend skill; skill validator passed."
+      ],
+      "fixes": [
+        "Local invitation write synchronizes existing member projection/counters and appends recipient-only invitation notification once per new pending invitation.",
+        "Existing local route-delay owner runs work concurrently with its delay; no artificial HTTP timing changed.",
+        "Dating header inspected first: removed extra Work defer, retained existing profile gate and shared HomeHeader. Ratings badge uses alert variant.",
+        "Card action menus reuse Dialog confirmation palette variables; identical shared source in product/template/standalone components."
+      ],
+      "evidence": [
+        "MSC115-step35-local-invite-confirmations-20261013.json"
+      ],
+      "commits": {
+        "frontend": "6b1d5306",
+        "components": "bf9e468",
+        "templateFrontend": "190a531",
+        "templateBackend": "05ed367"
+      },
+      "limits": [
+        "HTTP feedback runtime remains unproven from the earlier execution block; full35/fullcampaign not marked PASS.",
+        "Local scheduled auto-inviter remains its existing demo count; no worker or eligibility changes.",
+        "No36. KVM retained at115–117; no backend implementation changed in this batch."
+      ],
+      "runtime": "Offline product backend/mongodb-sync stopped; frontend-sync running. Template stack stopped. User browser state retained; no temporary fixtures/timing wrappers."
+    },
+    {
+      "date": "2026-10-13",
+      "step": 35,
+      "result": "Remaining HTTP feedback runtime verified; mobile columns and immediate feedback badge regression fixed.",
+      "evidence": [
+        "MSC115-step35-http-feedback-mobile-20261013.json"
+      ],
+      "commits": {
+        "frontend": "ca4b7ef0",
+        "components": "63ab697",
+        "template": "5cc45d6"
+      },
+      "limits": [
+        "No36; earlier campaign and deferred KVM gaps are not promoted to PASS.",
+        "Latest mobile shared source compiled in product and matches template; no fresh template runtime claim."
+      ],
+      "runtime": "Product backend/frontend-sync running; mongodb-sync and template stopped. Temporary removal restored."
+    },
+    {
+      "date": "2026-10-13",
+      "recordType": "Ledger reconciliation; no new runtime execution",
+      "closedSteps": {
+        "35": [
+          "MSC115-step35-local-invite-confirmations-20261013.json",
+          "MSC115-step35-http-feedback-mobile-20261013.json"
+        ],
+        "36": [
+          "MSC115-step36-random-work-exclusion-20261013.json"
+        ]
+      },
+      "templateRegression": "MSC115-template-runtime-20261013.json records completed HTTP/local/mobile checks; earlier pending statements are historical. Future new affected fixes retain their own targeted verification.",
+      "evidence": "../QA_LEDGER_RECONCILIATION_20261013.json"
+    },
+    {
+      "date": "2026-10-15",
+      "recordType": "Focused backend boundary/retry verification requested during KVM transition",
+      "result": "PASS scoped; no broad campaign status change",
+      "evidence": "MSC115-retry-20261015/summary.json",
+      "verified": [
+        "65 focused JUnit tests",
+        "9 HTTP transport tests",
+        "8 assembly ownership audits",
+        "40-task bounded worker stress",
+        "KVM REAL/DEMO failure, restart, attempt 3 success and Jobs correction",
+        "Monolith live health and owner-local subscriptions"
+      ],
+      "remaining": "Retain unexecuted 115–117 campaign actions and 118–119 closure/fixture cleanup; do not replay closed source guides."
+    },
+    {
+      "date": "2026-10-15",
+      "steps": [
+        115,
+        116,
+        117,
+        118,
+        119
+      ],
+      "result": "CLOSED / PASS",
+      "evidence": "MSC115-closure-20261015/summary.json",
+      "ledger": "../QA_LEDGER_RECONCILIATION_20261015.json"
+    }
+  ]
+}

@@ -97,6 +97,23 @@ public class PaymentEuroService {
         }
         return List.copyOf(codes);
     }
+    /** Display-only current quotes, using the same cached observations and freshness rules as payments. */
+    public Map<String, Double> displayEuroRates() {
+        var observations = rates.observations();
+        Set<String> currencies = new TreeSet<>();
+        currencies.add("EUR");
+        for (var observation : observations) {
+            var values = observation.get("rates", Document.class);
+            if (values != null) currencies.addAll(values.keySet());
+        }
+        Map<String, Double> result = new TreeMap<>();
+        var today = LocalDate.now(ZoneOffset.UTC);
+        for (String currency : currencies) {
+            var quote = ExchangeRateStore.quote(observations, today, currency);
+            if (quote != null) result.put(currency, quote.eurPerUnit().doubleValue());
+        }
+        return Map.copyOf(result);
+    }
     public void selectCurrency(String userId, String currency) {
         if (currency == null || !currencies().contains(currency))
             throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Unsupported summary currency.");

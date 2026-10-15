@@ -14,7 +14,7 @@
   }
 
   function printObject(value) {
-    print(EJSON.stringify(value, null, 2, { relaxed: true }));
+    print(EJSON.stringify(value, null, process.env.MANUAL_QA_MONGO_MODE === 'kvm' ? 0 : 2, { relaxed: true }));
   }
 
   function collection(name) {
@@ -41,7 +41,10 @@
       }
       return;
     }
-    const expected = {
+    const ownedKvmDemo = process.env.MANUAL_QA_MONGO_MODE === 'kvm'
+      && process.env.MANUAL_QA_DEPLOYMENT_KIND === 'kvm'
+      && currentDb === process.env.MANUAL_QA_KVM_DEMO_DB;
+    const expected = ownedKvmDemo ? ["MyScoutee Demo Operator", "privacy@demo.myscoutee.test"] : {
       demo_db: ["MyScoutee Demo Operator", "privacy@demo.myscoutee.test"],
       e2e_db: ["MyScoutee E2E Operator", "privacy@e2e.myscoutee.test"]
     }[currentDb];

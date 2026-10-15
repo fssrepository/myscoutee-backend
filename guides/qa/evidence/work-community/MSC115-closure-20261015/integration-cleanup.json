@@ -1,0 +1,151 @@
+{
+  "proof": "step37 and step39 created responses prove new exact IDs; keys revoked and event trashed through API first",
+  "before": [
+    {
+      "collection": "events",
+      "count": 1
+    },
+    {
+      "collection": "activityMembers",
+      "count": 0
+    },
+    {
+      "collection": "activityResources",
+      "count": 0
+    },
+    {
+      "collection": "activitySubEventGroups",
+      "count": 0
+    },
+    {
+      "collection": "activitySubEventStageRuntime",
+      "count": 0
+    },
+    {
+      "collection": "activityMingleSessions",
+      "count": 0
+    },
+    {
+      "collection": "activityMingleRounds",
+      "count": 0
+    },
+    {
+      "collection": "eventLeaderboardEntries",
+      "count": 0
+    },
+    {
+      "collection": "chats",
+      "count": 0
+    },
+    {
+      "collection": "chatMessages",
+      "count": 0
+    },
+    {
+      "collection": "eventCheckoutBasketItems",
+      "count": 0
+    },
+    {
+      "collection": "payments",
+      "count": 0
+    },
+    {
+      "collection": "eventTickets",
+      "count": 0
+    },
+    {
+      "collection": "notificationOutbox",
+      "count": 0
+    },
+    {
+      "collection": "userNotifications",
+      "count": 0
+    },
+    {
+      "collection": "scheduledMessageTasks",
+      "count": 0
+    },
+    {
+      "collection": "integrationExternalIds",
+      "count": 3
+    },
+    {
+      "collection": "integrationParticipantInvites",
+      "count": 1
+    }
+  ],
+  "after": [
+    {
+      "collection": "events",
+      "count": 0
+    },
+    {
+      "collection": "activityMembers",
+      "count": 0
+    },
+    {
+      "collection": "activityResources",
+      "count": 0
+    },
+    {
+      "collection": "activitySubEventGroups",
+      "count": 0
+    },
+    {
+      "collection": "activitySubEventStageRuntime",
+      "count": 0
+    },
+    {
+      "collection": "activityMingleSessions",
+      "count": 0
+    },
+    {
+      "collection": "activityMingleRounds",
+      "count": 0
+    },
+    {
+      "collection": "eventLeaderboardEntries",
+      "count": 0
+    },
+    {
+      "collection": "chats",
+      "count": 0
+    },
+    {
+      "collection": "chatMessages",
+      "count": 0
+    },
+    {
+      "collection": "eventCheckoutBasketItems",
+      "count": 0
+    },
+    {
+      "collection": "payments",
+      "count": 0
+    },
+    {
+      "collection": "eventTickets",
+      "count": 0
+    },
+    {
+      "collection": "notificationOutbox",
+      "count": 0
+    },
+    {
+      "collection": "userNotifications",
+      "count": 0
+    },
+    {
+      "collection": "scheduledMessageTasks",
+      "count": 0
+    },
+    {
+      "collection": "integrationExternalIds",
+      "count": 0
+    },
+    {
+      "collection": "integrationParticipantInvites",
+      "count": 0
+    }
+  ]
+}

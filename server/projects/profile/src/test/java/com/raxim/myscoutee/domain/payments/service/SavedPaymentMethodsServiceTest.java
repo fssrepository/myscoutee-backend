@@ -6,6 +6,8 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
@@ -29,6 +31,80 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @org.junit.jupiter.api.Tag("standard")
 class SavedPaymentMethodsServiceTest {
+    @Test
+    void historyResolvesOnlyVisibleMissingCounterpartyNamesInOneBatch() {
+        var payments = mock(PaymentsRepository.class);
+        var accounts = mock(com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads.class);
+        var service = new SavedPaymentMethodsService(mock(SavedPaymentMethodsRepository.class),
+                mock(PaymentMethodRegistrationsRepository.class), payments, mock(PaymentSimulatorRegistrationClient.class),
+                mock(DeploymentPaymentProviderResolver.class), accounts);
+        Payment first = historyPayment("first", "payer", "recipient", "2026-10-14T12:00:00Z");
+        Payment second = historyPayment("second", "payer", "recipient", "2026-10-14T11:00:00Z");
+        Payment outsidePage = historyPayment("older", "payer", "other", "2026-10-13T12:00:00Z");
+        when(payments.findByUserIdOrderByCreatedDateDesc("payer")).thenReturn(List.of(first, second, outsidePage));
+        when(accounts.paymentParticipants(List.of("recipient"))).thenReturn(List.of(
+                new com.raxim.myscoutee.domain.accounts.dto.PaymentParticipantDto("recipient", null, "Recipient name")));
+        var page = service.queryHistory("payer", "all", 0, 2);
+        assertThat(page.items()).extracting(com.raxim.myscoutee.domain.payments.dto.PaymentDtos.PaymentHistoryItemDto::counterpartyName)
+                .containsExactly("Recipient name", "Recipient name");
+        assertThat(page.total()).isEqualTo(3);
+        verify(accounts).paymentParticipants(List.of("recipient"));
+        verify(accounts).paymentSummary("payer");
+        verifyNoMoreInteractions(accounts);
+
+        when(payments.findByRecipientUserIdOrderByCreatedDateDesc("recipient")).thenReturn(List.of(first));
+        when(accounts.paymentParticipants(List.of("payer"))).thenReturn(List.of(
+                new com.raxim.myscoutee.domain.accounts.dto.PaymentParticipantDto("payer", null, "Payer name")));
+        assertThat(service.queryHistory("recipient", "all", 0, 20).items()).singleElement()
+                .satisfies(item -> assertThat(item.counterpartyName()).isEqualTo("Payer name"));
+    }
+
+    @Test
+    void receiptSnapshotNamesDoNotRequireAccountReadsDuringMutation() {
+        var accounts = mock(com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads.class);
+        var service = new SavedPaymentMethodsService(mock(SavedPaymentMethodsRepository.class),
+                mock(PaymentMethodRegistrationsRepository.class), mock(PaymentsRepository.class), mock(PaymentSimulatorRegistrationClient.class),
+                mock(DeploymentPaymentProviderResolver.class), accounts);
+        Payment payment = historyPayment("receipt", "payer", "recipient", "2026-10-14T12:00:00Z");
+        payment.setFulfillmentKind("cash-receipt");
+        payment.setReceiptPayerName("Recorded payer");
+        payment.setReceiptRecipientName("Recorded recipient");
+        assertThat(service.mutationDto(payment, "recipient").item().counterpartyName()).isEqualTo("Recorded payer");
+        assertThat(service.mutationDto(payment, "payer").item().counterpartyName()).isEqualTo("Recorded recipient");
+        verify(accounts, never()).paymentParticipants(org.mockito.ArgumentMatchers.anyCollection());
+    }
+
+    private com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads accountReads(UsersRepository users) {
+        var accounts = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users);
+        org.springframework.test.util.ReflectionTestUtils.setField(accounts, "mongo",
+                mock(org.springframework.data.mongodb.core.MongoTemplate.class));
+        return accounts;
+    }
+
+    private Payment historyPayment(String id, String payer, String recipient, String date) {
+        Payment payment = new Payment();
+        payment.setId(id); payment.setUserId(payer); payment.setRecipientUserId(recipient);
+        payment.setStatus("captured"); payment.setAmount(25D); payment.setCurrency("EUR");
+        payment.setAuditKind("payment"); payment.setCreatedDate(date);
+        return payment;
+    }
+
+    @Test
+    void paymentOptionsReuseTheSummaryCurrencySourceWithoutLoadingPaymentHistory() {
+        var payments = mock(PaymentsRepository.class);
+        var provider = mock(DeploymentPaymentProviderResolver.class);
+        var euro = mock(PaymentEuroService.class);
+        when(euro.currencies()).thenReturn(List.of("EUR", "HUF", "USD"));
+        var service = new SavedPaymentMethodsService(mock(SavedPaymentMethodsRepository.class),
+                mock(PaymentMethodRegistrationsRepository.class), payments, mock(PaymentSimulatorRegistrationClient.class),
+                provider, accountReads(mock(UsersRepository.class)));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "euroService", euro);
+        assertThat(service.options().currencies()).containsExactly("EUR", "HUF", "USD");
+        verify(euro).currencies();
+        verify(euro).displayEuroRates();
+        verifyNoMoreInteractions(euro);
+        verifyNoInteractions(payments);
+    }
 
     @AfterEach
     void clearMode() {
@@ -48,7 +124,7 @@ class SavedPaymentMethodsServiceTest {
         SavedPaymentMethodsService service = new SavedPaymentMethodsService(
                 mock(SavedPaymentMethodsRepository.class),  mock(PaymentMethodRegistrationsRepository.class),
                 payments,  mock(PaymentSimulatorRegistrationClient.class),
-                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
+                mock(DeploymentPaymentProviderResolver.class), accountReads(mock(UsersRepository.class)));
         assertThat(service.queryHistory("payer-group", "all", 0, 20).items()).singleElement().satisfies(item -> {
             assertThat(item.id()).isEqualTo("asset-payment");
             assertThat(item.direction()).isEqualTo("expense");
@@ -92,7 +168,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
+                mock(DeploymentPaymentProviderResolver.class), accountReads(mock(UsersRepository.class)));
 
         service.delete("user-1", "pm-1");
 
@@ -127,7 +203,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
+                mock(DeploymentPaymentProviderResolver.class), accountReads(mock(UsersRepository.class)));
 
         service.delete("user-1", "pm-1");
 
@@ -157,7 +233,7 @@ class SavedPaymentMethodsServiceTest {
                 registrations,
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
+                mock(DeploymentPaymentProviderResolver.class), accountReads(mock(UsersRepository.class)));
 
         when(simulator.configuration()).thenReturn(
                 new com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration.GatewayConfiguration("none", false, true, ""));
@@ -199,7 +275,7 @@ class SavedPaymentMethodsServiceTest {
                 registrations,
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
+                mock(DeploymentPaymentProviderResolver.class), accountReads(mock(UsersRepository.class)));
 
         assertThat(service.queryPage("user-1", 0, 6).items())
                 .extracting(item -> item.id())
@@ -273,7 +349,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 payments,
                 mock(PaymentSimulatorRegistrationClient.class),
-                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users));
+                mock(DeploymentPaymentProviderResolver.class), accountReads(users));
 
         var payerPage = service.queryHistory("nova", "all", 0, 20);
         assertThat(payerPage.pendingRefundCount()).isZero();
@@ -354,7 +430,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 payments,
                 mock(PaymentSimulatorRegistrationClient.class),
-                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users));
+                mock(DeploymentPaymentProviderResolver.class), accountReads(users));
 
         var all = service.queryHistory("riley", "all", 0, 20);
         assertThat(all.spendingTotals()).containsEntry("HUF", 3200D);

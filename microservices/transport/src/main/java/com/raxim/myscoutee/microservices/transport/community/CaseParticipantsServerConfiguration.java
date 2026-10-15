@@ -29,7 +29,7 @@ public class CaseParticipantsServerConfiguration {
                 .authorizeHttpRequests(rules -> rules
                         .requestMatchers(org.springframework.http.HttpMethod.GET, CaseParticipantsProtocol.CONVERSATION, CaseParticipantsProtocol.ACTIVE)
                         .hasAuthority("community:cases:read")
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, CaseParticipantsProtocol.COUNT)
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, CaseParticipantsProtocol.ADMINS_CHANGED)
                         .hasAuthority("community:cases:read").anyRequest().denyAll())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(errors -> errors.accessDeniedHandler((request, response, error) ->

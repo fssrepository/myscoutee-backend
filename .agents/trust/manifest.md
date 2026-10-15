@@ -21,9 +21,9 @@ will eventually be skimmed or skipped.
 
 | Area | Responsibility |
 | --- | --- |
-| `kernel.md` | small operating loop, interrupt questions, routing, completion |
+| `kernel.md` | small operating loop, single routing table, completion |
 | `constitution.md` | stable product and architecture invariants |
-| `routing.md`, `risk-model.md` | expanded classification and escalation |
+| `routing.md`, `risk-model.md` | conditional references and risk classification |
 | `evidence-model.md` | strength and honesty of completion evidence |
 | `system-map.md`, `sources.md` | ownership map and canonical-source index |
 | `habits/` | reusable decision behavior |

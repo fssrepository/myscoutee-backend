@@ -15,13 +15,13 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 
 public interface ActivityMembersRepository extends MongoRepository<ActivityMember, String> {
     // Membership commands must not replace unread counters maintained by notification writes.
-    @Query("{ '_id': ?0, 'ownerType': 'community', 'status': ?1, 'role': ?2, 'actionAtIso': ?3 }")
+    @Query("{ '_id': ?0, 'ownerType': 'community', 'status': ?1, 'role': ?2, 'actionAtIso': ?3, 'groupCounterState.revision': ?15, 'groupCounterState.pending': null }")
     @Update("{ '$set': { 'status': ?4, 'role': ?5, 'requestKind': ?6, 'pendingSource': ?7,"
             + " 'organizerOnly': ?8, 'actionAtIso': ?9, 'updatedDate': ?9,"
-            + " 'communityAction': ?10, 'communityActor': ?11, 'managerGrantedByUserId': ?12, 'votingEligible': ?13 } }")
+            + " 'communityAction': ?10, 'communityActor': ?11, 'managerGrantedByUserId': ?12, 'votingEligible': ?13, 'groupCounterState': ?14 } }")
     long updateCommunityState(String id, String expectedStatus, String expectedRole, String expectedActionAtIso,
             String status, String role, String requestKind, String pendingSource, boolean organizerOnly,
-            String actionAtIso, String action, String actor, String managerGrantedByUserId, boolean votingEligible);
+            String actionAtIso, String action, String actor, String managerGrantedByUserId, boolean votingEligible, ActivityMember.GroupCounterState groupCounterState, Long expectedCounterRevision);
 
     Optional<ActivityMember> findBySyncKey(String syncKey);
 

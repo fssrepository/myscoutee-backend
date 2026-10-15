@@ -1,0 +1,114 @@
+[
+  {
+    "collection": "serviceCases",
+    "expected": 3,
+    "actual": 3,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "users",
+    "expected": 12,
+    "actual": 12,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "activityMembers",
+    "expected": 637,
+    "actual": 637,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "campaigns",
+    "expected": 6,
+    "actual": 6,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "communityGroups",
+    "expected": 8,
+    "actual": 8,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "serviceOfferings",
+    "expected": 2,
+    "actual": 2,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "communityScheduledTasks",
+    "expected": 0,
+    "actual": 0,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "communityAnnouncements",
+    "expected": 0,
+    "actual": 0,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "chats",
+    "expected": 211,
+    "actual": 211,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "chatMessages",
+    "expected": 0,
+    "actual": 0,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "userNotifications",
+    "expected": 92,
+    "actual": 92,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "notificationOutbox",
+    "expected": 75,
+    "actual": 75,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "privacyConsents",
+    "expected": 2,
+    "actual": 2,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "userExperienceProfiles",
+    "expected": 0,
+    "actual": 0,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "userFilterPreferences",
+    "expected": 4,
+    "actual": 4,
+    "passed": true,
+    "differentIds": []
+  },
+  {
+    "collection": "userPageFilterPreferences",
+    "expected": 0,
+    "actual": 0,
+    "passed": true,
+    "differentIds": []
+  }
+]

@@ -85,8 +85,7 @@ public class AdminProfileCounterService implements AdminCounterRefresh {
                 existing == null ? null : existing.eventFeedback(),
                 counters.jobs(),
                 counters.metrics(),
-                count(existing == null ? null : existing.notifications()),
-                count(existing == null ? null : existing.serviceFeedbackPending()));
+                count(existing == null ? null : existing.notifications()));
         if (activitiesEqual(existing, next)) {
             return user;
         }

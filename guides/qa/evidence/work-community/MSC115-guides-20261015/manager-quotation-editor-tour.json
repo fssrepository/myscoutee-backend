@@ -1,0 +1,202 @@
+[
+  {
+    "progress": "1 / 8",
+    "title": "Save quotation",
+    "body": "Save the quotation. Acceptance is a separate action in the offer list.",
+    "box": {
+      "x": 46,
+      "y": 56.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 300.296875,
+        "y": 3.3125,
+        "w": 46,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 8",
+    "title": "Quotation details",
+    "body": "Read the amount, Currency, explanation and work/refund terms together. Saving a quotation and accepting it are separate actions.",
+    "box": {
+      "x": 12,
+      "y": 584,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 53.734375,
+        "w": 387.21875,
+        "h": 710.484375
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "3 / 8",
+    "title": "Quoted amount",
+    "body": "Enter the quoted amount; its currency is specified separately.",
+    "box": {
+      "x": 27.390625,
+      "y": 177.734375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 108.734375,
+        "w": 237.9375,
+        "h": 62
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "4 / 8",
+    "title": "Currency",
+    "body": "Enter the three-letter currency code used for the quotation.",
+    "box": {
+      "x": 46,
+      "y": 179.734375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 264.328125,
+        "y": 108.734375,
+        "w": 103.28125,
+        "h": 64
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 8",
+    "title": "Offer details",
+    "body": "Describe the scope and the information members need to compare the offer.",
+    "box": {
+      "x": 27.390625,
+      "y": 291.40625,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 174.734375,
+        "w": 345.21875,
+        "h": 109.671875
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 8",
+    "title": "Work terms",
+    "body": "Read or prepare the terms of the offered work here. Changes are stored when you save the quotation.",
+    "box": {
+      "x": 14.390625,
+      "y": 44.40625,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 9.390625,
+        "y": 299.40625,
+        "w": 371.21875,
+        "h": 231.921875
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 8",
+    "title": "Refund terms",
+    "body": "Read or prepare the refund terms before the quotation is accepted. Save the quotation to store edits.",
+    "box": {
+      "x": 14.390625,
+      "y": 278.328125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 9.390625,
+        "y": 533.328125,
+        "w": 371.21875,
+        "h": 212.890625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 8",
+    "title": "Close",
+    "body": "Close the quotation form without saving pending edits. Save with its header tick first to keep changes to the amount, note or terms.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

@@ -119,6 +119,15 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
                 .filter(StringUtils::hasText).distinct().toList()).forEach(group -> types.put(group.id(), group.effectiveType()));
         java.util.function.Predicate<String> inScope = id -> java.util.Objects.equals(groupId,
                 reportBaseGroup(scopedUsers.get(id), types));
+        // The selector and the open menu share the same review snapshot. Reuse
+        // the rows already loaded for this dashboard, without further queries.
+        Map<String, AdminReviewCountsDto> reviewCountsByScope = new LinkedHashMap<>();
+        for (String scope : List.of("main", "myscoutee-work", "myscoutee-community")) {
+            String baseId = "main".equals(scope) ? null : scope;
+            reviewCountsByScope.put(scope, reviewCounts(
+                    allReports.stream().filter(report -> java.util.Objects.equals(baseId, reportBaseGroup(scopedUsers.get(report.getUserId()), types))).toList(),
+                    allFeedback.stream().filter(item -> java.util.Objects.equals(baseId, reportBaseGroup(scopedUsers.get(item.getUserId()), types))).toList()));
+        }
         allReports = allReports.stream().filter(report -> inScope.test(report.getUserId())).toList();
         allFeedback = allFeedback.stream().filter(item -> inScope.test(item.getUserId())).toList();
         List<UserReportSubmission> reports = filterReportsByStatus(allReports, reportsStatus);
@@ -151,7 +160,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
                 reportedUsers,
                 blockedUsers,
                 feedback.stream().map(item -> toFeedback(item, usersById)).toList(),
-                reviewCounts(allReports, allFeedback));
+                reviewCounts(allReports, allFeedback), reviewCountsByScope);
     }
 
     public AdminDashboardDto warn(String userId, AdminActionRequestDto request) {

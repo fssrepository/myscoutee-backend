@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "MyScoutee internal case participant reads",
+    "title": "MyScoutee internal case participation",
     "version": "1.0.0",
-    "description": "Existing CaseParticipants conversation, active membership and menu count operations. Canonical service retains accepted membership, private-offer separation, trash filtering and integer count cap. Dedicated read credential does not delegate actor authority. Explicit REAL/DEMO; HTTPS except isolated-lab opt-in."
+    "description": "Case conversation and active membership reads, plus group administrator visibility updates on writes. Menu counters are stored by accounts; profile reads do not call this owner. Explicit REAL/DEMO; dedicated internal capability; HTTPS except isolated-lab opt-in."
   },
   "paths": {
     "/_internal/v1/community/cases/conversation": {
@@ -214,9 +214,9 @@
         }
       }
     },
-    "/_internal/v1/community/cases/visible-count": {
+    "/_internal/v1/community/cases/admins-changed": {
       "post": {
-        "operationId": "countVisibleCases",
+        "operationId": "updateCaseAdministrators",
         "security": [
           {
             "caseParticipantsRead": []
@@ -238,7 +238,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Canonical read result; maximum 4 KiB; absence of matching cases is zero.",
+            "description": "Administrator counter changes applied; safe to replay the same administrator set.",
             "headers": {
               "Cache-Control": {
                 "schema": {
@@ -250,7 +250,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Count"
+                  "type": "boolean",
+                  "const": true
                 }
               }
             }
@@ -322,7 +323,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CaseVisibilityQueryDto"
+                "$ref": "#/components/schemas/AdminChange"
               }
             }
           }
@@ -450,45 +451,25 @@
           ]
         }
       },
-      "Count": {
-        "type": "integer",
-        "minimum": 0,
-        "maximum": 2147483647
-      },
-      "CaseVisibilityQueryDto": {
+      "AdminChange": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "baseGroupId",
-          "accountId",
-          "managedGroupIds"
+          "groupId",
+          "adminAccountIds"
         ],
         "properties": {
-          "baseGroupId": {
-            "type": [
-              "string",
-              "null"
-            ],
+          "groupId": {
+            "type": "string",
+            "minLength": 1,
             "maxLength": 512
           },
-          "accountId": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "maxLength": 512
-          },
-          "managedGroupIds": {
-            "type": [
-              "array",
-              "null"
-            ],
+          "adminAccountIds": {
+            "type": "array",
             "maxItems": 4096,
             "items": {
-              "type": [
-                "string",
-                "null"
-              ],
+              "type": "string",
+              "minLength": 1,
               "maxLength": 512
             }
           }

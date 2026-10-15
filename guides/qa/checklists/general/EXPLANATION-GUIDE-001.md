@@ -29,7 +29,7 @@ each defect; source PASS alone does not close the template follow-up.
 
 ## Expanded Work/Community scope — 2026-10-06
 
-Status: **REOPENED / NOT RUN** for the newly added/changed surfaces. The September PASS covers only its recorded inventory. Follow [MSC-115](../MSC-115_WORK_COMMUNITY_PAIR_QA.md) for actors, reachable content and latest acceptance rules. The canonical `help-center-guide-versions.json` records each revised context and its current version. Run EN/HU, desktop/mobile, local/HTTP, visible-target highlighting, popup transitions and empty/populated states for these contexts and their affected shared components. Do not execute business mutations during the guide-only portion.
+Status: **REOPENED / NOT RUN** for the newly added/changed surfaces. The September PASS covers only its recorded inventory. Follow [MSC-115](../group/MSC-115_WORK_COMMUNITY_PAIR_QA.md) for actors, reachable content and latest acceptance rules. The canonical `help-center-guide-versions.json` records each revised context and its current version. Run EN/HU, desktop/mobile, local/HTTP, visible-target highlighting, popup transitions and empty/populated states for these contexts and their affected shared components. Do not execute business mutations during the guide-only portion.
 
 The startup commands below document the earlier Event-only fixture. Do not treat it as the expanded Work/Community baseline: first inspect retained fixture status and prepare the required actors through the existing versioned harness/launcher. No new full campaign browser delegation is implied by this document; the 2026-10-06 delegation is currently limited to login/logout diagnosis.
 

@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-15",
+  "scope": "Owner-local admin statistics signals and bounded shared outbound retries; current adapters: admin signals, webhooks, media deletion. This is not a full MSC-115 campaign closure.",
+  "source": {
+    "baseRevision": "f0cc793dae0a954dacae2198d2dc2749b04efed7",
+    "testedWorkingTreeJavaSha256": {
+      "microservices/bootstrap-tests/src/test/java/com/raxim/myscoutee/microservices/transport/common/RecoveryCommandsHttpTest.java": "42913e697cc101b8e84b7e7d3a9ee6a656befcddb1d0799367c96a98d5e2097a",
+      "microservices/bootstrap-tests/src/test/java/com/raxim/myscoutee/microservices/transport/community/CaseParticipantsHttpTest.java": "e97ed511b66e938ff1d334d7826b7d4f7f2fe6142491f80f52b1feb57b7c646b",
+      "microservices/bootstrap-tests/src/test/java/com/raxim/myscoutee/microservices/transport/events/CommunityMembershipReadsHttpTest.java": "047cb23321aaf56eca7b9807ead2594ec94f48f3deae72a1f1aa5cb25716718c",
+      "microservices/transport/src/main/java/com/raxim/myscoutee/microservices/transport/administration/OperationalTelemetryEndpoint.java": "fc4e6aa12d81732ef000796f1d16221d6a6f6f65601959be837579e013f5bb8d",
+      "microservices/transport/src/main/java/com/raxim/myscoutee/microservices/transport/administration/OperationalTelemetryProtocol.java": "03ab5ff47f4c4ae916c1706557ed3069202301919bdd02f03e6572cd69f0904c",
+      "microservices/transport/src/main/java/com/raxim/myscoutee/microservices/transport/administration/RemoteOperationalTelemetry.java": "6bfd4636fdb961caf3e3bfe1621e428c85c82e99f4de3ce447ebf042ca40940e",
+      "microservices/transport/src/main/java/com/raxim/myscoutee/microservices/transport/notifications/NotificationJobsEndpoint.java": "f5fef7dfdafe865c3dbfbbbaed559ebc1506f0916db0b18751d7c12ab9b662df",
+      "microservices/transport/src/main/java/com/raxim/myscoutee/microservices/transport/notifications/NotificationJobsProtocol.java": "31a98af82aaf036d1ffc9b3bea45240877ae60ddb085eacad80fe396e864914e",
+      "microservices/transport/src/main/java/com/raxim/myscoutee/microservices/transport/notifications/RemoteNotificationJobs.java": "e389cfc51f94130084466a1e8d1dae059295fff041b012f2c3c3b74a9f182729",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/common/config/mongo/AdminProjectionSignalOutbox.java": "9332186ef11ba5f57442825d56c3b3541c65d17635194da515f4be447528a344",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/common/delivery/OutboundRetryQueue.java": "904bce1bc93055f984d6462319fa868c3f8f83d0545d6de53339dcac214fc6e3",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/common/delivery/OutboundRetryTask.java": "5fd017210582618d3acbd6cf8170fd9839331727f994022e22d284fc3e34536b",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/common/delivery/OutboundRetryWorker.java": "42138ec24ede4923b54f61668982d06ff24abedc3f63c277dea5c4f5ef2b5443",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/common/delivery/RetryPolicy.java": "4974f085527712043419a07bab74971c0563ab7b518a8e6feb568166de3fc3c2",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/OperationalTelemetry.java": "52e7de822df607961e0c6ab86082584a8640c77a6c9c1307b81b0809a0b91a9b",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/document/AdminWorkerSignals.java": "544d49f44068163ee103c5a8741b4630cb820a40953a06790ab11686d553aaf3",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminStatsTelemetryWorkerService.java": "03c13e4e1b76052f03b60003eafefadf9a60e7352a933bae741f9b8f9ba4a740",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminTelemetryService.java": "0d2d15bad8dbc8ee7c21ee28244bc2e781668abbe94ecb6e9121d61a2ab9d73c",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/document/AffinityAdminSignalOutbox.java": "892d546040836d428d12a0e9d40a642546888bf2fdaf4051819895b960c13f4d",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AdminGraphScienceService.java": "dd2f873daa1590fd1edfda49ffca09f7e6b2f9ec5b3ee052e56fbfe75d4ca6a7",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/document/EventAdminSignalOutbox.java": "368b0f0a3154ab1c241b0875b291339a0316e04b444ab52b0d8411ed9f24383f",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventMeasurementService.java": "cf4161a64a36aed8038c1110596c6df2ec0aba8a8a638add74a5d74e3d033065",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationWebhookService.java": "2a834f91401aa2999a695b3bf8a688a2ba20c53136bce091aa54c484654f527a",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/config/MediaDeletionIndexInitializer.java": "f3a87f7cde029fe0864aa07add2c90479d0b320a49860d641a9c74d9376604a1",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/document/MediaDeletion.java": "2dfba52000d1f63c9bb9610d5aad1b6d08838eb93267503e9b31d75ac022ba14",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/service/MediaDeletionService.java": "534f7d4d8b5472c7edb683a57806b275102f1b05001cf13bf4881ae36c361669",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/service/MediaDeletionWorker.java": "a7115a659183cfd9f1cfeae15830ed8836750ee67d987d24d9c8faec1f8a30bd",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/notifications/api/NotificationJobs.java": "2af0e5ef3af5105aa4c08f9c531ce4971a488bc56f11191643d42909caf150c5",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/notifications/document/NotificationAdminSignalOutbox.java": "9985afa8940ca474185c65836907f9cc547e799602dd2bc6aff811aa5fe9abab",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/notifications/service/NotificationOutboxService.java": "73ebdf49cafd5ad59b62a0fc458dc6c3f6fdc42417551cd8b0fa04432d426535",
+      "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/notifications/service/NotificationRuleRegistryService.java": "c5ab1a43fca3f3882ad27df8399f55d25ce41c31b7d55f5fa4f1e660c51beff6",
+      "server/projects/profile/src/test/java/com/raxim/myscoutee/common/delivery/AdminProjectionSignalOutboxTest.java": "6bcab32eff26c2485181838a6243a979ab6525a87378a2c0301d8d69133f5ec2",
+      "server/projects/profile/src/test/java/com/raxim/myscoutee/common/delivery/OutboundRetryQueueTest.java": "025046609b39c5327a8fba63f539038ec065b3571ab8de930d64c82413ae4a08",
+      "server/projects/profile/src/test/java/com/raxim/myscoutee/common/delivery/OutboundRetryWorkerTest.java": "c449f35f1a0ee94a9700ad27f4ed47bbc29449ccbc697a36f85d3ae6fae39d25",
+      "server/projects/profile/src/test/java/com/raxim/myscoutee/common/delivery/RetryPolicyTest.java": "746461ad6e5c5f183e6fd6beacc5af7d3e72b4f3eb3a5cbbad3b17f5d635b075",
+      "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/administration/service/AdminStatsTelemetryWorkerServiceTest.java": "99c46fa39edc183644e1022b9258c7a0209da2dffea63097d6928550991aa7ff",
+      "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationWebhookServiceTest.java": "2d4be68d602247d63d00641989aef8120c06d780c402d4e2937159e9c24d7411",
+      "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/media/service/MediaDeletionRetryTest.java": "2fc6d2196dda099c650923e664732da1b64bfcf4df0cc721a45ee3062cae8778"
+    }
+  },
+  "junit": {
+    "passed": 65,
+    "failed": 0,
+    "httpTransportPassed": 9,
+    "seedSafetyPassed": 11,
+    "assemblyOwnershipPassed": 8
+  },
+  "stress": {
+    "scope": "Only OutboundRetryWorker with isolated embedded Mongo and local HTTP fixture",
+    "tasks": 40,
+    "concurrencyLimit": 10,
+    "observedMaxConcurrent": 10,
+    "retryHttpCalls": 67,
+    "elapsedMs": 733,
+    "jvmCpuMs": 3760,
+    "maxTotalAttemptsIncludingOriginal": 3,
+    "fourthAttempts": 0,
+    "result": "PASS",
+    "limit": "No application-wide load or before/after performance-parity claim. Initial failures are fixtures; metrics cover worker processing."
+  },
+  "kvm": {
+    "result": "PASS",
+    "databases": [
+      "REAL",
+      "DEMO"
+    ],
+    "forcedFailure": "Affinity telemetry URL temporarily pointed to loopback closed port; producer job recorded failure after attempt 1.",
+    "recovery": "Restore real owner URL and restart only affinity. Same durable task completed at attempt 3; all six originating Jobs entries completed, original run identity retained.",
+    "replay": "Two old-revision HTTP requests returned acknowledgment without changing signal, task or job history.",
+    "ownership": "Identity change streams no longer reference userAffinityEdges,userRates,activityMembers,affinityRecomputeTasks,notificationOutbox,notificationRuleConfigs. Both modes watch own adminWorkerSignals.",
+    "fixtureOverridesRestored": true
+  },
+  "monolith": {
+    "result": "PASS scoped runtime",
+    "scope": "Live startup/health, six new subscription collections, three live local revision intents, nine hourly catalog entries. Full HTTP failure/restart sample ran on KVM.",
+    "database": "DEMO",
+    "realCatalogImport": "Existing per-database importer credential rejected REAL authentication before import; no authentication or user grants changed. REAL seeds verified on KVM."
+  },
+  "catalog": "Additive canonical Mongo JSON migration; retained application fixtures, operator job state and retry receipts. No database reset.",
+  "runtimeAfter": {
+    "monolithRunning": [
+      "myscoutee",
+      "mongodb",
+      "nginx",
+      "minio",
+      "payment-simulator",
+      "redis",
+      "mcp-dev",
+      "frontend-sync"
+    ],
+    "mongodbSync": "remains stopped as originally",
+    "kvm": "off, no autostart",
+    "hostServices": "Versioned host stop refused because retained myscoutee-template/libvirt resources exist; shared host services preserved.",
+    "standaloneTestsAndBuilds": "finished"
+  },
+  "limits": [
+    "Other business lifecycle/outbox state machines were not implicitly migrated.",
+    "The shared worker limit is 10 per process, not a cluster-wide rate limit.",
+    "MSC-115 remaining campaign/fixture cleanup is not marked passed by these focused backend tests.",
+    "Template propagation/qualification remains in the separate template QA; no frontend or components changes in this batch."
+  ]
+}

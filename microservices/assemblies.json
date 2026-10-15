@@ -3,10 +3,14 @@
   "issue": "MSC-121",
   "projectName": "myscoutee-microservices",
   "version": "msc121",
-  "sharedJavaIncludes": [],
+  "sharedJavaIncludes": [
+    "common/delivery/**",
+    "common/config/mongo/AdminProjectionSignalOutbox.java"
+  ],
   "repositoryFactoryBean": "com.raxim.myscoutee.common.config.repository.MongoRepositoryFactoryBean",
   "sharedConfigurationImports": [
-    "com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler"
+    "com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler",
+    "com.raxim.myscoutee.common.delivery.OutboundRetryWorker"
   ],
   "services": {
     "identity": {

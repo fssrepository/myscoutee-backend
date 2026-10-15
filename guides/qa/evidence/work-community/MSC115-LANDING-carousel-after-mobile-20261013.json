@@ -1,0 +1,17 @@
+{
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "frames": 1292,
+  "bad": [
+    {
+      "ms": 4578,
+      "i": 3,
+      "visibleWidth": 15,
+      "class": "ui-warp-image-card__visual-image lazy-bg-suspended"
+    }
+  ],
+  "network": [],
+  "errors": []
+}

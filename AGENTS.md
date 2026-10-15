@@ -1,167 +1,120 @@
 # MyScoutee agent instructions
 
-These instructions cover this repository, its `frontend` submodule, and work
-that crosses into the sibling `myscoutee-registry` repository.
-
-## Focus and continuation
-
-- During active implementation, debugging or QA, a user question, correction,
-  side note or status request does not pause or replace the active task. Answer
-  briefly and continue until the requested work is complete, unless the user
-  explicitly asks to stop, pause or switch tasks.
-- A defect reported during that work is an instruction to diagnose, fix and
-  verify it within the active scope, then continue the remaining work. Do not
-  stop at acknowledging the defect or ask again whether to fix it. Respect an
-  explicit diagnosis-only or no-edit instruction.
-- Do not ask optional, speculative or adjacent-feature questions during active
-  work. Ask only when missing information genuinely blocks progress or a
-  material, destructive or irreversible scope decision needs user direction.
-
-## User-authorized full-flow testing
-
-- Codex takes over full-flow testing only when the user clearly and explicitly
-  requests it for a specified flow, checkpoint or campaign (for example,
-  `test the entire flow yourself`). Merely discussing this option or asking
-  to document it does not activate it. Once granted, authorization remains
-  active for the delegated scope until completion or
-  until the user changes or revokes it; do not request it again after each
-  step, question or defect report.
-- Within that scope, Codex may inspect and operate the browser, navigate,
-  click, fill forms, submit the intended test actions and execute the full
-  applicable checklist. Diagnose, repair and retest in-scope defects, then
-  continue the remaining steps. Report verified results and actual blockers.
-- This explicit delegation overrides the default manual-QA restriction that
-  reserves browser actions to the user after standardized startup. Without
-  that delegation, the user retains browser control; a question or defect
-  report alone does not authorize browser interaction.
-- Keep the versioned fixture baseline and browser launcher requirements, the
-  existing resource rules and the user's explicit acceptance criteria. Use
-  the active stable checklist where applicable; do not invent acceptance
-  rules or expand the delegated testing scope.
+Scope: this repository, its `frontend` submodule and work crossing into the
+sibling `myscoutee-registry` repository. Global focus, continuation and reuse
+rules apply. An in-scope defect report authorizes diagnosis, repair and
+verification, followed by the remaining work; respect diagnosis-only/no-edit
+instructions.
 
 ## CRITICAL LOCAL RESOURCE RULE
 
-Always assess response-time and CPU impact, but keep validation proportional.
-Use focused JUnit tests and the existing runtime's health, logs and CPU evidence
-for small implementation steps. Run matched load/stress measurements after a
-coherent change batch or to investigate a concrete performance concern, not
-after every edit. Compare the same workload, data, concurrency, warmup and
-deployment limits; record both source revisions and report increases as well
-as decreases. Functional success alone does not prove performance parity.
-Validate each completed backend change batch on both KVM and the monolith,
-serially with only one stack running. Focused runtime checks are required in
-both deployments; repeating stress tests in both is not required by default.
+- The running-pipeline restrictions below apply while a development server/stack
+  is running. When it is stopped, standalone npm tests, builds and other normal
+  project checks are allowed; do not start a server just to obtain a watcher.
+  Check for leftover test/build/watch processes and avoid overlapping owners.
+- Reuse the running hot-deploy/watcher for compilation and builds, regardless
+  of spare capacity. Trigger it through a narrow relevant source change or the
+  project's trigger and inspect its logs. Do not duplicate its work with another
+  npm, ng test, Vitest, Gradle, Java build, watcher, test or server process.
+- While the development stack is running, outside the test exceptions below,
+  a separate focused build/test requires
+  that the running pipeline does not perform it, capacity has been checked and
+  the user has not prohibited it.
+- For a cache lock or stuck hot-deploy, identify the owning process. Never bypass
+  it with a new cache, `GRADLE_USER_HOME`, `/tmp` workaround or second process.
+  Restart only that owner; ask if ownership or restart impact is unclear.
+  Whenever replacing an existing owner process, stop it before starting its
+  replacement; never overlap them.
+- Assess response-time and CPU impact proportionally. Small steps use focused
+  JUnit tests and existing runtime health/logs/CPU evidence. Run matched
+  load/stress measurements after a coherent change batch or for a concrete
+  performance concern: same workload, data, concurrency, warmup and deployment
+  limits; record both source revisions and increases as well as decreases.
+  Functional success does not prove performance parity.
+- Validate completed backend change batches on KVM and monolith, serially with
+  one stack running. Focused runtime checks are required in both; duplicate
+  stress runs are not required by default.
 
-**Backend JUnit exception authorized by the user:** standard and embedded JUnit
-tests may run in a separate, serial process while the dev server runs. Use
-`tools/run-backend-junit.sh`; it reuses the existing Gradle/JUnit implementation
-with isolated `build/junit` outputs and `server/build/junit-gradle` project state,
-and does not signal DevTools or connect to the dev databases. Integration tests
-are a separate, opt-in JUnit group. This exception does not authorize a second
-server or changes to the running QA deployment.
+**Authorized test exceptions:**
 
-**If the dev stack is already running and its hot-deploy process or watcher
-handles compilation or builds, trigger that existing process and inspect its
-logs, regardless of available capacity. Never repeat the same compilation or
-build with a separate npm, ng test, Vitest, Gradle, Java build, watcher, test or
-server process. A separate focused build or test may run only if the running
-dev pipeline does not perform it, machine capacity has been checked first,
-and the user has not prohibited it.**
+- Backend: run standard/embedded JUnit serially through
+  `tools/run-backend-junit.sh`, including while the dev server runs. It isolates
+  outputs/state in `build/junit` and `server/build/junit-gradle`, without signaling
+  DevTools or connecting to dev databases. Integration tests remain opt-in;
+  this permits neither a second server nor changing the QA deployment.
+- Frontend: follow the [frontend test skill](.agents/skills/myscoutee-frontend-testing/SKILL.md).
+  Stop existing `frontend-sync`, wait for watcher exit, run one non-watching
+  test, wait for its descendants to exit, then restore the same previously
+  running service even on failure. Never overlap test/build owners.
+  With the development stack running, compilation-only verification stays with
+  the existing watcher; with it stopped, standalone builds are allowed.
+- During a large frontend code-change batch with the development stack running,
+  temporarily stop `frontend-sync` and wait for its watcher to exit to avoid
+  rebuilding intermediate edits. Restore the same previously running container
+  after the batch/tests, including on failure, unless the user says to leave it
+  stopped. Leave the other services alone.
 
-**For a cache lock, first identify the existing process holding the lock. If
-the running dev stack owns compilation or builds, never create a new cache,
-use a new `GRADLE_USER_HOME`, use a `/tmp` workaround or start a second process;
-restart only the lock owner. If the owner or the impact of restarting it is
-unclear, stop and ask for direction.**
+## User-authorized full-flow testing
 
-**Trigger compilation or build verification through the running dev
-hot-deploy process with a narrow change to the relevant source file or the
-project's own trigger, then read the existing backend or frontend process
-logs. If hot-deploy fails or gets stuck, identify the lock and its owning
-process, and restart only that one existing target process.**
+Explicit delegation for a specified flow/checkpoint/campaign permits browser
+inspection, navigation, clicks, forms and intended test submissions for that
+scope. Discussion or documentation of delegation does not activate it. Once
+granted, it persists until completion or user change/revocation; repair, retest
+and continue without asking again at each step or defect.
 
-**If a change requires stopping the existing owner process, stop that one
-process first, then restart it. Never start its replacement alongside the
-old process.**
-
-**Invoke the versioned manual-QA checkpoint harness with the Docker access
-needed for the already-running MongoDB container on the first attempt. A
-sandboxed run may falsely report `MONGO CONTAINER 'MONGODB' IS NOT ALREADY RUNNING`
-because of a Docker socket permission error; this does not prove that the
-container is stopped. In that case, rerun the same harness command with Docker
-access and verify the already-running container. Do not start, rebuild or
-duplicate MongoDB, a server, a watcher or a Compose stack because of this
-error.**
+This overrides the default manual-QA handoff boundary only for the delegated
+scope. Otherwise the user controls the browser, and a defect report permits only
+read-only diagnosis. Retain fixture/launcher requirements, resource rules and
+explicit acceptance criteria; use the stable checklist without inventing rules
+or expanding scope. Report verified results and actual blockers.
 
 ## Managed manual-QA browser sessions
 
-- Every fixture-backed browser launch must use the versioned
-  `guides/qa/tools/open-checkpoint-browser-sessions.mjs` launcher. Before it
-  registers new demo logins, its common harness snapshots and clears the
-  configured actors' server-side active-session lists so a retained login
-  cannot cause `BLOCKED_LIMIT`.
-- Keep this cleanup centralized; do not copy actor-specific session mutations
-  into each scenario. A normal versioned fixture `reset` restores the retained
-  pre-launch session-state snapshot before restoring the fixture itself.
-- The common preparation is part of standardized startup only. It does not
-  itself authorize any browser navigation or checklist action after handoff.
-  Explicit user delegation under **User-authorized full-flow testing** permits
-  those actions within the delegated scope.
+- Verify the fixture baseline before every fixture-backed launch; use
+  `guides/qa/tools/open-checkpoint-browser-sessions.mjs`.
+- Its common harness snapshots and clears configured actors' server-side active
+  sessions before demo logins to prevent `BLOCKED_LIMIT`. Keep this centralized;
+  do not copy session mutations into scenarios. Normal fixture `reset` restores
+  the retained session snapshot before restoring the fixture.
+- Standardized startup grants no checklist actions after handoff; those require
+  the explicit full-flow delegation above.
+- Invoke the versioned checkpoint harness with Docker access to the existing
+  MongoDB container. A socket permission error can falsely report
+  `MONGO CONTAINER 'MONGODB' IS NOT ALREADY RUNNING`; rerun the same harness with
+  Docker access and verify the container. Do not start, rebuild or duplicate
+  MongoDB, servers, watchers or Compose stacks because of that error.
 
 ## Trust mode gate
 
-For engineering investigations or changes involving code, configuration, seed,
-test, packaging, operations, or architecture, resolve one trust mode at task
-start. Precedence is:
+Resolve once at engineering task start (code, configuration, seed, test,
+packaging, operations or architecture). Precedence: explicit current user mode
+(`trust off`, `trust light`, `trust standard`, `trust deep`), then `.trust-mode.local`,
+then `standard`. Report invalid local values and use `standard`.
 
-1. the user's explicit instruction for the current task (`trust off`, `trust
-   light`, `trust standard`, or `trust deep`);
-2. `.trust-mode.local`, when present;
-3. `standard` by default.
+- `off`: do not load the trust library.
+- `light`: read [kernel](.agents/trust/kernel.md) only.
+- `standard`: read kernel and only its task-matched cards.
+- `deep`: follow kernel's deep-loading route before editing.
 
-Modes:
-
-- `off`: do not load the trust library. System/developer instructions and the
-  user's current request still apply.
-- `light`: read [the trust kernel](.agents/trust/kernel.md) only.
-- `standard`: read the kernel, then only the cards it routes for the task.
-- `deep`: read the kernel and follow its deep-loading route before editing.
-
-An invalid local value falls back to `standard` and must be reported. Do not
-create or change `.trust-mode.local` unless the user asks. The local override is
-gitignored and can be managed with `tools/trust/trust-mode.sh`.
-
-The trust protocol is project context, not an optional skill. A skill or
-harness may automate it but does not override the selected mode or the current
-user instruction.
+Current user and higher-priority instructions still apply. Skills/harnesses
+cannot override the selected mode. Do not change the gitignored local override
+unless asked; its existing manager is `tools/trust/trust-mode.sh`.
 
 ## Higgsfield production route
 
-For MyScoutee Higgsfield / Cinema Studio work, including continuation in a new
-Codex session, first read the
-[Higgsfield skill](.agents/skills/myscoutee-higgsfield/SKILL.md), which points to
-the separate [Higgsfield trust guide](.agents/trust/higgsfield/README.md).
-Use that guide for production continuity and recovered conversation decisions.
-This does not activate application manual QA or its handoff/checklist.
+For MyScoutee Higgsfield/Cinema Studio work or continuation, enter through the
+[Higgsfield skill](.agents/skills/myscoutee-higgsfield/SKILL.md). It routes production
+continuity and historical decisions separately from application manual QA.
 
 ## Optional manual-QA continuation route
 
-Treat manual-QA continuation as an opt-in repository workflow skill, not as
-default context for ordinary engineering tasks. Activate it only when the user
-explicitly asks to continue/resume the manual QA campaign (for example,
-`continue the QA campaign`), even if the request arrives months after the
-previous session.
+Only an explicit request to continue/resume the campaign activates this route.
+Read [CURRENT_QA_SESSION.md](guides/qa/handoffs/CURRENT_QA_SESSION.md) first; its
+resume block is the sole current checkpoint pointer. Load only the linked
+checkpoint, not the full QA pack or already-proven history. If the runtime
+boundary may be stale, use its read-only resume gate before fixture mutation,
+browser relaunch or replay.
 
-When this route is active, read
-[`guides/qa/handoffs/CURRENT_QA_SESSION.md`](guides/qa/handoffs/CURRENT_QA_SESSION.md)
-first. Treat its resume block as the sole current checkpoint pointer and load
-only the detailed checkpoint document it links. Do not preload the full QA
-pack or reconstruct already-proven checkpoints from conversation history. If
-the saved runtime boundary may be stale, use the handoff's read-only resume
-gate before any fixture mutation, browser relaunch or replay.
-
-While the campaign is active, keep the handoff's reusable methodology and live
-resume pointer current, and keep transactional checkpoint evidence/status in
-the QA pack and CSV/XLSX ledger named by that handoff. This preserves a
-future-session entry point without turning the handoff into a backup of those
-authoritative evidence files.
+Keep reusable methodology and the live pointer in the handoff; transactional
+evidence/status belongs in its named QA pack and CSV/XLSX ledger. Do not duplicate
+those evidence files in the handoff.

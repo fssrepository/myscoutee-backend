@@ -1,0 +1,14 @@
+{
+  "text": "2 / 7\nclose\nFizetési mód\n\nVálaszd a készpénzt vagy a banki átutalást a kapott befizetésnek megfelelően. A mentés a befizetést rögzíti, nem indít banki átutalást.\n\narrow_back\nVissza\nformat_list_numbered\nFizetési mód\nexpand_more\narrow_forward\nTovább",
+  "lines": 4,
+  "box": {
+    "x": 27.390625,
+    "y": 147.734375,
+    "width": 332,
+    "height": 248,
+    "top": 147.734375,
+    "right": 359.390625,
+    "bottom": 395.734375,
+    "left": 27.390625
+  }
+}

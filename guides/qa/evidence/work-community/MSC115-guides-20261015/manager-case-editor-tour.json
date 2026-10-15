@@ -1,0 +1,202 @@
+[
+  {
+    "progress": "1 / 8",
+    "title": "Save",
+    "body": "Save the form. The current group is already fixed by the context in which the editor opened.",
+    "box": {
+      "x": 46,
+      "y": 56.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 300.296875,
+        "y": 3.3125,
+        "w": 46,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 8",
+    "title": "Case information",
+    "body": "The form belongs to the current group context. Give it a name and type, describe the work and review the affected members before saving.",
+    "box": {
+      "x": 12,
+      "y": 459.75,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 59.96875,
+        "w": 387.21875,
+        "h": 392.78125
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "3 / 8",
+    "title": "Choose members",
+    "body": "Choose the affected members in the popup. Its header All switch selects or clears the eligible members; confirm the selection before returning.",
+    "box": {
+      "x": 46,
+      "y": 133.96875,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 325.609375,
+        "y": 84.96875,
+        "w": 42,
+        "h": 42
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "4 / 8",
+    "title": "Affected members",
+    "body": "Avatar pills show the selected members compactly. Open a pill for that person or use plus to change the selection.",
+    "box": {
+      "x": 27.390625,
+      "y": 179.96875,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 126.96875,
+        "w": 345.21875,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 8",
+    "title": "Name",
+    "body": "Name the task or case so members can identify it easily.",
+    "box": {
+      "x": 27.390625,
+      "y": 269.96875,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 200.96875,
+        "w": 345.21875,
+        "h": 62
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 8",
+    "title": "Case type",
+    "body": "Choose the category beside the name. It identifies the kind of work and its contextual color.",
+    "box": {
+      "x": 27.390625,
+      "y": 335.96875,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 264.96875,
+        "w": 345.21875,
+        "h": 64
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 8",
+    "title": "Description",
+    "body": "Describe what needs attention and include the essential practical information.",
+    "box": {
+      "x": 27.390625,
+      "y": 75.96875,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 330.96875,
+        "w": 345.21875,
+        "h": 90.78125
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 8",
+    "title": "Close",
+    "body": "Close the case form without saving pending edits. If you changed the case details or audience, use the header tick first to keep them.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

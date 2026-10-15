@@ -46,6 +46,8 @@ import com.raxim.myscoutee.domain.events.api.RandomGroupAssignment;
 public class AdminNotificationService implements com.raxim.myscoutee.domain.notifications.api.NotificationAdministration {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh exchangeRateJob;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.media.api.MediaDeletionQueue mediaDeletions;
     private static final long MIN_EXPECTED_RANDOM_RUN_MILLIS = 1_000L;
     private static final long MAX_EXPECTED_RANDOM_RUN_MILLIS = 60_000L;
     private static final long DEFAULT_EXPECTED_RANDOM_RUN_MILLIS = 5_000L;
@@ -205,6 +207,14 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
                 progress.adoptRule(startedRule);
             }
             switch (normalizedRuleKey) {
+                case com.raxim.myscoutee.domain.media.api.MediaDeletionQueue.KEY -> {
+                    MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+                    String jobGroupId = JobGroupContext.groupId();
+                    Instant started = Instant.parse(startedAtIso(startedRule));
+                    runExecutor.submit(() -> runWithMongoSessionMode(sessionMode, () -> JobGroupContext.run(jobGroupId, () -> mediaDeletions.run(admin.id(), started))));
+                    return new AdminNotificationRuleRunResultDto(normalizedRuleKey, safeText(rule.getLabel()), 0,
+                            "running", "media.deletion.started", started.toString());
+                }
                 case com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh.KEY -> {
                     MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
                     String jobGroupId = JobGroupContext.groupId();

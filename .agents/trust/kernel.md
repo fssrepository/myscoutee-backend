@@ -4,15 +4,12 @@ This is the compact default habit loop. It protects continuity without loading
 the full project memory on every task. Current user and system instructions
 always outrank this library.
 
-## CRITICAL LOCAL RUNTIME RESOURCE SAFETY
+## Runtime authority
 
-**HA A DEV STACK MÁR FUT, ÉS A HOT-DEPLOY/WATCHER MAGA VÉGZI A FORDÍTÁST VAGY BUILD-ET, AKKOR KAPACITÁSTÓL FÜGGETLENÜL AZT KELL TRIGGERELNI ÉS ANNAK A LOGJÁT KELL ELLENŐRIZNI. ILYENKOR TILOS UGYANAZT A FORDÍTÁST KÜLÖN `NPM`, `NG TEST`, VITEST, GRADLE, JAVA BUILD, WATCHER, TESZT-, SZERVER- VAGY IDEIGLENES ELLENŐRZŐ FOLYAMATTAL MEGISMÉTELNI. KÜLÖN FÓKUSZÁLT BUILD VAGY TESZT CSAK AKKOR FUTTATHATÓ, HA AZT A FUTÓ DEV PIPELINE NEM VÉGZI EL, A GÉP KAPACITÁSA ELŐTTE ELLENŐRZÖTT, ÉS NINCS FELHASZNÁLÓI TILTÁS.**
-
-**A HOT-DEPLOY-T A MEGFELELŐ FORRÁSFÁJL SZŰK MÓDOSÍTÁSÁVAL VAGY A PROJEKT SAJÁT TRIGGERÉVEL INDÍTSD EL, MAJD A MÁR FUTÓ FOLYAMAT LOGJÁT OLVASD; NE INDÍTS MELLETTE MÁSODIK FORDÍTÁSI ÚTVONALAT.**
-
-**HA A MÓDOSÍTÁSHOZ A MEGLÉVŐ TULAJDONOS-FOLYAMATOT LE KELL ÁLLÍTANI, ELŐBB AZT AZ EGYET ÁLLÍTSD LE, MAJD UGYANAZT INDÍTSD ÚJRA; AZ UTÓDJÁT SOHA NE FUTTASD A RÉGI MELLETT.**
-
-**CACHE LOCK VAGY BERAGADT HOT-DEPLOY ESETÉN ELŐSZÖR AZONOSÍTSD A TULAJDONOS FOLYAMATOT. HA A FUTÓ DEV STACK A FORDÍTÁS/BUILD TULAJDONOSA, TILOS ÚJ CACHE-T, ÚJ `GRADLE_USER_HOME`-OT, `/TMP` KERÜLŐUTAT VAGY MÁSODIK FOLYAMATOT INDÍTANI; KIZÁRÓLAG AZ EGY MEGLÉVŐ TULAJDONOS-FOLYAMATOT INDÍTSD ÚJRA, ÉS MINDEN MŰVELETET SZIGORÚAN SOROSAN VÉGEZZ. HA A TULAJDONOS VAGY AZ ÚJRAINDÍTÁS HATÁSA NEM EGYÉRTELMŰ, ÁLLJ MEG ÉS KÉRJ IRÁNYMUTATÁST.**
+[AGENTS.md](../../AGENTS.md#critical-local-resource-rule) owns resource limits,
+watcher/cache-lock handling, serial KVM/monolith checks and JUnit/frontend test
+exceptions. Apply those rules; this library does not grant additional runtime
+permissions.
 
 ## Mode behavior
 
@@ -25,9 +22,12 @@ always outrank this library.
   [accepted learnings](learnings/accepted.md), and
   [completion review](reviews/completion.md), then load matching cards.
 
-Do not load unrelated cards merely because they exist. Escalate from `light` or
-`standard` only when the user requests it or the task reaches a deep-mode
-trigger below.
+Load each relevant file once per active task; reuse its context until the file,
+scope or user instruction changes. Route by the work actually performed, not
+keywords in quoted docs. Links are references, not recursive read requirements.
+A narrow documentation edit needs no application-layer or runtime checklist.
+Do not inventory the library, recover history, fill templates or update learnings
+routinely. Continue independent work without optional preference questions.
 
 ## Six-step loop
 
@@ -48,23 +48,6 @@ trigger below.
 6. **Prove and report.** Match verification to the real contract, review the
    final diff, and distinguish passed, failed, not-run, and not-proven claims.
 
-## Interrupt questions
-
-Ask these at the relevant decision, not ritualistically at task end:
-
-- What is the first concretely proven incorrect boundary?
-- Would this still be the right product change if the failing test vanished?
-- Am I hiding the defect with fallback, repair, or query-time reconstruction?
-- Am I changing behavior or scope that the user did not request?
-- Was removed historical behavior intentionally removed?
-- Will this survive reset/import and save/reload or mutation/read?
-- Do local and HTTP paths preserve the same observable contract?
-- Is expensive I/O hidden inside a loop or helper, and can state cross that
-  boundary once instead of N times?
-- Is the user's intended stack already running, and did they prohibit a build,
-  restart, browser, edit, or other action?
-- What exact evidence supports the completion claim, and what remains unproven?
-
 ## Standard routing
 
 Preserve both monolith and independent domain packaging for new backend work.
@@ -75,7 +58,8 @@ Developer-host lab VMs must never start on host boot; setup, explicit startup
 and owned cleanup belong in versioned scripts. Load the microservices card below
 for the detailed checks; a successful build does not prove a working split.
 
-Load every matching row, but no unrelated row:
+Load matching rows for affected behavior; deduplicate shared cards. Questions
+in cards are internal review prompts, not a user questionnaire:
 
 | Trigger | Load |
 | --- | --- |
@@ -90,7 +74,8 @@ Load every matching row, but no unrelated row:
 | Seed, fixture, Mongo JSON, IndexedDB | [data review](reviews/data-and-seeds.md) |
 | Environment, Compose, profile, adapter mode | [environment review](reviews/demo-e2e-production.md) |
 | Counter, badge, bucket, aggregate, projection | [derived-state review](reviews/derived-state.md) |
-| Loop, batch, polling, cache, performance | [performance review](reviews/performance.md), [efficiency habit](habits/efficiency-scan.md) |
+| Changed loop/batch/I/O or projection | [efficiency habit](habits/efficiency-scan.md) |
+| Performance investigation or measurement | [performance review](reviews/performance.md) |
 | Test/E2E/stress/runner/fixture | [testing review](reviews/testing.md), [runtime habit](habits/runtime-and-tests.md) |
 | Registry, signatures, receipts, ledger, identity | [protocol review](reviews/protocol-and-registry.md), [security review](reviews/security-and-privacy.md) |
 | New/reworked durable external operation | [durable-work pattern](patterns/external-durable-work.md) |
@@ -108,12 +93,12 @@ is sufficient.
 
 ## Deep-mode triggers
 
-Recommend or use `deep` when the task changes security/privacy, private keys,
+Consider `deep` when the task changes security/privacy, private keys,
 payments/accounting, Registry protocol, destructive data migration,
 backup/restore, production packaging/release, or three or more system/persistence
-boundaries. Also use it when canonical docs, tests, current code, and history
-conflict. A user-selected `off`, `light`, or `standard` mode is not silently
-overridden; state the risk instead.
+boundaries, or when canonical docs, tests, current code and history conflict.
+Keep the resolved mode; do not silently escalate it. State a material risk and
+load applicable cards within that mode.
 
 ## Compact completion check
 

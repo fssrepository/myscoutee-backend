@@ -98,6 +98,73 @@
         }
       ]
     },
+    "MSC115-WORK-COMMUNITY": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC115 Farkas Anna", "sessionKind": "demo", "userId": "bf057de7c586eede7e84bdc7", "expectedName": "Farkas Anna" },
+        { "actor": "MSC115 Maya Stone", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone" }
+      ]
+    },
+    "MSC115-SERVICE": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC115 service provider Anna", "sessionKind": "demo", "userId": "bf057de7c586eede7e84bdc7", "expectedName": "Farkas Anna" },
+        { "actor": "MSC115 service customer Alex", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner" }
+      ]
+    },
+    "MSC115-CASE": {
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 3 },
+      "sessions": [
+        { "actor": "MSC115 case admin Alex", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner" },
+        { "actor": "MSC115 case member Maya", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone" },
+        { "actor": "MSC115 unrelated case control Anna", "sessionKind": "demo", "userId": "bf057de7c586eede7e84bdc7", "expectedName": "Farkas Anna" }
+      ]
+    },
+    "MSC115-MIXING": {
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC115 mixing admin Alex", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner" },
+        { "actor": "MSC115 mixing member Maya", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone" }
+      ]
+    },
+    "MSC115-APP-ADMIN": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "MSC115 App Admin Ava",
+        "sessionKind": "demo",
+        "userId": "admin-demo-ava",
+        "autoDismissExplanationGuide": false,
+        "expectedName": "Ava Moderation"
+      }]
+    },
     "MSC115-UI-REGRESSION": {
       "preserveOtherSessions": true,
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
@@ -2878,6 +2945,52 @@
         }
       ],
       "preserveOtherSessions": true
+    },
+    "MSC115-CASE-VIEWER": {
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "MSC115 case viewer Evan",
+          "sessionKind": "demo",
+          "userId": "1d7d3545ba5e0f1d63918589",
+          "expectedName": "Evan Reed",
+          "window": {
+            "x": 1000,
+            "y": 0,
+            "width": 680,
+            "height": 900
+          }
+        }
+      ]
+    },
+    "MSC115-GUIDES-LOCAL": {
+      "preserveOtherSessions": true,
+      "storageScope": "demo",
+      "entryUrl": "http://localhost:4200/entry",
+      "targetUrl": "http://localhost:4200/entry",
+      "bootstrapEntryConsent": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "MSC115 local member",
+          "sessionKind": "anonymous",
+          "expectedName": "Local guide member baseline",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "MSC115 local admin",
+          "sessionKind": "anonymous",
+          "expectedName": "Local guide admin baseline",
+          "autoDismissExplanationGuide": true
+        }
+      ]
     }
   }
 }

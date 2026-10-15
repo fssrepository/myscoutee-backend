@@ -149,6 +149,11 @@ public class NotificationOutboxWorkerService {
         registry.forEachGroup(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX, () -> {
             var rule = registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).orElse(null);
             if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) return;
+            // Rule/run-state changes also wake this listener. Empty groups need no
+            // delivery-policy or authentication transport reads, nor due-date scans.
+            Query pending = Query.query(Criteria.where("baseGroupId").is(JobGroupContext.groupId())
+                    .and("status").is(NotificationOutboxItem.STATUS_PENDING));
+            if (!mongoTemplate.exists(pending, NotificationOutboxItem.class)) return;
             Instant minimum = Instant.now().plusSeconds(5);
             boolean insideWindow = isInsideDeliveryWindow();
             for (boolean push : new boolean[] {false, true}) {

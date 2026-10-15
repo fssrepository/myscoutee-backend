@@ -48,4 +48,12 @@ public class CampaignCatalogService implements CampaignCatalog, com.raxim.myscou
         Document record = mongo.findOne(query, Document.class, "campaigns");
         return record == null ? null : new CampaignMediaVisibilityDto(record.getString("workspaceGroupId"), record.getString("status"));
     }
+    @Override public List<String> referencedDocuments(List<String> urls) {
+        if (urls == null || urls.isEmpty() || urls.size() > 32) throw new IllegalArgumentException("Invalid document reference batch");
+        Query query = Query.query(Criteria.where("attachments.url").in(urls));
+        // Distinct uses the attachment index; project only matching URLs, including drafts/trash.
+        return mongo.findDistinct(query, "attachments.url", "campaigns", String.class).stream()
+                .filter(urls::contains).toList();
+    }
+
 }

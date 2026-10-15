@@ -255,6 +255,136 @@
           }
         }
       }
+    },
+    "/_internal/v1/community/media/documents": {
+      "post": {
+        "operationId": "getCommunityReferencedDocuments",
+        "security": [
+          {
+            "communityMediaRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Referenced document URLs from the bounded input batch, including every lifecycle bucket.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 32,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 24576
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "COMMUNITY_VISIBILITY_UNAVAILABLE: canonical owner failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: no matching reference in the selected mode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "QUERY_TOO_LARGE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "INVALID_CONTENT_TYPE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Maximum 1 MiB of JSON, including chunked requests.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaUrlsQueryDto"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

@@ -729,7 +729,13 @@ public final class EventsDtos {
             Boolean participantOnly,
             Integer page,
             Integer pageSize,
-            String cursor) {
+            String cursor,
+            Integer calendarCellLimit,
+            String calendarTimeZone) {
+        public EventSubEventsQueryDto(String userId, String eventId, String order, String view, String anchorDate,
+                String rangeStart, String rangeEnd, Boolean participantOnly, Integer page, Integer pageSize, String cursor) {
+            this(userId, eventId, order, view, anchorDate, rangeStart, rangeEnd, participantOnly, page, pageSize, cursor, null, null);
+        }
         public EventSubEventsQueryDto(
                 String userId,
                 String eventId,
@@ -752,7 +758,12 @@ public final class EventsDtos {
             String timeframe,
             String startAt,
             String endAt,
-            List<SubEventItemDto> subEventItems) {
+            List<SubEventItemDto> subEventItems,
+            TournamentCurrentStageDto currentStage) {
+        public EventSubEventsSlotDto(String id, String parentEventId, String slotSourceId, String slotTemplateId,
+                String title, String timeframe, String startAt, String endAt, List<SubEventItemDto> subEventItems) {
+            this(id, parentEventId, slotSourceId, slotTemplateId, title, timeframe, startAt, endAt, subEventItems, null);
+        }
     }
 
     public record EventSubEventsResultDto(
@@ -760,11 +771,17 @@ public final class EventsDtos {
             List<EventSubEventsSlotDto> slots,
             Integer total,
             String nextCursor,
-            boolean canAccessResources) {
+            boolean canAccessResources,
+            List<EventSubEventsCalendarCellDto> calendarCells) {
+        public EventSubEventsResultDto(String mode, List<EventSubEventsSlotDto> slots, Integer total, String nextCursor, boolean canAccessResources) {
+            this(mode, slots, total, nextCursor, canAccessResources, List.of());
+        }
         public EventSubEventsResultDto(String mode, List<EventSubEventsSlotDto> slots) {
             this(mode, slots, slots == null ? 0 : slots.size(), null, false);
         }
     }
+
+    public record EventSubEventsCalendarCellDto(String startAt, String endAt, int count) {}
 
     public record EventSubEventsSlotPage(
             List<EventSubEventsSlotDto> slots,

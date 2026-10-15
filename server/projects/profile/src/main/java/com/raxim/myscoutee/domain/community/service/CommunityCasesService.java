@@ -42,6 +42,8 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
     private final NotificationDelivery notifications;
     private final CaseConversations chats;
     private final ServiceOfferingsRepository offerings;
+    @org.springframework.beans.factory.annotation.Autowired
+    private CommunityCaseCounterWork counterWork;
     public CommunityCasesService(ServiceCasesRepository cases, CommunityAuthority access, GroupDirectory groups,
             ProfileSummaries users, NotificationDelivery notifications, CaseConversations chats, ServiceOfferingsRepository offerings) {
         this.cases = cases; this.access = access; this.groups = groups; this.users = users; this.notifications = notifications; this.chats = chats; this.offerings = offerings;
@@ -69,27 +71,41 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
         visible(actor, id); cases.markRead(id, actor); return detail(actor, id);
     }
     public Page<CaseItem> page(String actor, String status, String type, int size, String cursor) {
+        return page(actor, status, type, size, cursor, null, null);
+    }
+    public Page<CaseItem> page(String actor, String status, String type, int size, String cursor, String rangeStart, String rangeEnd) {
         var statuses = statuses(status);
         var types = type == null || type.isBlank() ? TYPES : List.of(type);
         if (!TYPES.containsAll(types)) throw error(HttpStatus.BAD_REQUEST);
         var managed = access.managedGroups(actor);
         int page = page(cursor), limit = Math.max(1, Math.min(50, size));
-        var rows = cases.visible(BaseGroups.COMMUNITY_BASE_ID, actor, managed, statuses, types,
-                PageRequest.of(page, limit, Sort.by(Sort.Order.desc("updatedAtIso"), Sort.Order.asc("id"))));
-        long total = cases.countVisible(BaseGroups.COMMUNITY_BASE_ID, actor, managed, statuses, types);
+        boolean calendar = rangeStart != null || rangeEnd != null;
+        List<ServiceCase> rows;
+        if (calendar) {
+            java.time.LocalDate start, end;
+            try { start = java.time.LocalDate.parse(rangeStart); end = java.time.LocalDate.parse(rangeEnd); }
+            catch (RuntimeException e) { throw error(HttpStatus.BAD_REQUEST); }
+            if (end.isBefore(start) || end.isAfter(start.plusDays(92))) throw error(HttpStatus.BAD_REQUEST);
+            rows = cases.visibleCalendar(BaseGroups.COMMUNITY_BASE_ID, actor, managed, statuses, types,
+                    start.atStartOfDay().toInstant(java.time.ZoneOffset.UTC).toString(),
+                    end.plusDays(1).atStartOfDay().toInstant(java.time.ZoneOffset.UTC).toString());
+        } else {
+            rows = cases.visible(BaseGroups.COMMUNITY_BASE_ID, actor, managed, statuses, types,
+                    PageRequest.of(page, limit, Sort.by(Sort.Order.desc("updatedAtIso"), Sort.Order.asc("id"))));
+        }
         var groupIds = rows.stream().map(ServiceCase::communityId).filter(Objects::nonNull).distinct().toList();
         var groupsById = groups.findByIdIn(groupIds).stream().collect(Collectors.toMap(GroupView::id, g -> g));
-        var people = users.findByUserIdIn(rows.stream().flatMap(c -> displayAccounts(c).stream()).collect(Collectors.toSet()))
+        var displayIds = rows.stream().flatMap(c -> displayAccounts(c).stream()).collect(Collectors.toSet());
+        displayIds.add(actor);
+        var people = users.findByUserIdIn(displayIds)
                 .stream().collect(Collectors.toMap(ProfileSummary::getUserId, u -> u));
-        Map<String, Long> context = new java.util.HashMap<>();
-        context.put("total", 0L);
-        for (var bucket : cases.bucketCounts(BaseGroups.COMMUNITY_BASE_ID, actor, managed)) {
-            context.put(bucket.status() + ":" + bucket.caseType(), bucket.count());
-            if (!"trash".equals(bucket.status())) context.merge("total", bucket.count(), Long::sum);
-        }
+        var account = people.get(actor);
+        var context = CommunityCaseCounterWork.context(account == null ? Map.of() : account.getMenuCounters());
+        long total = statuses.stream().flatMap(s -> types.stream().map(t -> context.getOrDefault(s + ":" + t, 0L)))
+                .mapToLong(Long::longValue).sum();
         return new Page<>(rows.stream().map(c -> CommunityCaseMapper.toDto(c, actor,
                 canManage(c, actor), groupsById.get(c.communityId()), people)).toList(),
-                total, (long) (page + 1) * limit < total ? Integer.toString(page + 1) : null,
+                calendar ? rows.size() : total, !calendar && (long) (page + 1) * limit < total ? Integer.toString(page + 1) : null,
                 context);
     }
     public CaseItem save(String actor, SaveCase r) {
@@ -111,17 +127,22 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
         if (old != null) { participants.addAll(old.participantAccountIds()); participants.removeIf(id -> "removed".equals(old.memberStates().get(id))); }
         var memberStates = old == null ? new LinkedHashMap<String, String>() : new LinkedHashMap<>(old.memberStates());
         for (String id : participants) if (old == null || !old.participantAccountIds().contains(id)) memberStates.put(id, id.equals(actor) ? "accepted" : "invited");
-        var saved = persist(new ServiceCase(old == null ? UUID.randomUUID().toString() : old.id(), BaseGroups.COMMUNITY_BASE_ID,
+        var result = persist(new ServiceCase(old == null ? UUID.randomUUID().toString() : old.id(), BaseGroups.COMMUNITY_BASE_ID,
                 communityId, old == null ? actor : old.ownerAccountId(), r.title().trim(), r.description().trim(), r.caseType(), old == null ? "open" : old.status(),
                 all, audience, List.copyOf(participants), participants.stream().filter(id -> !actor.equals(id) && (old == null || old.membershipStatus(id) == null || List.of("accepted", "invited").contains(old.membershipStatus(id)))).toList(),
                 old == null ? List.of() : old.support(), old == null ? List.of() : old.recommendations(), old == null ? List.of() : old.offers(),
-                old == null ? null : old.scheduledTaskId(), old == null ? null : old.dueAtIso(), old == null ? now : old.createdAtIso(), now, old == null ? null : old.version(), memberStates, old == null ? List.of() : old.boardTasks(), old == null ? List.of() : old.chatAccountIds()));
+                old == null ? null : old.scheduledTaskId(), old == null ? null : old.dueAtIso(), old == null ? now : old.createdAtIso(), now, old == null ? null : old.version(), memberStates, old == null ? List.of() : old.boardTasks(), old == null ? List.of() : old.chatAccountIds()), old, admins);
+        var saved = result.record();
         notifyChange(saved, actor, old == null ? "created" : "updated", saved.id() + ":" + saved.version());
-        return dto(actor, saved);
+        return dto(actor, saved, result.accounts());
     }
     public CaseItem action(String actor, String id, Command r) {
         var c = visible(actor, id);
-        if (!Objects.equals(c.version(), r.version())) throw error(HttpStatus.CONFLICT);
+        String action = r.action() == null ? "" : r.action();
+        // Commands apply to current state; only editor snapshots can overwrite newer data.
+        // Persistence still compares the freshly loaded version for concurrent writers.
+        if (List.of("save-board-task", "edit-offer").contains(action)
+                && !Objects.equals(c.version(), r.version())) throw error(HttpStatus.CONFLICT);
         boolean manager = canManage(c, actor);
         var support = new ArrayList<>(c.support()); var recommendations = new ArrayList<>(c.recommendations()); var offers = new ArrayList<>(c.offers());
         var participants = new LinkedHashSet<>(c.participantAccountIds());
@@ -129,7 +150,7 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
         var boardTasks = new ArrayList<>(c.boardTasks());
         var chatAccounts = new LinkedHashSet<>(c.chatAccountIds());
         String owner = c.ownerAccountId();
-        String status = c.status(), action = r.action() == null ? "" : r.action();
+        String status = c.status();
         switch (action) {
             case "take-over" -> {
                 if (!c.canTakeOver(actor)) throw error(HttpStatus.FORBIDDEN);
@@ -183,6 +204,13 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
 
             case "start", "complete", "cancel", "trash", "reopen" -> {
                 if (!manager) throw error(HttpStatus.FORBIDDEN);
+                boolean allowed = switch (action) {
+                    case "start" -> "open".equals(status);
+                    case "complete", "cancel" -> List.of("open", "in-progress").contains(status);
+                    case "trash" -> !"trash".equals(status);
+                    default -> List.of("completed", "cancelled", "trash").contains(status);
+                };
+                if (!allowed) throw error(HttpStatus.CONFLICT);
                 status = switch (action) { case "start" -> "in-progress"; case "complete" -> "completed"; case "cancel" -> "cancelled"; case "trash" -> "trash"; default -> "open"; };
             }
             case "recommend", "invite-provider" -> {
@@ -237,12 +265,13 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
             }
             default -> throw error(HttpStatus.BAD_REQUEST);
         }
-        var saved = persist(new ServiceCase(c.id(), c.baseGroupId(), c.communityId(), owner, c.title(), c.description(), c.caseType(), status,
+        var result = persist(new ServiceCase(c.id(), c.baseGroupId(), c.communityId(), owner, c.title(), c.description(), c.caseType(), status,
                 c.audienceAll(), c.audienceAccountIds(), List.copyOf(participants), participants.stream().filter(v -> !actor.equals(v) && !List.of("removed", "left", "declined").contains(memberStates.getOrDefault(v, c.membershipStatus(v) == null ? "invited" : c.membershipStatus(v)))).toList(),
-                support, recommendations, offers, c.scheduledTaskId(), c.dueAtIso(), c.createdAtIso(), Instant.now().toString(), c.version(), memberStates, boardTasks, List.copyOf(chatAccounts)));
+                support, recommendations, offers, c.scheduledTaskId(), c.dueAtIso(), c.createdAtIso(), Instant.now().toString(), c.version(), memberStates, boardTasks, List.copyOf(chatAccounts)), c, null);
+        var saved = result.record();
         if ("complete".equals(action) && !"completed".equals(c.status())) scheduleFeedback(saved);
         notifyChange(saved, actor, "leave".equals(action) && manager ? "owner-left" : List.of("join", "decline", "leave", "invite-members", "remove-member", "invite-chat", "save-board-task", "delete-board-task", "edit-offer", "pending-offer").contains(action) ? "updated" : action, saved.id() + ":" + saved.version());
-        return dto(actor, saved);
+        return dto(actor, saved, result.accounts());
     }
     public void notifyChange(ServiceCase c, String actor, String action, String occurrenceKey) {
         chats.synchronizeCase(com.raxim.myscoutee.domain.community.mapper.CaseConversationMapper.toConversation(c));
@@ -299,12 +328,17 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
         var ids = new LinkedHashSet<>(c.participantAccountIds());
         c.recommendations().forEach(r -> { ids.add(r.providerAccountId()); ids.add(r.accountId()); }); return ids;
     }
-    private CaseItem dto(String actor, ServiceCase c) {
-        var people = users.findByUserIdIn(displayAccounts(c)).stream().collect(Collectors.toMap(ProfileSummary::getUserId, u -> u));
+    private CaseItem dto(String actor, ServiceCase c) { return dto(actor, c, List.of()); }
+    private CaseItem dto(String actor, ServiceCase c, List<com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Snapshot> written) {
+        Map<String, ProfileSummary> people = new HashMap<>();
+        written.forEach(snapshot -> people.put(snapshot.profile().getUserId(), snapshot.profile()));
+        var missing = displayAccounts(c); missing.removeAll(people.keySet());
+        if (!missing.isEmpty()) users.findByUserIdIn(missing).forEach(user -> people.put(user.getUserId(), user));
         return CommunityCaseMapper.toDto(c, actor, canManage(c, actor), c.communityId() == null ? null : groups.findById(c.communityId()).orElse(null), people);
     }
-    private ServiceCase persist(ServiceCase c) {
-        try { return cases.save(c); } catch (org.springframework.dao.OptimisticLockingFailureException error) { throw error(HttpStatus.CONFLICT); }
+    private CommunityCaseCounterWork.Saved persist(ServiceCase c, ServiceCase previous, List<String> admins) {
+        try { return admins == null ? counterWork.save(c, previous) : counterWork.save(c, previous, admins); }
+        catch (org.springframework.dao.OptimisticLockingFailureException error) { throw error(HttpStatus.CONFLICT); }
     }
     public static void validateFields(String title, String description, String type) {
         if (title == null || title.isBlank() || title.trim().length() > 120 || description == null || description.length() > 120 || !TYPES.contains(type))

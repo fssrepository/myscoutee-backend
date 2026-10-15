@@ -4,6 +4,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZoneId;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventSubEventsQueryDto;
+import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventSubEventsCalendarCellDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventSubEventsSlotPage;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventSubEventsSlotDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.EventSlotTemplateDto;
@@ -84,6 +88,82 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
                 .map(source -> toSlotDto(source, parentRecord))
                 .toList();
         return withPersistedCounterProjection(slicePage(slots, query), parentRecord);
+    }
+
+    public boolean slotOverlapsQuery(EventSubEventsSlotDto slot, EventSubEventsQueryDto query) {
+        LocalDateTime start = toLocalDateTime(slot.startAt()), end = toLocalDateTime(slot.endAt());
+        LocalDateTime first = queryRangeStart(query), last = queryRangeEnd(query);
+        return start != null && (last == null || !start.isAfter(last))
+                && (first == null || (end == null ? start : end).isAfter(first)
+                    || ((end == null || !end.isAfter(start)) && !start.isBefore(first)));
+    }
+
+    public boolean isCalendarQuery(EventSubEventsQueryDto query) {
+        return query != null && query.calendarCellLimit() != null
+                && ("month".equals(query.view()) || "week".equals(query.view()));
+    }
+
+    // Calendar reads cover at most one visible month grid, never all recurrence history.
+    public EventSubEventsSlotPage toCalendarSlots(String parentId, ActivityEvent parent, EventSubEventsQueryDto query) {
+        validateCalendarQuery(query);
+        long now = System.currentTimeMillis();
+        List<EventSubEventsSlotDto> slots = subEventsSlotSources(normalizeId(parentId), parent, query, now).stream()
+                .filter(source -> slotSourceMatchesOrder(source, query, now))
+                .filter(source -> slotSourceOverlapsRange(source, query))
+                .map(source -> toSlotDto(source, parent)).toList();
+        return withPersistedCounterProjection(new EventSubEventsSlotPage(slots, slots.size(), null), parent);
+    }
+
+    public record CalendarProjection(List<EventSubEventsSlotDto> slots, List<EventSubEventsCalendarCellDto> cells) {}
+
+    public CalendarProjection compactCalendarSlots(List<EventSubEventsSlotDto> slots, EventSubEventsQueryDto query) {
+        validateCalendarQuery(query);
+        ZoneId zone = calendarZone(query);
+        LocalDate first = queryDate(query.rangeStart()), last = queryDate(query.rangeEnd());
+        boolean hourly = "week".equals(query.view());
+        List<EventSubEventsCalendarCellDto> cells = new ArrayList<>();
+        Set<String> detailed = new LinkedHashSet<>();
+        record Range(EventSubEventsSlotDto slot, Instant start, Instant end) {}
+        List<Range> ranges = new ArrayList<>();
+        for (EventSubEventsSlotDto slot : slots) {
+            LocalDateTime from = toLocalDateTime(slot.startAt()), until = toLocalDateTime(slot.endAt());
+            if (from != null) ranges.add(new Range(slot, from.toInstant(ZoneOffset.UTC),
+                    (until == null ? from : until).toInstant(ZoneOffset.UTC)));
+        }
+        for (LocalDate day = first; !day.isAfter(last); day = day.plusDays(1)) {
+            for (int hour = 0; hour < (hourly ? 24 : 1); hour++) {
+                LocalDateTime localStart = day.atTime(hourly ? hour : 0, 0);
+                LocalDateTime localEnd = hourly ? localStart.plusHours(1) : localStart.plusDays(1);
+                Instant start = localStart.atZone(zone).toInstant(), end = localEnd.atZone(zone).toInstant();
+                if (!end.isAfter(start)) continue; // Missing local hour at daylight-saving transition.
+                List<Range> matches = ranges.stream().filter(range -> range.start().isBefore(end)
+                        && (range.end().isAfter(start) || (!range.end().isAfter(range.start()) && !range.start().isBefore(start)))).toList();
+                if (matches.size() > query.calendarCellLimit()) {
+                    cells.add(new EventSubEventsCalendarCellDto(start.toString(), end.toString(), matches.size()));
+                } else {
+                    matches.forEach(range -> detailed.add(range.slot().id()));
+                }
+            }
+        }
+        return new CalendarProjection(slots.stream().filter(slot -> detailed.contains(slot.id())).toList(), cells);
+    }
+
+    private void validateCalendarQuery(EventSubEventsQueryDto query) {
+        LocalDate first = queryDate(query.rangeStart()), last = queryDate(query.rangeEnd());
+        if (first == null || last == null || last.isBefore(first) || ChronoUnit.DAYS.between(first, last) >= 42
+                || query.calendarCellLimit() == null || query.calendarCellLimit() < 1 || query.calendarCellLimit() > 20) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid calendar cell range or limit");
+        }
+        calendarZone(query);
+    }
+
+    private ZoneId calendarZone(EventSubEventsQueryDto query) {
+        try {
+            return query == null || !StringUtils.hasText(query.calendarTimeZone())
+                    ? ZoneOffset.UTC : ZoneId.of(query.calendarTimeZone());
+        } catch (java.time.DateTimeException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid calendar time zone");
+        }
     }
 
     private EventSubEventsSlotPage slicePage(List<EventSubEventsSlotDto> slots, EventSubEventsQueryDto query) {
@@ -595,7 +675,8 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
                 slot.timeframe(),
                 slot.startAt(),
                 slot.endAt(),
-                items);
+                items,
+                ActivityEvent.tournamentCurrentStage(SubEventItemMapper.toRecordList(items)));
     }
 
     private String subEventResourceOwnerId(EventSubEventsSlotDto slot) {
@@ -1018,12 +1099,12 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
 
     private LocalDateTime queryRangeStart(EventSubEventsQueryDto query) {
         LocalDate date = queryDate(query == null ? null : query.rangeStart());
-        return date == null ? null : date.atStartOfDay();
+        return date == null ? null : LocalDateTime.ofInstant(date.atStartOfDay(calendarZone(query)).toInstant(), ZoneOffset.UTC);
     }
 
     private LocalDateTime queryRangeEnd(EventSubEventsQueryDto query) {
         LocalDate date = queryDate(query == null ? null : query.rangeEnd());
-        return date == null ? null : date.atTime(23, 59, 59, 999_000_000);
+        return date == null ? null : LocalDateTime.ofInstant(date.plusDays(1).atStartOfDay(calendarZone(query)).toInstant().minusMillis(1), ZoneOffset.UTC);
     }
 
     private LocalDate queryDate(String value) {

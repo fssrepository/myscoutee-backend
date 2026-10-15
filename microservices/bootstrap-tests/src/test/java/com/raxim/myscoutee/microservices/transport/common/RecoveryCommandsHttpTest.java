@@ -26,6 +26,8 @@ import com.raxim.myscoutee.domain.integrations.api.EventChanges;
 import com.raxim.myscoutee.microservices.transport.chat.*;
 import com.raxim.myscoutee.microservices.transport.email.*;
 import com.raxim.myscoutee.microservices.transport.notifications.*;
+import com.raxim.myscoutee.microservices.transport.administration.*;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -45,6 +47,7 @@ class RecoveryCommandsHttpTest {
                 "myscoutee.remote.attachment-lifecycle.command-token=" + TOKEN,
                 "myscoutee.remote.scheduled-messages.command-token=" + TOKEN,
                 "myscoutee.remote.notification-jobs.command-token=" + TOKEN,
+                "myscoutee.remote.operational-telemetry.command-token=" + TOKEN,
                 "myscoutee.remote.event-changes.command-token=" + TOKEN,
                 "myscoutee.remote.checkout-memberships.command-token=" + TOKEN,
                 "spring.main.banner-mode=off", "logging.level.root=WARN").run();
@@ -52,6 +55,46 @@ class RecoveryCommandsHttpTest {
     }
     @AfterEach void clear() { MongoSessionModeContext.clear(); }
     @AfterAll static void stop() { if (server != null) server.close(); metrics.close(); }
+    @Test void projectionSignalPreservesDatabaseModeAndPropagatesFailureForScheduledRetry() {
+        var owner = server.getBean(OperationalTelemetry.class);
+        var inputs = new OperationalTelemetry.ProjectionSignal("affinity", Map.of(OperationalTelemetry.ProjectionInput.DERIVED, 2L, OperationalTelemetry.ProjectionInput.QUEUES, 3L));
+        doAnswer(call -> { assertEquals(MongoSessionMode.DEMO, MongoSessionModeContext.currentMode()); return null; })
+                .when(owner).signalProjectionInputs(inputs);
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        try (var remote = new RemoteOperationalTelemetry(origin, TOKEN, true, CONNECT, REQUEST, mapper, metrics)) {
+            remote.signalProjectionInputs(inputs);
+            assertThrows(IllegalArgumentException.class, () -> remote.signalProjectionInputs(new OperationalTelemetry.ProjectionSignal("affinity", Map.of())));
+            doThrow(new IllegalStateException("private storage failure")).when(owner).signalProjectionInputs(inputs);
+            var failure = assertThrows(RemoteReadTransport.RemoteReadException.class, () -> remote.signalProjectionInputs(inputs));
+            assertEquals(503, failure.status());
+        }
+        verify(owner, times(2)).signalProjectionInputs(inputs);
+    }
+    @Test void menuCounterWriteReturnsCountersAndOwnerInOneScopedResponse() {
+        var owner = server.getBean(MenuCounterUpdates.class);
+        var profile = mock(DiscoveryProfile.class);
+        when(profile.getUserId()).thenReturn("user");
+        when(profile.getWorkspaceGroupId()).thenReturn("workspace");
+        var change = new MenuCounterUpdates.Change("user", "workspace", "campaign-id", 2,
+                Map.of("campaignsDrafts", -1, "campaignsPublished", 1));
+        var snapshot = new MenuCounterUpdates.Snapshot(
+                com.raxim.myscoutee.domain.accounts.dto.DiscoveryProfileDto.from(profile),
+                Map.of("campaignsDrafts", 0, "campaignsPublished", 1, "otherModule", 5));
+        when(owner.applyAll(List.of(change))).thenAnswer(call -> {
+            assertEquals(MongoSessionMode.DEMO, MongoSessionModeContext.currentMode());
+            assertEquals("workspace", JobGroupContext.groupId());
+            return List.of(snapshot);
+        });
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        try (var remote = new RemoteActivityCounters(origin, TOKEN, true, CONNECT, REQUEST, mapper, metrics)) {
+            assertEquals(snapshot, JobGroupContext.call("workspace", () -> remote.apply(change)));
+            assertThrows(IllegalArgumentException.class, () -> remote.apply(new MenuCounterUpdates.Change(
+                    "user", "workspace", "unsafe.key", 2, Map.of("campaignsDrafts", 1))));
+        }
+        verify(owner).applyAll(List.of(change));
+        verifyNoMoreInteractions(owner);
+        assertFalse(JobGroupContext.isActive());
+    }
     @Test void feedbackReceiptRetainsIdSignedDeltasAndDatabaseWorkspaceScope() {
         var owner = server.getBean(ActivityCounters.class);
         var change = new FeedbackCounterChanges.Change("a".repeat(32), Map.of("user", new FeedbackCounterChanges.FeedbackBucketDelta(0, -1, 1, 0)));
@@ -114,6 +157,25 @@ class RecoveryCommandsHttpTest {
         }
         verify(owner).restoreClaimedPendingCount("event-job", 0, "events", started);
     }
+    @Test void retryOutcomeRetainsOriginalRunPrecisionAndOwnerScopeWithoutInlineRetry() {
+        var owner = server.getBean(NotificationJobs.class);
+        var outcome = new NotificationJobs.RetryOutcome("affinity-admin-signals",
+                Instant.parse("2026-10-15T08:00:00.123456789Z"), 3, "completed", "Delivered on attempt 3/3.");
+        doAnswer(call -> {
+            assertEquals(MongoSessionMode.DEMO, MongoSessionModeContext.currentMode());
+            assertEquals("workspace", JobGroupContext.groupId());
+            return null;
+        }).when(owner).recordRetryOutcome(outcome);
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        try (var remote = new RemoteNotificationJobs(origin, TOKEN, true, CONNECT, REQUEST, mapper, metrics)) {
+            JobGroupContext.run("workspace", () -> remote.recordRetryOutcome(outcome));
+            doThrow(new IllegalStateException("owner unavailable")).when(owner).recordRetryOutcome(outcome);
+            assertThrows(RemoteReadTransport.RemoteReadException.class,
+                    () -> JobGroupContext.run("workspace", () -> remote.recordRetryOutcome(outcome)));
+        }
+        verify(owner, times(2)).recordRetryOutcome(outcome);
+        assertFalse(JobGroupContext.isActive());
+    }
     @Test void changeWakeupsRetainWorkspaceAndDatabaseAndRequireScope() {
         var encounters = server.getBean(EventChanges.class);
         var cancellations = server.getBean(CheckoutMemberships.class);
@@ -142,11 +204,13 @@ class RecoveryCommandsHttpTest {
             "org.springframework.boot.data.mongodb.autoconfigure.DataMongoAutoConfiguration",
             "org.springframework.boot.data.mongodb.autoconfigure.DataMongoRepositoriesAutoConfiguration",
             "org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
-    @Import({ActivityCountersServerConfiguration.class, AttachmentLifecycleServerConfiguration.class,
+    @Import({OperationalTelemetryServerConfiguration.class, ActivityCountersServerConfiguration.class, AttachmentLifecycleServerConfiguration.class,
             ScheduledMessagesServerConfiguration.class, NotificationJobsServerConfiguration.class, EventChangesServerConfiguration.class, CheckoutMembershipsServerConfiguration.class, ServiceSecurityConfiguration.class})
     static class Fixture {
+        @Bean OperationalTelemetry telemetry() { return mock(OperationalTelemetry.class); }
         @Bean com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters() { return mock(com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters.class); }
         @Bean ActivityCounters counters() { return mock(ActivityCounters.class); }
+        @Bean MenuCounterUpdates menuCounters() { return mock(MenuCounterUpdates.class); }
         @Bean ServiceFeedbackCounters feedback() { return mock(ServiceFeedbackCounters.class); }
         @Bean FeedCounts feeds() { return mock(FeedCounts.class); }
         @Bean AttachmentLifecycle attachments() { return mock(AttachmentLifecycle.class); }

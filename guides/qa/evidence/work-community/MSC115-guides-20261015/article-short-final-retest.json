@@ -1,0 +1,233 @@
+{
+  "status": "PASS targeted only",
+  "targets": [
+    {
+      "label": "EN final short article-html",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "title": "Article HTML",
+      "progress": "12 / 13",
+      "text": "Edit the article body as HTML. Use Preview to check the result before saving.",
+      "body": {
+        "x": 41.5,
+        "y": 108.765625,
+        "w": 306,
+        "h": 77.703125,
+        "lineHeight": "16.2px"
+      },
+      "card": {
+        "x": 28.5,
+        "y": 37.46875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 23.5,
+          "y": 248.46875,
+          "w": 328,
+          "h": 310
+        }
+      ],
+      "launcher": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--brand",
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN final short image-upload",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "title": "Add image",
+      "progress": "10 / 13",
+      "text": "Choose an image for an empty article slot. Saving the article retains its images.",
+      "body": {
+        "x": 46.984375,
+        "y": 387.59375,
+        "w": 306,
+        "h": 77.703125,
+        "lineHeight": "16.2px"
+      },
+      "card": {
+        "x": 33.984375,
+        "y": 316.296875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 28.984375,
+          "y": 101.71875,
+          "w": 316.96875,
+          "h": 207.578125
+        }
+      ],
+      "launcher": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--brand",
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN final short image-replace",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "title": "Replace image",
+      "progress": "9 / 13",
+      "text": "Choose a different image for this occupied slot.",
+      "body": {
+        "x": 47.015625,
+        "y": 387.59375,
+        "w": 306,
+        "h": 77.703125,
+        "lineHeight": "16.2px"
+      },
+      "card": {
+        "x": 34.015625,
+        "y": 316.296875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 29.015625,
+          "y": 101.71875,
+          "w": 316.96875,
+          "h": 207.578125
+        }
+      ],
+      "launcher": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--brand",
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU final short article-html",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "title": "Cikk HTML-kódja",
+      "progress": "12 / 13",
+      "text": "Szerkeszd a cikk tartalmának HTML-kódját. Mentés előtt ellenőrizd az előnézetet.",
+      "body": {
+        "x": 41.5,
+        "y": 108.765625,
+        "w": 306,
+        "h": 77.703125,
+        "lineHeight": "16.2px"
+      },
+      "card": {
+        "x": 28.5,
+        "y": 37.46875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 23.5,
+          "y": 248.46875,
+          "w": 328,
+          "h": 310
+        }
+      ],
+      "launcher": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--brand",
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU final short image-upload",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "title": "Kép hozzáadása",
+      "progress": "10 / 13",
+      "text": "Válassz képet a cikk üres képhelyére. A cikk mentése rögzíti a képeit.",
+      "body": {
+        "x": 46.984375,
+        "y": 387.59375,
+        "w": 306,
+        "h": 77.703125,
+        "lineHeight": "16.2px"
+      },
+      "card": {
+        "x": 33.984375,
+        "y": 316.296875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 28.984375,
+          "y": 101.71875,
+          "w": 316.96875,
+          "h": 207.578125
+        }
+      ],
+      "launcher": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--brand",
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU final short image-replace",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "title": "Kép cseréje",
+      "progress": "9 / 13",
+      "text": "Válassz másik képet erre a foglalt képhelyre.",
+      "body": {
+        "x": 47.015625,
+        "y": 387.59375,
+        "w": 306,
+        "h": 77.703125,
+        "lineHeight": "16.2px"
+      },
+      "card": {
+        "x": 34.015625,
+        "y": 316.296875,
+        "w": 332,
+        "h": 204
+      },
+      "focus": [
+        {
+          "x": 29.015625,
+          "y": 101.71875,
+          "w": 316.96875,
+          "h": 207.578125
+        }
+      ],
+      "launcher": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--brand",
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-edit",
+        "landing.guide"
+      ]
+    }
+  ]
+}

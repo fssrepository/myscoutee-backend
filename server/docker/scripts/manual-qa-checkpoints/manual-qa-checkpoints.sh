@@ -546,6 +546,7 @@ run_scenario() {
     community-group) scenario_script="${SCRIPT_DIR}/scenarios/community-group-checkpoints.js" ;;
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
     chat-call) scenario_script="${SCRIPT_DIR}/scenarios/chat-call-checkpoints.js" ;;
+    work-community) scenario_script="${SCRIPT_DIR}/scenarios/work-community-checkpoints.js" ;;
     event-rating) scenario_script="${SCRIPT_DIR}/scenarios/event-activity-rating-checkpoints.js" ;;
     integration-api) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-checkpoints.js" ;;
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
@@ -623,6 +624,34 @@ run_scenario() {
   if [ "${scenario}" = "payment-ui" ] || [ "${scenario}" = "event-checkout" ] || [ "${scenario}" = "asset-checkout" ] || [ "${scenario}" = "asset-pricing" ] \
       || { [ "${scenario}" = "asset-domain" ] && [ "${checkpoint_id}" = "ASSET-BORROW-001" ]; }; then
     read -r payment_provider payment_requires_3ds payment_provider_connected < <(payment_simulator_state)
+  fi
+
+  if [ "${mongo_mode}" = "kvm" ]; then
+    local kvm_tools="${SCRIPT_DIR}/../../../../microservices/tools"
+    local kvm_demo_db
+    kvm_demo_db="$(python3 "${kvm_tools}/runtime_config.py" databases.demo)"
+    [ "${target_db}" = "${kvm_demo_db}" ] || fail "KVM fixtures require the configured DEMO database '${kvm_demo_db}'."
+    [ -f "${COMMON_SCRIPT}" ] || fail "Missing ${COMMON_SCRIPT}."
+    [ -f "${scenario_script}" ] || fail "Missing ${scenario_script}."
+    MANUAL_QA_COMMAND="${command}" MANUAL_QA_SCENARIO="${scenario}" \
+      MANUAL_QA_DB="${target_db}" MANUAL_QA_DEPLOYMENT_KIND=kvm \
+      MANUAL_QA_KVM_DEMO_DB="${kvm_demo_db}" MANUAL_QA_DELAY_SECONDS="${delay_seconds}" \
+      MANUAL_QA_CHECKPOINT_ID="${checkpoint_id}" MANUAL_QA_SOURCE_CHECKPOINT_ID="${source_checkpoint_id}" \
+      MANUAL_QA_BROWSER_SOURCE_SCENARIO="${MANUAL_QA_BROWSER_SOURCE_SCENARIO:-}" \
+      python3 - "${COMMON_SCRIPT}" "${scenario_script}" <<'PY' | python3 "${kvm_tools}/e2e-mongo.py" --database "${target_db}"
+import json, os, pathlib, sys
+# Credentials are neither transferred nor printed; the owned KVM helper authenticates.
+keys = ('COMMAND', 'SCENARIO', 'DB', 'DEPLOYMENT_KIND', 'KVM_DEMO_DB',
+        'DELAY_SECONDS', 'CHECKPOINT_ID', 'SOURCE_CHECKPOINT_ID',
+        'BROWSER_USER_IDS', 'BROWSER_SOURCE_SCENARIO', 'CREATOR_USER_ID',
+        'INVITEE_USER_ID', 'CHAT_TITLE', 'EVENT_ID', 'EVENT_IMAGE_URL', 'PRIVACY_LANG')
+environment = {'MANUAL_QA_' + key: os.environ.get('MANUAL_QA_' + key, '') for key in keys}
+environment['MANUAL_QA_MONGO_MODE'] = 'kvm'
+print('Object.assign(process.env, ' + json.dumps(environment) + ');')
+for source in sys.argv[1:]:
+    print(pathlib.Path(source).read_text())
+PY
+    return
   fi
 
   case "${target_db}" in
@@ -834,6 +863,18 @@ PY
     ;;
   browser-sessions:prepare|browser-sessions:restore)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  work-community:stage|work-community:status|work-community:ready|work-community:capture-case-catalog|work-community:capture-announcement-catalog|work-community:capture-payment-catalog|work-community:capture-mixing-event|work-community:announcement-media-prefixes|work-community:stage-announcement-former-member|work-community:restore-announcement-member|work-community:capture-schedule-catalog|work-community:arm-schedule-exclusion|work-community:verify-schedule-exclusion|work-community:replay-schedule-occurrence|work-community:verify-schedule-occurrence|work-community:retry-schedule-delivery|work-community:verify-schedule-delivery|work-community:capture-service-catalog|work-community:capture-service-ratings|work-community:capture-service-feedback|work-community:capture-admin-content|work-community:capture-admin-jobs|work-community:stage-service-calendar|work-community:restore-service-calendar|work-community:stage-deleted-service-provider|work-community:restore-service-provider|work-community:stage-service-discovery|work-community:restore-service-discovery|work-community:accept-seed-images|work-community:schedule-auto-inviter|work-community:restore-auto-inviter|work-community:reset)
+    [ "$#" -eq 3 ] && [ "$3" = "MSC115-WORK-COMMUNITY" ] || fail "Work/Community fixtures require MSC115-WORK-COMMUNITY."
+    if [[ "${command}" == "reset" ]]; then
+      announcement_media=$(run_scenario "announcement-media-prefixes" "${scenario}" 30 "$3")
+      announcement_prefixes=$(python3 -c 'import json,re,sys; rows=json.load(sys.stdin)["prefixes"]; assert all(re.fullmatch(r"private/documents/group-[A-Za-z0-9_-]+-[0-9a-f]{24}/[0-9a-f-]{36}/", p) for p in rows); print("\n".join(rows))' <<< "${announcement_media}")
+      while IFS= read -r prefix; do
+        [[ -n "${prefix}" ]] || continue
+        docker exec minio sh -c 'export MC_HOST_qa="http://${MINIO_ROOT_USER}:${MINIO_ROOT_PASSWORD}@localhost:9000"; mc rm --recursive --force "qa/myscoutee-media/$1"' msc115-announcement-media-reset "${prefix}" >/dev/null
+      done <<< "${announcement_prefixes}"
+    fi
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   chat-call:stage|chat-call:status|chat-call:ready|chat-call:reset)

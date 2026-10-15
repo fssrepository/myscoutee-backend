@@ -6,10 +6,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.raxim.myscoutee.domain.community.document.CommunityAnnouncement;
 
 public interface CommunityAnnouncementsRepository extends MongoRepository<CommunityAnnouncement, String> {
+    List<CommunityAnnouncement> findByCommunityId(String communityId, Pageable page);
     List<CommunityAnnouncement> findByCommunityIdAndStatus(String communityId, String status, Pageable page);
-    long countByCommunityIdAndStatus(String communityId, String status);
     List<CommunityAnnouncement> findByCommunityIdAndStatusAndVoting(String communityId, String status, boolean voting, Pageable page);
-    long countByCommunityIdAndStatusAndVoting(String communityId, String status, boolean voting);
     @org.springframework.data.mongodb.repository.Aggregation(pipeline = {
         "{'$match':{'status':'published','voting':true,'$or':[{'deadlineIso':{'$lte':?0}},{'closedAtIso':{'$ne':null}}],'closureNotifiedAtIso':null}}",
         "{'$sort':{'_id':1}}"

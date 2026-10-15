@@ -20,6 +20,79 @@ import com.raxim.myscoutee.common.dto.SharedDtos.SubEventDefinitionDto;
 class ActivityEventSubEventsMapperTest {
     private final ActivityEventSubEventsMapper mapper = new ActivityEventSubEventsMapper();
 
+    private EventSubEventsSlotDto calendarSlot(String id, String start, String end) {
+        return new EventSubEventsSlotDto(id, "event", null, null, id, null, start, end, List.of());
+    }
+
+    private EventSubEventsQueryDto calendarQuery(String view, int limit, String first, String last, String zone) {
+        return new EventSubEventsQueryDto("user", "event", "upcoming", view, first, first, last, false, 0, 240, null, limit, zone);
+    }
+
+    @Test
+    void calendarGeneratesAll300OccurrencesInVisibleMonthWithoutPageCap() {
+        Instant first = Instant.parse("2099-04-01T00:00:00Z");
+        ActivityEvent parent = parentEvent(first, java.util.stream.IntStream.range(0, 10)
+                .mapToObj(i -> slotTemplate("template-" + i, first.plus(i + 1, ChronoUnit.HOURS), subEventDefinition(30))).toList());
+        parent.setStartAtIso(first.toString());
+        parent.setEndAtIso(first.plus(30, ChronoUnit.DAYS).toString());
+        parent.setFrequency("Daily");
+        var query = calendarQuery("month", 5, "2099-04-01", "2099-04-30", "UTC");
+        var page = mapper.toCalendarSlots("event-1", parent, query);
+        assertThat(page.slots()).hasSize(300);
+        var result = mapper.compactCalendarSlots(page.slots(), query);
+        assertThat(result.slots()).isEmpty();
+        assertThat(result.cells()).hasSize(30).allSatisfy(cell -> assertThat(cell.count()).isEqualTo(10));
+    }
+
+    @Test
+    void calendarKeepsFiveBadgesButReturnsOnlyCountForSixAndDoesNotTruncateAt240() {
+        var slots = new java.util.ArrayList<EventSubEventsSlotDto>();
+        for (int i = 0; i < 5; i++) slots.add(calendarSlot("sparse-" + i, "2027-04-01T10:00:00Z", "2027-04-01T11:00:00Z"));
+        for (int i = 0; i < 300; i++) slots.add(calendarSlot("dense-" + i, "2027-04-02T10:00:00Z", "2027-04-02T11:00:00Z"));
+        var result = mapper.compactCalendarSlots(slots, calendarQuery("month", 5, "2027-04-01", "2027-04-02", "UTC"));
+        assertThat(result.slots()).hasSize(5);
+        assertThat(result.cells()).singleElement().satisfies(cell -> {
+            assertThat(cell.count()).isEqualTo(300);
+            assertThat(cell.startAt()).isEqualTo("2027-04-02T00:00:00Z");
+        });
+        var six = mapper.compactCalendarSlots(slots.subList(5, 11), calendarQuery("month", 5, "2027-04-02", "2027-04-02", "UTC"));
+        assertThat(six.slots()).isEmpty();
+        assertThat(six.cells().get(0).count()).isEqualTo(6);
+    }
+
+    @Test
+    void weeklyDenseHourKeepsDetailsForSparsePortionOfCrossingSlot() {
+        var longSlot = calendarSlot("long", "2027-04-01T09:00:00Z", "2027-04-01T11:00:00Z");
+        var result = mapper.compactCalendarSlots(List.of(longSlot,
+                calendarSlot("short", "2027-04-01T10:00:00Z", "2027-04-01T11:00:00Z")),
+                calendarQuery("week", 1, "2027-04-01", "2027-04-01", "UTC"));
+        assertThat(result.slots()).containsExactly(longSlot);
+        assertThat(result.cells()).singleElement().satisfies(cell -> {
+            assertThat(cell.startAt()).isEqualTo("2027-04-01T10:00:00Z");
+            assertThat(cell.count()).isEqualTo(2);
+        });
+    }
+
+    @Test
+    void calendarUsesLocalDayAndExclusiveMidnightAcrossDaylightSaving() {
+        var slots = java.util.stream.IntStream.range(0, 6).mapToObj(i -> calendarSlot("s" + i,
+                "2026-10-24T22:00:00Z", "2026-10-25T23:00:00Z")).toList();
+        var result = mapper.compactCalendarSlots(slots, calendarQuery("month", 5, "2026-10-24", "2026-10-26", "Europe/Bratislava"));
+        assertThat(result.cells()).singleElement().satisfies(cell -> {
+            assertThat(cell.startAt()).isEqualTo("2026-10-24T22:00:00Z");
+            assertThat(cell.endAt()).isEqualTo("2026-10-25T23:00:00Z");
+            assertThat(cell.count()).isEqualTo(6);
+        });
+        assertThat(result.slots()).isEmpty();
+    }
+
+    @Test
+    void calendarRejectsUnboundedOrInvalidRequests() {
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> mapper.compactCalendarSlots(List.of(),
+                calendarQuery("month", 5, "2027-01-01", "2028-01-01", "UTC")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+    }
+
     @Test
     void generatedSlotsUseWholeSlotEndForUpcomingAndPastOrders() {
         Instant now = Instant.now();

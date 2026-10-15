@@ -340,16 +340,14 @@ class UserActivityCountersServiceTest {
         Users user = user("viewer", activitiesWithAssetAndFeedback(2, 2, 2, 0, 4, 3, 1, 0));
         when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(user));
 
-        stubFeedbackTotalCollection();
         service.applyFeedbackStateTransition(event, "viewer", false, false, true, false);
 
-        Document fields = updatedFields();
-        assertThat(fields.getInteger("activities.feedback")).isEqualTo(6);
+        Document fields = feedbackUpdatedFields("viewer");
         assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(4);
         assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(2);
         assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
         assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
-        assertAtomicFeedbackTotal("viewer");
+
     }
 
     @Test
@@ -404,29 +402,28 @@ class UserActivityCountersServiceTest {
         Users host = user("host", activitiesWithAssetAndFeedback(2, 2, 2, 0, 0, 3, 1, 0));
         when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(host));
 
-        stubFeedbackTotalCollection();
         service.applyFeedbackStateTransition(event, "viewer", false, false, true, false);
 
-        Document fields = updatedFields();
-        assertThat(fields.getInteger("activities.feedback")).isEqualTo(4);
+        Document fields = feedbackUpdatedFields("host");
         assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(1);
         assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(3);
         assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(1);
         assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
-        assertAtomicFeedbackTotal("host");
+
     }
 
-    private void stubFeedbackTotalCollection() {
-        when(mongoTemplate.getCollection("users")).thenReturn(usersCollection);
-    }
-
-    private void assertAtomicFeedbackTotal(String userId) {
-        var total = new Document("$add", List.of(
+    private Document feedbackUpdatedFields(String userId) {
+        var captor = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.aggregation.AggregationUpdate.class);
+        verify(mongoTemplate).updateFirst(org.mockito.ArgumentMatchers.argThat((Query q) -> userId.equals(q.getQueryObject().getString("userId"))), captor.capture(), eq(Users.class));
+        var fields = new Document();
+        captor.getValue().toPipeline(org.springframework.data.mongodb.core.aggregation.Aggregation.DEFAULT_CONTEXT)
+                .forEach(stage -> fields.putAll(stage.get("$set", Document.class)));
+        assertThat(fields.get("activities.feedback")).isEqualTo(new Document("$add", List.of(
                 new Document("$ifNull", List.of("$activities.eventFeedback.pending", 0)),
                 new Document("$ifNull", List.of("$activities.eventFeedback.ownEvents", 0)),
-                new Document("$ifNull", List.of("$activities.serviceFeedbackPending", 0))));
-        verify(usersCollection).updateOne(new Document("userId", userId),
-                List.of(new Document("$set", new Document("activities.feedback", total))));
+                new Document("$ifNull", List.of("$menuCounters.feedback", 0)))));
+        verify(mongoTemplate, never()).getCollection("users");
+        return fields;
     }
 
     private Document updatedFields() {

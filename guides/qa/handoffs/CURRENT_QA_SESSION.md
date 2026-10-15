@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-10-06
+Updated: 2026-10-15
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -84,8 +84,30 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
+checkpoint: MSC115-WORK-COMMUNITY
+status: CLOSED
+checklist: ../checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md
+substage: Completed through119; accepted monolith coverage, source guides, focused KVM backend samples, cleanup and ledger reconciliation closed.
+execution_authority: User authorized closure and commit consolidation. Do not replay completed MSC-115 steps.
+fixture_phase: KVM and monolith retained snapshots restored and verified. Disposable API keys revoked through API; owned integration records removed. No active campaign browser session.
+last_completed: 115–119, including focused latency/CPU investigation and exact fixture restoration.
+next_action: None for MSC-115. Do not automatically start another QA campaign.
+resume_gate: KVM off/no autostart; original8 monolith containers restored, mongodb-sync off. Verify actual runtime before a later independent task.
+evidence: ../evidence/work-community/MSC115-closure-20261015/summary.json
+ledger: ../evidence/QA_LEDGER_RECONCILIATION_20261015.json
+independent_qa: Template runtime and live-deployment qualification remain in their own checkpoints, outside MSC-115 closure.
+```
+
+
+
+Current authority is the block above. Historical deferrals below describe only
+prior sessions. Transactional results remain in the campaign evidence and matrix.
+
+## Archived resume point — 2026-10-06
+
+```yaml
 checkpoint: MSC115-GUIDES
-checklist: ../checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md
+checklist: ../checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md
 substage: MSC-115 development and local commit consolidation complete for the retained scope. Follow-us links confirmed by user after clearing a cached redirect; disabled Firebase now returns 204. Stop before API/MCP expansion. Broad QA is deferred.
 execution_authority: User explicitly deferred tests and guide QA, and requested a stop before MCP expansion. The earlier scoped login/logout diagnosis is complete.
 fixture_phase: No new multi-actor MSC115 fixture staged; preserve current demo rows and retained browser/session state.
@@ -108,7 +130,7 @@ The queued MCP research includes the shared MCP Events discussion and
 its verified official webhook/subscription contract. No new API/MCP permission
 code has been written.
 
-Current ledger: **141 cases; 120 passed, 21 NOT RUN**, including the reopened guide row. Historical evidence below remains valid only for its recorded scope.
+Current ledger (reconciled 2026-10-15): **146 cases; 139 passed/closed, 1 IN PROGRESS, 6 NOT RUN, 0 failed**. MSC-115 is closed for the accepted development scope. Independent template/live QA retains its own status. See `../evidence/QA_LEDGER_RECONCILIATION_20261015.json`. Historical evidence below remains valid only for its recorded scope.
 
 ## Archived resume point — 2026-09-30
 

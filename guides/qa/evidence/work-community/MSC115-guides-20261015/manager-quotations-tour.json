@@ -1,0 +1,252 @@
+[
+  {
+    "progress": "1 / 10",
+    "title": "Service providers",
+    "body": "The avatar stack opens the providers participating in this case.",
+    "box": {
+      "x": 46,
+      "y": 56.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 164.28125,
+        "y": 3.3125,
+        "w": 182.015625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 10",
+    "title": "Offer status",
+    "body": "Filter pending, accepted or rejected offers, or show all.",
+    "box": {
+      "x": 12,
+      "y": 429.34375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 684.34375,
+        "w": 387.21875,
+        "h": 159.65625
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "3 / 10",
+    "title": "Case quotations",
+    "body": "Compare the providers’ proposals. The row menu opens the full offer and available decision actions; the row itself is not a button.",
+    "box": {
+      "x": 12,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 121.71875,
+        "w": 387.21875,
+        "h": 720.890625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "4 / 10",
+    "title": "Actions",
+    "body": "Open the item’s three-dot menu to see actions available to your role and the item’s current state.",
+    "box": {
+      "x": 12,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 121.71875,
+        "w": 387.21875,
+        "h": 720.890625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "5 / 10",
+    "title": "Details",
+    "body": "Read this provider’s quoted amount, Currency, note and work or refund terms. Opening the details does not accept the quotation.",
+    "box": {
+      "x": 12.984375,
+      "y": 381.6875,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 635.828125,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 10",
+    "title": "Conversation",
+    "body": "Open the conversation linked to this case and quotation to clarify the offered work. Check the participants before sending information about the quotation.",
+    "box": {
+      "x": 12.984375,
+      "y": 381.6875,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 674.375,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 10",
+    "title": "Edit",
+    "body": "As the case manager, edit the quotation’s amount, Currency, note and terms where offered. Save the quotation form to record the agreed changes.",
+    "box": {
+      "x": 12.984375,
+      "y": 381.6875,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 712.921875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 10",
+    "title": "Return to pending",
+    "body": "Return this quotation to pending review after confirmation. This changes the existing offer’s decision state so it can be considered again.",
+    "box": {
+      "x": 12.984375,
+      "y": 381.6875,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 712.921875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "9 / 10",
+    "title": "Reject quotation",
+    "body": "Record this quotation as rejected after confirmation. The dialog identifies the case and quotation so you can check the decision’s target.",
+    "box": {
+      "x": 12.984375,
+      "y": 381.6875,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 790.015625,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "10 / 10",
+    "title": "Close",
+    "body": "Close the quotation list and return to the case. Decisions already submitted, such as acceptance or rejection, remain in effect.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

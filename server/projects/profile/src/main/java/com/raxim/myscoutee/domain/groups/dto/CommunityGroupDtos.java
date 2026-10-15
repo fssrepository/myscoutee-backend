@@ -19,14 +19,14 @@ public final class CommunityGroupDtos {
             boolean hideMembers, GroupPolicy policy, String createdAtIso, String updatedAtIso,
             Long version, String role, String membershipStatus, String requestKind,
             boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
-            Double distanceKm, String moderationStatus, long moderationPending, long moderationQueueRevision, long membersActivity, String lifecycleStatus, boolean canTakeOver, boolean canRestoreGroup, String groupType) {
+            Double distanceKm, String moderationStatus, long moderationPending, long moderationQueueRevision, long membersActivity, String lifecycleStatus, boolean canTakeOver, boolean canRestoreGroup, String groupType, Map<String, Integer> menuCounters) {
     public Group(String id, String ownerUserId, String ownerName, String ownerAvatarUrl,
             String name, String description, String imageUrl, String category, String visibility,
             boolean hideMembers, GroupPolicy policy, String createdAtIso, String updatedAtIso,
             Long version, String role, String membershipStatus, String requestKind,
             boolean organizerOnly, int acceptedMembers, int pendingMembers, long activity,
             Double distanceKm, String moderationStatus, long moderationPending, long moderationQueueRevision, long membersActivity, String lifecycleStatus, boolean canTakeOver, boolean canRestoreGroup) {
-        this(id, ownerUserId, ownerName, ownerAvatarUrl, name, description, imageUrl, category, visibility, hideMembers, policy, createdAtIso, updatedAtIso, version, role, membershipStatus, requestKind, organizerOnly, acceptedMembers, pendingMembers, activity, distanceKm, moderationStatus, moderationPending, moderationQueueRevision, membersActivity, lifecycleStatus, canTakeOver, canRestoreGroup, "dating");
+        this(id, ownerUserId, ownerName, ownerAvatarUrl, name, description, imageUrl, category, visibility, hideMembers, policy, createdAtIso, updatedAtIso, version, role, membershipStatus, requestKind, organizerOnly, acceptedMembers, pendingMembers, activity, distanceKm, moderationStatus, moderationPending, moderationQueueRevision, membersActivity, lifecycleStatus, canTakeOver, canRestoreGroup, "dating", Map.of());
     }
 
         @com.fasterxml.jackson.annotation.JsonProperty

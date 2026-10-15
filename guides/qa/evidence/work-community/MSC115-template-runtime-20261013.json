@@ -1,0 +1,242 @@
+{
+  "date": "2026-10-13",
+  "revisions": {
+    "templateBackend": "6c9e887",
+    "templateFrontend": "ed27784",
+    "sharedComponents": "b4e6fe5"
+  },
+  "http": {
+    "login": [
+      {
+        "path": "/api/auth/session/login",
+        "status": 200
+      }
+    ],
+    "unreadBefore": 11,
+    "unreadAfter": 10,
+    "reloadPreserved": true,
+    "readRequest": {
+      "path": "/api/notifications/6ace51e316b1546ae769e1c3/read",
+      "status": 200
+    },
+    "filter": "New selected with done indicator"
+  },
+  "mobile": {
+    "width": 390,
+    "notificationBefore": {
+      "w": 390,
+      "headers": [
+        {
+          "class": "smart-list__sticky",
+          "y": 69.96875
+        },
+        {
+          "class": "smart-list__sticky-label",
+          "y": 79.5625
+        }
+      ],
+      "scrollers": [
+        {
+          "class": "smart-list smart-list--list smart-list--stack smart-list--presentation-list smart-list--desktop-columns-1 smart-list--adaptive-columns smart-list--snap-mandatory notification-center-smart-list",
+          "h": 768,
+          "sh": 1162
+        }
+      ]
+    },
+    "notificationAfter": {
+      "top": 394,
+      "snap": "y mandatory",
+      "headerY": 69.96875
+    }
+  },
+  "largeImage": {
+    "component": "Shared InfoCard used by feedback",
+    "externalImageDelayMs": 1200,
+    "samples": [
+      {
+        "at": 419.70000000018626,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "0.473497",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 545.3000000007451,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 666.5,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 790.9000000003725,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 916,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1063.2000000001863,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1179.4000000003725,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1304.6000000005588,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1424,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1543.800000000745,
+        "state": "ui-info-card__media lazy-bg-loading",
+        "opacity": "1",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1662,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0.530399",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1788.1000000005588,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 1906.1000000005588,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 2019,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 2137.2000000001863,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 2253,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 2369.5,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 2486.100000000559,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 2602.800000000745,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "at": 2719.5,
+        "state": "ui-info-card__media lazy-bg-loaded",
+        "opacity": "0",
+        "dx": 0,
+        "dy": 0
+      }
+    ],
+    "cleanup": "Network route removed"
+  },
+  "local": {
+    "initial": {
+      "local": true,
+      "active": "100000000000000000000001",
+      "visible": 1,
+      "profile": {
+        "chats": 1,
+        "notifications": 1,
+        "chat": {
+          "all": 1,
+          "contacts": 1,
+          "appSupport": 0
+        }
+      },
+      "repoKeys": [
+        "memoryDb",
+        "usersTable",
+        "demoUsers"
+      ],
+      "stored": {
+        "chats": 1,
+        "notifications": 1,
+        "chat": {
+          "all": 1,
+          "contacts": 1,
+          "appSupport": 0
+        }
+      }
+    },
+    "afterPoll": {
+      "at": "2026-10-13T15:49:42.254Z",
+      "local": true,
+      "active": "100000000000000000000001",
+      "visible": 1,
+      "stored": 1,
+      "unread": 1,
+      "cursor": "100000000000000000000001:1:1:{}:public"
+    },
+    "uiPolicy": "Existing offline guard intentionally blocks opening notification popup in product and template; no policy change.",
+    "reloadPending": false,
+    "reloadPreserved": true,
+    "reloadUnread": 1
+  }
+}

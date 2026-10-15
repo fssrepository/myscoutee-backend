@@ -1,0 +1,65 @@
+[
+  {
+    "name": "com.raxim.myscoutee.common.delivery.OutboundRetryQueueTest",
+    "tests": "17",
+    "failures": "0",
+    "errors": "0",
+    "time": "2.265"
+  },
+  {
+    "name": "com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryServiceTest",
+    "tests": "11",
+    "failures": "0",
+    "errors": "0",
+    "time": "0.107"
+  },
+  {
+    "name": "com.raxim.myscoutee.domain.integrations.service.IntegrationWebhookServiceTest",
+    "tests": "8",
+    "failures": "0",
+    "errors": "0",
+    "time": "20.791"
+  },
+  {
+    "name": "com.raxim.myscoutee.domain.media.service.MediaDeletionRetryTest",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "time": "0.952"
+  },
+  {
+    "name": "com.raxim.myscoutee.domain.media.service.MediaDeletionServiceTest",
+    "tests": "8",
+    "failures": "0",
+    "errors": "0",
+    "time": "0.058"
+  },
+  {
+    "name": "com.raxim.myscoutee.domain.administration.service.AdminStatsTelemetryWorkerServiceTest",
+    "tests": "15",
+    "failures": "0",
+    "errors": "0",
+    "time": "1.038"
+  },
+  {
+    "name": "com.raxim.myscoutee.common.delivery.RetryPolicyTest",
+    "tests": "2",
+    "failures": "0",
+    "errors": "0",
+    "time": "0.004"
+  },
+  {
+    "name": "com.raxim.myscoutee.common.delivery.AdminProjectionSignalOutboxTest",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "time": "3.213"
+  },
+  {
+    "name": "com.raxim.myscoutee.common.delivery.OutboundRetryWorkerTest",
+    "tests": "2",
+    "failures": "0",
+    "errors": "0",
+    "time": "1.971"
+  }
+]

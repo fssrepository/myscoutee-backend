@@ -95,7 +95,7 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
     }
     public Item action(String actor,String id,Command r) {
         var s=visible(actor,id);if(!s.ownerAccountId().equals(actor))throw error(HttpStatus.FORBIDDEN);
-        if(!Objects.equals(s.version(),r.version()))throw error(HttpStatus.CONFLICT);
+        // Commands use current state; editor saves and concurrent persistence retain version guards.
         String status=switch(Objects.toString(r.action(),"")) {
             case "publish" -> "draft".equals(s.status())?"published":null;
             case "unpublish" -> "published".equals(s.status())?"draft":null;

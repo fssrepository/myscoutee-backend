@@ -4,9 +4,18 @@ import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 public final class OperationalTelemetryProtocol {
     public static final String PATH = "/_internal/v1/administration/operational-telemetry";
+    public static final String SIGNAL = PATH + "/projection-inputs";
     public static final int MAX_REQUEST_BYTES = 65536, MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
     private OperationalTelemetryProtocol() {}
-    public static String[] paths() { return new String[]{PATH}; }
+    public static String[] paths() { return new String[]{PATH, SIGNAL}; }
+    public record Signal(com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.ProjectionSignal signal) {}
+    public static boolean valid(Signal value) {
+        if (value == null || value.signal() == null) return false;
+        var signal = value.signal();
+        return signal.producer() != null && java.util.Set.of("affinity", "events", "notifications").contains(signal.producer())
+                && signal.revisions() != null && !signal.revisions().isEmpty()
+                && signal.revisions().entrySet().stream().allMatch(e -> e.getKey() != null && e.getValue() != null && e.getValue() > 0);
+    }
     public record Scope(Boolean active, String groupId) {
         public static Scope current() { return new Scope(JobGroupContext.isActive(), JobGroupContext.groupId()); }
     }

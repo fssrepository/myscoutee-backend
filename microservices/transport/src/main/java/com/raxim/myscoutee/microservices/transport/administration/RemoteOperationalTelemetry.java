@@ -17,6 +17,14 @@ public final class RemoteOperationalTelemetry extends RemoteReadTransport implem
         super(origin, token, allowHttp, connectTimeout, requestTimeout, mapper, metrics); this.mapper = mapper;
     }
     private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RemoteOperationalTelemetry.class);
+    @Override public void signalProjectionInputs(ProjectionSignal signal) {
+        var command = new OperationalTelemetryProtocol.Signal(signal);
+        if (!OperationalTelemetryProtocol.valid(command)) throw new IllegalArgumentException("Projection inputs are required");
+        // Unlike best-effort telemetry, the scheduled owner retains a failed signal for retry.
+        exchange(OperationalTelemetryProtocol.SIGNAL, mapper.writeValueAsBytes(command),
+                new TypeReference<OperationalTelemetryProtocol.Receipt>() {},
+                "operational-telemetry.projection-inputs", 16384, value -> Boolean.TRUE.equals(value.handled()));
+    }
     @Override public void record(String eventKey, String domain, String entityId, String actorUserId) {
         record(eventKey, domain, entityId, actorUserId, 1L, java.util.Map.of());
     }

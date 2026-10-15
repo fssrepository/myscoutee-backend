@@ -14,8 +14,9 @@ public class CommunityCasesController {
     private final CommunityScheduledTasksService tasks;
     public CommunityCasesController(CommunityCasesService cases, CommunityScheduledTasksService tasks) { this.cases = cases; this.tasks = tasks; }
     @GetMapping public Page<CaseItem> page(@RequestParam String userId, @RequestParam(defaultValue="active") String status,
-            @RequestParam(required=false) String caseType, @RequestParam(defaultValue="20") int pageSize, @RequestParam(required=false) String cursor) {
-        return cases.page(cases.actor(userId), status, caseType, pageSize, cursor);
+            @RequestParam(required=false) String caseType, @RequestParam(defaultValue="20") int pageSize, @RequestParam(required=false) String cursor,
+            @RequestParam(required=false) String rangeStart, @RequestParam(required=false) String rangeEnd) {
+        return cases.page(cases.actor(userId), status, caseType, pageSize, cursor, rangeStart, rangeEnd);
     }
     @GetMapping("/feedback") public Page<com.raxim.myscoutee.domain.community.service.ServiceFeedbackService.Item> feedback(@RequestParam String userId,
             @RequestParam(defaultValue="pending") String bucket, @RequestParam(defaultValue="20") int pageSize, @RequestParam(required=false) String cursor) {

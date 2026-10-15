@@ -1,0 +1,252 @@
+[
+  {
+    "progress": "1 / 10",
+    "title": "Publication status",
+    "body": "Switch between published, draft and deleted notices in the header.",
+    "box": {
+      "x": 12,
+      "y": 458.0625,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 669.0625,
+        "w": 387.21875,
+        "h": 173.546875
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 10",
+    "title": "Create notice or vote",
+    "body": "Prepare a new announcement for the current community with text, attachments and, when needed, a voting deadline. Save the draft, then publish it from the list when ready.",
+    "box": {
+      "x": 46,
+      "y": 104.09375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 136.171875,
+        "y": 51.09375,
+        "w": 171.359375,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "3 / 10",
+    "title": "Group notices",
+    "body": "Read the published group notices and voting proposals. Use their menus to open details, attachments or voting as permitted.",
+    "box": {
+      "x": 12,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 93.484375,
+        "w": 387.21875,
+        "h": 749.125
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "4 / 10",
+    "title": "Notice actions",
+    "body": "Open details or vote from the menu. Authorized managers can edit, return a notice to draft, delete it or close voting; critical actions ask for confirmation.",
+    "box": {
+      "x": 12,
+      "y": 341.375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 596.375,
+        "w": 387.21875,
+        "h": 247.625
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 10",
+    "title": "Details",
+    "body": "Read the full announcement, its attachments and any voting information. Opening it is read-only and does not cast a vote.",
+    "box": {
+      "x": 12.984375,
+      "y": 367.375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 635.828125,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 10",
+    "title": "Edit",
+    "body": "Edit the announcement’s text, attachments and supported voting settings. Save the editor to retain changes; use the list’s publication action when a draft is ready to appear.",
+    "box": {
+      "x": 12.984375,
+      "y": 367.375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 674.375,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 10",
+    "title": "Return to draft",
+    "body": "Withdraw this published announcement back to draft after confirmation. It leaves the published list but remains available to its managers for editing.",
+    "box": {
+      "x": 12.984375,
+      "y": 367.375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 712.921875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 10",
+    "title": "Move to trash",
+    "body": "Move this announcement to trash after confirming its title. It leaves the current list; use the trash filter if you later need to restore it as a draft.",
+    "box": {
+      "x": 12.984375,
+      "y": 367.375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 751.46875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "9 / 10",
+    "title": "Close voting",
+    "body": "End this voting round after confirmation, even if its deadline has not yet arrived. The recorded votes form the closed result and no further votes can be submitted.",
+    "box": {
+      "x": 12.984375,
+      "y": 367.375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 790.015625,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "10 / 10",
+    "title": "Close",
+    "body": "Close the voting list and return to the previous screen. Submitted votes and completed publication or closure actions remain recorded.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

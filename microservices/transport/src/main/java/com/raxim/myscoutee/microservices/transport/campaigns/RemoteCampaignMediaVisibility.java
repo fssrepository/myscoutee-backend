@@ -18,6 +18,11 @@ public final class RemoteCampaignMediaVisibility extends RemoteReadTransport imp
         super(origin, token, allowHttp, connectTimeout, requestTimeout, mapper, metrics);
         this.mapper = mapper;
     }
+    @Override public List<String> referencedDocuments(List<String> urls) {
+        return exchange(CampaignMediaVisibilityProtocol.DOCUMENTS_PATH, MediaReferenceQueries.encode(urls, mapper),
+                new TypeReference<List<String>>() {}, "campaigns.media.documents", CampaignMediaVisibilityProtocol.MAX_DOCUMENT_RESPONSE_BYTES,
+                value -> value != null && value.size() <= urls.size() && urls.containsAll(value));
+    }
     @Override public CampaignMediaVisibilityDto mediaReference(List<String> urls) {
         byte[] body = MediaReferenceQueries.encode(urls, mapper);
         try {

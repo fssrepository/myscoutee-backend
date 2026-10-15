@@ -334,7 +334,21 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 1,
+      "groups_participation": 3,
+      "groups_pending": 1,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-913a2bd4ee2d60f38fdd937f3b4a4823": 1,
+      "group-member-731d5cfa53a794049fe13e361244bba9": 1,
+      "group-member-77e965b7c4c832a6fdcb1882b1cc99ea": 1,
+      "group-member-f73c0d8dec6bff4c694aa27d301fbc1c": 1,
+      "group-member-19c739142f1e128ed601d6f4005d8831": 1
+    }
   },
   {
     "_id": {
@@ -567,7 +581,21 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 1,
+      "groups_participation": 4,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-5782f9b713a20c3516f859faa0303055": 1,
+      "group-member-ea660eed7cd25877d5ce6b420fec040f": 1,
+      "group-member-b8adcfc2bd3a03f0ffb75709f5c9123f": 1,
+      "group-member-e29d7b93ed5f5f97a9214461ad7bca94": 1,
+      "group-member-39a1238c9bc12633551bdc823f16853a": 1
+    }
   },
   {
     "_id": {
@@ -897,7 +925,22 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 2,
+      "groups_participation": 4,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-21661d5bf55caa8f5f9800d98c543589": 1,
+      "group-member-e97466254b3b2a8bff35cec45887e9ef": 1,
+      "group-member-9e23127a17fa78ee1f651d3683b9723d": 1,
+      "group-member-043bfabc6c5a7dae39a57dcb9211fed3": 1,
+      "group-member-aecda05851158d8104a1aeff19a8208d": 1,
+      "group-member-34bd8b4ad49661ac76d77ca382c17ff2": 1
+    }
   },
   {
     "_id": {
@@ -1223,7 +1266,23 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 1,
+      "groups_participation": 5,
+      "groups_pending": 1,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-e24997d1f846dd82d04bd322bb337dd2": 1,
+      "group-member-f2810cb84fcf7dc29ba235529e7c9140": 1,
+      "group-member-97c27864826d6634ea6d88b88a6c4878": 1,
+      "group-member-61ba4e92bffcf375ef2e8d7a9b2655aa": 1,
+      "group-member-5385fd4170b5b1e8658a50c4f9d922eb": 1,
+      "group-member-4a51225a22a37fefaa89122b90bc06ca": 1,
+      "group-member-515b6dfbbfd27f77ec2f487a4ecabd0f": 1
+    }
   },
   {
     "_id": {
@@ -1457,7 +1516,22 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 1,
+      "groups_participation": 5,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-f607fd350b183b74e4edff283070df5d": 1,
+      "group-member-86cd8e75f418463f9163f74c6220b9a2": 1,
+      "group-member-42bde85d5fdb92e6203afc7e32bce4af": 1,
+      "group-member-3f3ac15957e455f022b75007980b564c": 1,
+      "group-member-718ffe7d0a47b41852bc993a34f38738": 1,
+      "group-member-912fb18ad614139f45306133770bceb4": 1
+    }
   },
   {
     "_id": {
@@ -1692,7 +1766,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-607d0dfd95336159ff4a3627b8357b27": 1
+    }
   },
   {
     "_id": {
@@ -1924,7 +2008,22 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 1,
+      "groups_participation": 4,
+      "groups_pending": 0,
+      "groups_invitations": 1,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-818c1a8f3b614db822cadd5854d4c74f": 1,
+      "group-member-4471e8cb1906d0a2d9438a5908b8f4ce": 1,
+      "group-member-627b721f2a09f365496e1edc8c4c003c": 1,
+      "group-member-904a8662c7786ac7a235dc96415483e4": 1,
+      "group-member-3b8a68c7f9c0bceda8a3253d06152445": 1,
+      "group-member-4017007d072475baffbe2196ecaa7ac4": 1
+    }
   },
   {
     "_id": {
@@ -2158,7 +2257,19 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 3,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-f22383d1c376b0d003d899dba155659a": 1,
+      "group-member-3a49cc11d993e539e6ed645e537f64e5": 1,
+      "group-member-efb0d6d1873a8ce17c8e6252b9161a9e": 1
+    }
   },
   {
     "_id": {
@@ -2391,7 +2502,20 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 1,
+      "groups_participation": 3,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-e2b564b759062ad363807fb2f4a0511a": 1,
+      "group-member-705a60cab176903c5a413e596eea2d82": 1,
+      "group-member-ea724112073c97f35665ac9f99dad276": 1,
+      "group-member-3c30bd29dc0012e66d6fb1c52b65cddc": 1
+    }
   },
   {
     "_id": {
@@ -2625,7 +2749,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-b9ddfb65d0570b0d1b547cefad380b3e": 1
+    }
   },
   {
     "_id": {
@@ -2859,7 +2993,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-ce81b9230d455c93166707a35b31d571": 1
+    }
   },
   {
     "_id": {
@@ -3092,7 +3236,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-f79b2be9b8dc1500c64bb95496b60790": 1
+    }
   },
   {
     "_id": {
@@ -3326,7 +3480,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-96422a1aef5d5ee03ffcae80f7eeef88": 1
+    }
   },
   {
     "_id": {
@@ -3560,7 +3724,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-29f81f8097cd7c3f48407ea53ad469b5": 1
+    }
   },
   {
     "_id": {
@@ -3794,7 +3968,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-5e854077ab72a48860fc80205b8bfa10": 1
+    }
   },
   {
     "_id": {
@@ -4028,7 +4212,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-dd566f093018a869b2949e48e2245716": 1
+    }
   },
   {
     "_id": {
@@ -4261,7 +4455,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-ee249451ddc81700df7616092c84c7c9": 1
+    }
   },
   {
     "_id": {
@@ -4495,7 +4699,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-c62618d8269294a47a71ec28b872a6b2": 1
+    }
   },
   {
     "_id": {
@@ -4728,7 +4942,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-78f17c39b2070c0b1e4304637d1211ef": 1
+    }
   },
   {
     "_id": {
@@ -4962,7 +5186,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-9f7b8dbe74dbc7d677f89483a8b18b3c": 1
+    }
   },
   {
     "_id": {
@@ -5196,7 +5430,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-ce90b477d50cc191280010bfa7226db6": 1
+    }
   },
   {
     "_id": {
@@ -5429,7 +5673,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-2f3235aa5b14a400c2b7cad96d0385bd": 1
+    }
   },
   {
     "_id": {
@@ -5662,7 +5916,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-a67308c7e2b02635203259788a1564fb": 1
+    }
   },
   {
     "_id": {
@@ -5896,7 +6160,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-a203566293901967802bd4a606de77d4": 1
+    }
   },
   {
     "_id": {
@@ -6130,7 +6404,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -6371,7 +6653,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -6604,7 +6894,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -6837,7 +7135,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -7071,7 +7377,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -7305,7 +7619,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -7539,7 +7861,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -7781,7 +8111,26 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 6,
+      "groups_participation": 2,
+      "groups_pending": 1,
+      "groups_invitations": 1,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-4248bebdcda757d8eaaafd1b4afd4aed": 1,
+      "group-member-4f34fd3e4bdd170dec3a1ea733aa0eea": 1,
+      "group-member-14ad873a766e406feeed9cffe87c1aae": 1,
+      "group-member-42e4d122ffe7d998d1581c9197b4074c": 1,
+      "group-member-ac9c4fc0ccc6905a40c433dd98f83029": 1,
+      "group-member-a77d5122c8990438e1d27b29c6672ca2": 1,
+      "group-member-ad78d4c7b6dcf2355ee761711288f422": 1,
+      "group-member-29faaf5bab747e3cc8c9db588ed2ece0": 1,
+      "group-member-79700109ab2899bd813fa1d7b0eab286": 1,
+      "group-member-e459e6be259f9d169ab22f893fc1f1fe": 1
+    }
   },
   {
     "_id": {
@@ -8014,7 +8363,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -8248,7 +8605,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -8481,7 +8846,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -8716,7 +9089,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -8949,7 +9330,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -9183,7 +9572,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -9417,7 +9814,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -9650,7 +10055,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -9885,7 +10298,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -10118,7 +10539,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -10351,7 +10780,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -10585,7 +11022,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -10818,7 +11263,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -11053,7 +11506,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -11282,7 +11743,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-285a8307292770bb3d90ae019c9b38b3": 1
+    }
   },
   {
     "_id": {
@@ -11513,7 +11984,17 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 1,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-9ee3e90e0dbd0223e5f6b9a7b7b523b7": 1
+    }
   },
   {
     "_id": {
@@ -11748,7 +12229,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -11984,7 +12473,15 @@
           }
         ]
       }
-    ]
+    ],
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -12068,7 +12565,15 @@
     "syncKey": "11111111-2222-5333-8444-000000000061",
     "partitionKey": "country:hu",
     "userId": "650000000000000000000061",
-    "email": "member51@myscoutee.local"
+    "email": "member51@myscoutee.local",
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -12153,7 +12658,15 @@
     "syncKey": "11111111-2222-5333-8444-000000000062",
     "partitionKey": "country:hu",
     "userId": "650000000000000000000062",
-    "email": "member52@myscoutee.local"
+    "email": "member52@myscoutee.local",
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": {
@@ -12237,7 +12750,15 @@
     "syncKey": "11111111-2222-5333-8444-000000000063",
     "partitionKey": "country:hu",
     "userId": "650000000000000000000063",
-    "email": "member53@myscoutee.local"
+    "email": "member53@myscoutee.local",
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": "admin-demo-ava",
@@ -12304,6 +12825,17 @@
       "adminJobs": 0,
       "adminMetrics": 0,
       "notifications": 4
+    },
+    "menuCounters": {
+      "groups_hosting": 2,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-05503ec7c5b9191dec7eeb3958deef8f": 1,
+      "group-member-22310dbc6c5fcdeed9953ee7c38888fc": 1
     }
   },
   {
@@ -12371,6 +12903,17 @@
       "adminJobs": 0,
       "adminMetrics": 0,
       "notifications": 4
+    },
+    "menuCounters": {
+      "groups_hosting": 2,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {
+      "group-member-97ca80f34a92ba0a807046bc599338c6": 1,
+      "group-member-58bd2605214264ecac4c6b1f5f01c37e": 1
     }
   },
   {
@@ -12439,7 +12982,15 @@
       "adminJobs": 0,
       "adminMetrics": 0,
       "notifications": 3
-    }
+    },
+    "menuCounters": {
+      "groups_hosting": 0,
+      "groups_participation": 0,
+      "groups_pending": 0,
+      "groups_invitations": 0,
+      "groups_trash": 0
+    },
+    "menuCounterVersions": {}
   },
   {
     "_id": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",

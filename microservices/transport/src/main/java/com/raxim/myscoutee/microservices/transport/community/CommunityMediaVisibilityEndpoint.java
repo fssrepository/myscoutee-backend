@@ -40,6 +40,15 @@ public final class CommunityMediaVisibilityEndpoint {
         }
     }
 
+    @PostMapping(value = CommunityMediaVisibilityProtocol.DOCUMENTS_PATH, produces = "application/json")
+    public ResponseEntity<?> documents(HttpServletRequest request) throws IOException {
+        List<String> urls;
+        try { urls = MediaReferenceQueries.read(request, mapper); }
+        catch (ReadQueryBodies.RejectedQuery invalid) { return response(invalid.status(), new Error(invalid.code())); }
+        try { return response(200, community.referencedDocuments(urls)); }
+        catch (RuntimeException unavailable) { return response(503, new Error("DOCUMENT_REFERENCES_UNAVAILABLE")); }
+    }
+
     private ResponseEntity<?> response(int status, Object body) {
         return ResponseEntity.status(status).cacheControl(CacheControl.noStore()).body(body);
     }

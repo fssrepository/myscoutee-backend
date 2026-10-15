@@ -1480,6 +1480,12 @@
               "string",
               "null"
             ]
+          },
+          "menuCounters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
           }
         }
       },

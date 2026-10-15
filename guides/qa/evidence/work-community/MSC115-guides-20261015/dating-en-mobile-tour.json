@@ -1,0 +1,352 @@
+[
+  {
+    "progress": "1 / 14",
+    "title": "Home and activity",
+    "body": "Use these shortcuts to choose profile preferences, filter suggestions, or open your rating history.",
+    "box": {
+      "x": 22.578125,
+      "y": 116.09375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 17.578125,
+        "y": 21.578125,
+        "w": 354.84375,
+        "h": 87.515625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 14",
+    "title": "Discovery mode",
+    "body": "Choose how people are matched before you review cards. Changing this mode changes the suggestions and available search fields.",
+    "box": {
+      "x": 12,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 631.234375,
+        "w": 387.21875,
+        "h": 211.375
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "3 / 14",
+    "title": "Individual profiles",
+    "body": "Browse one profile at a time and compare it with your preferences. Use this when you want to decide separately for each person.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 674.375,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "4 / 14",
+    "title": "Friends in common",
+    "body": "Find suggestions connected through mutual friends. The extra search fields help narrow the list to people in the same social circle.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 712.921875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 14",
+    "title": "Inside your network",
+    "body": "Browse people connected to your existing network. This view helps you discover profiles through relationships you already share.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 751.46875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 14",
+    "title": "Outside your network",
+    "body": "Explore profiles beyond your current connections. Use this view when you want to broaden the people you can discover.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 790.015625,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 14",
+    "title": "Profile filters",
+    "body": "Set interests and profile criteria to focus the suggestions you see. The filter badge shows when criteria are active, so you can tell why the list is narrower.",
+    "box": {
+      "x": 46,
+      "y": 116.09375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 144.890625,
+        "y": 63.09375,
+        "w": 81.734375,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 14",
+    "title": "Rating history",
+    "body": "The Ratings shortcut on Home opens your rating activity. From there, the rating group menu lets you review likes you sent, Received, matched, or marked as met.",
+    "box": {
+      "x": 46,
+      "y": 116.09375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 220.453125,
+        "y": 63.09375,
+        "w": 89.609375,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "9 / 14",
+    "title": "Suggested people",
+    "body": "These cards show people in your current discovery view. Badges summarize activity, while the card controls open photos, Profiles, and rating actions.",
+    "box": {
+      "x": 22.578125,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 17.578125,
+        "y": 109.96875,
+        "w": 354.84375,
+        "h": 710.046875
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "10 / 14",
+    "title": "Switch profile photos",
+    "body": "The photo is divided into one clickable section per image: three photos give thirds, four give quarters. Tap a section to select that photo without opening a popup.",
+    "box": {
+      "x": 33.578125,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 28.578125,
+        "y": 125.96875,
+        "w": 114.9375,
+        "h": 599.046875
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "11 / 14",
+    "title": "Open full profile",
+    "body": "Use the eye button to see the person’s profile, Experience, and other details. Your current discovery list stays available behind the profile popup.",
+    "box": {
+      "x": 46,
+      "y": 425.546875,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 316.953125,
+        "y": 680.546875,
+        "w": 45.515625,
+        "h": 45.515625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "12 / 14",
+    "title": "Affinity slider",
+    "body": "Move the slider from 1 to 10 to express how strongly this profile fits you. The chosen value is saved when you press Go.",
+    "box": {
+      "x": 30.765625,
+      "y": 519.8125,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 25.765625,
+        "y": 774.328125,
+        "w": 338.46875,
+        "h": 37
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "13 / 14",
+    "title": "Fine-tune the rating",
+    "body": "Open the number and arrow button beside Go. Adjust the individual criteria; their average sets your rating. The main slider moves them together. Close the panel, then confirm with Go.",
+    "box": {
+      "x": 46,
+      "y": 519.8125,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 208.8125,
+        "y": 739.5,
+        "w": 70.703125,
+        "h": 40
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "14 / 14",
+    "title": "Save and go to the next profile",
+    "body": "Go is a button: it saves the selected affinity value and advances to the next suggested profile. Adjust the slider before pressing it.",
+    "box": {
+      "x": 46,
+      "y": 519.8125,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 276.234375,
+        "y": 739.5,
+        "w": 88,
+        "h": 40
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

@@ -1,0 +1,227 @@
+[
+  {
+    "progress": "1 / 9",
+    "title": "Save task",
+    "body": "Save the task and return to the board.",
+    "box": {
+      "x": 46,
+      "y": 56.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 300.296875,
+        "y": 3.3125,
+        "w": 46,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 9",
+    "title": "Task details",
+    "body": "Describe the task, its assigned people, Planned time, related offers and dependencies. Save to update the board.",
+    "box": {
+      "x": 12,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 47.734375,
+        "w": 372.21875,
+        "h": 796.265625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "3 / 9",
+    "title": "Assigned people",
+    "body": "Choose the people assigned to this task from the case participants.",
+    "box": {
+      "x": 46,
+      "y": 121.734375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 300.609375,
+        "y": 72.734375,
+        "w": 42,
+        "h": 42
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "4 / 9",
+    "title": "Task name",
+    "body": "Name this part of the case work.",
+    "box": {
+      "x": 27.390625,
+      "y": 271.921875,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 202.921875,
+        "w": 320.21875,
+        "h": 62
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 9",
+    "title": "Task details",
+    "body": "Explain what needs to be done so the assigned people can act on it.",
+    "box": {
+      "x": 27.390625,
+      "y": 402.484375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 266.921875,
+        "w": 320.21875,
+        "h": 128.5625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 9",
+    "title": "Planned time",
+    "body": "Set the task time range and check it against appointments and other work.",
+    "box": {
+      "x": 27.390625,
+      "y": 198.484375,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 22.390625,
+        "y": 453.484375,
+        "w": 320.21875,
+        "h": 133.515625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 9",
+    "title": "Related offers",
+    "body": "Attach the relevant quotation so its work and price stay connected to this task.",
+    "box": {
+      "x": 46,
+      "y": 360,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 300.609375,
+        "y": 615,
+        "w": 42,
+        "h": 42
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 9",
+    "title": "Dependencies",
+    "body": "Choose tasks that must precede this task. Review their status before moving the work forward.",
+    "box": {
+      "x": 46,
+      "y": 360,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 300.609375,
+        "y": 615,
+        "w": 42,
+        "h": 42
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "9 / 9",
+    "title": "Close",
+    "body": "Close this task form without saving its pending edits. Selections applied to the form, such as quotations and dependencies, still need the task’s save tick to be stored.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

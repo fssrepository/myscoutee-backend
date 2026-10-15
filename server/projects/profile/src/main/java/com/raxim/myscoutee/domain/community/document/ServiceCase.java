@@ -21,7 +21,25 @@ public record ServiceCase(@Id String id, String baseGroupId, String communityId,
         List<String> audienceAccountIds, List<String> participantAccountIds, List<String> attentionAccountIds,
         List<Support> support, List<Recommendation> recommendations, List<Offer> offers,
         String scheduledTaskId, String dueAtIso, String createdAtIso, String updatedAtIso, @Version Long version,
-        Map<String, String> memberStates, List<BoardTask> boardTasks, List<String> chatAccountIds) {
+        Map<String, String> memberStates, List<BoardTask> boardTasks, List<String> chatAccountIds, CounterState counterState) {
+    public record CounterContribution(long revision, String bucket) {}
+    public record CounterState(Map<String, CounterContribution> recipients, List<String> admins,
+            List<com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change> pending) {}
+    public ServiceCase(String id, String baseGroupId, String communityId, String ownerAccountId,
+            String title, String description, String caseType, String status, boolean audienceAll,
+            List<String> audienceAccountIds, List<String> participantAccountIds, List<String> attentionAccountIds,
+            List<Support> support, List<Recommendation> recommendations, List<Offer> offers,
+            String scheduledTaskId, String dueAtIso, String createdAtIso, String updatedAtIso, Long version,
+            Map<String, String> memberStates, List<BoardTask> boardTasks, List<String> chatAccountIds) {
+        this(id, baseGroupId, communityId, ownerAccountId, title, description, caseType, status, audienceAll,
+                audienceAccountIds, participantAccountIds, attentionAccountIds, support, recommendations, offers,
+                scheduledTaskId, dueAtIso, createdAtIso, updatedAtIso, version, memberStates, boardTasks, chatAccountIds, null);
+    }
+    public ServiceCase withCounterState(CounterState state) {
+        return new ServiceCase(id, baseGroupId, communityId, ownerAccountId, title, description, caseType, status, audienceAll,
+                audienceAccountIds, participantAccountIds, attentionAccountIds, support, recommendations, offers,
+                scheduledTaskId, dueAtIso, createdAtIso, updatedAtIso, version, memberStates, boardTasks, chatAccountIds, state);
+    }
     public ServiceCase {
         chatAccountIds = chatAccountIds == null ? List.of() : List.copyOf(chatAccountIds);
         memberStates = memberStates == null ? Map.of() : Map.copyOf(memberStates);

@@ -94,7 +94,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
     public static final String ASSET_CHANGED = "asset.changed";
 
     private static final Set<String> SUPPORTED_EVENTS = Set.of(EVENT_CHANGED, ASSET_CHANGED, EVENT_ENCOUNTERS);
-    private static final List<Long> RETRY_SECONDS = List.of(5L, 30L);
+    private static final com.raxim.myscoutee.common.delivery.RetryPolicy RETRY_POLICY = com.raxim.myscoutee.common.delivery.RetryPolicy.DEFAULT;
     private static final String STATUS_PENDING = "PENDING";
     private static final String STATUS_RETRY = "RETRY";
     private static final String STATUS_SENDING = "SENDING";
@@ -337,12 +337,59 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         return change;
     }
 
+    private com.raxim.myscoutee.common.delivery.OutboundRetryQueue retryQueue;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void registerRetries(com.raxim.myscoutee.common.delivery.OutboundRetryWorker worker) {
+        retryQueue = worker.register("integrationWebhookRetries", "webhook-delivery", task -> {
+            var delivery = deliveriesRepository.findById((String) task.request().get("deliveryId")).orElse(null);
+            if (delivery == null || STATUS_SENT.equals(delivery.getStatus())) return;
+            if (STATUS_FAILED.equals(delivery.getStatus()))
+                throw new com.raxim.myscoutee.common.delivery.OutboundRetryQueue.PermanentFailure("Delivery no longer active");
+            com.raxim.myscoutee.domain.platform.api.JobGroupContext.run((String) task.request().get("baseGroupId"), () -> {
+                delivery.setAttemptCount(task.attemptCount() - 1);
+                deliver(delivery);
+            });
+            if ("throttled".equals(delivery.getLastError())) {
+                delivery.setLastError("retry_worker_throttled"); deliveriesRepository.save(delivery);
+                throw new com.raxim.myscoutee.common.delivery.OutboundRetryQueue.Deferred();
+            }
+            if (STATUS_FAILED.equals(delivery.getStatus()))
+                throw new com.raxim.myscoutee.common.delivery.OutboundRetryQueue.PermanentFailure("Delivery rejected");
+            if (!STATUS_SENT.equals(delivery.getStatus())) throw new IllegalStateException("Delivery failed");
+        }, task -> {
+            String status = switch (task.status()) { case "completed" -> STATUS_SENT; case "failed" -> STATUS_FAILED; default -> STATUS_RETRY; };
+            var update = new Update().set("status", status).set("attemptCount", task.attemptCount());
+            if (task.nextAttemptAt() == null) update.unset("nextAttemptAtIso");
+            else update.set("nextAttemptAtIso", task.nextAttemptAt().toString());
+            mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(task.request().get("deliveryId"))
+                    .and("attemptCount").lte(task.attemptCount())), update, IntegrationWebhookDelivery.class);
+        });
+    }
+
+    private void retainFailureForWorker(IntegrationWebhookDelivery delivery) {
+        retryQueue.failed(delivery.getId(), Map.of("deliveryId", delivery.getId(), "baseGroupId",
+                        com.raxim.myscoutee.domain.platform.api.JobGroupContext.key().equals("default") ? "" : com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId()),
+                List.of(new com.raxim.myscoutee.common.delivery.OutboundRetryTask.JobRun("integration-webhooks",
+                        com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId(), null)), new IllegalStateException(delivery.getLastError()), Instant.now(), Math.max(1, safeNumber(delivery.getAttemptCount())));
+    }
+
+    private Criteria originalDeliveryCandidates() {
+        return new Criteria().orOperator(Criteria.where("status").in(STATUS_PENDING, STATUS_SENDING),
+                new Criteria().andOperator(Criteria.where("status").is(STATUS_RETRY), Criteria.where("lastError").is("throttled")));
+    }
+
     @org.springframework.beans.factory.annotation.Autowired
     void watchDeliveryQueue(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
         changes.watch("integration-webhooks", java.util.Set.of("integrationWebhookDeliveries"),
                 java.util.Set.of("status", "nextAttemptAtIso"), () -> {
+                    // Adopt retained pre-upgrade failures without resetting their attempt count.
+                    for (var failed : mongoTemplate.find(Query.query(Criteria.where("status").is(STATUS_RETRY)
+                            .and("lastError").ne("throttled")).limit(100), IntegrationWebhookDelivery.class)) {
+                        retainFailureForWorker(failed);
+                    }
                     deliverPendingInCurrentDatabase();
-                    Query nextQuery = Query.query(Criteria.where("status").in(STATUS_PENDING, STATUS_RETRY, STATUS_SENDING))
+                    Query nextQuery = Query.query(originalDeliveryCandidates())
                             .with(Sort.by("nextAttemptAtIso")).limit(1);
                     nextQuery.fields().include("nextAttemptAtIso");
                     var next = mongoTemplate.findOne(nextQuery, IntegrationWebhookDelivery.class);
@@ -360,9 +407,8 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
     private void deliverPendingInCurrentDatabase() {
         // One indexed read per database before any per-workspace remote calls or
             // job history writes. Include expired leases so recovery still wakes up.
-            if (!mongoTemplate.exists(Query.query(Criteria.where("status")
-                    .in(STATUS_PENDING, STATUS_RETRY, STATUS_SENDING)
-                    .and("nextAttemptAtIso").lte(Instant.now().toString())), IntegrationWebhookDelivery.class)) {
+            if (!mongoTemplate.exists(Query.query(new Criteria().andOperator(originalDeliveryCandidates(),
+                    Criteria.where("nextAttemptAtIso").lte(Instant.now().toString()))), IntegrationWebhookDelivery.class)) {
                 return;
             }
             groupRules.runScheduledGroups("integration-webhooks", this::deliverPendingInGroup);
@@ -377,9 +423,9 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         // A lease recovers interrupted work in every configured database, not just the startup DB.
         mongoTemplate.updateMulti(Query.query(Criteria.where("status").is(STATUS_SENDING)
                         .and("nextAttemptAtIso").lte(now)),
-                new Update().set("status", STATUS_RETRY), IntegrationWebhookDelivery.class);
+                new Update().set("status", STATUS_RETRY).set("lastError", "OutcomeUnknown"), IntegrationWebhookDelivery.class);
         Query due = Query.query(new Criteria().andOperator(
-                Criteria.where("status").in(STATUS_PENDING, STATUS_RETRY),
+                originalDeliveryCandidates(),
                 Criteria.where("nextAttemptAtIso").lte(now)));
         due.with(Sort.by(Sort.Order.asc("createdAtIso")));
         due.limit(Math.min(deliveryBatchSize, availableSlots));
@@ -396,7 +442,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
                 claimed = mongoTemplate.findAndModify(
                     Query.query(new Criteria().andOperator(
                             Criteria.where("_id").is(candidate.getId()),
-                            Criteria.where("status").in(STATUS_PENDING, STATUS_RETRY),
+                            originalDeliveryCandidates(),
                             Criteria.where("nextAttemptAtIso").lte(now))),
                     new Update().set("status", STATUS_SENDING).set("nextAttemptAtIso", Instant.now().plusSeconds(60).toString()),
                     FindAndModifyOptions.options().returnNew(true),
@@ -542,6 +588,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
 
     private void deliver(IntegrationWebhookDelivery delivery) { deliver(delivery, null); }
     private void deliver(IntegrationWebhookDelivery delivery, McpEventCallbackClient.DeliveryPermit permit) {
+        delivery.setAttemptCount(safeNumber(delivery.getAttemptCount()) + 1);
         if (McpEventsService.PROTOCOL.equals(delivery.getProtocol())) {
             try {
                 int status = mcpEvents.deliver(delivery, permit);
@@ -552,6 +599,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
                     markFailed(delivery, "http_" + status);
                 } else scheduleRetry(delivery, "http_" + status);
             } catch (McpEventCallbackClient.Throttled throttled) {
+                delivery.setAttemptCount(Math.max(0, safeNumber(delivery.getAttemptCount()) - 1));
                 // Local backpressure is scheduling, not a failed remote attempt.
                 delivery.setStatus(STATUS_RETRY);
                 delivery.setNextAttemptAtIso(Instant.now().plusSeconds(1).toString());
@@ -621,19 +669,12 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
     }
 
     private void scheduleRetry(IntegrationWebhookDelivery delivery, String error) {
-        int attempts = safeNumber(delivery.getAttemptCount()) + 1;
-        delivery.setAttemptCount(attempts);
         delivery.setLastError(shortText(error));
-        if (attempts > RETRY_SECONDS.size()) {
-            delivery.setStatus(STATUS_FAILED);
-            delivery.setNextAttemptAtIso(null);
-        } else {
-            delivery.setStatus(STATUS_RETRY);
-            delivery.setNextAttemptAtIso(Instant.now()
-                    .plus(RETRY_SECONDS.get(attempts - 1), ChronoUnit.SECONDS)
-                    .toString());
-        }
+        Instant next = RETRY_POLICY.nextAttempt(Math.max(1, safeNumber(delivery.getAttemptCount())), Instant.now());
+        delivery.setStatus(next == null ? STATUS_FAILED : STATUS_RETRY);
+        delivery.setNextAttemptAtIso(next == null ? null : next.toString());
         deliveriesRepository.save(delivery);
+        if (next != null) retainFailureForWorker(delivery);
     }
 
     private void markFailed(IntegrationWebhookDelivery delivery, String error) {

@@ -15,6 +15,6 @@ public final class PaymentMethodsProtocol {
     private static boolean scope(Scope value) { return value != null && value.active() != null && text(value.groupId(), 512) && (value.active() || value.groupId() == null); }
     private static boolean ids(java.util.Collection<String> values) { return values != null && values.size() <= 4096 && values.stream().allMatch(value -> text(value, 512)); }
     public record Query(Scope scope) {}
-    public record Decision(Boolean value) {}
+    public record Decision(Boolean value, java.util.List<String> currencies, java.util.Map<String, Double> eurRates) {}
     public static boolean valid(Query q) { return q != null && scope(q.scope()); }
 }

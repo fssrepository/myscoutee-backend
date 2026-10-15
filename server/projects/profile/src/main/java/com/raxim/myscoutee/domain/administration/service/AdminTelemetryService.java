@@ -25,6 +25,22 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class AdminTelemetryService implements com.raxim.myscoutee.domain.administration.api.OperationalTelemetry {
     @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.data.mongodb.core.MongoTemplate mongo;
+
+    @Override public void signalProjectionInputs(ProjectionSignal signal) {
+        if (signal == null || signal.producer() == null || !java.util.Set.of("affinity", "events", "notifications").contains(signal.producer())
+                || signal.revisions() == null || signal.revisions().isEmpty()
+                || signal.revisions().entrySet().stream().anyMatch(e -> e.getKey() == null || e.getValue() == null || e.getValue() < 1))
+            throw new IllegalArgumentException("Valid projection signal required");
+        var update = new org.springframework.data.mongodb.core.query.Update();
+        signal.revisions().forEach((input, revision) -> update.max(
+                input == ProjectionInput.DERIVED ? "derivedRevision" : "queuesRevision", revision));
+        // A repeated or older delivery is a no-op, including after a lost HTTP response.
+        mongo.upsert(org.springframework.data.mongodb.core.query.Query.query(
+                org.springframework.data.mongodb.core.query.Criteria.where("_id").is(signal.producer())), update,
+                com.raxim.myscoutee.domain.administration.document.AdminWorkerSignals.class);
+    }
+    @org.springframework.beans.factory.annotation.Autowired
     private JobAudience jobGroupScope;
 
     public static String streamKey(AdminStatsProperties properties, String groupId) {

@@ -23,6 +23,7 @@ import com.raxim.myscoutee.domain.campaigns.mapper.CampaignMapper;
 
 @Service
 public class CampaignsService implements com.raxim.myscoutee.domain.campaigns.api.Campaigns {
+    private final CampaignCounterWork counterWork;
     private final CampaignRatings rates;
     private final CampaignConversations chats;
     private final CampaignsRepository campaigns;
@@ -31,7 +32,8 @@ public class CampaignsService implements com.raxim.myscoutee.domain.campaigns.ap
     private final WorkspaceMembership workspaces;
     private final SelectedProfile profiles;
     public CampaignsService(CampaignRatings rates, CampaignConversations chats, CampaignsRepository campaigns, DiscoveryProfiles users, GroupDirectory groups,
-            WorkspaceMembership workspaces, SelectedProfile profiles) {
+            WorkspaceMembership workspaces, SelectedProfile profiles, CampaignCounterWork counterWork) {
+        this.counterWork = counterWork;
         this.rates = rates; this.chats = chats; this.campaigns = campaigns; this.users = users; this.groups = groups; this.workspaces = workspaces; this.profiles = profiles;
     }
     public DiscoveryProfile actor(String requestedId) {
@@ -144,21 +146,25 @@ public class CampaignsService implements com.raxim.myscoutee.domain.campaigns.ap
         validate(request);
         return saveRecord(actor, request, null, allocatedId);
     }
+    private Item savedDto(DiscoveryProfile actor, CampaignCounterWork.Saved saved) {
+        return ratedDto(saved.campaign(), saved.owner().profile(), actor, null)
+                .withOwnCounters(CampaignCounterWork.buckets(saved.owner().counters()));
+    }
     private Item saveRecord(DiscoveryProfile actor, Save request, Campaign old, String id) {
         if (request.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(url, actor.getUserId()))) throw error(HttpStatus.BAD_REQUEST);
         var attachments = request.attachments() == null ? List.<com.raxim.myscoutee.domain.media.dto.DocumentAttachment>of() : request.attachments();
         if (attachments.size() > 10) throw error(HttpStatus.BAD_REQUEST);
         for (var file : attachments) com.raxim.myscoutee.domain.media.api.DocumentAttachments.validate(file, List.of(actor.getUserId()), old == null ? List.of() : old.attachments());
         String now = Instant.now().toString();
-        return dto(actor, persist(new Campaign(id, actor.getWorkspaceGroupId(), actor.getUserId(),
+        return savedDto(actor, persist(new Campaign(id, actor.getWorkspaceGroupId(), actor.getUserId(),
             request.title().trim(), request.description().trim(), request.kind(), request.category(), List.copyOf(request.imageUrls()), List.copyOf(attachments),
             old == null ? "draft" : old.status(),
-            old == null ? now : old.createdAtIso(), now, old == null ? null : old.version())));
+            old == null ? now : old.createdAtIso(), now, old == null ? null : old.version()), old));
     }
     public Item action(DiscoveryProfile actor, String id, Command request) {
         var c = visible(actor, id);
         if (!c.ownerUserId().equals(actor.getUserId())) throw error(HttpStatus.FORBIDDEN);
-        if (!Objects.equals(c.version(), request.version())) throw error(HttpStatus.CONFLICT);
+        // Commands use current state; editor saves and concurrent persistence retain version guards.
         String status = switch (request.action() == null ? "" : request.action()) {
             case "publish" -> "draft".equals(c.status()) ? "published" : null;
             case "unpublish" -> "published".equals(c.status()) ? "draft" : null;
@@ -167,15 +173,15 @@ public class CampaignsService implements com.raxim.myscoutee.domain.campaigns.ap
             default -> null;
         };
         if (status == null) throw error(HttpStatus.BAD_REQUEST);
-        return dto(actor, persist(new Campaign(c.id(), c.workspaceGroupId(), c.ownerUserId(), c.title(), c.description(), c.kind(), c.category(),
-            c.imageUrls(), c.attachments(), status, c.createdAtIso(), Instant.now().toString(), c.version())));
+        return savedDto(actor, persist(new Campaign(c.id(), c.workspaceGroupId(), c.ownerUserId(), c.title(), c.description(), c.kind(), c.category(),
+            c.imageUrls(), c.attachments(), status, c.createdAtIso(), Instant.now().toString(), c.version()), c));
     }
     private boolean visibleOwner(DiscoveryProfile owner, DiscoveryProfile actor) {
         return owner.getUserId().equals(actor.getUserId()) || !Set.of("inactive", "blocked", "deleted").contains(
                 owner.getProfileStatus() == null ? "" : owner.getProfileStatus());
     }
-    private Campaign persist(Campaign campaign) {
-        try { return campaigns.save(campaign); }
+    private CampaignCounterWork.Saved persist(Campaign campaign, Campaign previous) {
+        try { return counterWork.save(campaign, previous); }
         catch (org.springframework.dao.OptimisticLockingFailureException ex) { throw error(HttpStatus.CONFLICT); }
     }
     private void validate(Save r) {

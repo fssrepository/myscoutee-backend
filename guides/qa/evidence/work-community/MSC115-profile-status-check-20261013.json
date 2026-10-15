@@ -1,0 +1,26 @@
+{
+  "actor": "Farkas Anna",
+  "checks": [
+    {
+      "text": "public\nPublic",
+      "checked": "false",
+      "checks": 0
+    },
+    {
+      "text": "groups\nFriends only\ndone",
+      "checked": "true",
+      "checks": 1
+    },
+    {
+      "text": "stadium\nHost only",
+      "checked": "false",
+      "checks": 0
+    },
+    {
+      "text": "visibility_off\nInactive",
+      "checked": "false",
+      "checks": 0
+    }
+  ],
+  "mutation": "Draft only; restored Public before closing, no save"
+}

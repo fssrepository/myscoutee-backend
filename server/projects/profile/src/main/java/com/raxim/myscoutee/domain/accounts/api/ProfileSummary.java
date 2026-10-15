@@ -19,4 +19,5 @@ public interface ProfileSummary extends WorkspaceIdentity {
     String getInitials();
     String getGender();
     java.util.List<String> getImages();
+    default java.util.Map<String, Integer> getMenuCounters() { return java.util.Map.of(); }
 }

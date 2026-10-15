@@ -70,6 +70,13 @@ public final class NotificationJobsEndpoint {
         return call(request, NotificationJobsProtocol.Restore.class, NotificationJobsProtocol::valid,
                 NotificationJobsProtocol.Restore::scope, q -> { owner.restoreClaimedPendingCount(q.ruleKey(), q.count(), q.unit(), q.startedAt()); return new NotificationJobsProtocol.Receipt(true); });
     }
+    @PostMapping(value = NotificationJobsProtocol.RETRY_OUTCOME, produces = "application/json")
+    public ResponseEntity<?> retryOutcome(HttpServletRequest request) throws java.io.IOException {
+        return call(request, NotificationJobsProtocol.RetryOutcomeCommand.class, NotificationJobsProtocol::valid,
+                NotificationJobsProtocol.RetryOutcomeCommand::scope, q -> {
+                    owner.recordRetryOutcome(q.outcome()); return new NotificationJobsProtocol.Receipt(true);
+                });
+    }
     private <T> ResponseEntity<?> call(HttpServletRequest request, Class<T> type, Predicate<T> valid,
             Function<T, NotificationJobsProtocol.Scope> scope, Function<T, Object> action) throws java.io.IOException {
         try {

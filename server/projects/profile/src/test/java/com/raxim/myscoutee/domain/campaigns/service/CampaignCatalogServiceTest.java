@@ -50,6 +50,8 @@ class CampaignCatalogServiceTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
+
+
     private Campaign campaign(String status) {
         return new Campaign("campaign", "work", "organizer", "Idea", "Description",
                 "business", "technology", List.of(), List.of(), status, "now", "now", 1L);

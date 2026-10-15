@@ -10,7 +10,8 @@ public final class CommunityAnnouncementDtos {
             List<DocumentAttachment> attachments, String status, boolean voting, String deadlineIso, boolean closed,
             boolean canVote, String myBallot, Map<String, Integer> results,
             int eligibleMembers, int castVotes,
-            boolean canManage, String publishedAtIso, String createdAtIso, String updatedAtIso, Long version) {}
+            boolean canManage, String publishedAtIso, String createdAtIso, String updatedAtIso, Long version, Integer votesCount,
+            Map<String, Integer> menuCounters) {}
     public record Save(String userId, String id, String communityId, String title, String body,
             List<DocumentAttachment> attachments, boolean voting, String deadlineIso, Long version) {}
     public record Command(String userId, String action, String choice, Long version) {}

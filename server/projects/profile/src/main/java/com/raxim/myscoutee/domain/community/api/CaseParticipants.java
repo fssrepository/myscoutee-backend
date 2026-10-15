@@ -5,5 +5,5 @@ import java.util.Optional;
 
 public interface CaseParticipants {
     Optional<com.raxim.myscoutee.domain.community.dto.CaseConversation> conversation(String caseId);
-    int visibleCount(String baseId, String accountId, java.util.Collection<String> managedGroups);
+    void groupAdminsChanged(String groupId, List<String> adminAccountIds);
  Optional<List<String>> activeAccounts(String caseId); }

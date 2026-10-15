@@ -1,0 +1,354 @@
+{
+  "msc121_real": {
+    "tasks": [
+      {
+        "_id": "cc3d03422224a844880a0c7f6e67f771",
+        "operation": "admin-projection-signal",
+        "request": {
+          "QUEUES": {
+            "low": 3,
+            "high": 0,
+            "unsigned": false
+          },
+          "DERIVED": {
+            "low": 3,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "jobs": [
+          {
+            "ruleKey": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.431683003Z"
+          },
+          {
+            "ruleKey": "affinity-admin-signals",
+            "groupId": "myscoutee-work",
+            "startedAtIso": "2026-10-15T10:40:52.431683003Z"
+          },
+          {
+            "ruleKey": "affinity-admin-signals",
+            "groupId": "myscoutee-community",
+            "startedAtIso": "2026-10-15T10:40:52.431683003Z"
+          }
+        ],
+        "status": "retry",
+        "attemptCount": 1,
+        "nextAttemptAt": "2026-10-15T10:41:22.545Z",
+        "reportAttempts": 0,
+        "lastError": "RemoteReadException"
+      }
+    ],
+    "signals": [
+      {
+        "_id": "affinity",
+        "derivedRevision": 0,
+        "queuesRevision": 0
+      },
+      {
+        "_id": "events",
+        "derivedRevision": 0,
+        "queuesRevision": 0
+      },
+      {
+        "_id": "notifications",
+        "derivedRevision": 0,
+        "queuesRevision": 0
+      }
+    ],
+    "jobs": [
+      {
+        "_id": "notification-rule-affinity-admin-signals",
+        "ruleKey": "affinity-admin-signals",
+        "runState": {
+          "currentStatus": "failed",
+          "durationMillis": {
+            "low": 127,
+            "high": 0,
+            "unsigned": false
+          },
+          "finishedAtIso": "2026-10-15T10:40:52.558274785Z",
+          "progressDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "progressPercent": 100,
+          "startedAtIso": "2026-10-15T10:40:52.431683003Z",
+          "lastRunAtIso": "2026-10-15T10:40:52.558274785Z",
+          "lastRunCount": 0,
+          "lastRunDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "lastRunStatus": "failed",
+          "lastRunUser": "affinity-admin-signals"
+        },
+        "runHistory": [
+          {
+            "_id": "ba765042-4c81-4ae0-8ed8-227ddb7dbab6",
+            "trigger": "scheduled",
+            "runnerUser": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.431683003Z",
+            "finishedAtIso": "2026-10-15T10:40:52.558274785Z",
+            "durationMillis": {
+              "low": 127,
+              "high": 0,
+              "unsigned": false
+            },
+            "processedCount": 0,
+            "status": "failed",
+            "detail": "Delivery failed; retry worker owns subsequent attempts."
+          }
+        ]
+      },
+      {
+        "_id": "work-job:affinity-admin-signals",
+        "ruleKey": "affinity-admin-signals",
+        "runState": {
+          "currentStatus": "failed",
+          "durationMillis": {
+            "low": 159,
+            "high": 0,
+            "unsigned": false
+          },
+          "finishedAtIso": "2026-10-15T10:40:52.590578904Z",
+          "progressDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "progressPercent": 100,
+          "startedAtIso": "2026-10-15T10:40:52.431683003Z",
+          "lastRunAtIso": "2026-10-15T10:40:52.590578904Z",
+          "lastRunCount": 0,
+          "lastRunDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "lastRunStatus": "failed",
+          "lastRunUser": "affinity-admin-signals"
+        },
+        "runHistory": [
+          {
+            "_id": "3c06ad3c-9864-4ae3-acf2-3d05f1f0ddc6",
+            "trigger": "scheduled",
+            "runnerUser": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.431683003Z",
+            "finishedAtIso": "2026-10-15T10:40:52.590578904Z",
+            "durationMillis": {
+              "low": 159,
+              "high": 0,
+              "unsigned": false
+            },
+            "processedCount": 0,
+            "status": "failed",
+            "detail": "Delivery failed; retry worker owns subsequent attempts."
+          }
+        ],
+        "baseGroupId": "myscoutee-work"
+      },
+      {
+        "_id": "community-job:affinity-admin-signals",
+        "ruleKey": "affinity-admin-signals",
+        "runState": {
+          "currentStatus": "failed",
+          "durationMillis": {
+            "low": 188,
+            "high": 0,
+            "unsigned": false
+          },
+          "finishedAtIso": "2026-10-15T10:40:52.619150961Z",
+          "progressDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "progressPercent": 100,
+          "startedAtIso": "2026-10-15T10:40:52.431683003Z",
+          "lastRunAtIso": "2026-10-15T10:40:52.619150961Z",
+          "lastRunCount": 0,
+          "lastRunDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "lastRunStatus": "failed",
+          "lastRunUser": "affinity-admin-signals"
+        },
+        "runHistory": [
+          {
+            "_id": "76e6c4a5-08f1-4d3e-b6f8-a59395ac08f3",
+            "trigger": "scheduled",
+            "runnerUser": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.431683003Z",
+            "finishedAtIso": "2026-10-15T10:40:52.619150961Z",
+            "durationMillis": {
+              "low": 188,
+              "high": 0,
+              "unsigned": false
+            },
+            "processedCount": 0,
+            "status": "failed",
+            "detail": "Delivery failed; retry worker owns subsequent attempts."
+          }
+        ],
+        "baseGroupId": "myscoutee-community"
+      }
+    ]
+  },
+  "msc121_demo": {
+    "tasks": [
+      {
+        "_id": "ba197fae547e13925fb7ab3a36aefc5a",
+        "operation": "admin-projection-signal",
+        "request": {
+          "QUEUES": {
+            "low": 2,
+            "high": 0,
+            "unsigned": false
+          },
+          "DERIVED": {
+            "low": 2,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        "jobs": [
+          {
+            "ruleKey": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.639928800Z"
+          },
+          {
+            "ruleKey": "affinity-admin-signals",
+            "groupId": "myscoutee-work",
+            "startedAtIso": "2026-10-15T10:40:52.639928800Z"
+          },
+          {
+            "ruleKey": "affinity-admin-signals",
+            "groupId": "myscoutee-community",
+            "startedAtIso": "2026-10-15T10:40:52.639928800Z"
+          }
+        ],
+        "status": "retry",
+        "attemptCount": 1,
+        "nextAttemptAt": "2026-10-15T10:41:22.731Z",
+        "reportAttempts": 0,
+        "lastError": "RemoteReadException"
+      }
+    ],
+    "signals": [
+      {
+        "_id": "affinity",
+        "derivedRevision": 0,
+        "queuesRevision": 0
+      },
+      {
+        "_id": "events",
+        "derivedRevision": 0,
+        "queuesRevision": 0
+      },
+      {
+        "_id": "notifications",
+        "derivedRevision": 0,
+        "queuesRevision": 0
+      }
+    ],
+    "jobs": [
+      {
+        "_id": "notification-rule-affinity-admin-signals",
+        "ruleKey": "affinity-admin-signals",
+        "runState": {
+          "currentStatus": "failed",
+          "durationMillis": {
+            "low": 106,
+            "high": 0,
+            "unsigned": false
+          },
+          "finishedAtIso": "2026-10-15T10:40:52.745007202Z",
+          "progressDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "progressPercent": 100,
+          "startedAtIso": "2026-10-15T10:40:52.639928800Z",
+          "lastRunAtIso": "2026-10-15T10:40:52.745007202Z",
+          "lastRunCount": 0,
+          "lastRunDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "lastRunStatus": "failed",
+          "lastRunUser": "affinity-admin-signals"
+        },
+        "runHistory": [
+          {
+            "_id": "cb2ae813-892a-4830-9e02-25e929209de3",
+            "trigger": "scheduled",
+            "runnerUser": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.639928800Z",
+            "finishedAtIso": "2026-10-15T10:40:52.745007202Z",
+            "durationMillis": {
+              "low": 106,
+              "high": 0,
+              "unsigned": false
+            },
+            "processedCount": 0,
+            "status": "failed",
+            "detail": "Delivery failed; retry worker owns subsequent attempts."
+          }
+        ]
+      },
+      {
+        "_id": "work-job:affinity-admin-signals",
+        "ruleKey": "affinity-admin-signals",
+        "runState": {
+          "currentStatus": "failed",
+          "durationMillis": {
+            "low": 129,
+            "high": 0,
+            "unsigned": false
+          },
+          "finishedAtIso": "2026-10-15T10:40:52.768377317Z",
+          "progressDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "progressPercent": 100,
+          "startedAtIso": "2026-10-15T10:40:52.639928800Z",
+          "lastRunAtIso": "2026-10-15T10:40:52.768377317Z",
+          "lastRunCount": 0,
+          "lastRunDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "lastRunStatus": "failed",
+          "lastRunUser": "affinity-admin-signals"
+        },
+        "runHistory": [
+          {
+            "_id": "1cc63e5c-b870-487a-8a8e-45e12a4fb110",
+            "trigger": "scheduled",
+            "runnerUser": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.639928800Z",
+            "finishedAtIso": "2026-10-15T10:40:52.768377317Z",
+            "durationMillis": {
+              "low": 129,
+              "high": 0,
+              "unsigned": false
+            },
+            "processedCount": 0,
+            "status": "failed",
+            "detail": "Delivery failed; retry worker owns subsequent attempts."
+          }
+        ],
+        "baseGroupId": "myscoutee-work"
+      },
+      {
+        "_id": "community-job:affinity-admin-signals",
+        "ruleKey": "affinity-admin-signals",
+        "runState": {
+          "currentStatus": "failed",
+          "durationMillis": {
+            "low": 162,
+            "high": 0,
+            "unsigned": false
+          },
+          "finishedAtIso": "2026-10-15T10:40:52.801293710Z",
+          "progressDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "progressPercent": 100,
+          "startedAtIso": "2026-10-15T10:40:52.639928800Z",
+          "lastRunAtIso": "2026-10-15T10:40:52.801293710Z",
+          "lastRunCount": 0,
+          "lastRunDetail": "Delivery failed; retry worker owns subsequent attempts.",
+          "lastRunStatus": "failed",
+          "lastRunUser": "affinity-admin-signals"
+        },
+        "runHistory": [
+          {
+            "_id": "19ad7859-eed6-426f-8c4c-fc918c314578",
+            "trigger": "scheduled",
+            "runnerUser": "affinity-admin-signals",
+            "startedAtIso": "2026-10-15T10:40:52.639928800Z",
+            "finishedAtIso": "2026-10-15T10:40:52.801293710Z",
+            "durationMillis": {
+              "low": 162,
+              "high": 0,
+              "unsigned": false
+            },
+            "processedCount": 0,
+            "status": "failed",
+            "detail": "Delivery failed; retry worker owns subsequent attempts."
+          }
+        ],
+        "baseGroupId": "myscoutee-community"
+      }
+    ]
+  }
+}

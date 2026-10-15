@@ -1,0 +1,143 @@
+{
+  "date": "2026-10-13",
+  "step": 35,
+  "scope": "HTTP feedback closure and mobile feedback/counter regression",
+  "httpFeedback": {
+    "actor": "Kiss Balázs / Work",
+    "event": "work-event-product-recap",
+    "status": 200,
+    "submittedAt": "2026-10-13T17:11:20.141Z",
+    "cards": 2,
+    "recipientNotifications": [
+      {
+        "recipient": "Alex Turner",
+        "id": "6ace6638545b2776a86726dd",
+        "occurrences": 1
+      },
+      {
+        "recipient": "Farkas Anna",
+        "id": "6ace6638545b2776a86726de",
+        "occurrences": 1
+      }
+    ],
+    "actorUnreadBefore": 14,
+    "actorUnreadAfter": 14,
+    "annaUnreadBefore": 15,
+    "annaUnreadAfter": 16,
+    "reload": "Pending0, Feedbacked1 persisted; earlier Anna submission separately verified"
+  },
+  "regression": {
+    "owner": "EventFeedbackPopupComponent.patchEventFeedbackItem -> existing ActivityStore.patchUserCounterDeltas",
+    "before": "HTTP submit emptied Pending but left side-menu Feedback1 until reload",
+    "after": {
+      "actor": "Farkas Anna / Dating; existing pending feedback",
+      "remove": "rate_review\nFeedback\n2",
+      "restore": "rate_review\nFeedback\n3",
+      "reload": "Feedback3",
+      "mutationRequests": [
+        "POST remove200",
+        "POST restore200"
+      ],
+      "extraPageRequestsDuringMutations": 0,
+      "fixture": "Removed item restored via normal UI; no DB writes"
+    }
+  },
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "firstEightOptions": [
+      {
+        "text": "sentiment_very_satisfiedExcellent",
+        "x": 24,
+        "y": 411,
+        "w": 163
+      },
+      {
+        "text": "sentiment_satisfiedGood",
+        "x": 193,
+        "y": 411,
+        "w": 163
+      },
+      {
+        "text": "sentiment_neutralMixed",
+        "x": 24,
+        "y": 454,
+        "w": 163
+      },
+      {
+        "text": "sentiment_dissatisfiedNeeds work",
+        "x": 193,
+        "y": 454,
+        "w": 163
+      },
+      {
+        "text": "scheduleImprove timing",
+        "x": 24,
+        "y": 539,
+        "w": 163
+      },
+      {
+        "text": "campaignImprove communication",
+        "x": 193,
+        "y": 539,
+        "w": 163
+      },
+      {
+        "text": "inventory_2Improve resources",
+        "x": 24,
+        "y": 583,
+        "w": 163
+      },
+      {
+        "text": "verifiedNo major change",
+        "x": 193,
+        "y": 583,
+        "w": 163
+      }
+    ],
+    "noHorizontalOverflow": true,
+    "desktopViewport": [
+      1280,
+      900
+    ],
+    "desktopFirstRow": [
+      {
+        "x": 86,
+        "y": 438,
+        "w": 129
+      },
+      {
+        "x": 221,
+        "y": 438,
+        "w": 129
+      },
+      {
+        "x": 356,
+        "y": 438,
+        "w": 129
+      },
+      {
+        "x": 491,
+        "y": 438,
+        "w": 130
+      }
+    ],
+    "sharedSource": "Identical menu.component.ts in product, standalone components and template"
+  },
+  "validation": {
+    "productWatcher": "Compilation and sync passed 2026-10-13T17:20:50Z",
+    "template": "Identical shared source; existing template build before this 3-line mobile change passed; no new template runtime pass claimed",
+    "npmTests": "Not run",
+    "step36": "Not started"
+  },
+  "runtime": {
+    "backend": "running",
+    "frontendSync": "running",
+    "mongoSync": "stopped",
+    "template": "stopped",
+    "anna": "Work",
+    "secondManagedBrowser": "Alex Turner / Work"
+  }
+}

@@ -28,6 +28,12 @@ class CommunityScheduledTasksServiceTest {
         var members = mock(ActivityMembersRepository.class);
         var notifier = mock(CommunityCasesService.class);
         var service = new CommunityScheduledTasksService(tasks, cases, mock(CommunityAccessService.class), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups), new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members), notifier);
+        var counterWork = new CommunityCaseCounterWork(cases,
+                mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class),
+                mock(org.springframework.data.mongodb.core.MongoTemplate.class), mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(counterWork, "tasks", tasks);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", counterWork);
+        when(tasks.save(any())).thenAnswer(call -> call.getArgument(0));
         var now = Instant.parse("2026-10-05T09:00:00Z");
         var due = "2026-11-19T09:00:00.000Z";
         var task = new CommunityScheduledTask("task", CommunityGroup.COMMUNITY_BASE_ID, "homes", "manager", "Inspection", "Organize visits", "chimney-sweep",
@@ -50,7 +56,7 @@ class CommunityScheduledTasksServiceTest {
         assertThat(c.audienceAccountIds()).containsExactlyInAnyOrder("manager", "resident");
         assertThat(c.attentionAccountIds()).containsExactlyInAnyOrder("manager", "resident");
         verify(cases, times(1)).insert(any(ServiceCase.class));
-        verify(notifier, times(2)).notifyChange(c, CommunityScheduledTasksService.RULE, "reminder", c.id());
+        verify(notifier, times(2)).notifyChange(argThat(saved -> saved.id().equals(c.id()) && saved.audienceAccountIds().equals(c.audienceAccountIds())), eq(CommunityScheduledTasksService.RULE), eq("reminder"), eq(c.id()));
         verify(tasks).save(argThat(t -> !t.enabled() && t.nextDueAtIso().equals(due)));
         JobGroupContext.run(CommunityGroup.WORK_BASE_ID, () -> assertThat(service.createDue(now)).isZero());
         verify(tasks, times(2)).due(anyString(), anyString(), any(Pageable.class));
@@ -59,6 +65,38 @@ class CommunityScheduledTasksServiceTest {
         assertThat(CommunityScheduledTasksService.nextDue("2026-01-31T09:00:00.000Z", "monthly")).isEqualTo("2026-02-28T09:00:00.000Z");
         assertThat(CommunityScheduledTasksService.nextDue("2028-02-29T09:00:00.000Z", "yearly")).isEqualTo("2029-02-28T09:00:00.000Z");
         assertThat(CommunityScheduledTasksService.nextDue("2026-01-31T09:00:00.000Z", "once")).isNull();
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"pause,true,false,false,false", "resume,false,false,true,false", "trash,true,false,false,true", "restore,false,true,true,false"})
+    void lifecycleCommandsUseLatestWorkerProgress(String action, boolean enabled, boolean deleted, boolean nextEnabled, boolean nextDeleted) {
+        var tasks = mock(CommunityScheduledTasksRepository.class);
+        var access = mock(com.raxim.myscoutee.domain.groups.api.CommunityAuthority.class);
+        var service = new CommunityScheduledTasksService(tasks, mock(ServiceCasesRepository.class), access,
+                mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class), mock(CommunityCasesService.class));
+        var counterWork = mock(CommunityCaseCounterWork.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", counterWork);
+        var current = new CommunityScheduledTask("task", CommunityGroup.COMMUNITY_BASE_ID, null, "owner", "Current title", "Current description", "maintenance",
+                false, List.of("owner"), "2026-11-28T12:52:00.000Z", "2027-11-28T12:52:00.000Z", "yearly", enabled, deleted, "created", "updated", 6L);
+        when(tasks.findById("task")).thenReturn(Optional.of(current));
+        when(counterWork.saveTask(any(), eq(current))).thenAnswer(call -> call.getArgument(0));
+        var command = new com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.TaskCommand("owner", action, 0L);
+        var result = service.action("owner", "task", command);
+        assertThat(result.enabled()).isEqualTo(nextEnabled);
+        assertThat(result.status()).isEqualTo(nextDeleted ? "trash" : nextEnabled ? "active" : "paused");
+        assertThat(result.nextDueAtIso()).isEqualTo(current.nextDueAtIso());
+        assertThat(result.description()).isEqualTo(current.description());
+        verify(counterWork).saveTask(argThat(t -> t.version().equals(6L) && t.startAtIso().equals(current.startAtIso()) && t.deleted() == nextDeleted), eq(current));
+        assertThatThrownBy(() -> service.action("outsider", "task", command))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class, e -> assertThat(e.getStatusCode().value()).isEqualTo(403));
+        var invalid = new com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.TaskCommand("owner", deleted ? "pause" : "restore", 0L);
+        assertThatThrownBy(() -> service.action("owner", "task", invalid))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class, e -> assertThat(e.getStatusCode().value()).isEqualTo(409));
+        var staleEditor = new com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.SaveTask("owner", "task", null, "Overwrite", "", "maintenance", false, List.of("owner"), current.startAtIso(), "yearly", enabled, 0L);
+        assertThatThrownBy(() -> service.save("owner", staleEditor))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class, e -> assertThat(e.getStatusCode().value()).isEqualTo(409));
+        when(counterWork.saveTask(any(), eq(current))).thenThrow(new org.springframework.dao.OptimisticLockingFailureException("concurrent writer"));
+        assertThatThrownBy(() -> service.action("owner", "task", command))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class, e -> assertThat(e.getStatusCode().value()).isEqualTo(409));
     }
     private static ActivityMember member(String id, String role) {
         var m = new ActivityMember(); m.setOwnerId("homes"); m.setUserId(id); m.setRole(role); m.setStatus("accepted"); return m;

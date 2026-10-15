@@ -76,6 +76,8 @@ class CampaignCatalogHttpTest {
         }
     }
 
+
+
     @Test void credentialsModeAndOperationRemainMandatory() throws Exception {
         for (var token : new String[]{null, "test-only-other-capability-token-0000000000000000"})
             assertEquals(401, request(token, "DEMO", "POST", QUERY, "application/json").statusCode());
@@ -126,6 +128,9 @@ class CampaignCatalogHttpTest {
             var mongo = mock(MongoTemplate.class);
             when(mongo.findById(eq("campaign"), eq(Campaign.class))).thenReturn(new Campaign("campaign", "work", "organizer",
                     "Idea", "Description", "business", "technology", List.of(), List.of(), "published", "now", "now", 1L));
+            when(mongo.aggregate(any(org.springframework.data.mongodb.core.aggregation.Aggregation.class), eq("campaigns"), eq(org.bson.Document.class)))
+                    .thenAnswer(call -> new org.springframework.data.mongodb.core.aggregation.AggregationResults<>(
+                            List.of(new org.bson.Document("_id", "published").append("count", MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO ? 3 : 1)), new org.bson.Document()));
             return mongo;
         }
         @Bean RatingDirectory ratings() {

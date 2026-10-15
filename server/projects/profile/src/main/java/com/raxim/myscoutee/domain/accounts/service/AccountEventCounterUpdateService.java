@@ -58,8 +58,7 @@ public class AccountEventCounterUpdateService implements EventCounterUpdates {
                 existing == null ? null : existing.eventFeedback(),
                 count(existing == null ? null : existing.adminJobs()),
                 count(existing == null ? null : existing.adminMetrics()),
-                count(existing == null ? null : existing.notifications()),
-                count(existing == null ? null : existing.serviceFeedbackPending()));
+                count(existing == null ? null : existing.notifications()));
     }
 
     public boolean activitiesEqual(Users.UserActivitiesRecord first, Users.UserActivitiesRecord second) {

@@ -1,3 +1,7 @@
+# Archived MSC-115 checklist and implementation review
+
+Frozen before the user-authorized automatic campaign on 2026-10-13. Historical evidence only; the active checklist supersedes execution order and later acceptance corrections.
+
 # MSC-115 Work and Community — pair-QA checklist
 
 Status: **Manual campaign NOT RUN**. Focused implementation checks are recorded at the end; they do not mark the manual campaign passed. Automated evidence is recorded separately in the implementation plan. These are user-controlled browser checks; preparing this document does not start or authorize browser automation.

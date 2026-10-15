@@ -14,6 +14,11 @@ public final class OperationalTelemetryEndpoint {
     private final OperationalTelemetry owner;
     private final ObjectMapper mapper;
     public OperationalTelemetryEndpoint(OperationalTelemetry owner, ObjectMapper mapper) { this.owner = owner; this.mapper = mapper; }
+    @PostMapping(value = OperationalTelemetryProtocol.SIGNAL, produces = "application/json")
+    public ResponseEntity<?> signal(HttpServletRequest request) throws java.io.IOException {
+        return read(request, OperationalTelemetryProtocol.Signal.class, OperationalTelemetryProtocol::valid,
+                command -> { owner.signalProjectionInputs(command.signal()); return new OperationalTelemetryProtocol.Receipt(true); });
+    }
     @PostMapping(value = OperationalTelemetryProtocol.PATH, produces = "application/json")
     public ResponseEntity<?> project(HttpServletRequest request) throws java.io.IOException {
         return read(request, OperationalTelemetryProtocol.Command.class, OperationalTelemetryProtocol::valid,

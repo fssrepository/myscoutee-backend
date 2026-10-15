@@ -32,12 +32,23 @@ class CommunityGroupInviteClaimTest {
     private final CommunityGroup group = new CommunityGroup("group", "owner", "Invited group", "", null,
             "friends", "invitation", true, new GroupPolicy(true, false, List.of()),
             "now", "now", 0L, "accepted", 0L);
-    private final CommunityGroupsService service = new CommunityGroupsService(groups, new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
+    private final com.raxim.myscoutee.domain.events.service.CommunityMembershipService memberships = new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members);
+    private final CommunityGroupsService service = new CommunityGroupsService(groups, memberships, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
             mock(SelectedProfile.class), mock(com.raxim.myscoutee.domain.accounts.api.ProfileCards.class), profiles, mock(ContentModerationService.class),
             mock(com.raxim.myscoutee.domain.content.api.CommunityReports.class), mock(AdminTelemetryService.class), mock(com.raxim.myscoutee.domain.groups.api.GroupCounters.class),
             mock(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.class));
 
     @BeforeEach void setup() {
+        var counterApi = mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class);
+        var mongo = mock(org.springframework.data.mongodb.core.MongoTemplate.class);
+        var bulk = mock(org.springframework.data.mongodb.core.BulkOperations.class);
+        when(mongo.bulkOps(any(), eq(ActivityMember.class))).thenReturn(bulk);
+        org.springframework.test.util.ReflectionTestUtils.setField(memberships, "counters", counterApi);
+        org.springframework.test.util.ReflectionTestUtils.setField(memberships, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "summaries", mock(com.raxim.myscoutee.domain.accounts.api.ProfileSummaries.class));
+        when(members.findById(anyString())).thenAnswer(call -> rows.values().stream().filter(row -> row.getId().equals(call.getArgument(0))).findFirst());
+        when(members.findAllById(any())).thenAnswer(call -> { java.util.Collection<String> ids = call.getArgument(0);
+            return rows.values().stream().filter(row -> ids.contains(row.getId())).toList(); });
         Map<String, Users> accounts = new HashMap<>();
         for (String id : List.of("owner", "recipient", "sender")) {
             var user = new Users(); user.setId(id); user.setUserId(id); user.setName(id);
@@ -62,7 +73,7 @@ class CommunityGroupInviteClaimTest {
         when(members.save(any(ActivityMember.class))).thenAnswer(call -> {
             ActivityMember saved = call.getArgument(0); rows.put(saved.getUserId(), saved); return saved;
         });
-        when(members.updateCommunityState(anyString(), any(), any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), anyBoolean()))
+        when(members.updateCommunityState(anyString(), any(), any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), anyBoolean(), any(), any()))
                 .thenAnswer(call -> {
                     var stored = rows.values().stream().filter(row -> row.getId().equals(call.getArgument(0))).findFirst().orElseThrow();
                     if (!Objects.equals(stored.getStatus(), call.getArgument(1)) || !Objects.equals(stored.getRole(), call.getArgument(2))
@@ -71,7 +82,7 @@ class CommunityGroupInviteClaimTest {
                     stored.setRequestKind(call.getArgument(6)); stored.setPendingSource(call.getArgument(7));
                     stored.setOrganizerOnly(call.getArgument(8)); stored.setActionAtIso(call.getArgument(9));
                     stored.setCommunityAction(call.getArgument(10)); stored.setCommunityActor(call.getArgument(11));
-                    stored.setManagerGrantedByUserId(call.getArgument(12)); stored.setVotingEligible(call.getArgument(13));
+                    stored.setManagerGrantedByUserId(call.getArgument(12)); stored.setVotingEligible(call.getArgument(13)); stored.setGroupCounterState(call.getArgument(14));
                     return 1L;
                 });
         when(profiles.profilesByGroup(anyString())).thenReturn(Map.of());

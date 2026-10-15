@@ -1,0 +1,289 @@
+{
+  "checkpoint": 93,
+  "kind": "Existing HTTP runtime persistence plus source/test reconciliation; no new business mutations",
+  "runtime": {
+    "groups": [
+      {
+        "_id": "community-park-court",
+        "groupType": "community",
+        "name": "Park Court",
+        "visibility": "invitation"
+      },
+      {
+        "_id": "myscoutee-community",
+        "groupType": "community",
+        "name": "MyScoutee Community",
+        "visibility": "public"
+      },
+      {
+        "_id": "myscoutee-work",
+        "groupType": "work",
+        "name": "MyScoutee Work",
+        "visibility": "public"
+      }
+    ],
+    "events": [
+      {
+        "sourceId": "6d1e00000000000000000001",
+        "title": "Mingle Demo \u00b7 Table Rotation Social",
+        "startAtIso": "2026-09-21T16:00:00.000Z",
+        "endAtIso": "2026-09-21T19:00:00.000Z",
+        "capacityMin": 8,
+        "capacityMax": 24,
+        "capacityTotal": 24,
+        "acceptedMembers": 9,
+        "mode": "Mingle",
+        "mingleConfiguration": {
+          "groupSize": 4,
+          "plannedRounds": 4,
+          "roundDurationMinutes": 20,
+          "breakDurationMinutes": 5,
+          "requireGenderBalance": true
+        },
+        "acceptedMemberUserIds": [
+          "9f3b3f085e23af6c89dbc432",
+          "bf057de7c586eede7e84bdc7",
+          "af0436815ab38f4864dd1e24",
+          "1b1c70be2349b3359a8f6f94",
+          "76da95a9109da485555c0d25",
+          "4da20eb049179e73d4757808",
+          "0b8e5df4ec85d858c304a350",
+          "4b5bad1292fb6db05dc0e455",
+          "7822c5f99eff99d63abe8933"
+        ]
+      },
+      {
+        "workspaceGroupId": "community-park-court",
+        "sourceId": "h1792001122492",
+        "title": "MSC115 QA mixing 92 \u2014 Park Court",
+        "startAtIso": "2026-10-14T18:05:00Z",
+        "endAtIso": "2026-10-14T19:05:00Z",
+        "capacityMin": 2,
+        "capacityMax": 4,
+        "capacityTotal": 4,
+        "acceptedMembers": 2,
+        "acceptedMemberUserIds": [
+          "group:community-park-court:af0436815ab38f4864dd1e24",
+          "group:community-park-court:1b1c70be2349b3359a8f6f94"
+        ],
+        "mode": "Mingle",
+        "mingleConfiguration": {
+          "groupSize": 2,
+          "plannedRounds": 2,
+          "roundDurationMinutes": 1,
+          "breakDurationMinutes": 1,
+          "requireGenderBalance": true
+        }
+      }
+    ],
+    "sessions": [
+      {
+        "eventId": "6d1e00000000000000000001",
+        "status": "COMPLETED",
+        "currentRoundNumber": 2,
+        "phaseStartedAtIso": "2026-09-21T04:55:01.521336043Z",
+        "revision": 4,
+        "createdAtIso": "2026-09-21T04:39:25.976514427Z",
+        "createdByUserId": "9f3b3f085e23af6c89dbc432",
+        "updatedAtIso": "2026-09-21T04:55:01.521336043Z",
+        "updatedByUserId": "9f3b3f085e23af6c89dbc432",
+        "documentVersion": {
+          "low": 3,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.ActivityMingleSession"
+      },
+      {
+        "eventId": "h1792001122492",
+        "status": "COMPLETED",
+        "currentRoundNumber": 2,
+        "phaseStartedAtIso": "2026-10-14T18:46:48.332644458Z",
+        "revision": 4,
+        "encountersPublished": true,
+        "createdAtIso": "2026-10-14T18:44:06.899122729Z",
+        "createdByUserId": "group:community-park-court:af0436815ab38f4864dd1e24",
+        "updatedAtIso": "2026-10-14T18:46:48.332644458Z",
+        "updatedByUserId": "system",
+        "documentVersion": {
+          "low": 4,
+          "high": 0,
+          "unsigned": false
+        },
+        "_class": "com.raxim.myscoutee.profile.data.document.ActivityMingleSession"
+      }
+    ],
+    "rounds": [
+      {
+        "eventId": "6d1e00000000000000000001",
+        "roundNumber": 1,
+        "status": "COMPLETED",
+        "tables": [
+          {
+            "tableNumber": 1,
+            "memberUserIds": [
+              "0b8e5df4ec85d858c304a350",
+              "4da20eb049179e73d4757808",
+              "9f3b3f085e23af6c89dbc432",
+              "af0436815ab38f4864dd1e24"
+            ]
+          },
+          {
+            "tableNumber": 2,
+            "memberUserIds": [
+              "1b1c70be2349b3359a8f6f94",
+              "4b5bad1292fb6db05dc0e455",
+              "76da95a9109da485555c0d25",
+              "7822c5f99eff99d63abe8933"
+            ]
+          }
+        ],
+        "assignmentCreatedAtIso": "2026-09-21T04:39:25.976514427Z",
+        "startedAtIso": "2026-09-21T04:39:25.976514427Z",
+        "completedAtIso": "2026-09-21T04:54:49.568056998Z",
+        "createdByUserId": "9f3b3f085e23af6c89dbc432",
+        "_class": "com.raxim.myscoutee.profile.data.document.ActivityMingleRound",
+        "meetingsProjected": true
+      },
+      {
+        "eventId": "6d1e00000000000000000001",
+        "roundNumber": 2,
+        "status": "COMPLETED",
+        "tables": [
+          {
+            "tableNumber": 1,
+            "memberUserIds": [
+              "0b8e5df4ec85d858c304a350",
+              "4b5bad1292fb6db05dc0e455",
+              "76da95a9109da485555c0d25",
+              "af0436815ab38f4864dd1e24"
+            ]
+          },
+          {
+            "tableNumber": 2,
+            "memberUserIds": [
+              "1b1c70be2349b3359a8f6f94",
+              "4da20eb049179e73d4757808",
+              "7822c5f99eff99d63abe8933",
+              "bf057de7c586eede7e84bdc7"
+            ]
+          }
+        ],
+        "assignmentCreatedAtIso": "2026-09-21T04:54:56.283138329Z",
+        "startedAtIso": "2026-09-21T04:54:56.283138329Z",
+        "completedAtIso": "2026-09-21T04:55:01.521336043Z",
+        "createdByUserId": "9f3b3f085e23af6c89dbc432",
+        "_class": "com.raxim.myscoutee.profile.data.document.ActivityMingleRound",
+        "meetingsProjected": true
+      },
+      {
+        "eventId": "h1792001122492",
+        "roundNumber": 1,
+        "status": "COMPLETED",
+        "tables": [
+          {
+            "tableNumber": 1,
+            "memberUserIds": [
+              "group:community-park-court:1b1c70be2349b3359a8f6f94",
+              "group:community-park-court:af0436815ab38f4864dd1e24"
+            ]
+          }
+        ],
+        "assignmentCreatedAtIso": "2026-10-14T18:44:06.899122729Z",
+        "startedAtIso": "2026-10-14T18:44:06.899122729Z",
+        "completedAtIso": "2026-10-14T18:44:43.148514855Z",
+        "createdByUserId": "group:community-park-court:af0436815ab38f4864dd1e24",
+        "_class": "com.raxim.myscoutee.profile.data.document.ActivityMingleRound",
+        "meetingsProjected": true
+      },
+      {
+        "eventId": "h1792001122492",
+        "roundNumber": 2,
+        "status": "COMPLETED",
+        "tables": [
+          {
+            "tableNumber": 1,
+            "memberUserIds": [
+              "group:community-park-court:1b1c70be2349b3359a8f6f94",
+              "group:community-park-court:af0436815ab38f4864dd1e24"
+            ]
+          }
+        ],
+        "assignmentCreatedAtIso": "2026-10-14T18:45:43.254977221Z",
+        "startedAtIso": "2026-10-14T18:45:43.254977221Z",
+        "completedAtIso": "2026-10-14T18:46:48.332644458Z",
+        "createdByUserId": "system",
+        "_class": "com.raxim.myscoutee.profile.data.document.ActivityMingleRound",
+        "meetingsProjected": true
+      }
+    ]
+  },
+  "checks": [
+    {
+      "eventId": "6d1e00000000000000000001",
+      "title": "Mingle Demo \u00b7 Table Rotation Social",
+      "workspaceGroupId": null,
+      "mode": "Mingle",
+      "groupSize": 4,
+      "capacityTotal": 24,
+      "acceptedCount": 9,
+      "completedRounds": 2,
+      "tableSizes": [
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "participantsOnly": true,
+      "withinGroupSize": true,
+      "historyRetained": true
+    },
+    {
+      "eventId": "h1792001122492",
+      "title": "MSC115 QA mixing 92 \u2014 Park Court",
+      "workspaceGroupId": "community-park-court",
+      "mode": "Mingle",
+      "groupSize": 2,
+      "capacityTotal": 4,
+      "acceptedCount": 2,
+      "completedRounds": 2,
+      "tableSizes": [
+        [
+          2
+        ],
+        [
+          2
+        ]
+      ],
+      "participantsOnly": true,
+      "withinGroupSize": true,
+      "historyRetained": true
+    }
+  ],
+  "policyInference": {
+    "community-park-court": "Runtime community type and nonbase ID => priorityEnabled false; Mingle passes empty graph, accepted participants, prior tables and randomize=true.",
+    "DatingDemo": "Runtime workspaceGroupId absent => priorityEnabled true; same generator receives priority graph, accepted participants, group size, prior tables and randomize=false.",
+    "CommunityBase": "Runtime myscoutee-community groupType community => excluded by scheduler non-Dating predicate for automatic random grouping. Private/community manual mingle retained."
+  },
+  "sourceEvidence": [
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/document/CommunityGroup.java:24",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMingleService.java:270",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventScheduler.java:847",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventScheduler.java:1734"
+  ],
+  "regressionEvidence": {
+    "retainedEvidence": "guides/qa/evidence/work-community/MSC115-step40-45-services-20261014.json mixing92_94_followup.existing_regression_tests",
+    "recordedResult": "13 PASS: seven ActivitiesMingleServiceTest and six selected EventSchedulerTest",
+    "oldTemporaryLogAvailable": false,
+    "rerunByThisAgent": false
+  },
+  "limits": [
+    "No statistical randomness claim from two Community participants.",
+    "Dating control is an existing completed runtime event, not a newly replayed browser start.",
+    "Policy values inferred by applying current canonical policy to persisted runtime group/event fields; not newly captured API DTO flags."
+  ]
+}

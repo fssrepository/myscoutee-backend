@@ -13,4 +13,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record Campaign(@Id String id, String workspaceGroupId, String ownerUserId,
         String title, String description, String kind, String category, @org.springframework.data.mongodb.core.index.Indexed(name="campaign_images") List<String> imageUrls, List<DocumentAttachment> attachments,
         String status,
-        String createdAtIso, String updatedAtIso, @Version Long version) implements com.raxim.myscoutee.domain.campaigns.api.CampaignView {}
+        String createdAtIso, String updatedAtIso, @Version Long version,
+        Long counterRevision, com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change counterChange)
+        implements com.raxim.myscoutee.domain.campaigns.api.CampaignView {
+    public Campaign(String id, String workspaceGroupId, String ownerUserId, String title, String description,
+            String kind, String category, List<String> imageUrls, List<DocumentAttachment> attachments,
+            String status, String createdAtIso, String updatedAtIso, Long version) {
+        this(id, workspaceGroupId, ownerUserId, title, description, kind, category, imageUrls, attachments,
+                status, createdAtIso, updatedAtIso, version, 0L, null);
+    }
+}

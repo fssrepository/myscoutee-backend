@@ -8,9 +8,14 @@ its [CSV source](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv), and the
 
 ## Template regression and fix propagation — MSC-122
 
+MSC-122 and its completed template qualification are closed. This is not a
+fifth open task or a request to repeat the completed template regression.
+The rules below apply to new defects found during the four remaining tasks.
+
 The outstanding MSC-115, MSC-116, MSC-117 and MSC-119 cases must also assess
-`myscoutee-template`. Each linked checklist defines its retained scope. Test
-shared functionality in the template itself; omitted product features are N/A
+whether a newly found defect affects `myscoutee-template`. Each linked checklist
+defines its retained scope. Retest affected shared functionality in the template
+itself after carrying over the fix; omitted product features are N/A
 with a reason, not missing template functionality.
 
 For every defect found in these cases:
@@ -116,6 +121,8 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 - [ADMIN-PARAMETERS-001](administration/ADMIN-PARAMETERS-001.md) — Section-specific persistence, effects and validation.
 
 ## General UI
+
+- [MSC115-TEMPLATE-REGRESSION](general/MSC115-TEMPLATE-REGRESSION.md) — Batched verification of template counterparts affected by MSC-115 fixes.
 
 - [CHAT-CALL-001](general/CHAT-CALL-001.md) — Saját STUN, WebRTC hang/videó, MLS és koordinátorcsere.
 

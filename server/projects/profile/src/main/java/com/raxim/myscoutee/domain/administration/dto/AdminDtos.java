@@ -396,7 +396,13 @@ public final class AdminDtos {
             List<AdminReportedUserDto> reportedUsers,
             List<AdminReportedUserDto> blockedUsers,
             List<AdminFeedbackDto> feedback,
-            AdminReviewCountsDto reviewCounts) {}
+            AdminReviewCountsDto reviewCounts,
+            Map<String, AdminReviewCountsDto> reviewCountsByScope) {
+        public AdminDashboardDto(AdminUserDto activeAdmin, List<AdminReportedUserDto> reportedUsers,
+                List<AdminReportedUserDto> blockedUsers, List<AdminFeedbackDto> feedback, AdminReviewCountsDto reviewCounts) {
+            this(activeAdmin, reportedUsers, blockedUsers, feedback, reviewCounts, Map.of());
+        }
+    }
     public record AdminReviewCountsDto(
             Integer reportsUnresolved,
             Integer reportsResolved,

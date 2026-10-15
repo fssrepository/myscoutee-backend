@@ -1,0 +1,149 @@
+{
+  "checkpoint": "MSC115-ADMIN / MSC115-JOBS",
+  "date": "2026-10-14",
+  "status": "IN PROGRESS",
+  "boundary": "User authorized continuation through107; stop before Guides108. No cleanup/reset performed.",
+  "revisions": {
+    "backend": "9e2e85838ae64a363853eb9af51d64dd5142e61e",
+    "frontend": "1425b9bba835e2003d90fecfa2da330f03cf1e23",
+    "working_tree_changes": true
+  },
+  "runtime": "Existing monolith HTTP/demo_db and managed Ava session. Same frontend-sync restored and synced at22:31:41; no extra server/build/test owner retained. Alex remains390x844.",
+  "steps": {
+    "101": "Dating, Work and Community switched; scoped admin surfaces opened. Restored Community profile now restores the selector scope after page reload.",
+    "102": {
+      "before": "Dating menu Reports2 + Feedback2, but selector showed2 when Work/Community were active; account member presentation and raw activity counters replaced admin counters.",
+      "fix": "Existing admin dashboard now includes per-base-group review counts from the rows it already loads. Local adapter matches. Workspace selector reuses these counts, retains them before account-profile hydration, and avoids accumulating derived totals on switches.",
+      "after": [
+        {
+          "scope": "myscoutee-work",
+          "avatar": 4,
+          "items": [
+            {
+              "id": "main",
+              "count": 4
+            },
+            {
+              "id": "myscoutee-community",
+              "count": 0
+            },
+            {
+              "id": "myscoutee-work",
+              "count": 0
+            }
+          ],
+          "menu": {
+            "reports": 0,
+            "feedback": 0
+          }
+        },
+        {
+          "scope": "myscoutee-community",
+          "avatar": 4,
+          "items": [
+            {
+              "id": "main",
+              "count": 4
+            },
+            {
+              "id": "myscoutee-community",
+              "count": 0
+            },
+            {
+              "id": "myscoutee-work",
+              "count": 0
+            }
+          ],
+          "menu": {
+            "reports": 0,
+            "feedback": 0
+          }
+        },
+        {
+          "scope": "main",
+          "avatar": 4,
+          "items": [
+            {
+              "id": "main",
+              "count": 4
+            },
+            {
+              "id": "myscoutee-community",
+              "count": 0
+            },
+            {
+              "id": "myscoutee-work",
+              "count": 0
+            }
+          ],
+          "menu": {
+            "reports": 2,
+            "feedback": 2
+          }
+        }
+      ],
+      "reload": {
+        "scope": "myscoutee-community",
+        "avatar": 4,
+        "items": [
+          {
+            "id": "main",
+            "count": 4
+          },
+          {
+            "id": "myscoutee-community",
+            "count": 0
+          },
+          {
+            "id": "myscoutee-work",
+            "count": 0
+          }
+        ],
+        "menu": {
+          "reports": 0,
+          "feedback": 0
+        },
+        "visibleOptions": [
+          "favoriteDating 4 ",
+          "diversity_3Communitydone",
+          "workWork"
+        ],
+        "afterReload": true
+      }
+    },
+    "103": "Created draft MSC115 QA admin103 Work scope through normal Article UI (POST200, id6acfdf35c509e2f0921f24b7). Present only in Work after switching away and back. Dating report actor/target/reason/event retained. Optional private-group membership branch NOT PROVEN.",
+    "104": "Payment simulator and3DS opened in all3scopes with existing protected context. No payment submitted. Operator not visited.",
+    "105": "Independent job definitions and histories inspected: Dating24, Work23, Community25.",
+    "106": "Work payment-exchange-rates ran through normal UI: completed,64affected,140ms,progress100,pending0. Dating/Community rule records unchanged;223existing exchange rows unchanged. All scope baselines retained in fixture snapshot.",
+    "107": "Community scheduled-case and vote-close jobs present/enabled; manual run disabled. Shared notification/exchange/processing have separate scoped definitions. Absent random-room job direct HTTP attempts in Work/Community returned skipped,affected0; no absent rule created."
+  },
+  "verification": {
+    "frontend": {
+      "command": "npm test -- --watch=false --include='src/app/shared/ui/context/stores/community/group-workspace.store.spec.ts'",
+      "passed": 8,
+      "log": "/tmp/msc115-20261014/admin102-frontend-tests.log"
+    },
+    "backend": {
+      "command": "bash tools/run-backend-junit.sh standard --tests 'com.raxim.myscoutee.domain.content.service.AdminModerationServiceTest'",
+      "passed": 7,
+      "log": "/tmp/msc115-20261014/admin102-backend-tests.log"
+    },
+    "runtime": "Dashboard GET200 includes main2+2,Work0,Community0. UI switch and reload checked. Existing watcher compiled/synced successfully. Fixture JavaScript/shell syntax and diff whitespace checks passed."
+  },
+  "database_changes": "Direct writes were limited to retained QA restore snapshots in fixture state. No direct application-counter repair, business-row rewrite, fixture reset or reseed. Article creation and job run used application UI/API. Future job reset is restricted to exercised Work scope; other scopes remain read-only controls.",
+  "remaining": [
+    "Optional private-group report membership branch",
+    "Local adapter runtime",
+    "KVM qualification, serially with monolith stopped",
+    "Broader campaign, independent Mixing93 comparison and cleanup remain open; Guides108 not started"
+  ],
+  "template": "N/A for this base-group admin selector patch: corresponding group-workspace/admin-workspace store owners absent in template frontend; no shared components changed.",
+  "artifacts": [
+    "/tmp/msc115-20261014/admin102-dashboard-after.json",
+    "/tmp/msc115-20261014/admin102-selector-reload.png",
+    "/tmp/msc115-20261014/admin103-baseline.json",
+    "/tmp/msc115-20261014/admin106-before.json",
+    "/tmp/msc115-20261014/admin106-after.json",
+    "/tmp/msc115-20261014/admin107-absent-jobs.json"
+  ]
+}

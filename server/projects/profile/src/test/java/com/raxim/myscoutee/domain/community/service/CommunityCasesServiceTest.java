@@ -22,6 +22,25 @@ import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxServic
 
 @org.junit.jupiter.api.Tag("standard")
 class CommunityCasesServiceTest {
+    @Test void calendarUsesBoundedTaskDatesAndExistingVisibilityWithoutListPagination() {
+        var cases = mock(ServiceCasesRepository.class); var access = mock(CommunityAccessService.class);
+        var groups = mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class);
+        var users = mock(com.raxim.myscoutee.domain.accounts.api.ProfileSummaries.class);
+        var service = new CommunityCasesService(cases, access, groups, users, mock(NotificationOutboxService.class), mock(CaseConversations.class), mock(ServiceOfferingsRepository.class));
+        when(access.managedGroups("owner")).thenReturn(Set.of("homes"));
+        when(cases.visibleCalendar(anyString(), eq("owner"), anyCollection(), anyCollection(), anyCollection(), anyString(), anyString())).thenReturn(List.of(record()));
+        var page = service.page("owner", "active", "maintenance", 1, null, "2026-10-01", "2026-10-31");
+        assertThat(page.items()).extracting(com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.CaseItem::id).containsExactly("case");
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.nextCursor()).isNull();
+        verify(cases).visibleCalendar(CommunityGroup.COMMUNITY_BASE_ID, "owner", Set.of("homes"), List.of("open", "in-progress"), List.of("maintenance"), "2026-10-01T00:00:00Z", "2026-11-01T00:00:00Z");
+        verify(cases, never()).visible(anyString(), anyString(), anyCollection(), anyCollection(), anyCollection(), any());
+        verify(cases, never()).findById(anyString());
+        assertThatThrownBy(() -> service.page("owner", "active", null, 20, null, "2026-10-01", "2027-10-01"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> service.page("owner", "active", null, 20, null, "2026-10-01", null))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+    }
     @Test void manualActionsExcludeTheActorButAutomaticRemindersIncludeTheCreatorInCommunityScope() {
         var users = mock(UsersRepository.class); var notifications = mock(NotificationOutboxService.class);
         var service = new CommunityCasesService(mock(ServiceCasesRepository.class), mock(CommunityAccessService.class), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users), notifications, mock(CaseConversations.class), mock(ServiceOfferingsRepository.class));
@@ -41,6 +60,9 @@ class CommunityCasesServiceTest {
     @Test void anExternalProviderOnlySeesExplicitlyAssignedCases() {
         var cases = mock(ServiceCasesRepository.class); var access = mock(CommunityAccessService.class);
         var service = new CommunityCasesService(cases, access, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)), mock(NotificationOutboxService.class), mock(CaseConversations.class), mock(ServiceOfferingsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", new CommunityCaseCounterWork(cases,
+                mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class),
+                mock(org.springframework.data.mongodb.core.MongoTemplate.class), mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class)));
         when(cases.findById("case")).thenReturn(Optional.of(record()));
         assertThat(service.visible("resident", "case").id()).isEqualTo("case");
         assertThatThrownBy(() -> service.visible("outside-provider", "case")).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
@@ -53,6 +75,9 @@ class CommunityCasesServiceTest {
         when(cases.save(any(ServiceCase.class))).thenAnswer(a -> { ServiceCase next = a.getArgument(0); current.set(next); return next; });
         when(access.admin("homes", "resident")).thenReturn(true);
         var service = new CommunityCasesService(cases, access, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)), mock(NotificationOutboxService.class), mock(CaseConversations.class), mock(ServiceOfferingsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", new CommunityCaseCounterWork(cases,
+                mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class),
+                mock(org.springframework.data.mongodb.core.MongoTemplate.class), mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class)));
         assertThat(service.canManage(current.get(), "owner")).isTrue();
         assertThat(service.canManage(current.get(), "resident")).isFalse();
         assertThatThrownBy(() -> service.action("resident", "case", command("save-board-task")))
@@ -76,6 +101,9 @@ class CommunityCasesServiceTest {
         when(access.audience(List.of(), false, List.of())).thenReturn(List.of());
         var service = new CommunityCasesService(cases, access, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(NotificationOutboxService.class), mock(CaseConversations.class), mock(ServiceOfferingsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", new CommunityCaseCounterWork(cases,
+                mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class),
+                mock(org.springframework.data.mongodb.core.MongoTemplate.class), mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class)));
         var saved = service.save("owner", new com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.SaveCase(
                 "owner", null, "homes", "Repair", "", "maintenance", false, List.of(), null));
         assertThat(saved.audienceAccountIds()).isEmpty();
@@ -88,6 +116,9 @@ class CommunityCasesServiceTest {
         var worker = mock(ScheduledMessageTaskService.class);
         var service = new CommunityCasesService(cases, mock(CommunityAccessService.class), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)),
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)), mock(NotificationOutboxService.class), mock(CaseConversations.class), mock(ServiceOfferingsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", new CommunityCaseCounterWork(cases,
+                mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class),
+                mock(org.springframework.data.mongodb.core.MongoTemplate.class), mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "scheduledMessages", worker);
         var mapper = tools.jackson.databind.json.JsonMapper.builder().build();
         org.springframework.test.util.ReflectionTestUtils.setField(service, "objectMapper", mapper);

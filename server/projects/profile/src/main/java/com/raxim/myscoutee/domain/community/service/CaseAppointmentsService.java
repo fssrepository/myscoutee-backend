@@ -78,7 +78,7 @@ public class CaseAppointmentsService {
         var people=new HashMap<String,ProfileSummary>();users.findByUserIdIn(rows.stream().map(Appointment::customerAccountId).distinct().toList()).forEach(u->people.put(u.getUserId(),u));
         var entries = new ArrayList<CalendarEntry>();
         rows.stream().filter(a->caseMap.containsKey(a.caseId())&&caseMap.get(a.caseId()).activeParticipantAccountIds().contains(actor)).forEach(a->entries.add(new CalendarEntry(a,caseMap.get(a.caseId()).title(),
-                serviceMap.containsKey(a.serviceId())?serviceMap.get(a.serviceId()).title():"",people.containsKey(a.customerAccountId())?people.get(a.customerAccountId()).getName():"",a.caseId(),null)));
+                serviceMap.containsKey(a.serviceId())?serviceMap.get(a.serviceId()).title():"",people.containsKey(a.customerAccountId())?people.get(a.customerAccountId()).getName():"",a.caseId(),null,caseMap.get(a.caseId()).caseType(),caseMap.get(a.caseId()).status())));
         for (var c : caseRecords.assignedCalendar(BaseGroups.COMMUNITY_BASE_ID, actor, from, to)) {
             if (!c.activeParticipantAccountIds().contains(actor)) continue;
             for (var task : c.boardTasks()) {
@@ -86,7 +86,7 @@ public class CaseAppointmentsService {
                 var taskStart = Instant.parse(task.startAtIso());
                 var taskEnd = task.endAtIso() == null ? taskStart : Instant.parse(task.endAtIso());
                 if (taskStart.isBefore(Instant.parse(to)) && (taskEnd.isAfter(Instant.parse(from)) || !taskStart.isBefore(Instant.parse(from))))
-                    entries.add(new CalendarEntry(null,c.title(),task.title(),"",c.id(),task));
+                    entries.add(new CalendarEntry(null,c.title(),task.title(),"",c.id(),task,c.caseType(),c.status()));
             }
         }
         entries.sort(Comparator.comparing(e->e.task()==null?e.appointment().startAtIso():e.task().startAtIso()));

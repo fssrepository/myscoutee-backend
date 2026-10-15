@@ -27,10 +27,10 @@ import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper;
 @org.junit.jupiter.api.Tag("standard")
 class CaseAppointmentsServiceTest {
  CommunityCasesService cases;ServiceOfferingsService services;ServiceProviderCalendarsRepository calendars;CaseAppointmentsService service;
- ServiceProviderCalendar state;ServiceOfferingsRepository offerings;
+ ServiceProviderCalendar state;ServiceOfferingsRepository offerings;ServiceCasesRepository caseRecords;
  @BeforeEach void setup(){cases=mock(CommunityCasesService.class);services=mock(ServiceOfferingsService.class);calendars=mock(ServiceProviderCalendarsRepository.class);
   var pricing=new EventCheckoutPricingService(new com.raxim.myscoutee.domain.events.service.EventOwnershipService(mock(ActivityEventsRepository.class)), new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)), mock(TranslationService.class));
-  offerings=mock(ServiceOfferingsRepository.class);service=new CaseAppointmentsService(cases,services,calendars,new ActivityEventSubEventsMapper(),pricing,mock(ServiceCasesRepository.class),offerings,new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
+  offerings=mock(ServiceOfferingsRepository.class);caseRecords=mock(ServiceCasesRepository.class);service=new CaseAppointmentsService(cases,services,calendars,new ActivityEventSubEventsMapper(),pricing,caseRecords,offerings,new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
   when(cases.visible(anyString(),eq("case"))).thenReturn(new ServiceCase("case",CommunityGroup.COMMUNITY_BASE_ID,"homes","owner","Shared repair","", "maintenance","open",true,List.of("owner","resident"),List.of("owner","resident","provider"),List.of(),List.of(new CaseDetails.Support("provider","service","accepted")),List.of(),List.of(),null,null,"2099-01-01T00:00:00Z","2099-01-01T00:00:00Z",0L,Map.of(),List.of(),List.of()));
   when(offerings.findById("service")).thenReturn(Optional.of(new ServiceOffering("service",CommunityGroup.COMMUNITY_BASE_ID,"provider","Repairs","","maintenance",List.of(),null,List.of(),List.of("provider"),true,"2099-01-01T00:00:00Z","2099-12-31T23:59:59Z","Daily",60,List.of(new EventSlotTemplateDto("morning","2099-01-01T09:20:00Z",null,false,List.of())),null,"published","2099-01-01T00:00:00Z","2099-01-01T00:00:00Z",0L,"")));
   when(calendars.findById("provider")).thenAnswer(inv->Optional.ofNullable(state));
@@ -57,4 +57,16 @@ class CaseAppointmentsServiceTest {
   assertThatThrownBy(()->service.save("owner","case",new Selection("owner","service","provider",List.of("service:slot:morning:2099-01-12T09:21:00Z"),null,"fake"))).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
   verify(calendars,never()).save(any());
  }
+ @Test void calendarCarriesCaseTypeForAssignedTasksWithoutAdditionalCaseLookups(){
+  var c=mock(ServiceCase.class);
+  when(c.id()).thenReturn("case");when(c.title()).thenReturn("Shared repair");when(c.caseType()).thenReturn("maintenance");when(c.status()).thenReturn("open");
+  when(c.activeParticipantAccountIds()).thenReturn(List.of("provider"));
+  when(c.boardTasks()).thenReturn(List.of(new CaseDetails.BoardTask("task","Repair","","todo",List.of("provider"),List.of(),"2099-01-12T10:00:00Z","2099-01-12T11:00:00Z",List.of())));
+  when(caseRecords.assignedCalendar(anyString(),eq("provider"),anyString(),anyString())).thenReturn(List.of(c));
+  var entries=service.calendar("provider","2099-01-12","2099-01-12");
+  assertThat(entries).hasSize(1);assertThat(entries.getFirst().caseType()).isEqualTo("maintenance");
+  assertThat(entries.getFirst().task().id()).isEqualTo("task");assertThat(entries.getFirst().caseStatus()).isEqualTo("open");
+  verify(caseRecords,never()).findById(anyString());
+ }
+
 }

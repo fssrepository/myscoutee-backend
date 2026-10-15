@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "contexts": 118,
+  "fields": 1513,
+  "mongoSeeds": {
+    "demo_db": "exact field records match",
+    "e2e_db": "exact field records match",
+    "myscoutee_db": "exact field records match"
+  },
+  "liveDemo": "exact field records match",
+  "i18n": "audit-i18n-mongo-seed.js PASS: 2 source bundles / 15240 messages / 3 Mongo seeds",
+  "liveI18n": "PASS: all 15240 canonical EN/HU message keys and values match live demo_db"
+}

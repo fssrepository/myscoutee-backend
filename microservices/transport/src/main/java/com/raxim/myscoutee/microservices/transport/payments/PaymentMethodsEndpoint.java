@@ -17,7 +17,10 @@ public final class PaymentMethodsEndpoint {
     @PostMapping(value = PaymentMethodsProtocol.AVAILABLE, produces = "application/json")
     public ResponseEntity<?> available(HttpServletRequest request) throws java.io.IOException {
         return read(request, PaymentMethodsProtocol.Query.class, PaymentMethodsProtocol::valid, command ->
-                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> new PaymentMethodsProtocol.Decision(owner.cardsAvailable())));
+                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> {
+                    var options = owner.options();
+                    return new PaymentMethodsProtocol.Decision(options.cardsAvailable(), options.currencies(), options.eurRates());
+                }));
     }
     private <T> ResponseEntity<?> read(HttpServletRequest request, Class<T> type, Predicate<T> valid, Function<T, Object> action)
             throws java.io.IOException {

@@ -591,6 +591,7 @@
       "propertyPrefix": "profile-summaries",
       "credential": "profileSummariesToken",
       "producerDomains": [
+        "groups",
         "administration",
         "chat",
         "community",
@@ -1236,7 +1237,8 @@
         "email",
         "integrations",
         "content",
-        "community"
+        "community",
+        "media"
       ]
     },
     {
@@ -1247,6 +1249,7 @@
       "propertyPrefix": "campaign-catalog",
       "credential": "campaignCatalogToken",
       "producerDomains": [
+        "accounts",
         "affinity",
         "chat",
         "integrations"
@@ -1353,12 +1356,14 @@
         "chat",
         "content",
         "events",
-        "community"
+        "community",
+        "campaigns"
       ],
       "providedApis": [
         "ServiceFeedbackCounters",
         "FeedCounts",
-        "SupportCaseCounters"
+        "SupportCaseCounters",
+        "MenuCounterUpdates"
       ]
     },
     {
@@ -3163,6 +3168,19 @@
           "method": "POST",
           "path": "/_internal/v1/operator/reports/revenue"
         }
+      ]
+    },
+    {
+      "domain": "media",
+      "api": "MediaDeletionQueue",
+      "package": "media",
+      "configuration": "MediaDeletionQueue",
+      "propertyPrefix": "media-deletion",
+      "credential": "mediaDeletionToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "community",
+        "notifications"
       ]
     }
   ],

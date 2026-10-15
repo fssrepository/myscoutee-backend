@@ -195,10 +195,26 @@
         "properties": {
           "value": {
             "type": "boolean"
+          },
+          "currencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eurRates": {
+            "type": "object",
+            "description": "Current display-only EUR per currency unit.",
+            "additionalProperties": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
           }
         },
         "required": [
-          "value"
+          "value",
+          "currencies",
+          "eurRates"
         ]
       },
       "Error": {

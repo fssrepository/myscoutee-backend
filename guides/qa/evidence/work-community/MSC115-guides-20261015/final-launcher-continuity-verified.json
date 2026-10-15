@@ -1,0 +1,834 @@
+[
+  [
+    {
+      "t": 7.7000000001862645,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 23.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 43.200000000186265,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 65.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 95,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 106.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 123.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 157.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 174.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 190.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 208,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 223.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 241.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 256.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 273.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 289,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 305.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 323,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 339.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 355.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 372.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 390.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 406.59999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 423.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 439.70000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 456.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 473.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 490,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 507.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 523.2000000001863,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 540,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 556.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 573.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 589.7000000001863,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 606.0999999996275,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 622.2000000001863,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 640.2999999998137,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 657.2999999998137,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    }
+  ],
+  [
+    {
+      "t": 0.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 15.700000000186265,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 32,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 51,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 72,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 82.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 99.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 116.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 132.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 141.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 158.70000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 175.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 191.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 214.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 230.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 247.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 272.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 282,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 299.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 315.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 339.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 357.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 374.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 398.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 416.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 432.70000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 448.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 465.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 481.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 498.59999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 515.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 532.7000000001863,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 548.7999999998137,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 565.2000000001863,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 581.7999999998137,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 598.2999999998137,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 614.2000000001863,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 631.5999999996275,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 648.2000000001863,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 665.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    }
+  ],
+  [
+    {
+      "t": 5.599999999627471,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 23,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 38.700000000186265,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 55.299999999813735,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 72.09999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 89.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 106.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 122.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 138.59999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 155.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 171.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 189.59999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 206.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 222.59999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 238.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 256,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 271.59999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 289.59999999962747,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 306.70000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 322.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 338.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 355.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 373.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 389.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 406,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 423,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 439.20000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 455.79999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 472,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 489.29999999981374,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 505.70000000018626,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 521.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 538.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 555.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 572.2999999998137,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 586.5999999996275,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 603.5,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 620.8999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 637.3999999994412,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    },
+    {
+      "t": 654.2999999998137,
+      "button": "visible",
+      "brand": true,
+      "card": "visible",
+      "shade": "visible"
+    }
+  ]
+]

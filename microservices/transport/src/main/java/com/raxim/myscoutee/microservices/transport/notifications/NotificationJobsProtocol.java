@@ -10,9 +10,10 @@ public final class NotificationJobsProtocol {
     public static final String GROUPS = ROOT + "/groups", FIND = ROOT + "/rule", DUE = ROOT + "/due", ENABLED = ROOT + "/events-enabled",
             BEGIN = ROOT + "/begin", SCHEDULED = ROOT + "/begin-scheduled", QUEUED = ROOT + "/begin-queued", RECORD = ROOT + "/record",
             ADJUST = ROOT + "/adjust-pending", CLAIM = ROOT + "/claim-pending", RESTORE = ROOT + "/restore-pending";
+    public static final String RETRY_OUTCOME = ROOT + "/retry-outcome";
     public static final int MAX_REQUEST_BYTES = 512 * 1024, MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
     private NotificationJobsProtocol() {}
-    public static String[] paths() { return new String[]{GROUPS, FIND, DUE, ENABLED, BEGIN, SCHEDULED, QUEUED, RECORD, ADJUST, CLAIM, RESTORE}; }
+    public static String[] paths() { return new String[]{GROUPS, FIND, DUE, ENABLED, BEGIN, SCHEDULED, QUEUED, RECORD, ADJUST, CLAIM, RESTORE, RETRY_OUTCOME}; }
     public record Scope(Boolean active, String groupId) {
         public static Scope current() { return new Scope(JobGroupContext.isActive(), JobGroupContext.groupId()); }
     }
@@ -22,6 +23,13 @@ public final class NotificationJobsProtocol {
     public record ScopeQuery(Scope scope) {}
     public record BeginCommand(Scope scope, String ruleKey, String detail, String actorUserId, Instant startedAt) {}
     public record RecordCommand(Scope scope, String ruleKey, Integer count, String status, String detail, String actorUserId, Instant startedAt) {}
+    public record RetryOutcomeCommand(Scope scope, com.raxim.myscoutee.domain.notifications.api.NotificationJobs.RetryOutcome outcome) {}
+    public static boolean valid(RetryOutcomeCommand q) {
+        return q != null && scope(q.scope()) && q.outcome() != null && q.outcome().originalStartedAt() != null
+                && q.outcome().attemptCount() >= 2 && q.outcome().attemptCount() <= 3
+                && q.outcome().status() != null && Set.of("completed", "failed", "retry").contains(q.outcome().status())
+                && text(q.outcome().ruleKey(), 512) && text(q.outcome().detail(), 8192);
+    }
     public record PendingCommand(Scope scope, String ruleKey, Integer count, String unit) {}
     public record Claim(Scope scope, String ruleKey, Instant startedAt) {}
     public record Restore(Scope scope, String ruleKey, Integer count, String unit, Instant startedAt) {}

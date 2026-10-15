@@ -1548,14 +1548,15 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         if (parent == null) {
             parent = selected;
         }
-        EventSubEventsSlotPage page = activityEventSubEventsMapper.toSlotPage(
-                parentEventId,
-                parent,
-                request);
+        boolean calendarQuery = activityEventSubEventsMapper.isCalendarQuery(request);
+        EventSubEventsSlotPage page = calendarQuery
+                ? activityEventSubEventsMapper.toCalendarSlots(parentEventId, parent, request)
+                : activityEventSubEventsMapper.toSlotPage(parentEventId, parent, request);
         List<EventSubEventsSlotDto> baseSlots = page.slots();
         if (baseSlots.isEmpty()) {
             EventSubEventsSlotDto mainEventRuntimeSlot = mainEventRuntimeSlot(parent);
-            if (mainEventRuntimeSlot != null) {
+            if (mainEventRuntimeSlot != null && (!StringUtils.hasText(request.calendarTimeZone())
+                    || activityEventSubEventsMapper.slotOverlapsQuery(mainEventRuntimeSlot, request))) {
                 baseSlots = List.of(mainEventRuntimeSlot);
                 page = new EventSubEventsSlotPage(baseSlots, 1, null);
             }
@@ -1565,6 +1566,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                     ? filterMainEventRuntimeByAcceptedParticipation(baseSlots, parentEventId, viewer.userId())
                     : filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
         }
+        // Count only authorized slots, before loading resource/stage details for sparse cells.
+        int visibleCalendarTotal = baseSlots.size();
+        var calendar = calendarQuery ? activityEventSubEventsMapper.compactCalendarSlots(baseSlots, request) : null;
+        if (calendar != null) baseSlots = calendar.slots();
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
         Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey =
                 resourceRecordsByKey(lookups.resourceLookups());
@@ -1576,8 +1581,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 resourceRecordsByKey,
                 stageRuntimeByKey,
                 viewer.userId());
-        return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor(),
-                accessControlService.canAssignEventResourcesForSubject(parentEventId, viewer.userId()));
+        return new EventSubEventsResultDto(parent.getMode(), slots, calendarQuery ? visibleCalendarTotal : page.total(), page.nextCursor(),
+                accessControlService.canAssignEventResourcesForSubject(parentEventId, viewer.userId()),
+                calendar == null ? List.of() : calendar.cells());
     }
 
     private Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey(
@@ -7481,6 +7487,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private void includeEventListCardFields(Query query) {
         query.fields()
                 .include("sourceId")
+                .include("campaignId")
                 .include("ownerUserId")
                 .include("status")
                 .include("admins")

@@ -4904,16 +4904,16 @@
     "order": 18
   },
   {
-    "_id": "event.members--member-grantVote",
-    "id": "member-grantVote",
+    "_id": "event.members--card-actions:member-grantVote",
+    "id": "card-actions:member-grantVote",
     "screenKey": "event.members",
     "group": "overview",
     "i18nKey": "guide.event.members.member-grantVote",
     "order": 19
   },
   {
-    "_id": "event.members--member-revokeVote",
-    "id": "member-revokeVote",
+    "_id": "event.members--card-actions:member-revokeVote",
+    "id": "card-actions:member-revokeVote",
     "screenKey": "event.members",
     "group": "overview",
     "i18nKey": "guide.event.members.member-revokeVote",
@@ -6648,6 +6648,14 @@
     "order": 5
   },
   {
+    "_id": "payment.cash.receipt--method",
+    "id": "method",
+    "screenKey": "payment.cash.receipt",
+    "group": "popup",
+    "i18nKey": "guide.payment.cash.receipt.method",
+    "order": -1
+  },
+  {
     "_id": "navigation.menu--navigation-profile",
     "id": "navigation-profile",
     "screenKey": "navigation.menu",
@@ -6912,6 +6920,14 @@
     "order": 32
   },
   {
+    "_id": "navigation.menu--votes",
+    "id": "votes",
+    "screenKey": "navigation.menu",
+    "group": "fields",
+    "i18nKey": "guide.navigation.menu.votes",
+    "order": 10.1
+  },
+  {
     "_id": "members--members-list",
     "id": "members-list",
     "screenKey": "members",
@@ -7064,16 +7080,16 @@
     "order": 18
   },
   {
-    "_id": "members--member-grantVote",
-    "id": "member-grantVote",
+    "_id": "members--card-actions:member-grantVote",
+    "id": "card-actions:member-grantVote",
     "screenKey": "members",
     "group": "overview",
     "i18nKey": "guide.members.member-grantVote",
     "order": 19
   },
   {
-    "_id": "members--member-revokeVote",
-    "id": "member-revokeVote",
+    "_id": "members--card-actions:member-revokeVote",
+    "id": "card-actions:member-revokeVote",
     "screenKey": "members",
     "group": "overview",
     "i18nKey": "guide.members.member-revokeVote",
@@ -8814,6 +8830,14 @@
     "order": 15,
     "i18nKey": "guide.community.voting.close",
     "group": "popup"
+  },
+  {
+    "_id": "community.voting--row-status",
+    "id": "row-status",
+    "screenKey": "community.voting",
+    "group": "card",
+    "i18nKey": "guide.community.voting.row-status",
+    "order": 1.5
   },
   {
     "_id": "community.announcement.editor--announcement-details",
@@ -10808,6 +10832,254 @@
     "order": 4
   },
   {
+    "_id": "admin.help-editor--revision-toggle",
+    "id": "revision-toggle",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-toggle",
+    "order": 10
+  },
+  {
+    "_id": "admin.help-editor--revision-active",
+    "id": "revision-active",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-active",
+    "order": 11
+  },
+  {
+    "_id": "admin.help-editor--revision-presentation",
+    "id": "revision-presentation",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-presentation",
+    "order": 12
+  },
+  {
+    "_id": "admin.help-editor--revision-edit",
+    "id": "revision-edit",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-edit",
+    "order": 13
+  },
+  {
+    "_id": "admin.help-editor--revision-activate",
+    "id": "revision-activate",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-activate",
+    "order": 14
+  },
+  {
+    "_id": "admin.help-editor--revision-delete",
+    "id": "revision-delete",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-delete",
+    "order": 15
+  },
+  {
+    "_id": "admin.help-editor--section-preview",
+    "id": "section-preview",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-preview",
+    "order": 16
+  },
+  {
+    "_id": "admin.help-editor--revision-title",
+    "id": "revision-title",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-title",
+    "order": 17
+  },
+  {
+    "_id": "admin.help-editor--draft-presentation",
+    "id": "draft-presentation",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.draft-presentation",
+    "order": 18
+  },
+  {
+    "_id": "admin.help-editor--revision-save",
+    "id": "revision-save",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-save",
+    "order": 19
+  },
+  {
+    "_id": "admin.help-editor--revision-cancel",
+    "id": "revision-cancel",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-cancel",
+    "order": 20
+  },
+  {
+    "_id": "admin.help-editor--draft-toggle",
+    "id": "draft-toggle",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.draft-toggle",
+    "order": 21
+  },
+  {
+    "_id": "admin.help-editor--revision-header",
+    "id": "revision-header",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-header",
+    "order": 22
+  },
+  {
+    "_id": "admin.help-editor--header-color",
+    "id": "header-color",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.header-color",
+    "order": 23
+  },
+  {
+    "_id": "admin.help-editor--canonical-screen",
+    "id": "canonical-screen",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.canonical-screen",
+    "order": 24
+  },
+  {
+    "_id": "admin.help-editor--revision-description",
+    "id": "revision-description",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.revision-description",
+    "order": 25
+  },
+  {
+    "_id": "admin.help-editor--section-add",
+    "id": "section-add",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-add",
+    "order": 26
+  },
+  {
+    "_id": "admin.help-editor--section-icon",
+    "id": "section-icon",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-icon",
+    "order": 27
+  },
+  {
+    "_id": "admin.help-editor--section-title",
+    "id": "section-title",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-title",
+    "order": 28
+  },
+  {
+    "_id": "admin.help-editor--section-guide-target",
+    "id": "section-guide-target",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-guide-target",
+    "order": 29
+  },
+  {
+    "_id": "admin.help-editor--section-panel-span",
+    "id": "section-panel-span",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-panel-span",
+    "order": 30
+  },
+  {
+    "_id": "admin.help-editor--section-optional",
+    "id": "section-optional",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-optional",
+    "order": 31
+  },
+  {
+    "_id": "admin.help-editor--section-mode",
+    "id": "section-mode",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-mode",
+    "order": 32
+  },
+  {
+    "_id": "admin.help-editor--section-remove",
+    "id": "section-remove",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-remove",
+    "order": 33
+  },
+  {
+    "_id": "admin.help-editor--section-toggle",
+    "id": "section-toggle",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-toggle",
+    "order": 34
+  },
+  {
+    "_id": "admin.help-editor--section-html",
+    "id": "section-html",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.section-html",
+    "order": 35
+  },
+  {
+    "_id": "admin.help-editor--image-upload",
+    "id": "image-upload",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.image-upload",
+    "order": 36
+  },
+  {
+    "_id": "admin.help-editor--image-replace",
+    "id": "image-replace",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.image-replace",
+    "order": 37
+  },
+  {
+    "_id": "admin.help-editor--image-copy",
+    "id": "image-copy",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.image-copy",
+    "order": 38
+  },
+  {
+    "_id": "admin.help-editor--image-remove",
+    "id": "image-remove",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.image-remove",
+    "order": 39
+  },
+  {
+    "_id": "admin.help-editor--image-pages",
+    "id": "image-pages",
+    "screenKey": "admin.help-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.help-editor.image-pages",
+    "order": 40
+  },
+  {
     "_id": "admin.idea-editor--overview",
     "id": "overview",
     "screenKey": "admin.idea-editor",
@@ -10848,6 +11120,78 @@
     "order": 4
   },
   {
+    "_id": "admin.idea-editor--card-actions:viewArticle",
+    "id": "card-actions:viewArticle",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.viewArticle",
+    "order": 33
+  },
+  {
+    "_id": "admin.idea-editor--card-actions:edit",
+    "id": "card-actions:edit",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.edit",
+    "order": 34
+  },
+  {
+    "_id": "admin.idea-editor--card-actions:unpublish",
+    "id": "card-actions:unpublish",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.unpublish",
+    "order": 35
+  },
+  {
+    "_id": "admin.idea-editor--card-actions:unfeature",
+    "id": "card-actions:unfeature",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.unfeature",
+    "order": 36
+  },
+  {
+    "_id": "admin.idea-editor--card-actions:delete",
+    "id": "card-actions:delete",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.delete",
+    "order": 37
+  },
+  {
+    "_id": "admin.idea-editor--card-actions",
+    "id": "card-actions",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions",
+    "order": 45
+  },
+  {
+    "_id": "admin.idea-editor--card-actions:publish",
+    "id": "card-actions:publish",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.publish",
+    "order": 46
+  },
+  {
+    "_id": "admin.idea-editor--card-actions:feature",
+    "id": "card-actions:feature",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.feature",
+    "order": 47
+  },
+  {
+    "_id": "admin.idea-editor--card-actions:restore",
+    "id": "card-actions:restore",
+    "screenKey": "admin.idea-editor",
+    "group": "menus",
+    "i18nKey": "guide.admin.idea-editor.card-actions.restore",
+    "order": 48
+  },
+  {
     "_id": "admin.article-view--overview",
     "id": "overview",
     "screenKey": "admin.article-view",
@@ -10862,6 +11206,30 @@
     "group": "popup",
     "i18nKey": "guide.admin.article-view.close",
     "order": 1
+  },
+  {
+    "_id": "admin.article-view--image-gallery-expand",
+    "id": "image-gallery-expand",
+    "screenKey": "admin.article-view",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-view.image-gallery-expand",
+    "order": 1
+  },
+  {
+    "_id": "admin.article-view--image-view",
+    "id": "image-view",
+    "screenKey": "admin.article-view",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-view.image-view",
+    "order": 10
+  },
+  {
+    "_id": "admin.article-view--image-pages",
+    "id": "image-pages",
+    "screenKey": "admin.article-view",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-view.image-pages",
+    "order": 11
   },
   {
     "_id": "admin.article-edit--overview",
@@ -10894,6 +11262,102 @@
     "group": "popup",
     "i18nKey": "guide.admin.article-edit.close",
     "order": 3
+  },
+  {
+    "_id": "admin.article-edit--article-title",
+    "id": "article-title",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.article-title",
+    "order": 10
+  },
+  {
+    "_id": "admin.article-edit--article-description",
+    "id": "article-description",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.article-description",
+    "order": 11
+  },
+  {
+    "_id": "admin.article-edit--article-html",
+    "id": "article-html",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.article-html",
+    "order": 12
+  },
+  {
+    "_id": "admin.article-edit--article-language",
+    "id": "article-language",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.article-language",
+    "order": 13
+  },
+  {
+    "_id": "admin.article-edit--image-details",
+    "id": "image-details",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-details",
+    "order": 14
+  },
+  {
+    "_id": "admin.article-edit--image-upload",
+    "id": "image-upload",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-upload",
+    "order": 15
+  },
+  {
+    "_id": "admin.article-edit--image-replace",
+    "id": "image-replace",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-replace",
+    "order": 16
+  },
+  {
+    "_id": "admin.article-edit--image-remove",
+    "id": "image-remove",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-remove",
+    "order": 17
+  },
+  {
+    "_id": "admin.article-edit--image-pages",
+    "id": "image-pages",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-pages",
+    "order": 18
+  },
+  {
+    "_id": "admin.article-edit--image-details-save",
+    "id": "image-details-save",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-details-save",
+    "order": 30
+  },
+  {
+    "_id": "admin.article-edit--image-location",
+    "id": "image-location",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-location",
+    "order": 31
+  },
+  {
+    "_id": "admin.article-edit--image-caption",
+    "id": "image-caption",
+    "screenKey": "admin.article-edit",
+    "group": "menus",
+    "i18nKey": "guide.admin.article-edit.image-caption",
+    "order": 32
   },
   {
     "_id": "admin.notifications--overview",

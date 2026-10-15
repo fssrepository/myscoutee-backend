@@ -292,6 +292,32 @@ class BackendUpgradeSafetyTest(unittest.TestCase):
 
 
 class SeedBootstrapSafetyTest(unittest.TestCase):
+    def test_retry_delta_keeps_only_new_catalog_rows(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            old = root / 'old.json'; new = root / 'new.json'
+            old.write_text('[{"_id":"old","enabled":false}]')
+            new.write_text('[{"_id":"old","enabled":false},{"_id":"new","ruleKey":"events-admin-signals"}]')
+            name = 'demo_db/notificationRuleConfigs.json'
+            self.assertEqual(seed_mongo.retry_catalog_delta({name:new}, {name:old}),
+                             {name:[{'_id':'new','ruleKey':'events-admin-signals'}]})
+            new.write_text('[{"_id":"old","enabled":true}]')
+            with self.assertRaisesRegex(RuntimeError, 'existing catalog'):
+                seed_mongo.retry_catalog_delta({name:new}, {name:old})
+
+    def test_retry_delta_rejects_unrelated_data_and_catalog_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'rows.json'; path.write_text('[]')
+            with self.assertRaisesRegex(RuntimeError, 'Unrelated seed'):
+                seed_mongo.retry_catalog_delta({'demo_db/users.json':path}, {})
+            with self.assertRaisesRegex(RuntimeError, 'remove seed'):
+                seed_mongo.retry_catalog_delta({}, {'demo_db/users.json':path})
+            old = Path(directory) / 'old.json'; old.write_text('[]')
+            path.write_text('[{"_id":"new","ruleKey":"other-job"}]')
+            with self.assertRaisesRegex(RuntimeError, 'Unrelated catalog'):
+                seed_mongo.retry_catalog_delta({'demo_db/notificationRuleConfigs.json':path},
+                                             {'demo_db/notificationRuleConfigs.json':old})
+
     def catalog_files(self, directory):
         path = Path(directory) / 'landingSlides.json'
         path.write_text('[{"_id":"slide-1","title":"Canonical slide"}]')
@@ -415,6 +441,13 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
 
 
 class WorkloadCredentialsTest(unittest.TestCase):
+    def test_current_workers_receive_their_declared_notification_jobs_capability(self):
+        scoped = workloads.transport_credentials_by_service(workloads.SERVICES, workloads.SHELL.parent)
+        key = 'MYSCOUTEE_REMOTE_NOTIFICATION_JOBS_COMMAND_TOKEN'
+        for domain in ('media', 'community'):
+            owner = next(name for name, service in workloads.SERVICES.items() if domain in service['domains'])
+            self.assertEqual('notificationJobsToken', scoped[owner][key])
+
     def test_current_assembly_consumers_have_authorized_producer_scopes(self):
         # Exercise the real composition: synthetic bindings alone cannot detect
         # a canonical service moving to another domain with a stale allowlist.

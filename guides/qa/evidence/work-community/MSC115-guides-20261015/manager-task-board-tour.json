@@ -1,0 +1,202 @@
+[
+  {
+    "progress": "1 / 8",
+    "title": "Add task",
+    "body": "Prepare a task within this case with a title, Assignees, dates and any accepted quotations or dependencies. The task is recorded when you save its form with the header tick.",
+    "box": {
+      "x": 46,
+      "y": 56.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 300.296875,
+        "y": 3.3125,
+        "w": 46,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "2 / 8",
+    "title": "Case task board",
+    "body": "Track the work in To do, In progress and Done columns. Use each task menu for details and permitted state changes.",
+    "box": {
+      "x": 12,
+      "y": 12,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 59.96875,
+        "w": 387.21875,
+        "h": 782.640625
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": true
+  },
+  {
+    "progress": "3 / 8",
+    "title": "Actions",
+    "body": "Open the item’s three-dot menu to see actions available to your role and the item’s current state.",
+    "box": {
+      "x": 12,
+      "y": 394.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 1.390625,
+        "y": 649.234375,
+        "w": 387.21875,
+        "h": 194.765625
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "4 / 8",
+    "title": "Task details",
+    "body": "Open this task’s details, including assignees, dates, quotations and dependencies. If editing is available, save your changes with the form’s header tick.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 674.375,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "5 / 8",
+    "title": "Task members",
+    "body": "Inspect this task’s assignees. When you can manage an active case, confirming a changed selection here saves the task’s assignees immediately.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 712.921875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "6 / 8",
+    "title": "Change progress",
+    "body": "Advance the task from to do to in progress, then to done, or return it to to do. The confirmation shows the task and requested state before saving.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 751.46875,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "7 / 8",
+    "title": "Delete task",
+    "body": "Remove this task from the board by marking it deleted. Check its title and dependencies, then confirm deletion in the dialog.",
+    "box": {
+      "x": 12.984375,
+      "y": 420.234375,
+      "w": 332,
+      "h": 204
+    },
+    "focus": [
+      {
+        "x": 7.984375,
+        "y": 790.015625,
+        "w": 372.765625,
+        "h": 46
+      }
+    ],
+    "bodyScroll": {
+      "height": 78,
+      "content": 78
+    },
+    "inViewport": true,
+    "overlap": false
+  },
+  {
+    "progress": "8 / 8",
+    "title": "Close",
+    "body": "Close the task board and return to the case list or the screen that opened the case. Already saved task changes remain recorded.",
+    "box": {
+      "x": 46,
+      "y": 54.3125,
+      "w": 332,
+      "h": 248
+    },
+    "focus": [
+      {
+        "x": 343.328125,
+        "y": 3.3125,
+        "w": 44,
+        "h": 44
+      }
+    ],
+    "bodyScroll": {
+      "height": 96,
+      "content": 96
+    },
+    "inViewport": true,
+    "overlap": false
+  }
+]

@@ -12,11 +12,18 @@ import com.raxim.myscoutee.domain.accounts.document.UserSessionState;
 @Service
 public class AccountMediaSessionService implements AccountMediaSessions {
     private final MongoTemplate mongo;
-    public AccountMediaSessionService(MongoTemplate mongo) { this.mongo = mongo; }
+    private final com.raxim.myscoutee.domain.accounts.repository.UsersRepository users;
+    private final CommunityGroupProfilesService profiles;
+    public AccountMediaSessionService(MongoTemplate mongo,
+            com.raxim.myscoutee.domain.accounts.repository.UsersRepository users, CommunityGroupProfilesService profiles) {
+        this.mongo = mongo; this.users = users; this.profiles = profiles;
+    }
     @Override
-    public boolean acceptsMediaToken(String userId, String tokenHash) {
-        return mongo.exists(Query.query(Criteria.where("_id").is(userId)
-                .and("activeSessions").elemMatch(Criteria.where("mediaTokenHash").is(tokenHash))), UserSessionState.class);
+    public Optional<String> authenticateMediaToken(String userId, String tokenHash) {
+        if (!mongo.exists(Query.query(Criteria.where("_id").is(userId)
+                .and("activeSessions").elemMatch(Criteria.where("mediaTokenHash").is(tokenHash))), UserSessionState.class)) return Optional.empty();
+        var account = users.findByUserId(userId).orElse(null);
+        return account == null ? Optional.empty() : Optional.of(profiles.current(account).getUserId());
     }
     @Override
     public Optional<MediaToken> mediaToken(String userId, String sessionId) {

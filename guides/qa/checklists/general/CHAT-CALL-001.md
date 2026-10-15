@@ -228,7 +228,7 @@ A teszteléshez ne indíts több azonos identitású ablakot plusz résztvevő h
     funkciókhoz tartozó kategóriák látszódjanak. A pusztán üres lista nem
     azonos a letiltott funkcióval; ne vezess be új elrejtési szabályt.
 34. Ügyhöz tartozó chatben hajtsd végre a
-    [MSC115-CASE-CHAT 4–6. lépését](../MSC-115_WORK_COMMUNITY_PAIR_QA.md#msc115-case-chat--shared-case-channel-and-permission-changes):
+    [MSC115-CASE-CHAT 4–6. lépését](../group/MSC-115_WORK_COMMUNITY_PAIR_QA.md#msc115-case-chat--shared-case-channel-and-permission-changes):
     a „Feladatok” közvetlenül a feladattáblát nyitja meg, alatta nem nyílik új
     ügylista és nem indul annak extra lista-/számlálóbetöltése. Ez külön,
     létező ügyes baseline-t használ; a WebRTC Alice/Bob/Carol általános

@@ -32,6 +32,8 @@ import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain.community.api.Announcements {
+    @org.springframework.beans.factory.annotation.Autowired
+    private CommunityVoteCounterWork voteCounters;
     public static final String CLOSE_RULE = "community-voting-close";
     public static final List<String> CHOICES = List.of("yes", "no", "abstain");
     @org.springframework.beans.factory.annotation.Autowired
@@ -62,10 +64,11 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
         var page = PageRequest.of(offset, limit, Sort.by(Sort.Order.desc("publishedAtIso"), Sort.Order.desc("createdAtIso"), Sort.Order.asc("id")));
         var rows = voting == null ? announcements.findByCommunityIdAndStatus(communityId, status, page)
                 : announcements.findByCommunityIdAndStatusAndVoting(communityId, status, voting, page);
-        long total = voting == null ? announcements.countByCommunityIdAndStatus(communityId, status)
-                : announcements.countByCommunityIdAndStatusAndVoting(communityId, status, voting);
+        var counts = menuCounters(actor, communityId);
+        long total = (Boolean.FALSE.equals(voting) ? 0 : counts.getOrDefault("announcement_" + status + "_votes", 0))
+                + (Boolean.TRUE.equals(voting) ? 0 : counts.getOrDefault("announcement_" + status + "_notices", 0));
         var voters = eligibleVoters(communityId);
-        return new Page<>(rows.stream().map(a -> dto(actor, a, manager, voters)).toList(), total, (long)(offset + 1) * limit < total ? "" + (offset + 1) : null);
+        return new Page<>(rows.stream().map(a -> dto(actor, a, manager, voters, counts)).toList(), total, (long)(offset + 1) * limit < total ? "" + (offset + 1) : null);
     }
     public Item save(String actor, Save r) {
         access.requireAdmin(r.communityId(), actor);
@@ -85,13 +88,15 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
                 r.title().trim(), r.body().trim(), List.copyOf(attachments), old == null ? "draft" : old.status(), r.voting(), deadline,
                 reopened || old == null ? null : old.closedAtIso(), reopened || old == null ? null : old.closureNotifiedAtIso(),
                 old == null ? List.of() : old.ballots(), old == null ? null : old.publishedAtIso(),
-                old == null ? now : old.createdAtIso(), now, old == null ? null : old.version()));
+                old == null ? now : old.createdAtIso(), now, old == null ? null : old.version()),
+                old == null ? List.of() : old.attachments().stream().map(DocumentAttachment::url)
+                        .filter(url -> attachments.stream().noneMatch(file -> file.url().equals(url))).toList());
         if ("published".equals(a.status())) notifyMembers(a, actor, reopened ? "reopened" : "updated", "" + a.version(), false);
         return dto(actor, a);
     }
     public Item action(String actor, String id, Command r) {
         var a = visible(actor, id);
-        if (!Objects.equals(a.version(), r.version())) throw error(HttpStatus.CONFLICT);
+        // Commands use current state; editor saves and concurrent persistence retain version guards.
         if ("vote".equals(r.action())) return cast(actor, a, r);
         access.requireAdmin(a.communityId(), actor);
         if ("close".equals(r.action())) {
@@ -120,6 +125,7 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
         var saved = mongo.findAndModify(q, new Update().push("ballots", ballot).inc("version", 1).set("updatedAtIso", now),
                 FindAndModifyOptions.options().returnNew(true), CommunityAnnouncement.class);
         if (saved == null) throw error(HttpStatus.CONFLICT);
+        voteCounters.sync(saved);
         notifyMembers(saved, actor, "voted", actor, true); return dto(actor, saved);
     }
     public Instant nextClosureWakeup() {
@@ -157,13 +163,15 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
         String now = iso(instant.toString());
         var closed = mongo.findAndModify(Query.query(Criteria.where("_id").is(a.id()).and("version").is(a.version()).and("status").is("published").and("closedAtIso").is(null)),
                 new Update().set("closedAtIso", now).set("updatedAtIso", now).inc("version", 1), FindAndModifyOptions.options().returnNew(true), CommunityAnnouncement.class);
-        if (closed == null) throw error(HttpStatus.CONFLICT); return closed;
+        if (closed == null) throw error(HttpStatus.CONFLICT); voteCounters.sync(closed); return closed;
     }
     private void notifyClosure(CommunityAnnouncement a, String actor) {
         if (a.closureNotifiedAtIso() != null) return;
         notifyMembers(a, actor, "closed", a.closedAtIso(), false);
-        mongo.updateFirst(Query.query(Criteria.where("_id").is(a.id()).and("closedAtIso").is(a.closedAtIso())),
-                new Update().set("closureNotifiedAtIso", iso(Instant.now().toString())), CommunityAnnouncement.class);
+        // Delivery acknowledgement is bookkeeping, not an editor-visible change.
+        mongo.updateFirst(Query.query(Criteria.where("_id").is(a.id()).and("closedAtIso").is(a.closedAtIso())
+                        .and("closureNotifiedAtIso").is(null)),
+                new Update().set("closureNotifiedAtIso", iso(Instant.now().toString())).inc("version", 0L), CommunityAnnouncement.class);
     }
     private void notifyMembers(CommunityAnnouncement a, String actor, String action, String occurrence, boolean adminsOnly) {
         var accounts = access.roster(a.communityId()).stream().filter(m -> !actor.equals(m.getUserId()) && (!adminsOnly || "Admin".equals(m.getRole())))
@@ -181,10 +189,19 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
         return access.roster(group).stream().filter(m -> Boolean.TRUE.equals(m.getVotingEligible()))
                 .map(CommunityMember::getUserId).collect(Collectors.toSet());
     }
-    private Item dto(String actor, CommunityAnnouncement a) {
-        return dto(actor, a, access.admin(a.communityId(), actor), eligibleVoters(a.communityId()));
+    private Map<String, Integer> menuCounters(String actor, String groupId) {
+        return users.findByWorkspaceGroupIdAndAccountUserIdIn(groupId, List.of(actor)).stream()
+                .findFirst().map(ProfileSummary::getMenuCounters).orElse(Map.of());
     }
-    private Item dto(String actor, CommunityAnnouncement a, boolean manager, Set<String> voters) {
+    private Item dto(String actor, CommunityAnnouncement a) {
+        return dto(actor, a, access.admin(a.communityId(), actor), eligibleVoters(a.communityId()), menuCounters(actor, a.communityId()));
+    }
+    private Item dto(String actor, CommunityAnnouncement a, boolean manager, Set<String> voters, Map<String, Integer> counts) {
+        var announcementCounters = new LinkedHashMap<String, Integer>();
+        for (var status : List.of("published", "draft", "trash")) for (var kind : List.of("votes", "notices")) {
+            String key = "announcement_" + status + "_" + kind;
+            announcementCounters.put(key, counts.getOrDefault(key, 0));
+        }
         var results = new LinkedHashMap<String, Integer>(); CHOICES.forEach(c -> results.put(c, 0));
         a.ballots().forEach(b -> results.merge(b.choice(), 1, Integer::sum));
         var own = a.ballots().stream().filter(b -> b.voterAccountId().equals(actor)).map(CommunityAnnouncement.Ballot::choice).findFirst().orElse(null);
@@ -192,10 +209,30 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
         boolean closed = a.closedAtIso() != null || a.voting() && !Instant.parse(a.deadlineIso()).isAfter(Instant.now());
         return new Item(a.id(), a.communityId(), a.authorAccountId(), a.title(), a.body(), a.attachments(), a.status(), a.voting(), a.deadlineIso(), closed,
                 voters.contains(actor), own, results, electorate.size(), a.ballots().size(), manager,
-                a.publishedAtIso(), a.createdAtIso(), a.updatedAtIso(), a.version());
+                a.publishedAtIso(), a.createdAtIso(), a.updatedAtIso(), a.version(), counts.getOrDefault("votes", 0), announcementCounters);
     }
     private CommunityAnnouncement persist(CommunityAnnouncement a) {
-        try { return announcements.save(a); } catch (org.springframework.dao.OptimisticLockingFailureException ex) { throw error(HttpStatus.CONFLICT); }
+        return persist(a, List.of());
+    }
+    private CommunityAnnouncement persist(CommunityAnnouncement a, List<String> removedDocuments) {
+        try {
+            CommunityAnnouncement saved;
+            if (a.version() == null) saved = announcements.insert(a);
+            else {
+                // Keep the durable counter state owned by its projector while changing business fields.
+                var update = new Update().set("title", a.title()).set("body", a.body()).set("attachments", a.attachments())
+                        .set("status", a.status()).set("voting", a.voting()).set("deadlineIso", a.deadlineIso())
+                        .set("closedAtIso", a.closedAtIso()).set("closureNotifiedAtIso", a.closureNotifiedAtIso())
+                        .set("publishedAtIso", a.publishedAtIso()).set("updatedAtIso", a.updatedAtIso()).inc("version", 1);
+                if (!removedDocuments.isEmpty()) update.addToSet("pendingDocumentDeletes").each(removedDocuments.toArray());
+                if (!removedDocuments.isEmpty()) update.set("documentCleanupPending", true);
+                saved = mongo.findAndModify(Query.query(Criteria.where("_id").is(a.id()).and("version").is(a.version())),
+                        update, FindAndModifyOptions.options().returnNew(true), CommunityAnnouncement.class);
+                if (saved == null) throw error(HttpStatus.CONFLICT);
+            }
+            voteCounters.sync(saved);
+            return saved;
+        } catch (org.springframework.dao.OptimisticLockingFailureException ex) { throw error(HttpStatus.CONFLICT); }
     }
     public static String iso(String value) {
         try { return new DateTimeFormatterBuilder().appendInstant(3).toFormatter().format(Instant.parse(value)); }

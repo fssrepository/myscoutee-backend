@@ -1,0 +1,142 @@
+{
+  "scope": "Actual local organizer feedback, existing Anna portrait, network-only 1500ms delay; no application-state substitution.",
+  "pending": [
+    {
+      "at": 7089.5999999996275,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 7214.5999999996275,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 7339,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 7464.5,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 7591,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 7719.700000000186,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 7848.299999999814,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 7970.399999999441,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 8078.899999999441,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 8184.899999999441,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 8306.700000000186,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 8417.200000000186,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 8538.599999999627,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 8664.899999999441,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "at": 8790.5,
+      "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loading",
+      "visible": "grid",
+      "bg": "linear-gradient(145deg, rgb(211, 117, 76), rgb(172, 74, 36))",
+      "dx": 0,
+      "dy": 0
+    }
+  ],
+  "loaded": {
+    "class": "event-feedback-organizer-message-avatar user-color-woman lazy-bg-loaded",
+    "bg": "url(\"https://randomuser.me/api/portraits/women/74.jpg\")",
+    "size": "cover",
+    "position": "50% 50%",
+    "loader": "grid",
+    "loaderOpacity": "0"
+  },
+  "cleanup": "Playwright request delay removed.",
+  "mainEventImage": {
+    "id": "work-event-product-recap",
+    "imageUrl": "",
+    "imageUrls": [],
+    "result": "No-image placeholder is correct for this retained event; it is not a pending network load.",
+    "sharedRuntimeProof": "MSC115-template-runtime-20261013.json"
+  },
+  "status": "Historical avatar-spinner test; superseded by user instruction removing small-avatar spinners. Large-image loader retained."
+}

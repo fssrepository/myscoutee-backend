@@ -48,6 +48,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.events.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
@@ -348,6 +349,49 @@ class ActivitiesEventsServiceTest {
             assertThat(page.records()).extracting(item -> item.id())
                     .containsExactly(mode.equals("Casual") ? "standard" : mode.toLowerCase());
             assertThat(page.nextCursor()).isNull();
+        }
+    }
+
+    @Test
+    void subEventQueriesSummarizeCurrentStageAfterOneRuntimeBatchInEveryView() {
+        Users viewer = new Users();
+        viewer.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setMode("Tournament");
+        parent.setSlotsEnabled(false);
+        parent.setSubEventsEnabled(true);
+        parent.setStartAtIso("2099-01-01T10:00:00Z");
+        parent.setEndAtIso("2099-01-01T12:00:00Z");
+        parent.setSubEvents(List.of(stage("qualifiers", "RS"), stage("finals", "RS")));
+        parent.setSubEventDefinitions(List.of("qualifiers", "finals").stream().map(id ->
+                new SubEventDefinitionDto(id, id, "", "During", "finals".equals(id) ? 60 : 0, 60, "",
+                        1, 2, "Score", 1, false, null, 0, 0, null)).toList());
+        var qualifiers = new ActivitySubEventStageRuntime();
+        qualifiers.setOwnerId("event-1");
+        qualifiers.setSubEventId("qualifiers");
+        qualifiers.setStageStatus("F");
+        var finals = new ActivitySubEventStageRuntime();
+        finals.setOwnerId("event-1");
+        finals.setSubEventId("finals");
+        finals.setStageStatus("S");
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdInAndStatusNot(Set.of("event-1"), "D"))
+                .thenReturn(List.of(qualifiers, finals));
+
+        for (String view : List.of("day", "week", "month")) {
+            org.mockito.Mockito.clearInvocations(activitySubEventStageRuntimeRepository);
+            var result = service.loadSubEventsById(new EventSubEventsQueryDto("host", "event-1", "upcoming", view,
+                    "2099-01-01", "2099-01-01", "2099-01-01", false, 0, 240, null,
+                    switch (view) { case "month" -> Integer.valueOf(5); case "week" -> Integer.valueOf(1); default -> null; }, "UTC"));
+            assertThat(result.slots()).singleElement().satisfies(slot -> {
+                assertThat(slot.currentStage().id()).isEqualTo("finals");
+                assertThat(slot.currentStage().stageNumber()).isEqualTo(2);
+                assertThat(slot.currentStage().totalStages()).isEqualTo(2);
+                assertThat(slot.currentStage().status()).isEqualTo("S");
+            });
+            verify(activitySubEventStageRuntimeRepository).findByOwnerIdInAndStatusNot(Set.of("event-1"), "D");
+            verify(activitySubEventStageRuntimeRepository, never()).findByOwnerIdAndSubEventId(anyString(), anyString());
         }
     }
 

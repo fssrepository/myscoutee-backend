@@ -306,7 +306,7 @@ public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.pa
         int pageIndex = Math.max(0, page == null ? 0 : page);
         int from = Math.min(all.size(), pageIndex * pageSize);
         int to = Math.min(all.size(), from + pageSize);
-        List<PaymentHistoryItemDto> items = all.subList(from, to).stream().map(this::toHistoryDto).toList();
+        List<PaymentHistoryItemDto> items = toHistoryDtos(all.subList(from, to), ownerId);
         var accountSummary = usersRepository.paymentSummary(ownerId).orElse(null);
         return new PaymentHistoryPageDto(
                 items,
@@ -349,7 +349,7 @@ public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.pa
         int to = Math.min(all.size(), from + pageSize);
         var accountSummary = usersRepository.paymentSummary(ownerId).orElse(null);
         return new PaymentHistoryPageDto(
-                all.subList(from, to).stream().map(payment -> toHistoryDto(payment, ownerId)).toList(),
+                toHistoryDtos(all.subList(from, to), ownerId),
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
                 spendingTotals(accountSummary),
@@ -504,6 +504,10 @@ public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.pa
                 && configuration.connected()
                 && Set.of("stripe", "barion").contains(provider);
     }
+    @Override
+    public com.raxim.myscoutee.domain.payments.api.PaymentMethods.Options options() {
+        return new com.raxim.myscoutee.domain.payments.api.PaymentMethods.Options(cardsAvailable(), euroService.currencies(), euroService.displayEuroRates());
+    }
     public boolean cardsAvailable() {
         if (isDemoSimulatorMode()) return activeDemoProviderAllowsRegistration(currentDemoGatewayConfiguration());
         try { return StringUtils.hasText(normalizeProvider(paymentProviderResolver.resolveActiveProvider(null))); }
@@ -545,11 +549,36 @@ public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.pa
                 method == null ? null : toDto(method));
     }
 
-    private PaymentHistoryItemDto toHistoryDto(Payment payment) {
-        return toHistoryDto(payment, normalizeId(payment.getUserId()));
+    private List<PaymentHistoryItemDto> toHistoryDtos(List<Payment> payments, String viewerUserId) {
+        String viewerId = normalizeId(viewerUserId);
+        List<String> missingNameIds = payments.stream()
+                .filter(payment -> !StringUtils.hasText(receiptCounterpartyName(payment, viewerId)))
+                .map(payment -> counterpartyId(payment, viewerId))
+                .filter(StringUtils::hasText).distinct().toList();
+        Map<String, String> names = new LinkedHashMap<>();
+        if (!missingNameIds.isEmpty()) {
+            for (var participant : usersRepository.paymentParticipants(missingNameIds)) {
+                if (StringUtils.hasText(participant.name())) names.put(participant.userId(), participant.name());
+            }
+        }
+        return payments.stream().map(payment -> toHistoryDto(payment, viewerId, names)).toList();
+    }
+
+    private String counterpartyId(Payment payment, String viewerId) {
+        return viewerId.equals(normalizeId(payment.getUserId()))
+                ? normalizeId(payment.getRecipientUserId()) : normalizeId(payment.getUserId());
+    }
+
+    private String receiptCounterpartyName(Payment payment, String viewerId) {
+        return viewerId.equals(normalizeId(payment.getUserId()))
+                ? payment.getReceiptRecipientName() : payment.getReceiptPayerName();
     }
 
     public PaymentHistoryItemDto toHistoryDto(Payment payment, String viewerUserId) {
+        return toHistoryDtos(List.of(payment), viewerUserId).get(0);
+    }
+
+    private PaymentHistoryItemDto toHistoryDto(Payment payment, String viewerUserId, Map<String, String> names) {
         String paymentMethodId = normalizeId(payment.getPaymentMethodId());
         String userId = normalizeId(payment.getUserId());
         String viewerId = normalizeId(viewerUserId);
@@ -606,7 +635,8 @@ public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.pa
                         refund.status(), refund.ruleId(), refund.ruleOffsetUnit(), refund.ruleOffsetValue(),
                         refund.refundKind(), refund.refundValue(), refund.ruleDescription()),
                 paymentMethod, payment.getReceiptNote(),
-                viewerId.equals(userId) ? payment.getReceiptRecipientName() : payment.getReceiptPayerName(),
+                StringUtils.hasText(receiptCounterpartyName(payment, viewerId))
+                        ? receiptCounterpartyName(payment, viewerId) : names.get(counterpartyId(payment, viewerId)),
                 viewerId.equals(userId) ? payment.getRecipientUserId() : userId);
     }
 
@@ -619,15 +649,16 @@ public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.pa
 
     public PaymentHistoryMutationDto mutationDto(Payment payment, String viewerUserId) {
         String ownerId = requiredId(viewerUserId, "Current user");
-        PaymentHistoryItemDto item = toHistoryDto(payment, ownerId);
-        List<PaymentHistoryItemDto> changed = new ArrayList<>();
-        changed.add(item);
+        List<Payment> changedPayments = new ArrayList<>();
+        changedPayments.add(payment);
         if ("refund".equals(payment.getAuditKind()) && StringUtils.hasText(payment.getSupersedesPaymentId())) {
             paymentsRepository.findById(payment.getSupersedesPaymentId())
                     .filter(original -> ownerId.equals(normalizeId(original.getUserId()))
                             || ownerId.equals(normalizeId(original.getRecipientUserId())))
-                    .ifPresent(original -> changed.add(toHistoryDto(original, ownerId)));
+                    .ifPresent(changedPayments::add);
         }
+        List<PaymentHistoryItemDto> changed = toHistoryDtos(changedPayments, ownerId);
+        PaymentHistoryItemDto item = changed.get(0);
         var accountSummary = usersRepository.paymentSummary(ownerId).orElse(null);
         return new PaymentHistoryMutationDto(
                 item, spendingTotals(accountSummary), incomeTotals(accountSummary), pendingRefundCount(accountSummary),

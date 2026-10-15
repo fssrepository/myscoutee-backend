@@ -1,0 +1,1245 @@
+{
+  "summary": {
+    "scope": "Targeted retest of prior admin failures only after batch08:43:04",
+    "status": "PASS for exercised targets",
+    "actor": "Ava Moderation",
+    "url": "http://localhost/admin",
+    "passed": [
+      "Help list now11 rendered guide steps; formerly missing revision contents/active/edit/activate/delete/read-section steps selected and highlighted",
+      "Explanation edit draft now28 rendered guide steps;18 formerly missing draft/badge/media steps selected and highlighted without invoking actions",
+      "Article preview now3steps; actual gallery badge highlighted by2/3 Article images",
+      "HU Home and Help Editor shortened overview copy renders4actual text lines at298px body width; all3 viewports1280x900,390x844,390x560 retain same width and<=5line geometry"
+    ],
+    "limits": [
+      "No full guide matrix rerun",
+      "Conditional nonrendered privacy/rating/full-guide variants and populated image replace/copy/remove not exercised",
+      "No business save/publish or notification read action performed"
+    ],
+    "requests": {
+      "nonGet": [
+        "POST /api/auth/me/realtime/long-poll"
+      ],
+      "total": 83
+    },
+    "restored": {
+      "languages": [
+        "en-GB",
+        "en-US",
+        "en"
+      ],
+      "lang": "en"
+    }
+  },
+  "results": [
+    {
+      "label": "EN Help list initial",
+      "progress": "1 / 11",
+      "title": "Content editor",
+      "text": "Maintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor.",
+      "body": {
+        "x": 29,
+        "y": 155.53125,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN list missing-step retest Revision contents",
+      "progress": "5 / 11",
+      "title": "Revision contents",
+      "text": "Open or collapse a saved revision to read its sections. This does not change the active version.",
+      "body": {
+        "x": 34.015625,
+        "y": 274.328125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 12.015625,
+          "y": 112.34375,
+          "w": 350.96875,
+          "h": 70.03125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN list missing-step retest Active version",
+      "progress": "6 / 11",
+      "title": "Active version",
+      "text": "This badge identifies the revision currently shown to users in the selected language.",
+      "body": {
+        "x": 63,
+        "y": 256.3125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 290.75,
+          "y": 130.359375,
+          "w": 62,
+          "h": 34
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN list missing-step retest Edit revision",
+      "progress": "7 / 11",
+      "title": "Edit revision",
+      "text": "Open a draft based on this revision. Review its content before saving a new version.",
+      "body": {
+        "x": 63,
+        "y": 308.328125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 190.9375,
+          "y": 172.375,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN list missing-step retest Activate revision",
+      "progress": "8 / 11",
+      "title": "Activate revision",
+      "text": "Make this saved revision the active version for its document and language. The current active revision cannot be activated again.",
+      "body": {
+        "x": 63,
+        "y": 308.328125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 231.96875,
+          "y": 172.375,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN list missing-step retest Delete revision",
+      "progress": "9 / 11",
+      "title": "Delete revision",
+      "text": "Remove this saved revision through the delete action. Check the document, language and version first.",
+      "body": {
+        "x": 63,
+        "y": 308.328125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 273,
+          "y": 172.375,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN list missing-step retest Read a section",
+      "progress": "10 / 11",
+      "title": "Read a section",
+      "text": "Expand or collapse a saved section to read its content without editing it.",
+      "body": {
+        "x": 47.171875,
+        "y": 373.84375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 25.171875,
+          "y": 227.890625,
+          "w": 324.65625,
+          "h": 54
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN inline draft initial",
+      "progress": "1 / 28",
+      "title": "Content editor",
+      "text": "Maintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor.",
+      "body": {
+        "x": 29,
+        "y": 155.53125,
+        "w": 298,
+        "h": 101.484375,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted revision-presentation",
+      "progress": "7 / 28",
+      "title": "Guide format",
+      "text": "This badge shows whether the saved revision uses a small tour or a full guide. It is read-only here.",
+      "body": {
+        "x": 63,
+        "y": 307.328125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 46.984375,
+          "y": 173.375,
+          "w": 146.921875,
+          "h": 42
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted revision-title",
+      "progress": "11 / 28",
+      "title": "Revision title",
+      "text": "Name the draft revision so it can be identified in the revision list.",
+      "body": {
+        "x": 43.28125,
+        "y": 143.265625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 21.28125,
+          "y": 313.3125,
+          "w": 332.4375,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted revision-save",
+      "progress": "12 / 28",
+      "title": "Save revision",
+      "text": "Save the current draft as a new revision. Activation is a separate action on the saved revision.",
+      "body": {
+        "x": 63,
+        "y": 101.59375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 231.96875,
+          "y": 271.640625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted revision-cancel",
+      "progress": "13 / 28",
+      "title": "Cancel editing",
+      "text": "Close this draft without saving the edits. Saved revisions remain available.",
+      "body": {
+        "x": 63,
+        "y": 101.59375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 273,
+          "y": 271.640625,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted draft-toggle",
+      "progress": "14 / 28",
+      "title": "Draft contents",
+      "text": "Expand or collapse the draft fields. Collapsing the draft does not save it.",
+      "body": {
+        "x": 63,
+        "y": 103.59375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 314.03125,
+          "y": 273.640625,
+          "w": 40,
+          "h": 40
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted revision-header",
+      "progress": "15 / 28",
+      "title": "Header",
+      "text": "Set the heading displayed for this document or guide revision.",
+      "body": {
+        "x": 56.4375,
+        "y": 229.46875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 34.4375,
+          "y": 399.515625,
+          "w": 260.765625,
+          "h": 48
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted header-color",
+      "progress": "16 / 28",
+      "title": "Header color",
+      "text": "Choose the draft header color. The selection belongs to this revision.",
+      "body": {
+        "x": 63,
+        "y": 229.46875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 292.5625,
+          "y": 399.515625,
+          "w": 48,
+          "h": 48
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted canonical-screen",
+      "progress": "17 / 28",
+      "title": "Target screen",
+      "text": "Choose the screen this guide describes. Check it before saving so the content belongs to the intended context.",
+      "body": {
+        "x": 56.4375,
+        "y": 297.21875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 34.4375,
+          "y": 467.265625,
+          "w": 306.125,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted revision-description",
+      "progress": "18 / 28",
+      "title": "Description",
+      "text": "Write the introductory description for this revision.",
+      "body": {
+        "x": 56.4375,
+        "y": 360.96875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 34.4375,
+          "y": 531.015625,
+          "w": 260.765625,
+          "h": 79.796875
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted section-add",
+      "progress": "19 / 28",
+      "title": "Add a section",
+      "text": "Add another section to the draft, then fill in its title and content. This does not save the revision.",
+      "body": {
+        "x": 63,
+        "y": 379.765625,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 293.5625,
+          "y": 549.8125,
+          "w": 46,
+          "h": 46
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted section-icon",
+      "progress": "20 / 28",
+      "title": "Section icon",
+      "text": "Choose an icon that identifies this section. Use the menu search to find an icon.",
+      "body": {
+        "x": 59.328125,
+        "y": 462.8125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 37.328125,
+          "y": 632.859375,
+          "w": 44,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted section-title",
+      "progress": "21 / 28",
+      "title": "Section title",
+      "text": "Name the section as it should appear in the document or guide.",
+      "body": {
+        "x": 63,
+        "y": 462.8125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 79,
+          "y": 632.859375,
+          "w": 258.671875,
+          "h": 44
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted section-mode",
+      "progress": "22 / 28",
+      "title": "HTML or preview",
+      "text": "Switch between editing the section HTML and previewing its rendered content. Switching does not save the revision.",
+      "body": {
+        "x": 63,
+        "y": 504.484375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 218.328125,
+          "y": 674.53125,
+          "w": 44,
+          "h": 40
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted section-remove",
+      "progress": "23 / 28",
+      "title": "Remove section",
+      "text": "Remove this section from the draft. Save the revision to retain the removal.",
+      "body": {
+        "x": 63,
+        "y": 504.484375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 260,
+          "y": 674.53125,
+          "w": 40,
+          "h": 40
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted section-toggle",
+      "progress": "24 / 28",
+      "title": "Section fields",
+      "text": "Expand or collapse this draft section to access its content and image fields.",
+      "body": {
+        "x": 63,
+        "y": 504.484375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 297.671875,
+          "y": 674.53125,
+          "w": 40,
+          "h": 40
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted image-upload",
+      "progress": "25 / 28",
+      "title": "Add image",
+      "text": "Choose an image for this empty section slot. Save the revision to retain the section images.",
+      "body": {
+        "x": 63,
+        "y": 502.984375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 47.28125,
+          "y": 673.03125,
+          "w": 280.4375,
+          "h": 168.78125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted image-pages",
+      "progress": "26 / 28",
+      "title": "Image pages",
+      "text": "Switch between pages of image slots to review or edit the section images.",
+      "body": {
+        "x": 63,
+        "y": 654.046875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 132.4375,
+          "y": 824.09375,
+          "w": 110.125,
+          "h": 18
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN previously omitted section-html",
+      "progress": "27 / 28",
+      "title": "Section HTML",
+      "text": "Edit the section body as HTML. Use Preview to check its appearance before saving.",
+      "body": {
+        "x": 59.328125,
+        "y": 411.53125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 37.328125,
+          "y": 581.578125,
+          "w": 300.34375,
+          "h": 260
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "EN Article gallery formerly missing",
+      "progress": "2 / 3",
+      "title": "Article images",
+      "text": "Open the article image gallery. The badge shows the image count; opening it does not edit or publish the article.",
+      "body": {
+        "x": 63,
+        "y": 138.21875,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 293.3125,
+          "y": 6.265625,
+          "w": 49.78125,
+          "h": 40
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.idea-editor",
+        "admin.article-view",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU home shortened 1280x900",
+      "progress": "1 / 1",
+      "title": "Adminisztráció",
+      "text": "Az avatármenüből nyithatod meg a moderációt, bejelentéseket, visszajelzéseket, háttérfeladatokat és monitorozást. Itt találod az értesítéseket és az útmutatók kapcsolóját is.",
+      "body": {
+        "x": 98.390625,
+        "y": 96.953125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 76.390625,
+          "y": 107.5625,
+          "w": 1127.21875,
+          "h": 782.4375
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU home shortened 390x844",
+      "progress": "1 / 1",
+      "title": "Adminisztráció",
+      "text": "Az avatármenüből nyithatod meg a moderációt, bejelentéseket, visszajelzéseket, háttérfeladatokat és monitorozást. Itt találod az értesítéseket és az útmutatók kapcsolóját is.",
+      "body": {
+        "x": 48.375,
+        "y": 96.953125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 26.375,
+          "y": 97.15625,
+          "w": 337.25,
+          "h": 740.828125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU home shortened 390x560",
+      "progress": "1 / 1",
+      "title": "Adminisztráció",
+      "text": "Az avatármenüből nyithatod meg a moderációt, bejelentéseket, visszajelzéseket, háttérfeladatokat és monitorozást. Itt találod az értesítéseket és az útmutatók kapcsolóját is.",
+      "body": {
+        "x": 48.375,
+        "y": 96.953125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 26.375,
+          "y": 97.15625,
+          "w": 337.25,
+          "h": 456.828125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU help shortened 1280x900",
+      "progress": "1 / 11",
+      "title": "Tartalomszerkesztő",
+      "text": "Kezeld a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld. Az alkalmazás rendszerútmutatói itt nem szerkeszthetők.",
+      "body": {
+        "x": 77,
+        "y": 173.109375,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 55,
+          "y": 9.390625,
+          "w": 1170,
+          "h": 71.765625
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU help shortened 390x844",
+      "progress": "1 / 11",
+      "title": "Tartalomszerkesztő",
+      "text": "Kezeld a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld. Az alkalmazás rendszerútmutatói itt nem szerkeszthetők.",
+      "body": {
+        "x": 29,
+        "y": 155.53125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU help shortened 390x560",
+      "progress": "1 / 11",
+      "title": "Tartalomszerkesztő",
+      "text": "Kezeld a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld. Az alkalmazás rendszerútmutatói itt nem szerkeszthetők.",
+      "body": {
+        "x": 29,
+        "y": 155.53125,
+        "w": 298,
+        "h": 96.046875,
+        "lineHeight": "20.3px"
+      },
+      "focus": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 68.578125
+        }
+      ],
+      "surfaces": [
+        "admin.home",
+        "admin.help-editor",
+        "landing.guide"
+      ]
+    },
+    {
+      "label": "HU Help exact text line count",
+      "lines": 4,
+      "tops": [
+        157.5,
+        177.8,
+        198.1,
+        218.4
+      ]
+    },
+    {
+      "label": "HU Home exact text line count",
+      "lines": 4,
+      "tops": [
+        99,
+        119.3,
+        139.5,
+        159.8
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/deployment/configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtime-status/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/i18n/bundle"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/help/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/terms/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/consents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/help"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/explanation"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/explanation"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/ideas"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deployment/configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtime-status/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/i18n/bundle"
+    },
+    {
+      "method": "GET",
+      "path": "/api/i18n/bundle"
+    },
+    {
+      "method": "GET",
+      "path": "/api/help/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/terms/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/consents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/help"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/explanation"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/explanation/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/deployment/configuration"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runtime-status/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/i18n/bundle"
+    },
+    {
+      "method": "GET",
+      "path": "/api/activities/events/mingle/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dashboard"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/active"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/me/realtime/long-poll"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/help/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/terms/active"
+    },
+    {
+      "method": "GET",
+      "path": "/api/privacy/consents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/workspaces"
+    },
+    {
+      "method": "GET",
+      "path": "/api/groups/myscoutee-community/content-moderation/state"
+    }
+  ]
+}

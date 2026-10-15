@@ -32,8 +32,8 @@ class FeedbackCounterRecoveryTest {
                 var users = factory.getRepository(UsersRepository.class);
                 var states = factory.getRepository(EventFeedbackStatesRepository.class);
                 mongo.getCollection("users").insertMany(List.of(
-                        new Document("userId", "viewer").append("activities", new Document("contacts", 9)
-                                .append("serviceFeedbackPending", 2).append("feedback", 3)
+                        new Document("userId", "viewer").append("menuCounters", new Document("feedback", 2))
+                                .append("activities", new Document("contacts", 9).append("feedback", 3)
                                 .append("eventFeedback", new Document("pending", 1).append("ownEvents", 0).append("feedbacked", 0).append("removed", 0))),
                         new Document("userId", "host").append("activities", new Document("feedback", 4)
                                 .append("eventFeedback", new Document("pending", 0).append("ownEvents", 4).append("feedbacked", 0).append("removed", 0)))));

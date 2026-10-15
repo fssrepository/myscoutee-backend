@@ -154,10 +154,16 @@
       const state = Q.collection(Q.STATE_COLLECTION).findOne({ checkpointId });
       if (state && Q.text(state.scenario)) fixtureScenario = Q.text(state.scenario);
     }
-    if (!fixtureScenario) return;
+    if (!fixtureScenario) {
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "no-fixture-context" });
+      return;
+    }
     const id = snapshotId(fixtureScenario);
     const retained = Q.collection(SNAPSHOT_COLLECTION).findOne({ _id: id });
-    if (!retained) return;
+    if (!retained) {
+      Q.printObject({ scenario: SCENARIO, fixtureScenario, checkpointId, phase: "no-retained-snapshot" });
+      return;
+    }
     Q.restoreSnapshots(retained.snapshots || []);
     Q.collection(SNAPSHOT_COLLECTION).deleteOne({ _id: id });
     Q.printObject({

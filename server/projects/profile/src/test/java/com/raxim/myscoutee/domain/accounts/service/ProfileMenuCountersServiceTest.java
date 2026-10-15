@@ -5,18 +5,12 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.community.api.CaseParticipants;
-import com.raxim.myscoutee.domain.groups.api.BaseGroups;
-import com.raxim.myscoutee.domain.groups.api.GroupAdministration;
-import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
-import com.raxim.myscoutee.domain.groups.api.GroupView;
 import tools.jackson.databind.json.JsonMapper;
 
 @Tag("standard")
@@ -32,7 +26,7 @@ class ProfileMenuCountersServiceTest {
                 {"chats":7,"events":3,"cars":99,"notifications":4,"chat":{"contacts":5,"event":2}}
                 """, Users.UserActivitiesRecord.class));
         var account = user("account");
-        account.setActivities(mapper.readValue("{\"cars\":8,\"contacts\":9}", Users.UserActivitiesRecord.class));
+        account.setActivities(mapper.readValue("{\"cars\":8,\"contacts\":9,\"notifications\":6}", Users.UserActivitiesRecord.class));
         when(users.findByUserId("selected")).thenReturn(Optional.of(profile));
         when(users.findByUserId("account")).thenReturn(Optional.of(account));
         try (var context = new AnnotationConfigApplicationContext()) {
@@ -47,8 +41,8 @@ class ProfileMenuCountersServiceTest {
             assertThat(counts.chat().event()).isEqualTo(2);
             assertThat(counts.cars()).isEqualTo(8);
             assertThat(counts.contacts()).isEqualTo(9);
-            assertThat(counts.notifications()).isEqualTo(4);
-            assertThat(counts.cases()).isZero();
+            assertThat(counts.notifications()).isEqualTo(6);
+            assertThat(counts.menuCounters()).isEmpty();
             state.evictUserReadCaches("selected");
             state.evictUserReadCaches(List.of("selected"));
         }
@@ -60,23 +54,19 @@ class ProfileMenuCountersServiceTest {
 
     @Test
     void missingProfileReturnsTheExistingEmptyCounterShape() {
-        var counters = new ProfileMenuCountersService(users, new SelectedProfileService(users), Optional.empty());
+        var counters = new ProfileMenuCountersService(users, new SelectedProfileService(users));
         assertThat(counters.queryMenuCounters("absent")).isEqualTo(AccountCounterMapper.emptyMenuCounters());
         verify(users).findByUserId("absent");
         verifyNoMoreInteractions(users);
     }
 
     @Test
-    void installedCommunityCountIsUsedOnceAndFailureIsNotHidden() {
-        var contribution = mock(ProfileCommunityCounters.class);
-        var counters = new ProfileMenuCountersService(users, new SelectedProfileService(users), Optional.of(contribution));
-        var profile = user("profile");
-        when(contribution.count(profile)).thenReturn(12);
-        assertThat(counters.buildMenuCounters(profile, profile).cases()).isEqualTo(12);
-        verify(contribution).count(profile);
-        when(contribution.count(profile)).thenThrow(new IllegalStateException("community unavailable"));
-        assertThatThrownBy(() -> counters.buildMenuCounters(profile, profile))
-                .isInstanceOf(IllegalStateException.class).hasMessage("community unavailable");
+    void moduleCountersMergeStoredAccountAndProfileValuesWithoutAnOwnerCall() {
+        var counters = new ProfileMenuCountersService(users, new SelectedProfileService(users));
+        var account = user("account"); account.setMenuCounters(java.util.Map.of("communityCases", 12, "otherModule", 7));
+        var profile = user("profile"); profile.setMenuCounters(java.util.Map.of("campaignsPublished", 3));
+        assertThat(counters.buildMenuCounters(profile, account).menuCounters())
+                .containsEntry("communityCases", 12).containsEntry("campaignsPublished", 3).containsEntry("otherModule", 7);
         verifyNoInteractions(users);
     }
 
@@ -94,53 +84,12 @@ class ProfileMenuCountersServiceTest {
     }
 
     @Test
-    void communityBaseUsesExistingAccountAndManagedGroupQueriesWithoutWorkspaceLookup() {
-        var cases = mock(CaseParticipants.class);
-        var groups = mock(GroupDirectory.class);
-        var administration = mock(GroupAdministration.class);
-        var profile = user("profile");
-        profile.setAccountUserId("account");
-        profile.setWorkspaceGroupId(BaseGroups.COMMUNITY_BASE_ID);
-        when(administration.managedGroups("account")).thenReturn(Set.of("managed"));
-        when(cases.visibleCount(BaseGroups.COMMUNITY_BASE_ID, "account", Set.of("managed"))).thenReturn(6);
-        assertThat(new CommunityProfileCounters(cases, groups, administration).count(profile)).isEqualTo(6);
-        verify(administration).managedGroups("account");
-        verify(cases).visibleCount(BaseGroups.COMMUNITY_BASE_ID, "account", Set.of("managed"));
-        verifyNoMoreInteractions(cases, administration);
-        verifyNoInteractions(groups);
-    }
-
-    @Test
-    void communityWorkspaceKeepsExactlyOneTypeReadThenExistingCaseReads() {
-        var cases = mock(CaseParticipants.class);
-        var groups = mock(GroupDirectory.class);
-        var administration = mock(GroupAdministration.class);
-        var profile = user("profile");
-        profile.setWorkspaceGroupId("workspace");
-        var group = mock(GroupView.class);
-        when(group.effectiveType()).thenReturn("community");
-        doReturn(Optional.of(group)).when(groups).findById("workspace");
-        when(administration.managedGroups("profile")).thenReturn(Set.of());
-        new CommunityProfileCounters(cases, groups, administration).count(profile);
-        verify(groups).findById("workspace");
-        verify(administration).managedGroups("profile");
-        verify(cases).visibleCount(BaseGroups.COMMUNITY_BASE_ID, "profile", Set.of());
-        verifyNoMoreInteractions(groups, administration, cases);
-    }
-
-    @Test
-    void ungroupedProfileDoesNotQueryCommunityAndOtherWorkspaceOnlyChecksItsType() {
-        var cases = mock(CaseParticipants.class);
-        var groups = mock(GroupDirectory.class);
-        var administration = mock(GroupAdministration.class);
-        var counters = new CommunityProfileCounters(cases, groups, administration);
-        var profile = user("profile");
-        assertThat(counters.count(profile)).isZero();
-        verifyNoInteractions(groups, administration, cases);
-        profile.setWorkspaceGroupId("other");
-        assertThat(counters.count(profile)).isZero();
-        verify(groups).findById("other");
-        verifyNoInteractions(administration, cases);
+    void moduleCountersAreReadFromTheProfileWithoutAProductOwner() {
+        var counters = new ProfileMenuCountersService(users, new SelectedProfileService(users));
+        var profile = user("work-profile"); profile.setWorkspaceGroupId("work");
+        profile.setMenuCounters(java.util.Map.of("campaignsPublished", 3, "campaignsDrafts", 2, "campaignsTrash", 0));
+        assertThat(counters.buildMenuCounters(profile, profile).menuCounters()).isEqualTo(profile.getMenuCounters());
+        verifyNoInteractions(users);
     }
 
     private Users user(String id) {

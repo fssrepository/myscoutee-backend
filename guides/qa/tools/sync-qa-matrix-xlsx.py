@@ -91,6 +91,7 @@ ROW_FILL_COLORS.update({
 # owner. Deployment qualification is not Pair QA. Operator remains a normal
 # manual-QA domain and uses the same domain-priority table as every other row.
 EXACT_DOMAIN_OVERRIDES = {
+    "MSC115-TEMPLATE-REGRESSION": "General UI",
     "INTEGRATION-ACCESS-001": "API test",
     "MCP-EVENTS-001": "API test",
     "SERVICE-FEEDBACK-UI-001": "Group",

@@ -338,18 +338,24 @@ class EventSchedulerTest {
         verify(activitiesMembersService, never()).inviteUsers(anyString(), anyString(), eq(List.of("other-campaign")), any());
     }
 
-    @Test
-    void workEventsDoNotRunAutomaticRandomGrouping() {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"myscoutee-work", "private-work"})
+    void workEventsDoNotRunAutomaticRandomGrouping(String workspaceId) {
         EventScheduler scheduler = createScheduler();
         ActivityEvent event = new ActivityEvent();
-        event.setSourceId("work-event"); event.setWorkspaceGroupId("myscoutee-work"); event.setStatus("A");
+        event.setSourceId("work-event"); event.setWorkspaceGroupId(workspaceId); event.setStatus("A");
+        event.setSubEvents(List.of(subEvent("work-stage", 1, 2, 2)));
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
-        var group = new com.raxim.myscoutee.domain.groups.document.CommunityGroup("myscoutee-work", "owner", "Work", "", "", "", "public",
+        var group = new com.raxim.myscoutee.domain.groups.document.CommunityGroup(workspaceId, "owner", "Work", "", "", "",
+                "private-work".equals(workspaceId) ? "private" : "public",
                 false, null, "", "", 0L, null, 0L, 0L, 0L, 0L, null, null, null, "work");
         when(groupsRepository.findByIdIn(anyCollection())).thenReturn(List.of(group));
         assertThat(scheduler.generateRandomPlansForEvents(List.of("work-event"))).isEmpty();
         verify(activitiesMembersService, never()).inviteUsers(anyString(), anyString(), anyList(), any());
         verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
+        verify(activitiesMembersService, never()).buildBatchEventSnapshots(argThat(events -> !events.isEmpty()));
+        verify(activityEventsRepository, never()).save(any());
+        org.mockito.Mockito.verifyNoInteractions(chatService, notificationOutboxService);
     }
 
     @Test

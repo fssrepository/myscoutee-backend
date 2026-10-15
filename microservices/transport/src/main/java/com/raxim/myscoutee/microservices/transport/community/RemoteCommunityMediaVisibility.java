@@ -19,6 +19,11 @@ public final class RemoteCommunityMediaVisibility extends RemoteReadTransport im
         super(origin, token, allowHttp, connectTimeout, requestTimeout, mapper, metrics);
         this.mapper = mapper;
     }
+    @Override public List<String> referencedDocuments(List<String> urls) {
+        return exchange(CommunityMediaVisibilityProtocol.DOCUMENTS_PATH, MediaReferenceQueries.encode(urls, mapper),
+                new TypeReference<List<String>>() {}, "community.media.documents", CommunityMediaVisibilityProtocol.MAX_DOCUMENT_RESPONSE_BYTES,
+                value -> value != null && value.size() <= urls.size() && urls.containsAll(value));
+    }
     @Override public AnnouncementMediaVisibilityDto announcement(List<String> urls) {
         return read(CommunityMediaVisibilityProtocol.ANNOUNCEMENT_PATH, urls, new TypeReference<AnnouncementMediaVisibilityDto>() {}, "community.media.announcement");
     }

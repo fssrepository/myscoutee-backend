@@ -7,6 +7,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -68,6 +69,13 @@ class AdminStatsTelemetryWorkerServiceTest {
     }
 
     @AfterEach void clearMode() { worker.stopReader(); MongoSessionModeContext.set(MongoSessionMode.REAL); }
+
+    @Test void watchesOnlyAdministrationSignalsAndCoLocatedAccounts() {
+        var collections = ArgumentCaptor.forClass(Set.class);
+        verify(changes, times(3)).watch(anyString(), collections.capture(), anySet(), any(), any(), any());
+        org.assertj.core.api.Assertions.assertThat(collections.getAllValues())
+                .containsExactly(Set.of("users"), Set.of("adminWorkerSignals"), Set.of("adminWorkerSignals"));
+    }
 
     @Test void unchangedEmptyPassDoesNotClaimWriteOrRecalculate() {
         worker.drainTelemetryWindow();

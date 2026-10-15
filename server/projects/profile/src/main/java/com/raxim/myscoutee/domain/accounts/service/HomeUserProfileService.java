@@ -97,7 +97,6 @@ import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepo
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
-import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
@@ -237,7 +236,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     void setRoleNotifications(com.raxim.myscoutee.domain.notifications.api.RoleNotifications value) {
         this.roleNotifications = value;
     }
-    private NotificationCatalog notificationCatalog;
     private final Map<UserReadCacheKey, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<AffinityReadCacheKey, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
     private final Map<UserReadCacheKey, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
@@ -305,12 +303,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.accessControlService = accessControlService;
         this.assetsService = assetsService;
         this.affiliateService = affiliateService;
-    }
-
-    @Autowired(required = false)
-    void setNotificationCatalog(
-            NotificationCatalog notificationCatalog) {
-        this.notificationCatalog = notificationCatalog;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -527,6 +519,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 OFFLINE_TICKET_SNAPSHOT_PAGE_SIZE,
                 "upcoming");
         var following = OrganizerFollowingService.state(user);
+        var paymentOptions = savedPaymentMethods == null ? null : savedPaymentMethods.options();
         return new UserRealtimeLongPollResponseDto(
                 resolvedUserId,
                 safeText(user.getProfileStatus()),
@@ -546,7 +539,10 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                         following.organizerIds(), following.eventCount(), following.nextExpiryAtIso()),
                 contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null,
                 user.getFeedCounters() == null ? com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord.empty() : user.getFeedCounters(),
-                savedPaymentMethods != null && savedPaymentMethods.cardsAvailable(),
+                paymentOptions != null && paymentOptions.cardsAvailable(),
+                paymentOptions == null ? List.of() : paymentOptions.currencies(),
+                paymentOptions == null ? java.util.Map.of("EUR", 1D) : paymentOptions.eurRates(),
+                StringUtils.hasText(user.getSummaryCurrency()) ? user.getSummaryCurrency() : "EUR",
                 account != null && account != user ? buildMenuCounters(account, account) : null);
     }
 
@@ -2319,22 +2315,9 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 counters.adminMetrics(),
                 counters.paymentRefundsPending(),
                 counters.contactRequestsPending(),
-                resolveRealtimeNotificationCount(user, counters.notifications()),
+                normalizeCount(counters.notifications()),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousHostHash, nextHostHash),
-                hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash), counters.cases());
-    }
-
-    private int resolveRealtimeNotificationCount(
-            Users user,
-            Integer storedNotificationCount) {
-        String userId = normalizeId(user == null ? null : StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId());
-        if (notificationCatalog == null || !StringUtils.hasText(userId)) {
-            return normalizeCount(storedNotificationCount);
-        }
-        long unreadCount = notificationCatalog.countUnread(userId);
-        return unreadCount > Integer.MAX_VALUE
-                ? Integer.MAX_VALUE
-                : (int) Math.max(0L, unreadCount);
+                hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash), counters.menuCounters());
     }
 
     private String buildRealtimeCursor(
@@ -2387,9 +2370,11 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 paymentTotalsFingerprint(user),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host()),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()),
-                String.valueOf(normalizeCount(counters.contactRequestsPending())), String.valueOf(normalizeCount(counters.cases())),
+                String.valueOf(normalizeCount(counters.contactRequestsPending())), "0",
                 String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().campaign())),
-                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().cases())));
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().cases())),
+                new java.util.TreeMap<>(counters.menuCounters() == null ? java.util.Map.of() : counters.menuCounters()).toString().replace(":", "%3A"),
+                "0", "0");
     }
 
     private UserPaymentTotalsDto paymentTotalsDto(Users user) {

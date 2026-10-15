@@ -10,35 +10,15 @@ pageable collection, or periodically refreshed collection.
 
 ## Optional-capability boundary
 
-Do not ask about scheduled background polling unless the user requested live
-refresh behavior or polling is necessary to resolve the reported defect. For a
-narrow implementation or bug fix, preserve the existing refresh behavior and
-continue without introducing an unrelated product decision. If the user chose
-an exact reference flow and explicitly requested full behavior parity, include
-its established polling behavior without a separate generic question.
+Preserve existing refresh behavior and the requested scope. If exact reference
+flow parity is requested, reuse its established behavior. Do not ask optional
+polling/capability questions or silently add polling. Resolve ordinary choices
+from the existing owner and project defaults; ask only for a genuine blocker
+or a material, destructive or irreversible scope decision.
 
-Do not turn the following capabilities into a generic "what else do you want?"
-questionnaire:
-
-- initial-load and background-refresh progress visibility;
-- search, filtering, sorting, grouping, views, pagination, or infinite loading;
-- single/multi selection, row actions, and empty/error/stale presentation;
-- manual refresh, scheduled poll, server-push/event refresh, or intentionally
-  static data;
-- optimistic mutation versus server-confirmed mutation.
-
-Do not interrogate the user about internal mechanics with an established safe
-answer. Stable identity, cancellation, cleanup, bounded requests, store/service
-ownership, and local/HTTP parity remain engineering responsibilities.
-
-Resolve these from the current request, the nearest exact reference flow, and
-project defaults. Ask a focused follow-up only when a still-unknown choice
-blocks the current behavior or materially changes the product contract. Exact
-ordering or grouping is a reasonable later question when it becomes material;
-do not ask it preemptively when the user is likely to specify it with the next
-slice of work. If the user explicitly delegates an unresolved choice, state the
-selected default. Do not silently add polling merely because the component
-supports it.
+Stable identity, cancellation, cleanup, bounded requests, store/service ownership
+and local/HTTP parity remain engineering responsibilities. Apply the progress
+and polling sections only to behavior in scope.
 
 ## Project-first implementation
 
@@ -109,10 +89,10 @@ adjustment are sufficient. Do not reload merely because it is convenient.
 ## Project references
 
 - Core APIs and lifecycle:
-  `frontend/src/app/shared/ui/components/core/smart-list/smart-list.component.ts`
+  `frontend/components/src/lib/ui/components/core/smart-list/smart-list.component.ts`
   and `smart-list.types.ts` in the same directory.
 - Poll scheduling:
-  `frontend/src/app/shared/ui/scheduler/ui-task-scheduler.ts`.
+  `frontend/components/src/lib/ui/scheduler/ui-task-scheduler.ts`.
 - Poll + progress + in-place notification updates:
   `frontend/src/app/shared/ui/components/notification-center-popup/notification-center-popup.component.ts`.
 - Polling SmartList popup:

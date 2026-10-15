@@ -1911,7 +1911,7 @@
     "_id": "i18n-message-en-event-feedback-confirm-remove-message",
     "key": "event.feedback.confirm.remove.message",
     "lang": "en",
-    "value": "This event feedback item will be moved to Removed without feedback."
+    "value": "This feedback item will be moved to Removed without feedback."
   },
   {
     "_id": "i18n-message-en-event-feedback-confirm-remove-title",
@@ -1935,7 +1935,7 @@
     "_id": "i18n-message-en-event-feedback-confirm-restore-message",
     "key": "event.feedback.confirm.restore.message",
     "lang": "en",
-    "value": "This event feedback item will move back to Pending."
+    "value": "This feedback item will move back to Pending."
   },
   {
     "_id": "i18n-message-en-event-feedback-confirm-restore-title",
@@ -26241,13 +26241,13 @@
     "_id": "i18n-message-en-guide-payment-history-record-cash-label",
     "key": "guide.payment.history.record-cash.label",
     "lang": "en",
-    "value": "Record cash payment"
+    "value": "Record payment received"
   },
   {
     "_id": "i18n-message-en-guide-payment-history-record-cash-description",
     "key": "guide.payment.history.record-cash.description",
     "lang": "en",
-    "value": "Record a cash transaction so it appears alongside other payment history. Enter the correct amount and context because this creates a financial record for the account."
+    "value": "Record cash or a bank transfer you have already received. Choose the payer, method, amount and currency before saving the receipt."
   },
   {
     "_id": "i18n-message-en-guide-payment-history-open-cards-label",
@@ -28935,7 +28935,7 @@
     "_id": "i18n-message-en-guide-payment-cash-receipt-currency-description",
     "key": "guide.payment.cash.receipt.currency.description",
     "lang": "en",
-    "value": "Use the currency that was handed over. The saved history entry and any later refund calculation use this amount and currency together."
+    "value": "Choose the currency of the received payment. The saved history entry and any later refund use this amount and currency together."
   },
   {
     "_id": "i18n-message-en-guide-payment-cash-receipt-note-label",
@@ -35463,7 +35463,7 @@
     "_id": "i18n-message-en-landing-work-how-publish-message",
     "key": "landing.work.how.publish.message",
     "lang": "en",
-    "value": "Publish a work or business campaign with a clear purpose and capacity."
+    "value": "Publish a work or business campaign with a clear purpose."
   },
   {
     "_id": "i18n-message-en-landing-work-how-priorities-title",
@@ -36501,7 +36501,7 @@
     "_id": "i18n-message-en-announcement-attachment-failed",
     "key": "announcement.attachment.failed",
     "lang": "en",
-    "value": "Could not upload or open the document. Use PDF, text or office documents up to 10 MB."
+    "value": "Could not upload the document. Use PDF, text or office documents up to 10 MB."
   },
   {
     "_id": "i18n-message-en-announcement-failed",
@@ -63423,13 +63423,13 @@
     "_id": "i18n-message-hu-guide-payment-history-record-cash-label",
     "key": "guide.payment.history.record-cash.label",
     "lang": "hu",
-    "value": "Készpénzes fizetés rögzítése"
+    "value": "Beérkezett befizetés rögzítése"
   },
   {
     "_id": "i18n-message-hu-guide-payment-history-record-cash-description",
     "key": "guide.payment.history.record-cash.description",
     "lang": "hu",
-    "value": "Rögzíts készpénzes tranzakciót, hogy az is megjelenjen a fizetési előzmények között. Pontos összeget és kontextust adj meg, mert ezzel pénzügyi tétel jön létre a fiókhoz."
+    "value": "Rögzíts már átvett készpénzt vagy beérkezett banki átutalást. Mentés előtt válaszd ki a befizetőt, a fizetési módot, az összeget és a pénznemet."
   },
   {
     "_id": "i18n-message-hu-guide-payment-history-open-cards-label",
@@ -66117,7 +66117,7 @@
     "_id": "i18n-message-hu-guide-payment-cash-receipt-currency-description",
     "key": "guide.payment.cash.receipt.currency.description",
     "lang": "hu",
-    "value": "Azt a pénznemet válaszd, amelyben a fizetést átvetted. Az előzmény és egy későbbi visszatérítés számítása együtt kezeli ezt az összeget és pénznemet."
+    "value": "Válaszd ki a beérkezett befizetés pénznemét. A mentett tétel és az esetleges későbbi visszatérítés ezt az összeget és pénznemet használja."
   },
   {
     "_id": "i18n-message-hu-guide-payment-cash-receipt-note-label",
@@ -72645,7 +72645,7 @@
     "_id": "i18n-message-hu-landing-work-how-publish-message",
     "key": "landing.work.how.publish.message",
     "lang": "hu",
-    "value": "Indíts munka- vagy üzleti kampányt világos céllal és kapacitással."
+    "value": "Indíts munka- vagy üzleti kampányt világos céllal."
   },
   {
     "_id": "i18n-message-hu-landing-work-how-priorities-title",
@@ -73683,7 +73683,7 @@
     "_id": "i18n-message-hu-announcement-attachment-failed",
     "key": "announcement.attachment.failed",
     "lang": "hu",
-    "value": "A dokumentum nem tölthető fel vagy nyitható meg. Legfeljebb 10 MB-os PDF, szöveg vagy irodai dokumentum használható."
+    "value": "A dokumentum nem tölthető fel. Legfeljebb 10 MB-os PDF, szöveg vagy irodai dokumentum használható."
   },
   {
     "_id": "i18n-message-hu-announcement-failed",
@@ -81531,7 +81531,7 @@
     "_id": "i18n-message-en-guide-admin-article-edit-close-description",
     "key": "guide.admin.article-edit.close.description",
     "lang": "en",
-    "value": "Close the editor and discard its unsaved draft. Save first if you want to keep the current text and media changes."
+    "value": "Close the current popup. Save its edits first if you want to keep them."
   },
   {
     "_id": "i18n-message-en-guide-admin-article-edit-close-label",
@@ -83805,7 +83805,7 @@
     "_id": "i18n-message-hu-guide-admin-article-edit-close-description",
     "key": "guide.admin.article-edit.close.description",
     "lang": "hu",
-    "value": "Bezárja a szerkesztőt, és elveti a nem mentett piszkozatot. Előbb ments, ha meg szeretnéd őrizni az aktuális szöveg- és médiamódosításokat."
+    "value": "Zárd be az aktuális ablakot. Ha meg szeretnéd őrizni a módosításait, előbb mentsd őket."
   },
   {
     "_id": "i18n-message-hu-guide-admin-article-edit-close-label",
@@ -84117,7 +84117,7 @@
     "_id": "i18n-message-hu-guide-admin-help-editor-overview-description",
     "key": "guide.admin.help-editor.overview.description",
     "lang": "hu",
-    "value": "Itt kezelheted a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld, amikor a felhasználóknak szánod. Az alkalmazás által kezelt rendszerútmutatók nem szerepelnek ebben a szerkesztőben."
+    "value": "Kezeld a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld. Az alkalmazás rendszerútmutatói itt nem szerkeszthetők."
   },
   {
     "_id": "i18n-message-hu-guide-admin-help-editor-overview-label",
@@ -84129,7 +84129,7 @@
     "_id": "i18n-message-hu-guide-admin-home-overview-description",
     "key": "guide.admin.home.overview.description",
     "lang": "hu",
-    "value": "Az avatármenüben válassz feladatot: tartalomellenőrzés, felhasználói bejelentések, visszajelzések, háttérfeladatok vagy monitorozás. Mindegyik saját felületet nyit; ugyanitt éred el a személyes értesítéseket és az útmutatók kapcsolóját."
+    "value": "Az avatármenüből nyithatod meg a moderációt, bejelentéseket, visszajelzéseket, háttérfeladatokat és monitorozást. Itt találod az értesítéseket és az útmutatók kapcsolóját is."
   },
   {
     "_id": "i18n-message-hu-guide-admin-home-overview-label",
@@ -89950,5 +89950,1541 @@
     "key": "service.confirm.unpublish",
     "lang": "hu",
     "value": "A szolgáltatás visszakerül a piszkozatok közé, és eltűnik a közzétett ajánlatok listájából."
+  },
+  {
+    "_id": "i18n-message-en-announcement-attachment-open-failed",
+    "key": "announcement.attachment.open.failed",
+    "lang": "en",
+    "value": "The document could not be opened."
+  },
+  {
+    "_id": "i18n-message-hu-announcement-attachment-open-failed",
+    "key": "announcement.attachment.open.failed",
+    "lang": "hu",
+    "value": "A dokumentum nem nyitható meg."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-campaign",
+    "key": "event.editor.campaign",
+    "lang": "en",
+    "value": "Campaign"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-campaign",
+    "key": "event.editor.campaign",
+    "lang": "hu",
+    "value": "Kampány"
+  },
+  {
+    "_id": "i18n-message-en-case-load-failed",
+    "key": "case.load.failed",
+    "lang": "en",
+    "value": "The case could not be loaded. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-case-load-unavailable",
+    "key": "case.load.unavailable",
+    "lang": "en",
+    "value": "This case is no longer available or you do not have access to it."
+  },
+  {
+    "_id": "i18n-message-hu-case-load-failed",
+    "key": "case.load.failed",
+    "lang": "hu",
+    "value": "Az ügyet nem sikerült betölteni. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-case-load-unavailable",
+    "key": "case.load.unavailable",
+    "lang": "hu",
+    "value": "Az ügy már nem érhető el, vagy nincs hozzáférésed."
+  },
+  {
+    "_id": "i18n-message-en-announcement-draft-hint",
+    "key": "announcement.draft.hint",
+    "lang": "en",
+    "value": "Saves as draft. Publish separately."
+  },
+  {
+    "_id": "i18n-message-en-chat-load-failed",
+    "key": "chat.load.failed",
+    "lang": "en",
+    "value": "The conversation could not be loaded. Please try again."
+  },
+  {
+    "_id": "i18n-message-hu-announcement-draft-hint",
+    "key": "announcement.draft.hint",
+    "lang": "hu",
+    "value": "Piszkozatként menti. Publikáld külön."
+  },
+  {
+    "_id": "i18n-message-hu-chat-load-failed",
+    "key": "chat.load.failed",
+    "lang": "hu",
+    "value": "A beszélgetést nem sikerült betölteni. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-en-payment-manual-method-bank-transfer-short",
+    "key": "payment.manual.method.bank-transfer.short",
+    "lang": "en",
+    "value": "Bank transfer"
+  },
+  {
+    "_id": "i18n-message-en-payment-manual-method-cash-short",
+    "key": "payment.manual.method.cash.short",
+    "lang": "en",
+    "value": "Cash"
+  },
+  {
+    "_id": "i18n-message-hu-payment-manual-method-bank-transfer-short",
+    "key": "payment.manual.method.bank-transfer.short",
+    "lang": "hu",
+    "value": "Átutalás"
+  },
+  {
+    "_id": "i18n-message-hu-payment-manual-method-cash-short",
+    "key": "payment.manual.method.cash.short",
+    "lang": "hu",
+    "value": "Készpénz"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-image-gallery-expand-description",
+    "key": "guide.admin.article-view.image-gallery-expand.description",
+    "lang": "en",
+    "value": "Open the article image gallery. The badge shows the image count; opening it does not edit or publish the article."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-image-gallery-expand-label",
+    "key": "guide.admin.article-view.image-gallery-expand.label",
+    "lang": "en",
+    "value": "Article images"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-canonical-screen-description",
+    "key": "guide.admin.help-editor.canonical-screen.description",
+    "lang": "en",
+    "value": "Choose the screen this guide describes. Check it before saving so the content belongs to the intended context."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-canonical-screen-label",
+    "key": "guide.admin.help-editor.canonical-screen.label",
+    "lang": "en",
+    "value": "Target screen"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-draft-presentation-description",
+    "key": "guide.admin.help-editor.draft-presentation.description",
+    "lang": "en",
+    "value": "Choose the supported small-tour or full-guide presentation for this draft. Save the revision to retain the choice."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-draft-presentation-label",
+    "key": "guide.admin.help-editor.draft-presentation.label",
+    "lang": "en",
+    "value": "Guide format"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-draft-toggle-description",
+    "key": "guide.admin.help-editor.draft-toggle.description",
+    "lang": "en",
+    "value": "Expand or collapse the draft fields. Collapsing the draft does not save it."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-draft-toggle-label",
+    "key": "guide.admin.help-editor.draft-toggle.label",
+    "lang": "en",
+    "value": "Draft contents"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-header-color-description",
+    "key": "guide.admin.help-editor.header-color.description",
+    "lang": "en",
+    "value": "Choose the draft header color. The selection belongs to this revision."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-header-color-label",
+    "key": "guide.admin.help-editor.header-color.label",
+    "lang": "en",
+    "value": "Header color"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-copy-description",
+    "key": "guide.admin.help-editor.image-copy.description",
+    "lang": "en",
+    "value": "Copy this image link for use in the section content. Copying does not change the draft."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-copy-label",
+    "key": "guide.admin.help-editor.image-copy.label",
+    "lang": "en",
+    "value": "Copy image link"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-pages-description",
+    "key": "guide.admin.help-editor.image-pages.description",
+    "lang": "en",
+    "value": "Switch between pages of image slots to review or edit the section images."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-pages-label",
+    "key": "guide.admin.help-editor.image-pages.label",
+    "lang": "en",
+    "value": "Image pages"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-remove-description",
+    "key": "guide.admin.help-editor.image-remove.description",
+    "lang": "en",
+    "value": "Remove this image from the draft section. Save the revision to retain the change."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-remove-label",
+    "key": "guide.admin.help-editor.image-remove.label",
+    "lang": "en",
+    "value": "Remove image"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-replace-description",
+    "key": "guide.admin.help-editor.image-replace.description",
+    "lang": "en",
+    "value": "Choose another image for this occupied section slot."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-replace-label",
+    "key": "guide.admin.help-editor.image-replace.label",
+    "lang": "en",
+    "value": "Replace image"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-upload-description",
+    "key": "guide.admin.help-editor.image-upload.description",
+    "lang": "en",
+    "value": "Choose an image for this empty section slot. Save the revision to retain the section images."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-image-upload-label",
+    "key": "guide.admin.help-editor.image-upload.label",
+    "lang": "en",
+    "value": "Add image"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-activate-description",
+    "key": "guide.admin.help-editor.revision-activate.description",
+    "lang": "en",
+    "value": "Make this saved revision the active version for its document and language. The current active revision cannot be activated again."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-activate-label",
+    "key": "guide.admin.help-editor.revision-activate.label",
+    "lang": "en",
+    "value": "Activate revision"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-active-description",
+    "key": "guide.admin.help-editor.revision-active.description",
+    "lang": "en",
+    "value": "This badge identifies the revision currently shown to users in the selected language."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-active-label",
+    "key": "guide.admin.help-editor.revision-active.label",
+    "lang": "en",
+    "value": "Active version"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-cancel-description",
+    "key": "guide.admin.help-editor.revision-cancel.description",
+    "lang": "en",
+    "value": "Close this draft without saving the edits. Saved revisions remain available."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-cancel-label",
+    "key": "guide.admin.help-editor.revision-cancel.label",
+    "lang": "en",
+    "value": "Cancel editing"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-delete-description",
+    "key": "guide.admin.help-editor.revision-delete.description",
+    "lang": "en",
+    "value": "Remove this saved revision through the delete action. Check the document, language and version first."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-delete-label",
+    "key": "guide.admin.help-editor.revision-delete.label",
+    "lang": "en",
+    "value": "Delete revision"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-description-description",
+    "key": "guide.admin.help-editor.revision-description.description",
+    "lang": "en",
+    "value": "Write the introductory description for this revision."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-description-label",
+    "key": "guide.admin.help-editor.revision-description.label",
+    "lang": "en",
+    "value": "Description"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-edit-description",
+    "key": "guide.admin.help-editor.revision-edit.description",
+    "lang": "en",
+    "value": "Open a draft based on this revision. Review its content before saving a new version."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-edit-label",
+    "key": "guide.admin.help-editor.revision-edit.label",
+    "lang": "en",
+    "value": "Edit revision"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-header-description",
+    "key": "guide.admin.help-editor.revision-header.description",
+    "lang": "en",
+    "value": "Set the heading displayed for this document or guide revision."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-header-label",
+    "key": "guide.admin.help-editor.revision-header.label",
+    "lang": "en",
+    "value": "Header"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-presentation-description",
+    "key": "guide.admin.help-editor.revision-presentation.description",
+    "lang": "en",
+    "value": "This badge shows whether the saved revision uses a small tour or a full guide. It is read-only here."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-presentation-label",
+    "key": "guide.admin.help-editor.revision-presentation.label",
+    "lang": "en",
+    "value": "Guide format"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-save-description",
+    "key": "guide.admin.help-editor.revision-save.description",
+    "lang": "en",
+    "value": "Save the current draft as a new revision. Activation is a separate action on the saved revision."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-save-label",
+    "key": "guide.admin.help-editor.revision-save.label",
+    "lang": "en",
+    "value": "Save revision"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-title-description",
+    "key": "guide.admin.help-editor.revision-title.description",
+    "lang": "en",
+    "value": "Name the draft revision so it can be identified in the revision list."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-title-label",
+    "key": "guide.admin.help-editor.revision-title.label",
+    "lang": "en",
+    "value": "Revision title"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-toggle-description",
+    "key": "guide.admin.help-editor.revision-toggle.description",
+    "lang": "en",
+    "value": "Open or collapse a saved revision to read its sections. This does not change the active version."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-revision-toggle-label",
+    "key": "guide.admin.help-editor.revision-toggle.label",
+    "lang": "en",
+    "value": "Revision contents"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-add-description",
+    "key": "guide.admin.help-editor.section-add.description",
+    "lang": "en",
+    "value": "Add another section to the draft, then fill in its title and content. This does not save the revision."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-add-label",
+    "key": "guide.admin.help-editor.section-add.label",
+    "lang": "en",
+    "value": "Add a section"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-guide-target-description",
+    "key": "guide.admin.help-editor.section-guide-target.description",
+    "lang": "en",
+    "value": "Link this tour section to an available control on the selected screen."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-guide-target-label",
+    "key": "guide.admin.help-editor.section-guide-target.label",
+    "lang": "en",
+    "value": "Guide target"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-html-description",
+    "key": "guide.admin.help-editor.section-html.description",
+    "lang": "en",
+    "value": "Edit the section body as HTML. Use Preview to check its appearance before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-html-label",
+    "key": "guide.admin.help-editor.section-html.label",
+    "lang": "en",
+    "value": "Section HTML"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-icon-description",
+    "key": "guide.admin.help-editor.section-icon.description",
+    "lang": "en",
+    "value": "Choose an icon that identifies this section. Use the menu search to find an icon."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-icon-label",
+    "key": "guide.admin.help-editor.section-icon.label",
+    "lang": "en",
+    "value": "Section icon"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-mode-description",
+    "key": "guide.admin.help-editor.section-mode.description",
+    "lang": "en",
+    "value": "Switch between editing the section HTML and previewing its rendered content. Switching does not save the revision."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-mode-label",
+    "key": "guide.admin.help-editor.section-mode.label",
+    "lang": "en",
+    "value": "HTML or preview"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-optional-description",
+    "key": "guide.admin.help-editor.section-optional.description",
+    "lang": "en",
+    "value": "Choose whether accepting this privacy section is optional or required. Review the requirement before activating the revision."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-optional-label",
+    "key": "guide.admin.help-editor.section-optional.label",
+    "lang": "en",
+    "value": "Privacy requirement"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-panel-span-description",
+    "key": "guide.admin.help-editor.section-panel-span.description",
+    "lang": "en",
+    "value": "Choose how much of the full-guide grid this section occupies."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-panel-span-label",
+    "key": "guide.admin.help-editor.section-panel-span.label",
+    "lang": "en",
+    "value": "Panel width"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-preview-description",
+    "key": "guide.admin.help-editor.section-preview.description",
+    "lang": "en",
+    "value": "Expand or collapse a saved section to read its content without editing it."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-preview-label",
+    "key": "guide.admin.help-editor.section-preview.label",
+    "lang": "en",
+    "value": "Read a section"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-remove-description",
+    "key": "guide.admin.help-editor.section-remove.description",
+    "lang": "en",
+    "value": "Remove this section from the draft. Save the revision to retain the removal."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-remove-label",
+    "key": "guide.admin.help-editor.section-remove.label",
+    "lang": "en",
+    "value": "Remove section"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-title-description",
+    "key": "guide.admin.help-editor.section-title.description",
+    "lang": "en",
+    "value": "Name the section as it should appear in the document or guide."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-title-label",
+    "key": "guide.admin.help-editor.section-title.label",
+    "lang": "en",
+    "value": "Section title"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-toggle-description",
+    "key": "guide.admin.help-editor.section-toggle.description",
+    "lang": "en",
+    "value": "Expand or collapse this draft section to access its content and image fields."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-section-toggle-label",
+    "key": "guide.admin.help-editor.section-toggle.label",
+    "lang": "en",
+    "value": "Section fields"
+  },
+  {
+    "_id": "i18n-message-en-guide-navigation-menu-votes-description",
+    "key": "guide.navigation.menu.votes.description",
+    "lang": "en",
+    "value": "Open the group’s voting proposals and results. Read a proposal before casting your final vote."
+  },
+  {
+    "_id": "i18n-message-en-guide-navigation-menu-votes-label",
+    "key": "guide.navigation.menu.votes.label",
+    "lang": "en",
+    "value": "Community voting"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-image-gallery-expand-description",
+    "key": "guide.admin.article-view.image-gallery-expand.description",
+    "lang": "hu",
+    "value": "Nyisd meg a cikk képgalériáját. A jelvény a képek számát mutatja; a megnyitás nem szerkeszti és nem publikálja a cikket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-image-gallery-expand-label",
+    "key": "guide.admin.article-view.image-gallery-expand.label",
+    "lang": "hu",
+    "value": "Cikk képei"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-canonical-screen-description",
+    "key": "guide.admin.help-editor.canonical-screen.description",
+    "lang": "hu",
+    "value": "Válaszd ki az útmutatóhoz tartozó képernyőt. Mentés előtt ellenőrizd, hogy a tartalom a kívánt felülethez tartozik."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-canonical-screen-label",
+    "key": "guide.admin.help-editor.canonical-screen.label",
+    "lang": "hu",
+    "value": "Célképernyő"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-draft-presentation-description",
+    "key": "guide.admin.help-editor.draft-presentation.description",
+    "lang": "hu",
+    "value": "Válaszd ki a piszkozat támogatott formáját: kis lépésenkénti vagy teljes útmutató. A választást a verzió mentése rögzíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-draft-presentation-label",
+    "key": "guide.admin.help-editor.draft-presentation.label",
+    "lang": "hu",
+    "value": "Útmutató formája"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-draft-toggle-description",
+    "key": "guide.admin.help-editor.draft-toggle.description",
+    "lang": "hu",
+    "value": "Nyisd le vagy csukd össze a piszkozat mezőit. Az összecsukás nem menti a piszkozatot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-draft-toggle-label",
+    "key": "guide.admin.help-editor.draft-toggle.label",
+    "lang": "hu",
+    "value": "Piszkozat tartalma"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-header-color-description",
+    "key": "guide.admin.help-editor.header-color.description",
+    "lang": "hu",
+    "value": "Válaszd ki a piszkozat fejlécének színét. A választás ehhez a verzióhoz tartozik."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-header-color-label",
+    "key": "guide.admin.help-editor.header-color.label",
+    "lang": "hu",
+    "value": "Fejléc színe"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-copy-description",
+    "key": "guide.admin.help-editor.image-copy.description",
+    "lang": "hu",
+    "value": "Másold ki a kép hivatkozását a szakasz tartalmához. A másolás nem módosítja a piszkozatot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-copy-label",
+    "key": "guide.admin.help-editor.image-copy.label",
+    "lang": "hu",
+    "value": "Képhivatkozás másolása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-pages-description",
+    "key": "guide.admin.help-editor.image-pages.description",
+    "lang": "hu",
+    "value": "Válts a képhelyek lapjai között a szakasz képeinek áttekintéséhez vagy szerkesztéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-pages-label",
+    "key": "guide.admin.help-editor.image-pages.label",
+    "lang": "hu",
+    "value": "Képlapok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-remove-description",
+    "key": "guide.admin.help-editor.image-remove.description",
+    "lang": "hu",
+    "value": "Távolítsd el ezt a képet a piszkozat szakaszából. A módosítást a verzió mentése rögzíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-remove-label",
+    "key": "guide.admin.help-editor.image-remove.label",
+    "lang": "hu",
+    "value": "Kép eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-replace-description",
+    "key": "guide.admin.help-editor.image-replace.description",
+    "lang": "hu",
+    "value": "Válassz másik képet a szakasz ezen foglalt helyére."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-replace-label",
+    "key": "guide.admin.help-editor.image-replace.label",
+    "lang": "hu",
+    "value": "Kép cseréje"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-upload-description",
+    "key": "guide.admin.help-editor.image-upload.description",
+    "lang": "hu",
+    "value": "Válassz képet a szakasz üres helyére. A szakasz képeit a verzió mentése rögzíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-image-upload-label",
+    "key": "guide.admin.help-editor.image-upload.label",
+    "lang": "hu",
+    "value": "Kép hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-activate-description",
+    "key": "guide.admin.help-editor.revision-activate.description",
+    "lang": "hu",
+    "value": "Tedd ezt a mentett verziót aktívvá a dokumentumhoz és nyelvhez. A már aktív verzió nem aktiválható újra."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-activate-label",
+    "key": "guide.admin.help-editor.revision-activate.label",
+    "lang": "hu",
+    "value": "Verzió aktiválása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-active-description",
+    "key": "guide.admin.help-editor.revision-active.description",
+    "lang": "hu",
+    "value": "Ez a jelvény mutatja a felhasználóknak jelenleg látható verziót a kiválasztott nyelven."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-active-label",
+    "key": "guide.admin.help-editor.revision-active.label",
+    "lang": "hu",
+    "value": "Aktív verzió"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-cancel-description",
+    "key": "guide.admin.help-editor.revision-cancel.description",
+    "lang": "hu",
+    "value": "Zárd be a piszkozatot a módosítások mentése nélkül. A mentett verziók továbbra is elérhetők."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-cancel-label",
+    "key": "guide.admin.help-editor.revision-cancel.label",
+    "lang": "hu",
+    "value": "Szerkesztés elvetése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-delete-description",
+    "key": "guide.admin.help-editor.revision-delete.description",
+    "lang": "hu",
+    "value": "Ezzel a művelettel törölheted a mentett verziót. Előbb ellenőrizd a dokumentumot, a nyelvet és a verziót."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-delete-label",
+    "key": "guide.admin.help-editor.revision-delete.label",
+    "lang": "hu",
+    "value": "Verzió törlése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-description-description",
+    "key": "guide.admin.help-editor.revision-description.description",
+    "lang": "hu",
+    "value": "Írd meg a verzió bevezető leírását."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-description-label",
+    "key": "guide.admin.help-editor.revision-description.label",
+    "lang": "hu",
+    "value": "Leírás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-edit-description",
+    "key": "guide.admin.help-editor.revision-edit.description",
+    "lang": "hu",
+    "value": "Nyiss piszkozatot ebből a verzióból. Új verzió mentése előtt ellenőrizd a tartalmát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-edit-label",
+    "key": "guide.admin.help-editor.revision-edit.label",
+    "lang": "hu",
+    "value": "Verzió szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-header-description",
+    "key": "guide.admin.help-editor.revision-header.description",
+    "lang": "hu",
+    "value": "Add meg a dokumentum vagy útmutató ezen verziójának megjelenő fejlécét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-header-label",
+    "key": "guide.admin.help-editor.revision-header.label",
+    "lang": "hu",
+    "value": "Fejléc"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-presentation-description",
+    "key": "guide.admin.help-editor.revision-presentation.description",
+    "lang": "hu",
+    "value": "A jelvény a mentett verzió formáját mutatja: kis lépésenkénti vagy teljes útmutató. Itt csak olvasható."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-presentation-label",
+    "key": "guide.admin.help-editor.revision-presentation.label",
+    "lang": "hu",
+    "value": "Útmutató formája"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-save-description",
+    "key": "guide.admin.help-editor.revision-save.description",
+    "lang": "hu",
+    "value": "Mentsd a piszkozatot új verzióként. Az aktiválás külön művelet a mentett verzión."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-save-label",
+    "key": "guide.admin.help-editor.revision-save.label",
+    "lang": "hu",
+    "value": "Verzió mentése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-title-description",
+    "key": "guide.admin.help-editor.revision-title.description",
+    "lang": "hu",
+    "value": "Adj címet a piszkozatnak, hogy felismerhető legyen a verziólistában."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-title-label",
+    "key": "guide.admin.help-editor.revision-title.label",
+    "lang": "hu",
+    "value": "Verzió címe"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-toggle-description",
+    "key": "guide.admin.help-editor.revision-toggle.description",
+    "lang": "hu",
+    "value": "Nyisd le vagy csukd össze a mentett verziót a szakaszok áttekintéséhez. Ettől az aktív verzió nem változik."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-revision-toggle-label",
+    "key": "guide.admin.help-editor.revision-toggle.label",
+    "lang": "hu",
+    "value": "Verzió tartalma"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-add-description",
+    "key": "guide.admin.help-editor.section-add.description",
+    "lang": "hu",
+    "value": "Adj új szakaszt a piszkozathoz, majd töltsd ki a címét és tartalmát. Ez még nem menti a verziót."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-add-label",
+    "key": "guide.admin.help-editor.section-add.label",
+    "lang": "hu",
+    "value": "Szakasz hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-guide-target-description",
+    "key": "guide.admin.help-editor.section-guide-target.description",
+    "lang": "hu",
+    "value": "Kapcsold ezt a lépést a kiválasztott képernyő egyik elérhető vezérlőjéhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-guide-target-label",
+    "key": "guide.admin.help-editor.section-guide-target.label",
+    "lang": "hu",
+    "value": "Útmutató célpontja"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-html-description",
+    "key": "guide.admin.help-editor.section-html.description",
+    "lang": "hu",
+    "value": "Szerkeszd a szakasz tartalmának HTML-kódját. Mentés előtt az előnézetben ellenőrizd a megjelenést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-html-label",
+    "key": "guide.admin.help-editor.section-html.label",
+    "lang": "hu",
+    "value": "Szakasz HTML-kódja"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-icon-description",
+    "key": "guide.admin.help-editor.section-icon.description",
+    "lang": "hu",
+    "value": "Válassz a szakaszt jelölő ikont. A menü keresőjével kereshetsz az ikonok között."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-icon-label",
+    "key": "guide.admin.help-editor.section-icon.label",
+    "lang": "hu",
+    "value": "Szakasz ikonja"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-mode-description",
+    "key": "guide.admin.help-editor.section-mode.description",
+    "lang": "hu",
+    "value": "Válts a szakasz HTML-kódjának szerkesztése és a megjelenő tartalom előnézete között. A váltás nem menti a verziót."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-mode-label",
+    "key": "guide.admin.help-editor.section-mode.label",
+    "lang": "hu",
+    "value": "HTML vagy előnézet"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-optional-description",
+    "key": "guide.admin.help-editor.section-optional.description",
+    "lang": "hu",
+    "value": "Állítsd be, hogy a szakasz elfogadása választható vagy kötelező. Aktiválás előtt ellenőrizd a követelményt."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-optional-label",
+    "key": "guide.admin.help-editor.section-optional.label",
+    "lang": "hu",
+    "value": "Adatvédelmi követelmény"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-panel-span-description",
+    "key": "guide.admin.help-editor.section-panel-span.description",
+    "lang": "hu",
+    "value": "Válaszd ki, mekkora helyet foglaljon el a szakasz a teljes útmutató rácsában."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-panel-span-label",
+    "key": "guide.admin.help-editor.section-panel-span.label",
+    "lang": "hu",
+    "value": "Panel szélessége"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-preview-description",
+    "key": "guide.admin.help-editor.section-preview.description",
+    "lang": "hu",
+    "value": "Nyisd le vagy csukd össze a mentett szakaszt. A tartalom olvasása nem módosítja azt."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-preview-label",
+    "key": "guide.admin.help-editor.section-preview.label",
+    "lang": "hu",
+    "value": "Szakasz olvasása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-remove-description",
+    "key": "guide.admin.help-editor.section-remove.description",
+    "lang": "hu",
+    "value": "Távolítsd el ezt a szakaszt a piszkozatból. Az eltávolítást a verzió mentése rögzíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-remove-label",
+    "key": "guide.admin.help-editor.section-remove.label",
+    "lang": "hu",
+    "value": "Szakasz eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-title-description",
+    "key": "guide.admin.help-editor.section-title.description",
+    "lang": "hu",
+    "value": "Add meg a szakasz dokumentumban vagy útmutatóban megjelenő címét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-title-label",
+    "key": "guide.admin.help-editor.section-title.label",
+    "lang": "hu",
+    "value": "Szakasz címe"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-toggle-description",
+    "key": "guide.admin.help-editor.section-toggle.description",
+    "lang": "hu",
+    "value": "Nyisd le vagy csukd össze a piszkozat szakaszát a tartalom és a képmezők eléréséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-section-toggle-label",
+    "key": "guide.admin.help-editor.section-toggle.label",
+    "lang": "hu",
+    "value": "Szakasz mezői"
+  },
+  {
+    "_id": "i18n-message-hu-guide-navigation-menu-votes-description",
+    "key": "guide.navigation.menu.votes.description",
+    "lang": "hu",
+    "value": "Nyisd meg a csoport szavazásait és eredményeit. Végleges szavazatod leadása előtt olvasd el a javaslatot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-navigation-menu-votes-label",
+    "key": "guide.navigation.menu.votes.label",
+    "lang": "hu",
+    "value": "Közösségi szavazások"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-row-status-description",
+    "key": "guide.community.voting.row-status.description",
+    "lang": "en",
+    "value": "Read the number of votes cast and eligible voters on the notice badge. The badge shows progress; opening the proposal and casting a vote are separate actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-row-status-label",
+    "key": "guide.community.voting.row-status.label",
+    "lang": "en",
+    "value": "Voting progress"
+  },
+  {
+    "_id": "i18n-message-en-guide-payment-cash-receipt-method-description",
+    "key": "guide.payment.cash.receipt.method.description",
+    "lang": "en",
+    "value": "Choose cash or bank transfer to match how you received the payment. Saving records the receipt; it does not initiate a bank transfer."
+  },
+  {
+    "_id": "i18n-message-en-guide-payment-cash-receipt-method-label",
+    "key": "guide.payment.cash.receipt.method.label",
+    "lang": "en",
+    "value": "Payment method"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-row-status-description",
+    "key": "guide.community.voting.row-status.description",
+    "lang": "hu",
+    "value": "A jelvény a leadott szavazatok és a szavazásra jogosultak számát mutatja. Az állás megtekintése, a javaslat megnyitása és a szavazat leadása külön művelet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-row-status-label",
+    "key": "guide.community.voting.row-status.label",
+    "lang": "hu",
+    "value": "A szavazás állása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-payment-cash-receipt-method-description",
+    "key": "guide.payment.cash.receipt.method.description",
+    "lang": "hu",
+    "value": "Válaszd a készpénzt vagy a banki átutalást a kapott befizetésnek megfelelően. A mentés a befizetést rögzíti, nem indít banki átutalást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-payment-cash-receipt-method-label",
+    "key": "guide.payment.cash.receipt.method.label",
+    "lang": "hu",
+    "value": "Fizetési mód"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-description-description",
+    "key": "guide.admin.article-edit.article-description.description",
+    "lang": "en",
+    "value": "Write the short description shown on the article card."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-description-label",
+    "key": "guide.admin.article-edit.article-description.label",
+    "lang": "en",
+    "value": "Description"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-html-description",
+    "key": "guide.admin.article-edit.article-html.description",
+    "lang": "en",
+    "value": "Edit the article body as HTML. Use Preview to check the result before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-html-label",
+    "key": "guide.admin.article-edit.article-html.label",
+    "lang": "en",
+    "value": "Article HTML"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-language-description",
+    "key": "guide.admin.article-edit.article-language.description",
+    "lang": "en",
+    "value": "Choose the language for this draft. Check it before saving the article."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-language-label",
+    "key": "guide.admin.article-edit.article-language.label",
+    "lang": "en",
+    "value": "Article language"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-title-description",
+    "key": "guide.admin.article-edit.article-title.description",
+    "lang": "en",
+    "value": "Set the article title shown to readers."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-title-label",
+    "key": "guide.admin.article-edit.article-title.label",
+    "lang": "en",
+    "value": "Title"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-caption-description",
+    "key": "guide.admin.article-edit.image-caption.description",
+    "lang": "en",
+    "value": "Write the short image description within the displayed character limit."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-caption-label",
+    "key": "guide.admin.article-edit.image-caption.label",
+    "lang": "en",
+    "value": "Image caption"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-details-description",
+    "key": "guide.admin.article-edit.image-details.description",
+    "lang": "en",
+    "value": "Open the selected image details to review or edit its caption and location."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-details-label",
+    "key": "guide.admin.article-edit.image-details.label",
+    "lang": "en",
+    "value": "Image details"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-details-save-description",
+    "key": "guide.admin.article-edit.image-details-save.description",
+    "lang": "en",
+    "value": "Apply these image details to the article draft. Save the article afterward to retain them."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-details-save-label",
+    "key": "guide.admin.article-edit.image-details-save.label",
+    "lang": "en",
+    "value": "Apply image details"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-location-description",
+    "key": "guide.admin.article-edit.image-location.description",
+    "lang": "en",
+    "value": "Set the location associated with this image. Apply the image details before returning to the article draft."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-location-label",
+    "key": "guide.admin.article-edit.image-location.label",
+    "lang": "en",
+    "value": "Image location"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-pages-description",
+    "key": "guide.admin.article-edit.image-pages.description",
+    "lang": "en",
+    "value": "Switch between pages of image slots to review or edit article images."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-pages-label",
+    "key": "guide.admin.article-edit.image-pages.label",
+    "lang": "en",
+    "value": "Image pages"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-remove-description",
+    "key": "guide.admin.article-edit.image-remove.description",
+    "lang": "en",
+    "value": "Remove this image from the draft. Save the article to retain the change."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-remove-label",
+    "key": "guide.admin.article-edit.image-remove.label",
+    "lang": "en",
+    "value": "Remove image"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-replace-description",
+    "key": "guide.admin.article-edit.image-replace.description",
+    "lang": "en",
+    "value": "Choose a different image for this occupied slot."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-replace-label",
+    "key": "guide.admin.article-edit.image-replace.label",
+    "lang": "en",
+    "value": "Replace image"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-upload-description",
+    "key": "guide.admin.article-edit.image-upload.description",
+    "lang": "en",
+    "value": "Choose an image for an empty article slot. Saving the article retains its images."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-image-upload-label",
+    "key": "guide.admin.article-edit.image-upload.label",
+    "lang": "en",
+    "value": "Add image"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-image-pages-description",
+    "key": "guide.admin.article-view.image-pages.description",
+    "lang": "en",
+    "value": "Switch between available image pages in the read-only gallery."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-image-pages-label",
+    "key": "guide.admin.article-view.image-pages.label",
+    "lang": "en",
+    "value": "Gallery pages"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-image-view-description",
+    "key": "guide.admin.article-view.image-view.description",
+    "lang": "en",
+    "value": "View the article image in the read-only gallery. Opening the gallery does not change the article."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-image-view-label",
+    "key": "guide.admin.article-view.image-view.label",
+    "lang": "en",
+    "value": "Article image"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-delete-description",
+    "key": "guide.admin.idea-editor.card-actions.delete.description",
+    "lang": "en",
+    "value": "Remove this article through its delete action. Check the selected article before confirming."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-delete-label",
+    "key": "guide.admin.idea-editor.card-actions.delete.label",
+    "lang": "en",
+    "value": "Delete article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-description",
+    "key": "guide.admin.idea-editor.card-actions.description",
+    "lang": "en",
+    "value": "Open the selected article’s available reading and management actions. Its state determines which actions appear."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-edit-description",
+    "key": "guide.admin.idea-editor.card-actions.edit.description",
+    "lang": "en",
+    "value": "Open this saved article in the editor. Changes remain a draft until you save."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-edit-label",
+    "key": "guide.admin.idea-editor.card-actions.edit.label",
+    "lang": "en",
+    "value": "Edit article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-feature-description",
+    "key": "guide.admin.idea-editor.card-actions.feature.description",
+    "lang": "en",
+    "value": "Add this published article to featured placement after confirmation."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-feature-label",
+    "key": "guide.admin.idea-editor.card-actions.feature.label",
+    "lang": "en",
+    "value": "Feature article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-label",
+    "key": "guide.admin.idea-editor.card-actions.label",
+    "lang": "en",
+    "value": "Article actions"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-publish-description",
+    "key": "guide.admin.idea-editor.card-actions.publish.description",
+    "lang": "en",
+    "value": "Publish this saved draft after checking its content and language. Confirm the publication when ready."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-publish-label",
+    "key": "guide.admin.idea-editor.card-actions.publish.label",
+    "lang": "en",
+    "value": "Publish article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-restore-description",
+    "key": "guide.admin.idea-editor.card-actions.restore.description",
+    "lang": "en",
+    "value": "Restore this article from trash after confirming the selected item."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-restore-label",
+    "key": "guide.admin.idea-editor.card-actions.restore.label",
+    "lang": "en",
+    "value": "Restore article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-unfeature-description",
+    "key": "guide.admin.idea-editor.card-actions.unfeature.description",
+    "lang": "en",
+    "value": "Remove the article from featured placement without deleting it."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-unfeature-label",
+    "key": "guide.admin.idea-editor.card-actions.unfeature.label",
+    "lang": "en",
+    "value": "Remove featured placement"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-unpublish-description",
+    "key": "guide.admin.idea-editor.card-actions.unpublish.description",
+    "lang": "en",
+    "value": "Remove the article from published visibility. Check the selected article before confirming this action."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-unpublish-label",
+    "key": "guide.admin.idea-editor.card-actions.unpublish.label",
+    "lang": "en",
+    "value": "Unpublish article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-viewarticle-description",
+    "key": "guide.admin.idea-editor.card-actions.viewArticle.description",
+    "lang": "en",
+    "value": "Open the article as a reader. This does not change its content or publication state."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-card-actions-viewarticle-label",
+    "key": "guide.admin.idea-editor.card-actions.viewArticle.label",
+    "lang": "en",
+    "value": "Read article"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-description-description",
+    "key": "guide.admin.article-edit.article-description.description",
+    "lang": "hu",
+    "value": "Írd meg a cikk kártyáján megjelenő rövid leírást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-description-label",
+    "key": "guide.admin.article-edit.article-description.label",
+    "lang": "hu",
+    "value": "Leírás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-html-description",
+    "key": "guide.admin.article-edit.article-html.description",
+    "lang": "hu",
+    "value": "Szerkeszd a cikk tartalmának HTML-kódját. Mentés előtt ellenőrizd az előnézetet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-html-label",
+    "key": "guide.admin.article-edit.article-html.label",
+    "lang": "hu",
+    "value": "Cikk HTML-kódja"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-language-description",
+    "key": "guide.admin.article-edit.article-language.description",
+    "lang": "hu",
+    "value": "Válaszd ki a piszkozat nyelvét. Mentés előtt ellenőrizd a választást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-language-label",
+    "key": "guide.admin.article-edit.article-language.label",
+    "lang": "hu",
+    "value": "Cikk nyelve"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-title-description",
+    "key": "guide.admin.article-edit.article-title.description",
+    "lang": "hu",
+    "value": "Add meg az olvasóknak megjelenő cikkcímet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-title-label",
+    "key": "guide.admin.article-edit.article-title.label",
+    "lang": "hu",
+    "value": "Cím"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-caption-description",
+    "key": "guide.admin.article-edit.image-caption.description",
+    "lang": "hu",
+    "value": "Írd meg a kép rövid leírását a megjelenített karakterkorláton belül."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-caption-label",
+    "key": "guide.admin.article-edit.image-caption.label",
+    "lang": "hu",
+    "value": "Képaláírás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-details-description",
+    "key": "guide.admin.article-edit.image-details.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kép adatait a képaláírás és a hely áttekintéséhez vagy szerkesztéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-details-label",
+    "key": "guide.admin.article-edit.image-details.label",
+    "lang": "hu",
+    "value": "Kép adatai"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-details-save-description",
+    "key": "guide.admin.article-edit.image-details-save.description",
+    "lang": "hu",
+    "value": "Alkalmazd a kép adatait a cikk piszkozatában. Véglegesítésükhöz ezután mentsd a cikket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-details-save-label",
+    "key": "guide.admin.article-edit.image-details-save.label",
+    "lang": "hu",
+    "value": "Képadatok alkalmazása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-location-description",
+    "key": "guide.admin.article-edit.image-location.description",
+    "lang": "hu",
+    "value": "Add meg a képhez tartozó helyet. A piszkozathoz visszatérés előtt alkalmazd a kép adatait."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-location-label",
+    "key": "guide.admin.article-edit.image-location.label",
+    "lang": "hu",
+    "value": "Kép helye"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-pages-description",
+    "key": "guide.admin.article-edit.image-pages.description",
+    "lang": "hu",
+    "value": "Válts a képhelyek lapjai között a cikk képeinek áttekintéséhez vagy szerkesztéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-pages-label",
+    "key": "guide.admin.article-edit.image-pages.label",
+    "lang": "hu",
+    "value": "Képlapok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-remove-description",
+    "key": "guide.admin.article-edit.image-remove.description",
+    "lang": "hu",
+    "value": "Távolítsd el a képet a piszkozatból. A módosítást a cikk mentése rögzíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-remove-label",
+    "key": "guide.admin.article-edit.image-remove.label",
+    "lang": "hu",
+    "value": "Kép eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-replace-description",
+    "key": "guide.admin.article-edit.image-replace.description",
+    "lang": "hu",
+    "value": "Válassz másik képet erre a foglalt képhelyre."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-replace-label",
+    "key": "guide.admin.article-edit.image-replace.label",
+    "lang": "hu",
+    "value": "Kép cseréje"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-upload-description",
+    "key": "guide.admin.article-edit.image-upload.description",
+    "lang": "hu",
+    "value": "Válassz képet a cikk üres képhelyére. A cikk mentése rögzíti a képeit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-image-upload-label",
+    "key": "guide.admin.article-edit.image-upload.label",
+    "lang": "hu",
+    "value": "Kép hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-image-pages-description",
+    "key": "guide.admin.article-view.image-pages.description",
+    "lang": "hu",
+    "value": "Válts az olvasható galéria elérhető képlapjai között."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-image-pages-label",
+    "key": "guide.admin.article-view.image-pages.label",
+    "lang": "hu",
+    "value": "Galéria lapjai"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-image-view-description",
+    "key": "guide.admin.article-view.image-view.description",
+    "lang": "hu",
+    "value": "Nézd meg a cikk képét az olvasható galériában. A megnyitás nem módosítja a cikket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-image-view-label",
+    "key": "guide.admin.article-view.image-view.label",
+    "lang": "hu",
+    "value": "Cikk képe"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-delete-description",
+    "key": "guide.admin.idea-editor.card-actions.delete.description",
+    "lang": "hu",
+    "value": "Távolítsd el a cikket a törlési művelettel. Jóváhagyás előtt ellenőrizd a kiválasztott cikket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-delete-label",
+    "key": "guide.admin.idea-editor.card-actions.delete.label",
+    "lang": "hu",
+    "value": "Cikk törlése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-description",
+    "key": "guide.admin.idea-editor.card-actions.description",
+    "lang": "hu",
+    "value": "Nyisd meg a cikk elérhető olvasási és kezelési műveleteit. A megjelenő lehetőségek a cikk állapotától függenek."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-edit-description",
+    "key": "guide.admin.idea-editor.card-actions.edit.description",
+    "lang": "hu",
+    "value": "Nyisd meg a mentett cikket a szerkesztőben. A változások mentésig a piszkozatban maradnak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-edit-label",
+    "key": "guide.admin.idea-editor.card-actions.edit.label",
+    "lang": "hu",
+    "value": "Cikk szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-feature-description",
+    "key": "guide.admin.idea-editor.card-actions.feature.description",
+    "lang": "hu",
+    "value": "Jóváhagyás után emeld ki ezt a publikált cikket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-feature-label",
+    "key": "guide.admin.idea-editor.card-actions.feature.label",
+    "lang": "hu",
+    "value": "Cikk kiemelése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-label",
+    "key": "guide.admin.idea-editor.card-actions.label",
+    "lang": "hu",
+    "value": "Cikk műveletei"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-publish-description",
+    "key": "guide.admin.idea-editor.card-actions.publish.description",
+    "lang": "hu",
+    "value": "A tartalom és a nyelv ellenőrzése után publikáld a mentett piszkozatot. Ha készen áll, erősítsd meg a publikálást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-publish-label",
+    "key": "guide.admin.idea-editor.card-actions.publish.label",
+    "lang": "hu",
+    "value": "Cikk publikálása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-restore-description",
+    "key": "guide.admin.idea-editor.card-actions.restore.description",
+    "lang": "hu",
+    "value": "A kiválasztott cikk jóváhagyása után állítsd vissza a kukából."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-restore-label",
+    "key": "guide.admin.idea-editor.card-actions.restore.label",
+    "lang": "hu",
+    "value": "Cikk visszaállítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-unfeature-description",
+    "key": "guide.admin.idea-editor.card-actions.unfeature.description",
+    "lang": "hu",
+    "value": "Szüntesd meg a cikk kiemelését a cikk törlése nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-unfeature-label",
+    "key": "guide.admin.idea-editor.card-actions.unfeature.label",
+    "lang": "hu",
+    "value": "Kiemelés megszüntetése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-unpublish-description",
+    "key": "guide.admin.idea-editor.card-actions.unpublish.description",
+    "lang": "hu",
+    "value": "Vond vissza a cikk nyilvános megjelenését. Jóváhagyás előtt ellenőrizd a kiválasztott cikket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-unpublish-label",
+    "key": "guide.admin.idea-editor.card-actions.unpublish.label",
+    "lang": "hu",
+    "value": "Publikálás visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-viewarticle-description",
+    "key": "guide.admin.idea-editor.card-actions.viewArticle.description",
+    "lang": "hu",
+    "value": "Nyisd meg a cikk olvasói nézetét. Ez nem módosítja a tartalmát vagy a publikálási állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-card-actions-viewarticle-label",
+    "key": "guide.admin.idea-editor.card-actions.viewArticle.label",
+    "lang": "hu",
+    "value": "Cikk olvasása"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-affinity-admin-signals",
+    "key": "admin.jobs.rule.affinity-admin-signals",
+    "lang": "en",
+    "value": "Affinity statistics delivery"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-affinity-admin-signals",
+    "key": "admin.jobs.rule.affinity-admin-signals",
+    "lang": "hu",
+    "value": "Affinitásstatisztika küldése"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-events-admin-signals",
+    "key": "admin.jobs.rule.events-admin-signals",
+    "lang": "en",
+    "value": "Event statistics delivery"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-events-admin-signals",
+    "key": "admin.jobs.rule.events-admin-signals",
+    "lang": "hu",
+    "value": "Eseménystatisztika küldése"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-notifications-admin-signals",
+    "key": "admin.jobs.rule.notifications-admin-signals",
+    "lang": "en",
+    "value": "Notification statistics delivery"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-notifications-admin-signals",
+    "key": "admin.jobs.rule.notifications-admin-signals",
+    "lang": "hu",
+    "value": "Értesítési statisztika küldése"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-admin-signals-description",
+    "key": "admin.jobs.rule.admin-signals.description",
+    "lang": "en",
+    "value": "Sends database-wide statistics changes at most hourly. Failed delivery is handled separately by the retry worker."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-admin-signals-description",
+    "key": "admin.jobs.rule.admin-signals.description",
+    "lang": "hu",
+    "value": "Az adatbázis statisztikai változásait legfeljebb óránként küldi el. A sikertelen küldést külön újrapróbáló worker kezeli."
   }
 ]

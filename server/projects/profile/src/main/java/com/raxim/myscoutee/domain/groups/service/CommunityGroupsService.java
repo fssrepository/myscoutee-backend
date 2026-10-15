@@ -46,6 +46,8 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
             "profile.horoscope", "profile.details.interest", "profile.details.drinking", "profile.details.smoking", "profile.details.workout", "profile.details.pets",
             "profile.details.familyPlans", "profile.details.children", "profile.details.loveStyle", "profile.details.communicationStyle",
             "profile.details.sexualOrientation", "profile.gender", "profile.details.religion", "profile.details.values");
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.accounts.api.ProfileSummaries summaries;
     private final CommunityGroupsRepository groups;
     private final CommunityMemberships memberships;
     private final DiscoveryProfiles users;
@@ -56,6 +58,8 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
     private final CommunityReports reports;
     private final OperationalTelemetry telemetry;
     private final GroupCounters counters;
+    @org.springframework.beans.factory.annotation.Autowired
+    private Optional<com.raxim.myscoutee.domain.community.api.CaseParticipants> caseParticipants = Optional.empty();
     private final com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications;
     public CommunityGroupsService(CommunityGroupsRepository groups, CommunityMemberships memberships,
             DiscoveryProfiles users, SelectedProfile profiles, ProfileCards cards, AccountWorkspaces groupProfiles,
@@ -162,12 +166,9 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
                     ? Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : g.distanceKm())
                     : Comparator.comparing(Group::updatedAtIso, Comparator.reverseOrder()))
                     .thenComparing(Group::id)).toList();
-        var workspaceCounters = workspaces(actor);
-        return new GroupSnapshot(rows, rows.size(), Map.of(
-                "hosting", workspaceCounters.stream().filter(w -> "Admin".equals(w.role()) && "accepted".equals(w.membershipStatus())).mapToLong(Workspace::activity).sum(),
-                "participation", workspaceCounters.stream().filter(w -> "participation".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum(),
-                "pending", workspaceCounters.stream().filter(w -> "pending".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum(),
-                "invitations", workspaceCounters.stream().filter(w -> "invitations".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum()));
+        var counts = storedGroupCounters(actor.getUserId());
+        return new GroupSnapshot(rows, rows.size(), counts.entrySet().stream().collect(Collectors.toMap(
+                e -> e.getKey().substring("groups_".length()), e -> e.getValue().longValue())));
     }
     public Page page(DiscoveryProfile actor, String bucket, String category, int pageSize, String cursor) {
         return page(actor, bucket, category, pageSize, cursor, null);
@@ -365,6 +366,7 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         boolean owner = group.ownerUserId().equals(target.getUserId());
         if (request.action().equals(target.getCommunityAction()) && actor.getUserId().equals(target.getCommunityActor()) && (Set.of("grant-vote", "revoke-vote").contains(request.action()) ? admin : self || admin)) {
             group = groups.findById(id).orElseThrow();
+            updateCaseAdministrators(group, members(id));
             notifyMemberTransition(group, actor.getUserId(), target, request.action());
             if (group.awaitingOwner() && group.ownerUserId().equals(target.getUserId()) && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
                 notifyHandover(group, actor.getUserId(), target, "owner-left");
@@ -442,12 +444,19 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
             if (!group.awaitingOwner()) groups.updateLifecycle(id, "under-review", target.getActionAtIso(), takeoverCandidates(remaining, actor.getUserId()));
         }
         group = groups.findById(id).orElseThrow();
+        updateCaseAdministrators(group, remaining);
         if (group.awaitingOwner() && group.ownerUserId().equals(target.getUserId()) && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
             notifyHandover(group, actor.getUserId(), target, "owner-left");
         if ("take-over".equals(request.action())) notifyHandover(group, actor.getUserId(), target, "takeover");
         if (Set.of("deleted", "blocked").contains(target.getStatus())) groupProfiles.clearActiveWorkspace(target.getUserId(), id);
         notifyMemberTransition(group, actor.getUserId(), target, request.action());
         return new ActivityMemberActionResponseDto(group.deleted() || self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
+    }
+    private void updateCaseAdministrators(CommunityGroup group, List<CommunityMember> remaining) {
+        if (!"community".equals(group.effectiveType())) return;
+        var admins = group.deleted() || group.awaitingOwner() ? List.<String>of()
+                : remaining.stream().filter(this::isAdmin).map(CommunityMember::getUserId).toList();
+        caseParticipants.ifPresent(cases -> cases.groupAdminsChanged(group.id(), admins));
     }
     private void notifyMemberTransition(CommunityGroup group, String actorId, CommunityMember target, String action) {
         if ("restore".equals(action) && "pending".equals(target.getStatus())) {
@@ -510,7 +519,14 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         if (CommunityGroupMapper.restorableMembership(own) && members.stream().noneMatch(m -> actor.getUserId().equals(m.getUserId()))) {
             members = new ArrayList<>(members); members.add(own);
         }
-        return CommunityGroupMapper.toDto(group, owner, actor, members, attention(groupProfiles.profilesByGroup(actor.getUserId()).get(group.id())));
+        return CommunityGroupMapper.toDto(group, owner, actor, members, attention(groupProfiles.profilesByGroup(actor.getUserId()).get(group.id())), storedGroupCounters(actor.getUserId()));
+    }
+    private Map<String, Integer> storedGroupCounters(String accountId) {
+        var stored = summaries.findByUserId(accountId).map(com.raxim.myscoutee.domain.accounts.api.ProfileSummary::getMenuCounters).orElse(Map.of());
+        var result = new LinkedHashMap<String, Integer>();
+        for (String bucket : List.of("hosting", "participation", "pending", "invitations", "trash"))
+            result.put("groups_" + bucket, stored.getOrDefault("groups_" + bucket, 0));
+        return result;
     }
     private List<CommunityMember> members(String id) {
         return memberships.forGroup(id).stream()

@@ -6,9 +6,11 @@
     "kind": "business",
     "category": "technology",
     "status": "published",
+    "imageUrls": [
+      "assets/articles/business-idea.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -21,9 +23,11 @@
     "kind": "work",
     "category": "technology",
     "status": "published",
+    "imageUrls": [
+      "assets/articles/work-opportunity.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -36,9 +40,11 @@
     "kind": "both",
     "category": "education",
     "status": "draft",
+    "imageUrls": [
+      "assets/articles/professional-network.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -51,9 +57,11 @@
     "kind": "business",
     "category": "creative",
     "status": "published",
+    "imageUrls": [
+      "assets/articles/business-idea.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:bf057de7c586eede7e84bdc7",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -66,9 +74,11 @@
     "kind": "work",
     "category": "services",
     "status": "published",
+    "imageUrls": [
+      "assets/articles/work-opportunity.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:b29df68956f3fe15e04558de",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -81,9 +91,11 @@
     "kind": "business",
     "category": "education",
     "status": "published",
+    "imageUrls": [
+      "assets/articles/professional-network.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:9f3b3f085e23af6c89dbc432",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -96,9 +108,11 @@
     "kind": "work",
     "category": "creative",
     "status": "published",
+    "imageUrls": [
+      "assets/articles/team-building.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:1b1c70be2349b3359a8f6f94",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -111,9 +125,11 @@
     "kind": "both",
     "category": "community",
     "status": "published",
+    "imageUrls": [
+      "assets/articles/team-building.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:178e8d0cbe164fa3fede5884",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",
@@ -126,9 +142,11 @@
     "kind": "business",
     "category": "other",
     "status": "trash",
+    "imageUrls": [
+      "assets/articles/business-idea.png"
+    ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
-    "imageUrls": [],
     "attachments": [],
     "createdAtIso": "2026-10-01T10:00:00.000Z",
     "updatedAtIso": "2026-10-01T10:00:00.000Z",

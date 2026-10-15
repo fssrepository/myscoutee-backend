@@ -226,22 +226,17 @@ same in-memory graph between steps before flushing completed state.
 Provenance: explicit 2026-08-03 continuity requirement, reinforced by the
 canonical demo bootstrap architecture boundary.
 
-## L014 — Resolve optional live-list behavior before implementation
+## L014 — Preserve the requested live-list scope
 
-Trigger: a popup, dialog, drawer, page surface, or nested section contains a
-list, SmartList, or periodically refreshed collection.
+Trigger: creating or materially changing a SmartList/list surface.
 
-Ask:
+Use the [SmartList pattern](../patterns/smart-list-live-surface.md): preserve
+existing refresh behavior or reuse the exact requested reference flow. Ask only
+when missing information blocks the requested work or entails a material,
+destructive or irreversible scope decision. Do not ask optional polling or
+adjacent-capability questions, or add polling simply because it is available.
+Use shared visible-item APIs for confirmed mutations; justify a full reload.
 
-- Has the user chosen whether scheduled background polling is wanted?
-- Which other user-visible capabilities remain optional and unresolved?
-- Can confirmed create/update/delete results reconcile the visible list without
-  another loader call?
-
-Action: always ask about scheduled polling when the current request has not
-already answered it, grouping only relevant optional capability questions in
-the same message. Use the shared SmartList lifecycle and visible-item APIs;
-require a concrete reason for full reload after a mutation.
-
-Provenance: explicit 2026-08-03 trust-library requirement backed by existing
-SmartList progress, scheduler, polling, and visible reconciliation APIs.
+Provenance: the current AGENTS.md focus/continuation rule supersedes the
+2026-08-03 instruction to always ask about polling. Shared progress, scheduler
+and reconciliation ownership remains unchanged.

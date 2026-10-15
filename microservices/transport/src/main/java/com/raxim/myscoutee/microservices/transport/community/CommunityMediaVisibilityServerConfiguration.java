@@ -27,7 +27,7 @@ public class CommunityMediaVisibilityServerConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .requestCache(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(rules -> rules
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, CommunityMediaVisibilityProtocol.ANNOUNCEMENT_PATH, CommunityMediaVisibilityProtocol.OFFERING_PATH)
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, CommunityMediaVisibilityProtocol.ANNOUNCEMENT_PATH, CommunityMediaVisibilityProtocol.OFFERING_PATH, CommunityMediaVisibilityProtocol.DOCUMENTS_PATH)
                         .hasAuthority("community:media:read").anyRequest().denyAll())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(errors -> errors.accessDeniedHandler((request, response, error) ->

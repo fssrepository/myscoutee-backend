@@ -11541,8 +11541,107 @@ individual boundaries. Actual ChatGPT/Claude/Codex acceptance remains the separa
 
 ## 2026-10-06 — Work/Community expansion and guide reopening
 
-The authoritative expanded acceptance sequence is [MSC-115](../checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md), including its conversation traceability review. `EXPLANATION-GUIDE-001` is reopened as NOT RUN for 28 revised contexts (full catalog: 67 contexts / 1151 conditional fields); historical September guide/release evidence is preserved. The existing row owns the guide run, and MSC115-GUIDES references it.
+The authoritative expanded acceptance sequence is [MSC-115](../checklists/group/MSC-115_WORK_COMMUNITY_PAIR_QA.md), including its conversation traceability review. `EXPLANATION-GUIDE-001` is reopened as NOT RUN for 28 revised contexts (full catalog: 67 contexts / 1151 conditional fields); historical September guide/release evidence is preserved. The existing row owns the guide run, and MSC115-GUIDES references it.
 
 Focused compiled checks cover materialized AVG and criterion domains, real Campaign history popup/eye/paging, deployment configuration retry, and canonical i18n/content parity. Public HTTP privacy returns the same active website revision for Dating, Work and Community. Content seed migration changed only relevant records and retained live QA data. Full paired Local/HTTP business lifecycles and visual guide/landing checks are not passed by these checks. No separate compiler/test server was started.
 
 Current execution authorization: scoped login/logout diagnosis in the already-open CDP browser, granted on 2026-10-06. Other manual campaign actions remain user-controlled until explicitly delegated. The next separate package is API/MCP access levels/read operations and platform publication research; it has not been completed by the Campaign create integration already present.
+
+
+## 2026-10-13 — MSC-115 automatic campaign started
+
+The user delegated complete visible-CDP automatic QA, in-scope fixes and retests,
+mobile/desktop coverage, applicable fixes in the separate MyScoutee Template
+project and serial KVM sampling. This supersedes the October 6 deferral for
+MSC-115 only. Existing monolith dev Compose and its sole watchers are running.
+
+The existing MSC-115 checklist now has one consecutive execution order and
+independent block baselines; no step redirects to another checklist. The former
+mixed checklist/review is retained in evidence as MSC-115_PRE_QA_REVIEW_20261013.md.
+Every executed step requires the A01-A12 architecture gates. Deployment-only
+qualification has a separate open checklist and is not counted as PASS.
+
+MSC115-LANDING is IN PROGRESS, with mobile hero clipping and header scroll scope
+under repair. Transactional evidence: ../evidence/work-community/MSC-115_AUTOMATIC_20261013.json.
+No entire business testcase has passed yet; local, KVM and template checks remain.
+
+
+### 2026-10-13 — MSC115-WORK-EVENT step36
+
+Step35 remains closed as confirmed in the preceding Codex session; it was not replayed. Step36 Work random-room exclusion passed: the running demo database retains three active Work events, no Work random-generator rule and no generated Work room. The existing planner test now uses a stage-bearing published event in main and private Work groups, with no member selection or room/chat/notification writes. Java 40/40 and local adapter 9/9 passed. The same frontend-sync was restored healthy. No production source or fixture was changed, and no fresh due Dating run was forced. Whole-block reconciliation and campaign KVM remain open. Evidence: [step36 record](../evidence/work-community/MSC115-step36-random-work-exclusion-20261013.json).
+
+
+### 2026-10-13 — MSC115-CAMPAIGN-API step37
+
+HTTP draft creation through a normally UI-generated Work integration key passed, including stable-ID retry and Mongo/UI readback. The first read exposed a stale Campaign status badge: the list contained the draft while its header count stayed zero until reload. CampaignsStore now reconciles a complete own-status page total through the existing ActivityStore revision guard; narrowed/other-owner queries cannot overwrite a whole bucket. Retest without reload and subsequent reload agree: two disposable drafts, one existing published campaign, sidebar total three. EN desktop and HU mobile evidence is retained. Focused store/realtime tests passed 19/19; the supplemental local Campaign suite passed 7/9, with unresolved unchanged-profile and seed event-counter assertions. The full test command is therefore 26/28, not a full PASS. frontend-sync was restored and synced successfully at 20:15:53. Steps38–39, local browser parity and campaign KVM remain open. Evidence and exact retained cleanup IDs: [step37 record](../evidence/work-community/MSC115-step37-campaign-api-20261013.json).
+
+
+### 2026-10-13 — MSC115-CAMPAIGN-API steps38–39; stop before40
+
+HTTP owner/group denial passed: Maya Work could not edit/publish Anna's draft (404), and Maya Community could neither create a Work Campaign nor edit it (403); persisted drafts stayed unchanged. Event draft-create/retry returned one stable ID. Existing Group participant-link creation/retry returned a stable unclaimed link, while another group owner was denied (403). This Group control exercises the existing `createGroup` invitation operation, not a standalone group-create API. Local browser/KVM and the two supplemental local-suite failures remain open. The service fixture and Anna/Alex launcher sessions for40 were prepared, but the user requested no further continuation before40 was verified. [Steps38–39 and stop evidence](../evidence/work-community/MSC115-step38-39-campaign-api-20261013.json). Screenshots are kept outside the repository.
+
+
+### 2026-10-14 — MSC115-SERVICE resumed from40
+
+The user accepted earlier steps and resumed40. The service block is IN PROGRESS: HTTP discovery, service lifecycle, staff persistence and external-link operations have recorded observations, with current shared UI fixes under retest. The permanent seed now shows the three existing service offerings with their own images; temporary discovery duplicates were restored away. Local, affected template runtime and KVM gates remain open. Current transactional evidence and cleanup ownership: [service40–45 record](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+### 2026-10-14 — MSC115-CASE46 empty audience persistence
+
+HTTP clear-All/header-confirm/save/reopen/full reload passed for the disposable case: version2, empty audience, accepted creator/admin retained. Members and case/task counters remained distinct. Step47 card/category/status totals match persisted tasks; lifecycle transitions and remaining local/HU/template-runtime/KVM gates are still open. Pre46 fixes committed in backend `c943dbe61`, frontend `64158c34`, components `850185d` and template `f8b6125`. [Current evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+### 2026-10-14 — MSC115-CASE48 permissions and49 read-version regression
+
+Member/group-manager read-only controls and unrelated Anna detail denial passed over HTTP. A member read incorrectly increased the case edit version, rejecting another actor's already-open Start work confirmation. Backend/local read now preserve that version. Two embedded Mongo tests and seven local service tests passed; a fresh UI-created case replay proved member read version0 followed by Alex's original version0 command HTTP200/version1, without reopening or reload. Full lifecycle tail, runtime counter baseline reconciliation, local/HU/KVM remain open; see [current evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+
+### 2026-10-14 — MSC115-CASE49–50 lifecycle and command conflict repair
+
+Complete/cancel/trash/reopen and bucket/non-trash counter transitions passed; persisted notifications exclude the actor. The Water leak runtime counter mismatch was reconciled through normal Edit/Save. The 11-action mobile menu fits390x844 and scrolls its items at390x568 without clipping; no menu code change.
+
+Maya joining advanced the case version and incorrectly blocked Alex's independent Leave command. Backend/local commands now validate current state; editor saves and persistence retain optimistic protection. Three embedded Mongo, six standard service and nine local tests passed. The original open confirmation then succeeded with its old version0, preserving Maya's accepted membership. Takeover/last leave and pending-invitation/last decline branches reached their expected persisted states. Frontend-sync restored and nginx synced12:24:08 Europe/Prague. Notification UI, other-actor menu convergence, step51 and remaining local/HU/template-runtime/KVM gates are not claimed complete. [Current evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+
+### 2026-10-14 — MSC115-CASE-PROVIDER52–54 quotations
+
+HTTP/UI recommendation selection/cancel, exact-provider invitation, acceptance and quotation save/reload passed. Member/provider menus remain read-only; admin edit and Pending→Accepted→Rejected→Pending passed. The shared currency menu receives supported currencies from the existing payment owner through the normal profile poll, with no separate picker request. Amount/currency share one row; policy descriptions now span below the separate title/badge header. Missing quotation filter counters use the existing signal state and shared red counters; a status write reconciled the visible bucket and counts with one POST and no extra read.
+
+19 backend,25 frontend and1 transport tests passed; assembly audit passed. Sole frontend-sync restored and current sync13:02:37 Europe/Prague. These application/domain changes have no template equivalent; prior affected calendar template runtime remains open. Notification View case/unread UI follow-up passed for the recorded Start notification. Steps55–57, queued51/task board and broad local/HU/KVM/cleanup remain open. [Current evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+
+### 2026-10-14 — MSC115-CASE-PROVIDER55–57 access and notifications
+
+All three actors opened the same stable quotation group chat, distinct from the main case chat and listed in Chats All/Cases. A second UI-created provider offer has its own group; Anna lacks its Conversation action and receives404 on direct entry, paired with200 for her own offer. Invitation/response/offer/decision notifications opened the correct case; repeated accepted-provider invitation did not change version or assignment. Private group/announcements are denied to Anna with authorized-owner controls. Leave/reinvite/decline retained readable case history but revoked the existing offer chat; normal Join restored accepted state for continuing QA. Three focused JUnit tests passed. No production change. Remaining local/HU/KVM/template-runtime/cleanup gates stay open. [Evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+### 2026-10-14 — MSC115 task board58–60 and display-only currency cache
+
+Mobile375px swipe/end gutter and desktop three-column layout passed. A new disposable board verified admin/member controls, accepted-only quotation assignment, shared terms, task dates and assignee clear/save/full-reload/restore. The user replaced the multi-currency badge requirement with one approximate total using the existing Summary preference and payment owner rates, memory-cached from the initial immediate realtime response and later profile polls. The rendered360EUR+7500HUF badge is≈378.75EUR; no separate payment/rate requests occur. Original quotation currency is unrestricted by this display.9 backend,23 frontend and1 transport tests plus assembly audit passed; frontend-sync restored. Application/backend-only fix has no template equivalent.61 cycle error is correctly below the active Task header; Reopen/Start/Complete passed. Remaining61–63 and broad gates remain open. [Evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+### 2026-10-14 — MSC115 retained tasks61–63 and case chats64–69
+
+Retained deletion, task progress/edit guards and provider-calendar removal passed over HTTP. Evan's accepted quotation terms are visible read-only. Step62's stale provider-list exclusion was reconciled to the existing step54/product rule; competing quotation conversations remain isolated. Main-chat unread recipients and removed-provider HTTP/already-open WebSocket rejection were verified. Direct chat Tasks performs one read without an underlying Cases overview; the existing header counter follows canonical task changes4→5. The69 error/retry test exposed a save error on a read surface: fixed with the shared centered empty/error card, distinct load/access text and EN/HU backend seeds.14 focused frontend tests and15000-message seed audit pass; desktop/mobile error, normal empty column and successful retry verified. Commonb4e04b8 propagated to template881640a/5efc5f6; per user, affected template regression is collected for a prescribed checkpoint or one final batch, not repeated after every code/spot-check fix. The existing mongo-sync single-file importer applied i18n messages then bundles; no full seed reload. Next70; broad local/HU/KVM/convergence/cleanup gates remain. [Evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+### 2026-10-14 — MSC115 scheduled-task UI70
+
+Existing work-community ready check passed. The separate Scheduled tasks popup shows counter1 and a passive yearly row with affected4/menu. Overview creation is personal; entered Park Court admin creation defaults all3 group members, ordinary Maya in the same group remains personal, and neither form has a group selector. Original Riverside task editing uses compact member pills; profile open/close retains4, with shared picker All/4. No schedule was saved or canonical task altered. Next71 requires prepared reversible dedicated schedules and45-day boundary controls through the existing harness; later lifecycle and broad gates remain open. [Evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+### 2026-10-14 — MSC115 schedule71–75 and command conflict audit
+
+Focused HTTP boundary, dedupe/delivery retry, recurrence edits, lifecycle, member View-only and reload counters passed. The versioned control proved only the active schedule executes; paused/deleted controls were restored. Lifecycle commands now use current state across schedules/services/announcements/campaigns while editor and concurrent-write guards remain.32 backend and38 local tests passed, including the repaired Work seed counter ordering.75 exposed a false empty state beside a top alert: SmartList now uses its centered shared error card;13 focused tests and browser503/retry passed. Shared fix propagated to template; its runtime batch remains queued. Next76; broader local/HU/KVM and campaign cleanup remain. [Detailed evidence](../evidence/work-community/MSC115-step40-45-services-20261014.json).
+
+
+### 2026-10-15 — MSC115-GUIDES source scope closed
+
+Source HTTP guides108–113 and the user-requested local spot checks PASS. Existing common guide fields are extended, including Work sidebar, admin/article/image controls, Voting/payment fields and repeated Members menus. Popup/shade/launcher remain stable across measured step transitions; the launcher remains active from a fresh popup's Guide click through positioning. Short mobile HTML/upload/replace clearance passes. No-guide/error/retry and pending-close/workspace isolation are distinct and verified. Exact local/backend parity:118contexts,1513guide fields,15240EN/HU messages; all3Mongo seeds and live demo catalog match. [Final evidence and precise limits](../evidence/work-community/MSC115-guides-20261015/summary.json).
+
+Template propagation114 is complete; retained-template runtime is exclusively in its separate QA. KVM115–117 was transferred by the user to another session. This closes the source guide block, not the entire119-step campaign. Retained fixture records are preserved for that handoff; no campaign reset or integration-key cleanup claimed. Guide-owned sessions were closed via the launcher. Compilation optimization remains outsideMSC115. Consecutive MSC115 commits are consolidated with origin updates protected by force-with-lease and backup refs.
+
+
+## MSC-115 closure — 15 October 2026
+
+MSC-115 is closed through119. This supersedes the earlier KVM transfer and retained-fixture pointers above. The [closure receipt](../evidence/work-community/MSC115-closure-20261015/summary.json) ties accepted1–39, recorded40–107, closed108–114 and focused115–119 to their original evidence. Existing monolith UI coverage was retained; the user authorized backend/transport-focused KVM sampling rather than a full replay. Local/HU coverage limits remain explicit.
+
+The communication worker now skips empty-group remote policy/authentication reads.21 focused JUnit tests passed; existing monolith compilation and in-app delivery passed. KVM scheduled-case idempotency, task authorization and asynchronous feedback/counter checks passed. The [performance receipt](../evidence/work-community/MSC115-closure-20261015/performance.json) preserves the initial slowdown and the minimal-CPU investigation:15 sequential writes per image, new259/252ms versus old273ms means, essentially unchanged255–258ms medians. The initial47% slowdown was not reproduced. Background job differences prevent a general performance-equivalence claim. Historical read-sweep throughput remains19.3% below the documented pre-domain monolith, with2.3% higher p95 under different deployment/data limits; this is recorded, not hidden.
+
+Both fixture resets were verified against retained snapshots. Two disposable keys were revoked through API; the known created integration records were cleaned after ownership checks. KVM is off with autostart disabled, original monolith services restored, mongodb-sync off, and the requested statistics terminal retained. CSV/XLSX, detail rows, counts and current handoff are synchronized.
+
+Template runtime QA and the four [live-deployment checks](../checklists/group/MSC-115_LIVE_DEPLOYMENT_QA.md) are independent tasks and do not block or reopen MSC-115. Frontend compilation optimization remains separate.

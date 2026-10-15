@@ -1,0 +1,263 @@
+{
+  "date": "2026-10-13",
+  "checkpoint": "MSC115-CAMPAIGN-API",
+  "scope": "HTTP monolith steps38–39; local browser and campaign KVM remain open.",
+  "step38": {
+    "result": "PASS — HTTP",
+    "checks": [
+      {
+        "actor": "Maya Work",
+        "path": "/connect",
+        "method": "POST",
+        "status": 200,
+        "ms": 32,
+        "data": {
+          "connected": true,
+          "maxBatchSize": 1000,
+          "profileId": "group:myscoutee-work:1b1c70be2349b3359a8f6f94",
+          "profileName": "Maya Stone",
+          "groupId": "myscoutee-work",
+          "groupName": "MyScoutee Work",
+          "operations": [
+            "event",
+            "encounters",
+            "inviteParticipants",
+            "createEvents",
+            "createCampaigns",
+            "updateCampaign",
+            "campaignAction",
+            "inviteGroupParticipants"
+          ],
+          "inviteGroups": [
+            {
+              "id": "seed-community-language-lab",
+              "name": "Language Lab"
+            }
+          ],
+          "accessMode": "write"
+        }
+      },
+      {
+        "actor": "Maya Work",
+        "path": "/campaigns/7aabda4b-53b7-4afd-8efd-b0eaa68ffcbc",
+        "method": "PUT",
+        "status": 404,
+        "ms": 43,
+        "data": {
+          "timestamp": "2026-10-13T18:22:29.565Z",
+          "status": 404,
+          "error": "Not Found",
+          "message": "404 NOT_FOUND",
+          "path": "/integrations/v1/campaigns/7aabda4b-53b7-4afd-8efd-b0eaa68ffcbc"
+        }
+      },
+      {
+        "actor": "Maya Work",
+        "path": "/campaigns/7aabda4b-53b7-4afd-8efd-b0eaa68ffcbc/action",
+        "method": "POST",
+        "status": 404,
+        "ms": 24,
+        "data": {
+          "timestamp": "2026-10-13T18:22:29.593Z",
+          "status": 404,
+          "error": "Not Found",
+          "message": "404 NOT_FOUND",
+          "path": "/integrations/v1/campaigns/7aabda4b-53b7-4afd-8efd-b0eaa68ffcbc/action"
+        }
+      },
+      {
+        "actor": "Maya Community",
+        "path": "/connect",
+        "method": "POST",
+        "status": 200,
+        "ms": 29,
+        "data": {
+          "connected": true,
+          "maxBatchSize": 1000,
+          "profileId": "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+          "profileName": "Maya Stone",
+          "groupId": "myscoutee-community",
+          "groupName": "MyScoutee Community",
+          "operations": [
+            "event",
+            "encounters",
+            "inviteParticipants",
+            "createEvents",
+            "saveCase",
+            "caseAction",
+            "saveAnnouncement",
+            "announcementAction",
+            "saveScheduledTask",
+            "scheduledTaskAction",
+            "serviceAction",
+            "inviteGroupParticipants"
+          ],
+          "inviteGroups": [
+            {
+              "id": "seed-community-language-lab",
+              "name": "Language Lab"
+            }
+          ],
+          "accessMode": "write"
+        }
+      },
+      {
+        "actor": "Maya Community",
+        "path": "/campaigns",
+        "method": "POST",
+        "status": 403,
+        "ms": 27,
+        "data": {
+          "timestamp": "2026-10-13T18:23:25.194Z",
+          "status": 403,
+          "error": "Forbidden",
+          "message": "403 FORBIDDEN",
+          "path": "/integrations/v1/campaigns"
+        }
+      },
+      {
+        "actor": "Maya Community",
+        "path": "/campaigns/7aabda4b-53b7-4afd-8efd-b0eaa68ffcbc",
+        "method": "PUT",
+        "status": 403,
+        "ms": 23,
+        "data": {
+          "timestamp": "2026-10-13T18:23:25.217Z",
+          "status": 403,
+          "error": "Forbidden",
+          "message": "403 FORBIDDEN",
+          "path": "/integrations/v1/campaigns/7aabda4b-53b7-4afd-8efd-b0eaa68ffcbc"
+        }
+      },
+      {
+        "actor": "Maya Work",
+        "path": "/groups/seed-community-book-circle/invites",
+        "method": "POST",
+        "status": 403,
+        "ms": 36,
+        "data": {
+          "timestamp": "2026-10-13T18:24:18.779Z",
+          "status": 403,
+          "error": "Forbidden",
+          "message": "403 FORBIDDEN",
+          "path": "/integrations/v1/groups/seed-community-book-circle/invites"
+        }
+      }
+    ],
+    "persistedOracle": "Both Anna drafts retained their original owner/workspace/title, draft status and version0 after wrong-owner requests. Mongo returned zero campaigns titled MSC115 step38 forbidden cross-group create."
+  },
+  "step39": {
+    "result": "PASS — existing HTTP Event and Group invitation create contracts",
+    "checks": [
+      {
+        "path": "/events",
+        "method": "POST",
+        "status": 200,
+        "ms": 708,
+        "data": {
+          "items": [
+            {
+              "id": "d5c3ac8f-f1c4-44b1-aaf9-47dab732d568",
+              "externalId": "7c928a5c-c208-46a5-a098-5eff38e98cc3",
+              "result": "created",
+              "error": null
+            }
+          ]
+        }
+      },
+      {
+        "path": "/events",
+        "method": "POST",
+        "status": 200,
+        "ms": 25,
+        "data": {
+          "items": [
+            {
+              "id": "d5c3ac8f-f1c4-44b1-aaf9-47dab732d568",
+              "externalId": "7c928a5c-c208-46a5-a098-5eff38e98cc3",
+              "result": "existing",
+              "error": null
+            }
+          ]
+        }
+      },
+      {
+        "path": "/groups/seed-community-book-circle/invites",
+        "method": "POST",
+        "status": 200,
+        "ms": 52,
+        "data": {
+          "items": [
+            {
+              "id": "MSC115-step39-cd32aec0-346d-4af6-ad18-b538224aff3e",
+              "claimed": false,
+              "inviteUrlOrigin": "http://localhost",
+              "inviteUrlPath": "/game",
+              "mode": "dating"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/groups/seed-community-book-circle/invites",
+        "method": "POST",
+        "status": 200,
+        "ms": 40,
+        "data": {
+          "items": [
+            {
+              "id": "MSC115-step39-cd32aec0-346d-4af6-ad18-b538224aff3e",
+              "claimed": false,
+              "inviteUrlOrigin": "http://localhost",
+              "inviteUrlPath": "/game",
+              "mode": "dating"
+            }
+          ]
+        }
+      }
+    ],
+    "groupInviteStable": true,
+    "contract": "Existing Group create operation is IntegrationParticipantInviteService.createGroup via POST /groups/{groupId}/invites. This is participant-link creation; no standalone group-create API is asserted or added.",
+    "persistedOracle": {
+      "eventSourceId": "7c928a5c-c208-46a5-a098-5eff38e98cc3",
+      "eventDocumentId": "6ace773d545b2776a86726ea",
+      "eventStatus": "DR",
+      "workspaceGroupId": "myscoutee-work",
+      "creatorUserId": "group:myscoutee-work:bf057de7c586eede7e84bdc7",
+      "groupInviteId": "fa5343ebdff02fb3bfff364e5a61ca2ea3bd3a7a21856e3d070caab6495b6fa2",
+      "groupInviteOwnerType": "community",
+      "groupId": "seed-community-book-circle",
+      "participantId": "MSC115-step39-cd32aec0-346d-4af6-ad18-b538224aff3e",
+      "claimed": false
+    }
+  },
+  "architecture": {
+    "A01": "PASS: existing integration authentication/capabilities and Campaign, Event, Group invitation domain owners; no product changes in38–39.",
+    "A02": "N/A API operations have no local route delay; response timings included.",
+    "A03": "N/A direct API controls; normal credential UI reused.",
+    "A04": "N/A no new popup behavior under test.",
+    "A05": "N/A API controls; existing UI profile context determines generated credential scope, confirmed by connect.",
+    "A06": "N/A external API creates identities; step37 already records ordinary Campaign model readback.",
+    "A07": "PASS scoped: denied calls leave Campaign records unchanged; retries reuse identities. Complete Event/Group lifecycle counters outside39 not asserted.",
+    "A08": "PASS: one supported call per action plus intentional retry/negative controls; no background client or poll introduced.",
+    "A09": "N/A no SmartList change in38–39.",
+    "A10": "PASS HTTP owner/group isolation and persisted Event/invite identities. Local/KVM NOT RUN.",
+    "A11": "N/A Work Campaign API and Group/Event business controls do not change retained template shared source.",
+    "A12": "PASS: existing healthy monolith/watchers retained; no extra build/server/test process started."
+  },
+  "retainedCleanup": {
+    "eventExternalId": "d5c3ac8f-f1c4-44b1-aaf9-47dab732d568",
+    "eventId": "7c928a5c-c208-46a5-a098-5eff38e98cc3",
+    "groupParticipantId": "MSC115-step39-cd32aec0-346d-4af6-ad18-b538224aff3e",
+    "credentials": "Private /tmp/myscoutee-msc115-campaign-api-qa; no secrets in repository.",
+    "campaigns": "See step37 record.",
+    "note": "No global fixture reset performed; prior step35 state preserved."
+  },
+  "step40": {
+    "result": "NOT RUN — user requested no further continuation",
+    "prepared": "Existing work-community harness extended with guarded stage-service-discovery/restore-service-discovery.14 exact-ID disposable service records:12 published,1 draft,1 trash; own static service images. Existing provider profiles untouched. MSC115-SERVICE launcher prepared Anna/Alex after closing only the earlier campaign-managed sessions.",
+    "baseline": "/tmp/msc115-step40-baseline.json",
+    "lastObservation": "Alex retained Work profile; Community navigation attempt timed out and node kernel reset. Final browser position is not verified. Do not claim step40 PASS.",
+    "resume": "Only resume40 when user authorizes. Revalidate fixture/managed sessions first; use existing launcher if sessions closed. Screenshots remain outside Git."
+  }
+}

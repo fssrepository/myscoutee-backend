@@ -1,0 +1,123 @@
+[
+  {
+    "assembly": "identity",
+    "path": "/api/auth/me",
+    "status": 200,
+    "passed": true,
+    "responseShape": [
+      "id",
+      "name",
+      "age",
+      "birthday",
+      "city",
+      "height",
+      "physique",
+      "languages",
+      "horoscope",
+      "initials",
+      "gender",
+      "statusText",
+      "hostTier",
+      "traitLabel",
+      "completion",
+      "profileFormVersion",
+      "headline",
+      "about",
+      "affinity",
+      "locationCoordinates",
+      "partitionKey",
+      "images",
+      "profileDetails",
+      "impressions",
+      "profileStatus",
+      "previousProfileStatus",
+      "deletedAtIso",
+      "admin",
+      "operator",
+      "activities",
+      "notificationPreferences",
+      "filterCount",
+      "filterPreferences",
+      "counterOverrides"
+    ],
+    "code": null
+  },
+  {
+    "assembly": "identity",
+    "path": "/api/auth/me/profile-ext",
+    "status": 200,
+    "passed": true,
+    "responseShape": [
+      "profileExt",
+      "filterCount",
+      "filterPreferences",
+      "counterOverrides",
+      "workspace",
+      "accountProfile"
+    ],
+    "code": null
+  },
+  {
+    "assembly": "community",
+    "path": "/api/activities/events",
+    "status": 200,
+    "passed": true,
+    "responseShape": [
+      "records",
+      "total",
+      "nextCursor",
+      "sortKeys"
+    ],
+    "code": null
+  },
+  {
+    "assembly": "communication",
+    "path": "/api/notifications",
+    "status": 200,
+    "passed": true,
+    "responseShape": [
+      "records",
+      "total",
+      "nextCursor",
+      "unreadCount",
+      "muted"
+    ],
+    "code": null
+  },
+  {
+    "assembly": "assets",
+    "path": "/api/assets",
+    "status": 200,
+    "passed": true,
+    "responseShape": "list",
+    "code": null
+  },
+  {
+    "assembly": "payments",
+    "path": "/api/payment-methods",
+    "status": 200,
+    "passed": true,
+    "responseShape": [
+      "items",
+      "total",
+      "nextCursor",
+      "canAdd",
+      "pendingRegistration",
+      "currentProvider"
+    ],
+    "code": null
+  },
+  {
+    "assembly": "affinity",
+    "path": "/api/activities/rates",
+    "status": 200,
+    "passed": true,
+    "responseShape": "list",
+    "code": null
+  },
+  {
+    "path": "/api/auth/me/logout",
+    "status": 200,
+    "passed": true
+  }
+]

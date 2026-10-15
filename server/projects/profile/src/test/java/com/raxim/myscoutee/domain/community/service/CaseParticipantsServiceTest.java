@@ -29,16 +29,17 @@ class CaseParticipantsServiceTest {
         assertThat(conversation.offerChatParticipantAccountIds("missing")).isEmpty();
         verify(repository).findById("case"); verifyNoMoreInteractions(repository);
     }
-    @Test void menuCountExcludesTrashAndRetainsTheIntegerUpperBound() {
+    @Test void administratorChangesUseTheExistingWriteOwner() {
         var repository = mock(ServiceCasesRepository.class);
-        when(repository.bucketCounts("base", "account", List.of("managed"))).thenReturn(List.of(
-                new ServiceCasesRepository.CaseBucket("open", "maintenance", Integer.MAX_VALUE),
-                new ServiceCasesRepository.CaseBucket("completed", "maintenance", 2),
-                new ServiceCasesRepository.CaseBucket("trash", "maintenance", 10)));
-        assertThat(new CaseParticipantsService(repository).visibleCount("base", "account", List.of("managed"))).isEqualTo(Integer.MAX_VALUE);
-        when(repository.bucketCounts("base", "account", List.of("managed"))).thenReturn(List.of(
-                new ServiceCasesRepository.CaseBucket("open", "maintenance", 3), new ServiceCasesRepository.CaseBucket("trash", "maintenance", 10)));
-        assertThat(new CaseParticipantsService(repository).visibleCount("base", "account", List.of("managed"))).isEqualTo(3);
+        var writer = mock(CommunityCaseCounterWork.class);
+        var service = new CaseParticipantsService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", writer);
+        var votes = mock(CommunityVoteCounterWork.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "votes", votes);
+        service.groupAdminsChanged("homes", List.of("admin"));
+        verify(votes).membersChanged("homes");
+        verify(writer).groupAdminsChanged("homes", List.of("admin"));
+        verifyNoInteractions(repository);
     }
     private CaseDetails.Offer offer(String id, String provider) {
         return new CaseDetails.Offer(id, provider, "service", 25, "EUR", "", "accepted", "now", null, null, List.of(), List.of());

@@ -13,4 +13,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 })
 public record ServiceFeedback(@Id String id, String baseGroupId, String caseId, String caseTitle,
         String serviceId, String providerAccountId, String viewerAccountId, String status,
-        Map<String, Double> criteria, Double average, String comment, String createdAtIso, String submittedAtIso) {}
+        Map<String, Double> criteria, Double average, String comment, String createdAtIso, String submittedAtIso,
+        @com.fasterxml.jackson.annotation.JsonIgnore CounterState counterState) {
+    public record CounterState(long revision, String status, java.util.List<String> reviewerProfileIds,
+            java.util.List<com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change> pending) {}
+}

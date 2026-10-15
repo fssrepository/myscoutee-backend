@@ -15,14 +15,14 @@ public final class RemotePaymentMethods extends RemoteReadTransport implements P
             Duration requestTimeout, ObjectMapper mapper, MeterRegistry metrics) {
         super(origin, token, allowHttp, connectTimeout, requestTimeout, mapper, metrics); this.mapper = mapper;
     }
-    @Override public boolean cardsAvailable() {
+    @Override public Options options() {
         var command = new PaymentMethodsProtocol.Query(PaymentMethodsProtocol.Scope.current());
         if (!PaymentMethodsProtocol.valid(command)) throw new IllegalArgumentException("Invalid payment-methods request");
         byte[] bytes = mapper.writeValueAsBytes(command);
         if (bytes.length > PaymentMethodsProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("payment-methods request exceeds byte limit");
         var result = ownerExchange(PaymentMethodsProtocol.AVAILABLE, bytes, new TypeReference<PaymentMethodsProtocol.Decision>() {},
-                "payment-methods.available", PaymentMethodsProtocol.MAX_RESPONSE_BYTES, v -> v.value()!=null);
-        return result.value();
+                "payment-methods.available", PaymentMethodsProtocol.MAX_RESPONSE_BYTES, v -> v.value()!=null && v.currencies()!=null && v.eurRates()!=null);
+        return new Options(result.value(), result.currencies(), result.eurRates());
     }
     private <T> T ownerExchange(String path, byte[] bytes, TypeReference<T> type, String operation, int limit,
             java.util.function.Predicate<T> valid) {

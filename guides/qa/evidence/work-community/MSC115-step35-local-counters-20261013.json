@@ -1,0 +1,172 @@
+{
+  "date": "2026-10-13",
+  "mode": "real frontend-local; backend stopped; no fixture overrides",
+  "before": {
+    "sender": "group:myscoutee-work:u1",
+    "notifications": 46,
+    "recipients": [
+      {
+        "id": "u1",
+        "name": "Farkas Anna",
+        "notifications": 27
+      },
+      {
+        "id": "u2",
+        "name": "Kiss Balázs",
+        "notifications": 0
+      },
+      {
+        "id": "u32",
+        "name": "Alex Turner",
+        "notifications": 2
+      }
+    ]
+  },
+  "afterSubmit": {
+    "storedFeedback": 0,
+    "buckets": {
+      "ownEvents": 0,
+      "pending": 0,
+      "feedbacked": 1,
+      "removed": 0
+    },
+    "notifications": [
+      {
+        "id": "event-feedback-submitted:work-event-product-recap:group:myscoutee-work:u1:group:myscoutee-work:u32",
+        "recipient": "u32",
+        "sender": "group:myscoutee-work:u1"
+      },
+      {
+        "id": "event-feedback-submitted:work-event-product-recap:group:myscoutee-work:u1:group:myscoutee-work:u2",
+        "recipient": "u2",
+        "sender": "group:myscoutee-work:u1"
+      }
+    ],
+    "counts": [
+      {
+        "id": "u32",
+        "stored": 3,
+        "unread": 3
+      },
+      {
+        "id": "u2",
+        "stored": 1,
+        "unread": 1
+      }
+    ],
+    "senderCount": 27
+  },
+  "afterReload": {
+    "notifications": [
+      {
+        "recipient": "u32",
+        "sender": "group:myscoutee-work:u1"
+      },
+      {
+        "recipient": "u2",
+        "sender": "group:myscoutee-work:u1"
+      }
+    ],
+    "state": "2026-10-13T15:14:53.616Z"
+  },
+  "realtimeSamples": [
+    {
+      "id": "group:myscoutee-work:u1",
+      "stored": {
+        "game": 3,
+        "events": 3,
+        "feedback": 0,
+        "buckets": {
+          "ownEvents": 0,
+          "pending": 0,
+          "feedbacked": 1,
+          "removed": 0
+        },
+        "menu": {
+          "campaignsPublished": 1
+        }
+      },
+      "visible": {
+        "game": 3,
+        "events": 3,
+        "feedback": 0,
+        "buckets": {
+          "ownEvents": 0,
+          "pending": 0,
+          "feedbacked": 1,
+          "removed": 0
+        }
+      },
+      "at": 1791904973887
+    },
+    {
+      "id": "group:myscoutee-work:u1",
+      "stored": {
+        "game": 3,
+        "events": 3,
+        "feedback": 0,
+        "buckets": {
+          "ownEvents": 0,
+          "pending": 0,
+          "feedbacked": 1,
+          "removed": 0
+        },
+        "menu": {
+          "campaignsPublished": 1
+        }
+      },
+      "visible": {
+        "game": 3,
+        "events": 3,
+        "feedback": 0,
+        "buckets": {
+          "ownEvents": 0,
+          "pending": 0,
+          "feedbacked": 1,
+          "removed": 0
+        }
+      },
+      "at": 1791904996675
+    },
+    {
+      "id": "group:myscoutee-work:u1",
+      "stored": {
+        "game": 3,
+        "events": 3,
+        "feedback": 0,
+        "buckets": {
+          "ownEvents": 0,
+          "pending": 0,
+          "feedbacked": 1,
+          "removed": 0
+        },
+        "menu": {
+          "campaignsPublished": 1
+        }
+      },
+      "visible": {
+        "game": 3,
+        "events": 3,
+        "feedback": 0,
+        "buckets": {
+          "ownEvents": 0,
+          "pending": 0,
+          "feedbacked": 1,
+          "removed": 0
+        }
+      },
+      "at": 1791905047679
+    }
+  ],
+  "observations": [
+    "Pending list1 and menu badge1 after existing Work seed counter stamping.",
+    "Normal UI feedback submit:pending1→0,feedbacked0→1; Alex/Balazs one notification each; sender27 unchanged.",
+    "Reload retained answers and exactly2 recipient notifications; no duplicate on reopen.",
+    "Selected product-team Campaign filter retains correct Feedbacked1; mobile390px has no document horizontal overflow.",
+    "Displayed game/events/feedback counters remained equal to stored values across74s, including multiple transport cursor advances."
+  ],
+  "limits": [
+    "No fault/retry injection for local feedback delivery.",
+    "No real image-load transition observed for new shared avatar branches because current event cards used initials/placeholders. Shared library and app compile passed; lazy loader markup/styles match existing image card pattern."
+  ]
+}
