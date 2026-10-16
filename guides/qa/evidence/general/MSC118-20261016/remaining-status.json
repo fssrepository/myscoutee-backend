@@ -1,0 +1,66 @@
+{
+  "scenario": "role-triad",
+  "checkpointId": "ROLE-GUIDES-NOTIFICATIONS-001",
+  "phase": "baseline-ready",
+  "observed": [
+    {
+      "userId": "operator@myscoutee.local",
+      "storedUnread": 2,
+      "actualUnread": 3,
+      "muted": false,
+      "roleRows": [
+        {
+          "_id": "operator@myscoutee.local:notification-role-v1:release-available",
+          "kind": "release-available",
+          "readAtIso": "2026-10-16T12:19:59.236288933Z"
+        },
+        {
+          "_id": "operator@myscoutee.local:notification-role-v1:node-member-joined",
+          "kind": "node-member-joined",
+          "readAtIso": null
+        },
+        {
+          "_id": "operator@myscoutee.local:notification-role-v1:security-login",
+          "kind": "security-login",
+          "readAtIso": null
+        }
+      ]
+    },
+    {
+      "userId": "admin-demo-ava",
+      "storedUnread": 4,
+      "actualUnread": 6,
+      "muted": false,
+      "roleRows": [
+        {
+          "_id": "admin-demo-ava:notification-role-v1:report-submitted",
+          "kind": "report-submitted",
+          "readAtIso": null
+        },
+        {
+          "_id": "admin-demo-ava:notification-role-v1:feedback-submitted",
+          "kind": "feedback-submitted",
+          "readAtIso": null
+        },
+        {
+          "_id": "admin-demo-ava:notification-role-v1:node-member-joined",
+          "kind": "node-member-joined",
+          "readAtIso": null
+        },
+        {
+          "_id": "admin-demo-ava:notification-role-v1:security-login",
+          "kind": "security-login",
+          "readAtIso": null
+        }
+      ]
+    },
+    {
+      "userId": "650000000000000000000061",
+      "storedUnread": 0,
+      "actualUnread": 0,
+      "muted": false,
+      "roleRows": []
+    }
+  ],
+  "snapshotRetained": true
+}

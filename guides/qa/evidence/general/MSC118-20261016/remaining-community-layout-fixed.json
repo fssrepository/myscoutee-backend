@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-16T13:05:51.260Z",
+  "model": {
+    "size": "wide",
+    "height": "full",
+    "mobilePresentation": "fullscreen",
+    "errorMessage": "operator.community.error.registration.required"
+  },
+  "panel": {
+    "x": 16,
+    "y": 14.390625,
+    "width": 893,
+    "height": 571,
+    "top": 14.390625,
+    "right": 909,
+    "bottom": 585.390625,
+    "left": 16
+  },
+  "error": {
+    "x": 24,
+    "y": 81.75,
+    "width": 399.65625,
+    "height": 36.375,
+    "top": 81.75,
+    "right": 423.65625,
+    "bottom": 118.125,
+    "left": 24
+  },
+  "text": "Register this deployment to view community announcements.",
+  "customError": false
+}

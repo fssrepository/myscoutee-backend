@@ -1,0 +1,231 @@
+
+> myscoutee@1.4.0 test
+> node scripts/with-components.mjs test --watch=false --include=**/demo-bootstrap.service.spec.ts --filter=builds the admin affinity graph
+
+
+> @fssrepository/myscoutee-components@1.4.0 build
+> ng-packagr -p ng-package.json -c tsconfig.lib.json
+
+Building Angular Package
+[debug] Found primary entry point: @fssrepository/myscoutee-components
+[debug] Initializing tsconfig for @fssrepository/myscoutee-components
+[debug] Analysing sources for @fssrepository/myscoutee-components
+[debug] tsc program structure is reused: No old program
+
+------------------------------------------------------------------------------
+Building entry point '@fssrepository/myscoutee-components'
+------------------------------------------------------------------------------
+- Compiling with Angular sources in partial compilation mode.
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+WARNING: ▲ [WARNING] You probably don't mean to use the color value orange in interpolation here.
+It may end up represented as orange, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "orange").
+If you really want to use the color value here, use '"" + $tone'. [plugin angular-sass]
+
+    src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.scss:1025:26:
+      1025 │   .calendar-badge-color-#{$tone} { @include badgeColors.tone($to...
+           ╵                           ^
+
+
+
+WARNING: ▲ [WARNING] You probably don't mean to use the color value purple in interpolation here.
+It may end up represented as purple, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "purple").
+If you really want to use the color value here, use '"" + $tone'. [plugin angular-sass]
+
+    src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.scss:1025:26:
+      1025 │   .calendar-badge-color-#{$tone} { @include badgeColors.tone($to...
+           ╵                           ^
+
+
+
+WARNING: ▲ [WARNING] You probably don't mean to use the color value teal in interpolation here.
+It may end up represented as teal, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "teal").
+If you really want to use the color value here, use '"" + $tone'. [plugin angular-sass]
+
+    src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.scss:1025:26:
+      1025 │   .calendar-badge-color-#{$tone} { @include badgeColors.tone($to...
+           ╵                           ^
+
+
+
+✔ Compiling with Angular sources in partial compilation mode.
+- Writing FESM and DTS bundles
+✔ Writing FESM and DTS bundles
+- Copying assets
+✔ Copying assets
+- Writing package manifest
+[debug] Writing package.json
+[debug] Dependency tslib is allowed in 'dependencies'
+ℹ Removing scripts section in package.json as it's considered a potential security vulnerability.
+ℹ Removing devDependencies section in package.json.
+✔ Writing package manifest
+✔ Built @fssrepository/myscoutee-components
+
+------------------------------------------------------------------------------
+Built Angular Package
+- from: /home/raxim/workspace/myscoutee-backend/frontend/components
+- to:   /home/raxim/workspace/myscoutee-backend/frontend/components/dist
+------------------------------------------------------------------------------
+
+Build at: 2026-10-16T13:34:26.670Z - Time: 4010ms
+
+Using Vitest configuration file: /home/raxim/workspace/myscoutee-backend/frontend/vitest.config.ts
+❯ Building...
+✔ Building...
+Initial chunk files                                                         | Names                                                                    |  Raw size
+chunk-DPSOVKCZ.js                                                           | -                                                                        |   2.98 MB | 
+spec-app-shared-core-local-seed-services-platform-demo-bootstrap.service.js | spec-app-shared-core-local-seed-services-platform-demo-bootstrap.service | 665.61 kB | 
+chunk-MPLTYPDB.js                                                           | -                                                                        | 657.90 kB | 
+chunk-HYMVUWLO.js                                                           | -                                                                        | 213.11 kB | 
+chunk-U4NOYTYA.js                                                           | -                                                                        | 173.86 kB | 
+chunk-KZEQ6AII.js                                                           | -                                                                        | 129.12 kB | 
+chunk-LNIVE3SC.js                                                           | -                                                                        | 109.81 kB | 
+chunk-DONDNXID.js                                                           | -                                                                        |  84.69 kB | 
+styles.css                                                                  | styles                                                                   |  56.92 kB | 
+chunk-KXUNS7E7.js                                                           | -                                                                        |  52.26 kB | 
+chunk-E5QEQXQV.js                                                           | -                                                                        |  35.02 kB | 
+chunk-PGU3OLIN.js                                                           | -                                                                        |  32.93 kB | 
+chunk-G775C35N.js                                                           | -                                                                        |  31.43 kB | 
+chunk-5FSRTWHR.js                                                           | -                                                                        |  17.17 kB | 
+chunk-CCTM34YB.js                                                           | -                                                                        |  14.57 kB | 
+chunk-TVDXJXTJ.js                                                           | -                                                                        |  13.84 kB | 
+chunk-KIN5BDNL.js                                                           | -                                                                        |  12.98 kB | 
+chunk-HBBMZVIK.js                                                           | -                                                                        |  12.53 kB | 
+chunk-QXAYR5IJ.js                                                           | -                                                                        |  12.37 kB | 
+init-testbed.js                                                             | init-testbed                                                             |   7.37 kB | 
+chunk-C63JITD3.js                                                           | -                                                                        |   6.71 kB | 
+chunk-W3KH6PAS.js                                                           | -                                                                        |   5.80 kB | 
+chunk-HZXEPMDQ.js                                                           | -                                                                        |   5.27 kB | 
+chunk-OKS67XUG.js                                                           | -                                                                        |   4.90 kB | 
+chunk-FZTJ4AF4.js                                                           | -                                                                        |   4.19 kB | 
+chunk-CXTEKQKM.js                                                           | -                                                                        |   3.79 kB | 
+chunk-4L2HSEBS.js                                                           | -                                                                        |   3.27 kB | 
+chunk-QULZIR6O.js                                                           | -                                                                        |   1.40 kB | 
+vitest-mock-patch.js                                                        | vitest-mock-patch                                                        | 969 bytes | 
+chunk-FNBTIBLD.js                                                           | -                                                                        | 935 bytes | 
+chunk-CXHKAGT6.js                                                           | -                                                                        | 911 bytes | 
+setup-test-browser.js                                                       | setup-test-browser                                                       | 448 bytes | 
+chunk-W55KGMVX.js                                                           | -                                                                        | 437 bytes | 
+chunk-NOIOVR6D.js                                                           | -                                                                        | 186 bytes | 
+polyfills.js                                                                | polyfills                                                                | 105 bytes | 
+
+                                                                            | Initial total                                                            |   5.35 MB
+
+Lazy chunk files                                                            | Names                                                                    |  Raw size
+chunk-PIYROP5I.js                                                           | -                                                                        | 863.64 kB | 
+chunk-YBWUKX4F.js                                                           | -                                                                        | 580.37 kB | 
+chunk-OKC3N3A4.js                                                           | -                                                                        | 330.76 kB | 
+pricing-editor-popup.component-7LYGGIYP.js                                  | pricing-editor-popup-component                                           | 218.10 kB | 
+policies-input-RDSX2A57.js                                                  | index                                                                    | 122.14 kB | 
+chunk-XUOA53X5.js                                                           | -                                                                        |  49.92 kB | 
+chunk-HUVLEHXG.js                                                           | -                                                                        |  30.15 kB | 
+firebase-messaging.service-YDBZHFFL.js                                      | firebase-messaging-service                                               |  29.22 kB | 
+firebase-auth.service-NIU5RPWI.js                                           | firebase-auth-service                                                    |  11.60 kB | 
+chunk-YQ4THSXI.js                                                           | -                                                                        |   8.74 kB | 
+policies-input-popup.component-LAZHH2GG.js                                  | policies-input-popup-component                                           |   7.10 kB | 
+firebase-session-registry.service-GW2DLQFQ.js                               | firebase-session-registry-service                                        |   2.57 kB | 
+chunk-TRUHP7AS.js                                                           | -                                                                        |   1.93 kB | 
+landing-slides-dating-LLB54QPL.js                                           | landing-slides-dating-json                                               |   1.93 kB | 
+landing-slides-community-HW7W5NZ7.js                                        | landing-slides-community-json                                            |   1.90 kB | 
+...and 9 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [21.273 seconds] - 2026-10-16T13:34:48.290Z
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of ContactsPopupComponent [plugin angular-compiler]
+
+    src/app/profile/components/contacts-popup/contacts-popup.component.ts:189:4:
+      189 │     I18nPipe,
+          ╵     ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CampaignsPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/campaigns-popup/campaigns-popup.component.ts:28:124:
+      28 │ ...CampaignEditorComponent, CampaignHistoryPopupComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CommunityGroupEditorComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/community-groups-popup/community-group-editor.component.ts:27:129:
+      27 │ ...ports: [FormsModule, PopupComponent, FormFlowComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CommunityGroupsPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/community-groups-popup/community-groups-popup.component.ts:29:98:
+      29 │ ...nent, InfoCardComponent, CommunityGroupEditorComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CashReceiptPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/payment-methods-popup/cash-receipt-popup.component.ts:20:60:
+      20 │ ...ports: [FormsModule, PopupComponent, FormFlowComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of SummaryCurrencyPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/summary-currency-popup/summary-currency-popup.component.ts:9:46:
+      9 │   imports: [PopupComponent, AppMenuComponent, I18nPipe],
+        ╵                                               ~~~~~~~~
+
+
+
+ RUN  v4.0.18 /home/raxim/workspace/myscoutee-backend/frontend
+
+ ❯ |myscoutee| src/app/shared/core/local/seed/services/platform/demo-bootstrap.service.spec.ts (20 tests | 1 failed | 19 skipped) 63ms
+     ↓ seeds background job configuration for a member and preserves it when admin opens
+     ↓ keeps bulk event handoffs equivalent to per-user event queries
+     ↓ flushes member bootstrap tables per step without a broad IndexedDB flush
+     ↓ seeds feedback state for a selected demo session without rewriting events
+     ↓ seeds common collections and admin users for the admin selector without workspace data
+     ↓ hydrates the operator seed once and flushes both steps sequentially
+     ↓ flushes unchanged operator seed steps without reading persisted state again
+     ↓ migrates a v2 payment catalog with one prepare read and targeted current-version writes
+     ↓ includes the operator user and registry state in the union selector bootstrap
+     ↓ adds admin selector users after member common collections without reseeding common tables
+     ↓ seeds operator-demo-dev notifications and persists the matching unread count
+     ↓ seeds admin-demo-ava notifications and persists the matching unread count
+     ↓ runs admin workspace bootstrap when an admin demo user is selected
+     ↓ the local landing service prepares public content without clearing unrelated demo tables
+     × builds the admin affinity graph with two rated clusters covering the 50 active demo profiles 62ms
+     ↓ seeds member rows for event cards that advertise accepted members
+     ↓ preserves saved event membership and deliberate empty lists when bootstrap runs again
+     ↓ distributes accepted parent members across seeded tournament groups
+     ↓ resets demo bootstrap tables without touching http-scoped storage
+     ↓ full demo reset clears demo-scoped browser keys without touching http-scoped storage
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |myscoutee| src/app/shared/core/local/seed/services/platform/demo-bootstrap.service.spec.ts > Demo bootstrap seeding > builds the admin affinity graph with two rated clusters covering the 50 active demo profiles
+AssertionError: expected 48 to be 50 // Object.is equality
+
+- Expected
++ Received
+
+- 50
++ 48
+
+ ❯ src/app/shared/core/local/seed/services/platform/demo-bootstrap.service.spec.ts:645:35
+    643|     const snapshot = await affinityGraphRepository.buildGraphSnapshot(…
+    644| 
+    645|     expect(snapshot.nodes.length).toBe(50);
+       |                                   ^
+    646|     expect(componentSizes(snapshot.nodes.map(node => node.id), snapsho…
+    647|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 skipped (20)
+   Start at  15:34:48
+   Duration  3.78s (transform 2.11s, setup 1.97s, import 1.33s, tests 63ms, environment 292ms)
+

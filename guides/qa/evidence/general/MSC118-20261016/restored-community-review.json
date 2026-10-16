@@ -1,0 +1,5 @@
+{
+  "url": "http://localhost/operator",
+  "local": false,
+  "text": "yScoutee\nsystem_update_alt\nUpdates\nUpdate this deployment at any time\ntune\nConfiguration\nCheck authentication and messaging\napp_registration\nNode registration\nChoose a registry and register this node\nredeem\nClaim share\nClaim this node's eligible network share\npayments\nRevenue\nReview revenue and the estimated network-pool contribution\nNETWORK CONTRIBUTION\nLeaderboard\nleaderboard\nerror_outline\nRegister this node to view the network leaderboard.\nCommunity\n\nCommunity providers and announcements\n\nclose\n\nRegister this deployment to view community announcements.\n\nforum\nCommunity\ntips_and_updates\nnotifications_active\n4\nedit\nOperator\nDemo Operator\nsettings_input_component\nOperator workspace\nnotifications\n4\ntips_and_updates\nsettings\nclose"
+}

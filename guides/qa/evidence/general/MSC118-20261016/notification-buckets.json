@@ -1,0 +1,157 @@
+[
+  {
+    "actor": 0,
+    "all": {
+      "bucket": "all",
+      "unread": 4,
+      "workspace": "all",
+      "rows": [
+        {
+          "id": "6ad0fee47d046733f03c1bf9",
+          "kind": "security-login",
+          "readAtIso": null
+        },
+        {
+          "id": "operator@myscoutee.local:notification-role-v1:release-available",
+          "kind": "release-available",
+          "readAtIso": null
+        },
+        {
+          "id": "operator@myscoutee.local:notification-role-v1:node-member-joined",
+          "kind": "node-member-joined",
+          "readAtIso": null
+        },
+        {
+          "id": "operator@myscoutee.local:notification-role-v1:security-login",
+          "kind": "security-login",
+          "readAtIso": null
+        }
+      ],
+      "text": "Értesítések\n\n4 new notifications\n\nnotifications\nÖsszes\nexpand_more\n4\nnotifications_active\nclose\napps"
+    },
+    "new": {
+      "bucket": "new",
+      "unread": 4,
+      "workspace": "all",
+      "rows": [
+        {
+          "id": "6ad0fee47d046733f03c1bf9",
+          "kind": "security-login",
+          "readAtIso": null
+        },
+        {
+          "id": "operator@myscoutee.local:notification-role-v1:release-available",
+          "kind": "release-available",
+          "readAtIso": null
+        },
+        {
+          "id": "operator@myscoutee.local:notification-role-v1:node-member-joined",
+          "kind": "node-member-joined",
+          "readAtIso": null
+        },
+        {
+          "id": "operator@myscoutee.local:notification-role-v1:security-login",
+          "kind": "security-login",
+          "readAtIso": null
+        }
+      ],
+      "text": "Értesítések\n\n4 new notifications\n\nfiber_new\nÚj\nexpand_more\n4\nnotifications_active\nclose\napps\nÖsszes\n"
+    }
+  },
+  {
+    "actor": 1,
+    "new": {
+      "bucket": "new",
+      "unread": 4,
+      "workspace": "all",
+      "rows": [
+        {
+          "id": "6ad0fda97d046733f03c1bf6",
+          "kind": "security-login",
+          "readAtIso": null
+        },
+        {
+          "id": "6ad0d580940a42c187463981",
+          "kind": "security-login",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:report-submitted",
+          "kind": "report-submitted",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:feedback-submitted",
+          "kind": "feedback-submitted",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:node-member-joined",
+          "kind": "node-member-joined",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:security-login",
+          "kind": "security-login",
+          "readAtIso": null
+        }
+      ],
+      "text": "Notifications\n\n4 new notifications\n\nfiber_new\nNew\nexpand_more\n4\nnotifications_active\nclose\napps\nAll\n"
+    },
+    "all": {
+      "bucket": "all",
+      "unread": 6,
+      "workspace": "all",
+      "rows": [
+        {
+          "id": "6ad0fda97d046733f03c1bf6",
+          "kind": "security-login",
+          "readAtIso": null
+        },
+        {
+          "id": "6ad0d580940a42c187463981",
+          "kind": "security-login",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:report-submitted",
+          "kind": "report-submitted",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:feedback-submitted",
+          "kind": "feedback-submitted",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:node-member-joined",
+          "kind": "node-member-joined",
+          "readAtIso": null
+        },
+        {
+          "id": "admin-demo-ava:notification-role-v1:security-login",
+          "kind": "security-login",
+          "readAtIso": null
+        }
+      ],
+      "text": "Notifications\n\n6 new notifications\n\nnotifications\nAll\nexpand_more\n6\nnotifications_active\nclose\napps\n"
+    }
+  },
+  {
+    "actor": 2,
+    "new": {
+      "bucket": "new",
+      "unread": 0,
+      "workspace": "all",
+      "rows": [],
+      "text": "Notifications\n\n0 new notifications\n\nfiber_new\nNew\nexpand_more\nnotifications_active\nclose\napps\nAll\nex"
+    },
+    "all": {
+      "bucket": "all",
+      "unread": 0,
+      "workspace": "all",
+      "rows": [],
+      "text": "Notifications\n\n0 new notifications\n\nnotifications\nAll\nexpand_more\nnotifications_active\nclose\napps\nAl"
+    }
+  }
+]

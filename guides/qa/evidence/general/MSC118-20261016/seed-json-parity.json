@@ -1,0 +1,49 @@
+{
+  "demo_db": {
+    "counterMismatches": [],
+    "roleRowsMatchLocalBuilderDefinitions": true,
+    "roles": [
+      {
+        "userId": "admin-demo-ava",
+        "unreadRows": 4,
+        "storedCount": 4
+      },
+      {
+        "userId": "admin-demo-noel",
+        "unreadRows": 4,
+        "storedCount": 4
+      },
+      {
+        "userId": "operator@myscoutee.local",
+        "unreadRows": 3,
+        "storedCount": 3
+      }
+    ]
+  },
+  "e2e_db": {
+    "counterMismatches": [],
+    "roleRowsMatchLocalBuilderDefinitions": true,
+    "roles": [
+      {
+        "userId": "admin-demo-ava",
+        "unreadRows": 4,
+        "storedCount": 4
+      },
+      {
+        "userId": "admin-demo-noel",
+        "unreadRows": 4,
+        "storedCount": 4
+      },
+      {
+        "userId": "operator@myscoutee.local",
+        "unreadRows": 3,
+        "storedCount": 3
+      }
+    ]
+  },
+  "myscoutee_db": {
+    "counterMismatches": [],
+    "roleRowsMatchLocalBuilderDefinitions": true,
+    "roles": []
+  }
+}

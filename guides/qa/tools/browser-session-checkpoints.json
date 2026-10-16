@@ -2955,6 +2955,9 @@
       ]
     },
     "ROLE-GUIDES-NOTIFICATIONS-001": {
+      "fixtureScenario": "role-triad",
+      "fixtureCheckpointId": "ROLE-GUIDES-NOTIFICATIONS-001",
+      "fixtureReadyPhase": "baseline-ready",
       "layout": {
         "columns": 2
       },

@@ -1,0 +1,154 @@
+{
+  "registration": {
+    "at": "2026-10-16T14:34:28.325Z",
+    "url": "http://localhost/operator",
+    "context": "operator.registration",
+    "fields": [
+      {
+        "id": "overview",
+        "targets": [
+          {
+            "tag": "HEADER",
+            "aria": null,
+            "text": "Node registration\n\nChoose a registry server and register explicitly\n\nrefresh\nclose",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "refresh",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Refresh registry state",
+            "text": "refresh",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "disconnect",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Disable connection",
+            "text": "link_off\nDisable connection",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "register",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Register node",
+            "text": "app_registration\nRegister node",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "synchronize-measurements",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Synchronize QMAU",
+            "text": "sync\nSynchronize QMAU",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "close",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Close operator window",
+            "text": "close",
+            "rendered": true
+          }
+        ]
+      }
+    ],
+    "focusPresent": true,
+    "loadError": false,
+    "noGuide": false
+  },
+  "company": {
+    "at": "2026-10-16T14:34:30.530Z",
+    "url": "http://localhost/operator",
+    "context": "operator.claim",
+    "fields": [
+      {
+        "id": "overview",
+        "targets": [
+          {
+            "tag": "HEADER",
+            "aria": null,
+            "text": "Claim share\n\nClaim this node with company details or a client code\n\n0.0%\nclose",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "operator-claim-path-company",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Company details",
+            "text": "business\nCompany details",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "operator-claim-path-client-code",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Use client code",
+            "text": "key\nUse client code",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "operator-claim-legal-name",
+        "targets": [
+          {
+            "tag": "DIV",
+            "aria": null,
+            "text": "Legal company or operator name*",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "operator-claim-attestation",
+        "targets": [
+          {
+            "tag": "DIV",
+            "aria": null,
+            "text": "I attest that I am authorized to submit this claim for the named company or operator.*",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "close",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Close operator window",
+            "text": "close",
+            "rendered": true
+          }
+        ]
+      }
+    ],
+    "focusPresent": true,
+    "loadError": false,
+    "noGuide": false
+  }
+}

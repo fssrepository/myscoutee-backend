@@ -125,7 +125,7 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 
 ## General UI
 
-- [MSC115-TEMPLATE-REGRESSION](general/MSC115-TEMPLATE-REGRESSION.md) — Only unverified template deltas from collected MSC-115/116/117/118/119 fixes; credit completed evidence before execution.
+- [MSC115-TEMPLATE-REGRESSION](../../../../myscoutee-template/guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md) — Only unverified template deltas from collected MSC-115/116/117/118/119 fixes; credit completed evidence before execution.
 
 - [CHAT-CALL-001](general/CHAT-CALL-001.md) — Saját STUN, WebRTC hang/videó, MLS és koordinátorcsere.
 

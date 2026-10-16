@@ -1,0 +1,62 @@
+{
+  "at": "2026-10-16T12:50:21.512Z",
+  "url": "http://localhost/operator",
+  "context": "notifications",
+  "fields": [
+    {
+      "id": "notification-bucket:trigger",
+      "targets": []
+    },
+    {
+      "id": "notification-attention-preference",
+      "targets": [
+        {
+          "tag": "APP-MENU",
+          "aria": null,
+          "text": "notifications_active",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "notification-workspace:trigger",
+      "targets": []
+    },
+    {
+      "id": "notification-list",
+      "targets": [
+        {
+          "tag": "APP-SMART-LIST",
+          "aria": null,
+          "text": "Thu, 15 Oct 2026\nschedule\n15 Oct, 18:27\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "notification-row-actions",
+      "targets": [
+        {
+          "tag": "SINGLE-ROW",
+          "aria": null,
+          "text": "schedule\n15 Oct, 18:27\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Close notifications",
+          "text": "close",
+          "rendered": true
+        }
+      ]
+    }
+  ],
+  "focusPresent": true,
+  "loadError": false,
+  "noGuide": false
+}

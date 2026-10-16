@@ -1,0 +1,76 @@
+{
+  "at": "2026-10-16T12:42:48.684Z",
+  "url": "http://localhost/operator",
+  "context": "operator.configuration",
+  "fields": [
+    {
+      "id": "overview",
+      "targets": [
+        {
+          "tag": "HEADER",
+          "aria": null,
+          "text": "Configuration\n\nBranding, administrator access, Payments, and Firebase\n\nclose",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "operator-save-branding",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Save branding",
+          "text": "save\nSave branding",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "operator-save-privacy-contact",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Save privacy contact",
+          "text": "save\nSave privacy contact",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "operator-save-admin-emails",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Save administrators",
+          "text": "save\nSave administrators",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "operator-save-firebase",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Save Firebase",
+          "text": "save\nSave Firebase",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Close operator window",
+          "text": "close",
+          "rendered": true
+        }
+      ]
+    }
+  ],
+  "focusPresent": true,
+  "loadError": false,
+  "noGuide": false
+}

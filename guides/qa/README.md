@@ -19,7 +19,7 @@ There is no standalone MSC-119 QA: all remaining monolith/local guide checks
 precede one KVM sample. Accepted MSC-115 evidence and existing API/MCP/Feedback
 coverage are retained without replay. Call/volume guides remain
 in CHAT-CALL-001, and role guides in
-[MSC-118](checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md), with39 ordered steps.
+[MSC-118](checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md), with its consolidated eight-step sequence.
 No overlapping guide tour is executed twice.
 During any UI case, record guide/notification launcher overlap when observed;
 both buttons must remain separately identifiable and usable. Preserve the existing

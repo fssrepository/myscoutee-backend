@@ -169,7 +169,7 @@ if __name__ == '__main__':
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('stage', 'status', 'reset'))
-    parser.add_argument('--checkpoint', choices=('registry', 'revenue', 'mcp-events'), default='registry')
+    parser.add_argument('--checkpoint', choices=('registry', 'revenue', 'mcp-events', 'role-guides'), default='registry')
     args = parser.parse_args()
     if args.checkpoint == 'revenue':
         CHECKPOINT = 'OPERATOR-REVENUE-LIFECYCLE-001'
@@ -179,6 +179,13 @@ if __name__ == '__main__':
         CHECKPOINT = 'MSC115-WORK-COMMUNITY'
         SCENARIO = 'work-community'
         RETAINED = Path(tempfile.gettempdir()) / 'myscoutee-qa-mcp-events-registry'
+        MONGO_ACTIONS = {'stage': 'capture-integration-registry',
+                         'status': 'integration-registry-status',
+                         'reset': 'restore-integration-registry'}
+    elif args.checkpoint == 'role-guides':
+        CHECKPOINT = 'ROLE-GUIDES-NOTIFICATIONS-001'
+        SCENARIO = 'role-triad'
+        RETAINED = Path(tempfile.gettempdir()) / 'myscoutee-qa-role-guides-registry'
         MONGO_ACTIONS = {'stage': 'capture-integration-registry',
                          'status': 'integration-registry-status',
                          'reset': 'restore-integration-registry'}

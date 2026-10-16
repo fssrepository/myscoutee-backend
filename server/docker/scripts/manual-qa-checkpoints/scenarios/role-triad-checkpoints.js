@@ -23,6 +23,90 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
 
+  // The guide campaign shares these roles but must not stage moderation business actions.
+  // Keep its narrow retention boundary with the existing role fixture owner.
+  if (checkpointId === "ROLE-GUIDES-NOTIFICATIONS-001") {
+    Q.assertDeploymentSafety();
+    const ids = [OPERATOR_ID, ADMIN_ID, "650000000000000000000061"];
+    const users = { userId: { $in: ids } };
+    const inbox = { recipientUserId: { $in: ids } };
+    const unread = id => Q.collection("userNotifications").countDocuments({ recipientUserId: id, readAtIso: null });
+    const state = () => {
+      const saved = Q.activeState(SCENARIO, true);
+      if (saved.checkpointId !== checkpointId) Q.fail("Another role checkpoint owns the retained state.");
+      return saved;
+    };
+    const observe = () => ids.map(id => {
+      const actor = Q.ensureUser(id, "role guide actor");
+      return { userId: id, storedUnread: actor.activities?.notifications ?? 0,
+        actualUnread: unread(id), muted: actor.notificationPreferences?.muted === true,
+        roleRows: Q.collection("userNotifications").find({ recipientUserId: id,
+          _id: { $regex: ":notification-role-v1:" } }, { _id: 1, kind: 1, readAtIso: 1 }).toArray() };
+    });
+    if (command === "stage") {
+      Q.assertNotStaged(SCENARIO);
+      const baseline = observe();
+      const expected = [["release-available", "node-member-joined", "security-login"],
+        ["report-submitted", "feedback-submitted", "node-member-joined", "security-login"], []];
+      baseline.forEach((actor, index) => {
+        if (!Q.sameJson(actor.roleRows.map(row => row.kind).sort(), expected[index].sort()))
+          Q.fail(`Missing role-v1 baseline for ${actor.userId}.`);
+      });
+      // Parked campaigns remain untouched; only existing inbox rows can be restored.
+      const rowIds = Q.collection("userNotifications").find(inbox, { _id: 1 }).toArray().map(row => row._id);
+      Q.collection(Q.STATE_COLLECTION).insertOne({ _id: Q.stateId(SCENARIO), scenario: SCENARIO,
+        checkpointId, database: db.getName(), phase: "baseline-ready", stagedAtIso: Q.nowIso(), baseline,
+        snapshots: Q.snapshotSpecs([{ collection: "users", selector: users },
+          { collection: "userNotifications", selector: { _id: { $in: rowIds } } }]) });
+    } else if (command === "capture-help-guards") {
+      const saved = state();
+      if (saved.snapshots.some(snapshot => snapshot.collection === "helpCenterRevisions"))
+        Q.fail("Help guard baseline already retained.");
+      const helpSelector = { baseGroupId: null, documentType: "explanation", contextKey: { $in: ["admin.home", "landing.home"] } };
+      Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $push: { snapshots: { $each:
+        Q.snapshotSpecs([{ collection: "helpCenterRevisions", selector: helpSelector }]) } } });
+    } else if (["capture-integration-registry", "integration-registry-status", "restore-integration-registry"].includes(command)) {
+      const saved = state();
+      const names = ["operatorRegistrySettings", "operatorClaimSubmissionSnapshots", "revenueReportOutbox", "qualifiedMauReportOutbox"];
+      if (command === "capture-integration-registry") {
+        if (saved.integrationRegistry) Q.fail("Registry baseline is already retained.");
+        const conflicts = Q.collection(Q.STATE_COLLECTION).find({ _id: { $ne: saved._id } }).toArray()
+          .filter(row => names.some(name => JSON.stringify(row).includes(name)));
+        if (conflicts.length) Q.fail("Another retained fixture references Registry collections.");
+        Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { integrationRegistry: {
+          phase: "baseline-ready", snapshots: Q.snapshotSpecs(names.map(collection => ({ collection, selector: {} })))
+        } } });
+      } else if (command === "restore-integration-registry") {
+        if (saved.integrationRegistry?.phase !== "baseline-ready") Q.fail("No active paired Registry baseline.");
+        Q.restoreSnapshots(saved.integrationRegistry.snapshots);
+        Q.collection(Q.STATE_COLLECTION).updateOne({ _id: saved._id }, { $set: { "integrationRegistry.phase": "restored" } });
+      }
+      const retained = state().integrationRegistry;
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: retained?.phase ?? "not-staged",
+        counts: Object.fromEntries(names.map(name => [name, Q.collection(name).countDocuments({})])),
+        externalState: "Use operator-registry-fixture.py --checkpoint role-guides for paired stage/reset." });
+      return;
+    } else if (command === "reset") {
+      const saved = state();
+      if (saved.integrationRegistry?.phase === "baseline-ready") Q.fail("Restore the paired Registry baseline first.");
+      Q.restoreSnapshots(saved.snapshots.filter(snapshot => snapshot.collection !== "users"));
+      // Do not replace whole profiles or discard later legitimate notifications.
+      for (const actor of saved.snapshots.find(snapshot => snapshot.collection === "users").documents) {
+        const before = saved.baseline.find(row => row.userId === actor.userId);
+        const update = { $set: { "activities.notifications": before.storedUnread + unread(actor.userId) - before.actualUnread } };
+        if (Object.hasOwn(actor, "notificationPreferences")) update.$set.notificationPreferences = actor.notificationPreferences;
+        else update.$unset = { notificationPreferences: "" };
+        Q.collection("users").updateOne({ _id: actor._id }, update);
+      }
+      Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: saved._id });
+      Q.printObject({ scenario: SCENARIO, checkpointId, phase: "reset-complete", observed: observe() });
+      return;
+    } else if (!["status", "ready"].includes(command)) Q.fail("Unsupported role guide command.");
+    const saved = state();
+    Q.printObject({ scenario: SCENARIO, checkpointId, phase: saved.phase, observed: observe(), snapshotRetained: true });
+    return;
+  }
+
   const selectors = {
     users: {
       $or: [

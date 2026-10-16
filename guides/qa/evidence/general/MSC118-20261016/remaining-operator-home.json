@@ -1,0 +1,78 @@
+{
+  "at": "2026-10-16T12:21:44.269Z",
+  "url": "http://localhost/operator",
+  "context": "operator.home",
+  "title": "Updates",
+  "body": "1 / 6\nclose\nUpdates\n\nCompare the installed release with the available update and see whether rollback is offered. Open this before deciding to change the running deployment.\n\narrow_back\nBack\nformat_list_numbered\nUpdates\nexpand_more\narrow_forward\nNext",
+  "fields": [
+    {
+      "id": "updates",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Updates",
+          "text": "system_update_alt\nUpdates\nUpdate this deployment at any time",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "configuration",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Configuration",
+          "text": "tune\nConfiguration\nCheck authentication and messaging",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "registration",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Node registration",
+          "text": "app_registration\nNode registration\nChoose a registry and register this node",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "claim",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Claim share",
+          "text": "redeem\nClaim share\nClaim this node's eligible network share",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "revenue",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Revenue",
+          "text": "payments\nRevenue\nReview revenue and the estimated network-pool contribution",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "leaderboard",
+      "targets": [
+        {
+          "tag": "HEADER",
+          "aria": null,
+          "text": "NETWORK CONTRIBUTION\nLeaderboard\nleaderboard",
+          "rendered": true
+        }
+      ]
+    }
+  ],
+  "focusPresent": true,
+  "loadError": false,
+  "noGuide": false
+}

@@ -91462,5 +91462,29 @@
     "key": "guide.feedback.evaluation.form-save.label",
     "lang": "hu",
     "value": "Összegzés"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-media-deletion",
+    "key": "admin.jobs.rule.media.deletion",
+    "lang": "en",
+    "value": "Delete queued media"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-media-deletion-description",
+    "key": "admin.jobs.rule.media.deletion.description",
+    "lang": "en",
+    "value": "Deletes queued media files from storage and retries failed deletions."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-media-deletion",
+    "key": "admin.jobs.rule.media.deletion",
+    "lang": "hu",
+    "value": "Várakozó médiafájlok törlése"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-media-deletion-description",
+    "key": "admin.jobs.rule.media.deletion.description",
+    "lang": "hu",
+    "value": "Törli a várakozó médiafájlokat a tárhelyről, és újrapróbálja a sikertelen törléseket."
   }
 ]

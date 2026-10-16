@@ -1,0 +1,94 @@
+{
+  "local": true,
+  "inboxOpen": false,
+  "url": "http://localhost/operator",
+  "text": "yScoutee\nsystem_update_alt\nUpdates\nA deployment update is available\n1\ntune\nConfiguration\nCheck authentication and messaging\napp_registration\nNode registration\nChoose a registry and register this node\nredeem\nClaim share\nClaim this node's eligible network share\npayments\nRevenue\nReview revenue and the estimated network-pool contribution\nNETWORK CONTRIBUTION\nLeaderboard\nleaderboard\nFounder\npie_chart\n43.48%\nM\nMyScoutee founder contribution\ncontribution units\n100,000 contribution units\nClaimed nodes\npie_chart\n31.95%\nCO\nCampus Operator\n2 deployments\n65,000 contribution units\npie_chart\n14.74%\nCO\nCity Operator\n1 deployment\n30,000 contribution units\npie_chart\n9.83%\nCO\nClub Operator\n1 deployment\n20,000 contribution units\nUnclaimed nodes\npie_chart\n0.0%\ndns\nnode-north\nUnclaimed node\n9,000 contribution units\npie_chart\n0.0%\ndns\nnode-east\nUnclaimed node\n6,000 contribution units\nUpdates\n\nCheck and update this deployment\n\nclose\nCurrent version\n1.0.0\narrow_forward\nAvailable version\n1.1.0\nrefresh\nCheck for updates\nsystem_update_alt\nUpdate deployment\nforum\nCommunity\nDO\ntips_and_updates\nnotifications_active\n2\nDO\nedit\nOperator\nDemo Operator\nsettings_input_component\nOperator workspace\nnotifications\n2\ntips_and_updates\nsettings\nclose",
+  "buttons": [
+    {
+      "t": "system_update_alt\nUpdates\nA deployment update is available\n1",
+      "a": "Updates",
+      "field": null
+    },
+    {
+      "t": "tune\nConfiguration\nCheck authentication and messaging",
+      "a": "Configuration",
+      "field": null
+    },
+    {
+      "t": "app_registration\nNode registration\nChoose a registry and register this node",
+      "a": "Node registration",
+      "field": null
+    },
+    {
+      "t": "redeem\nClaim share\nClaim this node's eligible network share",
+      "a": "Claim share",
+      "field": null
+    },
+    {
+      "t": "payments\nRevenue\nReview revenue and the estimated network-pool contribution",
+      "a": "Revenue",
+      "field": null
+    },
+    {
+      "t": "close",
+      "a": "Close operator window",
+      "field": null
+    },
+    {
+      "t": "refresh\nCheck for updates",
+      "a": "Check for updates",
+      "field": null
+    },
+    {
+      "t": "system_update_alt\nUpdate deployment",
+      "a": "Update deployment",
+      "field": null
+    },
+    {
+      "t": "forum\nCommunity",
+      "a": "Open community",
+      "field": null
+    },
+    {
+      "t": "DO",
+      "a": "Open user menu",
+      "field": null
+    },
+    {
+      "t": "tips_and_updates",
+      "a": "Explanations",
+      "field": null
+    },
+    {
+      "t": "notifications_active\n2",
+      "a": "Open notifications, 2 new",
+      "field": null
+    },
+    {
+      "t": "edit",
+      "a": "Open operator profile",
+      "field": "navigation-profile"
+    },
+    {
+      "t": "notifications\n2",
+      "a": "Open notifications, 2 new",
+      "field": null
+    },
+    {
+      "t": "tips_and_updates",
+      "a": "Turn explanations off",
+      "field": null
+    },
+    {
+      "t": "settings",
+      "a": "Open operator settings menu",
+      "field": null
+    },
+    {
+      "t": "close",
+      "a": "Close menu",
+      "field": "close"
+    }
+  ],
+  "apiDomainRequests": []
+}

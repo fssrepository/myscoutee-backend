@@ -84,6 +84,19 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
+checkpoint: ROLE-GUIDES-NOTIFICATIONS-001
+status: CLOSED
+checklist: ../checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md
+substage: 8/8 complete; registered Operator conditional guides and Admin warning draft verified.
+next_action: None for MSC-118. Existing template regression queue moved to myscoutee-template QA; NOT RUN.
+cleanup: Managed sessions closed; Registry and role fixtures restored through their owners; initial stopped stack restored.
+evidence: ../evidence/general/MSC118-20261016/remaining-execution.json
+ledger: PASS / CLOSED for the recorded guide scope; unreachable legacy item-preview N/A.
+```
+
+### Previous resume point — completed MSC-117
+
+```yaml
 checkpoint: CHAT-CALL-001
 status: CLOSED — MSC-117 accepted development scope
 checklist: ../checklists/general/CHAT-CALL-001.md

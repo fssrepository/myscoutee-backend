@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-16T12:20:59.398Z",
+  "url": "http://localhost/operator",
+  "context": "operator.updates",
+  "title": "Updates",
+  "body": "1 / 4\nclose\nUpdates\n\nCheck the installed version, offered release and rollback target before acting. During an update this window shows the current phase, progress and any failure.\n\narrow_back\nBack\nformat_list_numbered\nUpdates\nexpand_more\narrow_forward\nNext",
+  "fields": [
+    {
+      "id": "overview",
+      "targets": [
+        {
+          "tag": "HEADER",
+          "aria": null,
+          "text": "Updates\n\nCheck and update this deployment\n\nclose",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "operator-refresh-update",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Check for updates",
+          "text": "refresh\nCheck for updates",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "operator-apply-update",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Update deployment",
+          "text": "system_update_alt\nUpdate deployment",
+          "rendered": true
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "targets": [
+        {
+          "tag": "BUTTON",
+          "aria": "Close operator window",
+          "text": "close",
+          "rendered": true
+        }
+      ]
+    }
+  ],
+  "focusPresent": true,
+  "loadError": false,
+  "noGuide": false
+}

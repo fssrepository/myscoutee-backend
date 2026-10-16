@@ -1,0 +1,260 @@
+{
+  "reportedBy": "user",
+  "step": "9–14",
+  "kind": "desktop initial snap with no scroll range",
+  "before": {
+    "scrollTop": 0,
+    "scrollHeight": 746,
+    "clientHeight": 746,
+    "top": 129.9375,
+    "sticky": {
+      "top": 129.9375,
+      "bottom": 163.125,
+      "text": "Thu, 15 Oct 2026"
+    },
+    "headers": [
+      {
+        "text": "Thu, 15 Oct 2026",
+        "top": 169.515625,
+        "bottom": 201.734375
+      },
+      {
+        "text": "Mon, 27 Jul 2026",
+        "top": 312.4375,
+        "bottom": 344.65625
+      }
+    ],
+    "cards": [
+      {
+        "top": 207.171875,
+        "bottom": 307
+      },
+      {
+        "top": 350.09375,
+        "bottom": 449.921875
+      },
+      {
+        "top": 455.359375,
+        "bottom": 555.1875
+      },
+      {
+        "top": 560.625,
+        "bottom": 660.453125
+      }
+    ],
+    "snap": "y mandatory"
+  },
+  "correction": "Keep first group marker. Wrong showFirstGroupMarker=false attempt reverted before acceptance.",
+  "status": "PASS on fresh served build: first group marker retained under sticky when desktop content fits; original mobile snap geometry retained; scrolling desktop changes sticky date and reaches last row",
+  "afterDesktop": {
+    "scrollTop": 0,
+    "scrollHeight": 746,
+    "clientHeight": 746,
+    "top": 129.9375,
+    "sticky": {
+      "top": 129.9375,
+      "bottom": 163.125,
+      "text": "Thu, 15 Oct 2026"
+    },
+    "headers": [
+      {
+        "text": "Thu, 15 Oct 2026",
+        "top": 130.125,
+        "bottom": 162.34375
+      },
+      {
+        "text": "Mon, 27 Jul 2026",
+        "top": 273.046875,
+        "bottom": 305.265625
+      }
+    ],
+    "cards": [
+      {
+        "top": 167.78125,
+        "bottom": 267.609375
+      },
+      {
+        "top": 310.703125,
+        "bottom": 410.53125
+      },
+      {
+        "top": 415.96875,
+        "bottom": 515.796875
+      },
+      {
+        "top": 521.234375,
+        "bottom": 621.0625
+      }
+    ],
+    "snap": "y mandatory"
+  },
+  "mobileAfterResize": {
+    "scrollTop": 39,
+    "scrollHeight": 531,
+    "clientHeight": 442,
+    "top": 111.71875,
+    "sticky": {
+      "top": 111.71875,
+      "bottom": 144.90625,
+      "text": "Thu, 15 Oct 2026"
+    },
+    "headers": [
+      {
+        "text": "Thu, 15 Oct 2026",
+        "top": 112.296875,
+        "bottom": 144.515625
+      },
+      {
+        "text": "Mon, 27 Jul 2026",
+        "top": 255.21875,
+        "bottom": 287.4375
+      }
+    ],
+    "cards": [
+      {
+        "top": 149.953125,
+        "bottom": 249.78125
+      },
+      {
+        "top": 292.875,
+        "bottom": 392.71875
+      },
+      {
+        "top": 398.15625,
+        "bottom": 498
+      },
+      {
+        "top": 503.4375,
+        "bottom": 603.265625
+      }
+    ],
+    "snap": "y mandatory"
+  },
+  "mobileBottom": {
+    "scrollTop": 88,
+    "scrollHeight": 531,
+    "clientHeight": 442,
+    "top": 111.71875,
+    "sticky": {
+      "top": 111.71875,
+      "bottom": 144.90625,
+      "text": "Thu, 15 Oct 2026"
+    },
+    "headers": [
+      {
+        "text": "Thu, 15 Oct 2026",
+        "top": 63.296875,
+        "bottom": 95.515625
+      },
+      {
+        "text": "Mon, 27 Jul 2026",
+        "top": 206.21875,
+        "bottom": 238.4375
+      }
+    ],
+    "cards": [
+      {
+        "top": 100.953125,
+        "bottom": 200.78125
+      },
+      {
+        "top": 243.875,
+        "bottom": 343.71875
+      },
+      {
+        "top": 349.15625,
+        "bottom": 449
+      },
+      {
+        "top": 454.4375,
+        "bottom": 554.265625
+      }
+    ],
+    "snap": "y mandatory"
+  },
+  "desktopScrollable": {
+    "scrollTop": 254,
+    "scrollHeight": 531,
+    "clientHeight": 276,
+    "top": 129.9375,
+    "sticky": {
+      "top": 129.9375,
+      "bottom": 163.125,
+      "text": "Mon, 27 Jul 2026"
+    },
+    "headers": [
+      {
+        "text": "Thu, 15 Oct 2026",
+        "top": -84.484375,
+        "bottom": -52.265625
+      },
+      {
+        "text": "Mon, 27 Jul 2026",
+        "top": 58.4375,
+        "bottom": 90.65625
+      }
+    ],
+    "cards": [
+      {
+        "top": -46.828125,
+        "bottom": 53
+      },
+      {
+        "top": 96.09375,
+        "bottom": 195.921875
+      },
+      {
+        "top": 201.359375,
+        "bottom": 301.1875
+      },
+      {
+        "top": 306.625,
+        "bottom": 406.453125
+      }
+    ],
+    "snap": "y mandatory"
+  },
+  "desktopRestored": {
+    "scrollTop": 0,
+    "scrollHeight": 746,
+    "clientHeight": 746,
+    "top": 129.9375,
+    "sticky": {
+      "top": 129.9375,
+      "bottom": 163.125,
+      "text": "Thu, 15 Oct 2026"
+    },
+    "headers": [
+      {
+        "text": "Thu, 15 Oct 2026",
+        "top": 130.125,
+        "bottom": 162.34375
+      },
+      {
+        "text": "Mon, 27 Jul 2026",
+        "top": 273.046875,
+        "bottom": 305.265625
+      }
+    ],
+    "cards": [
+      {
+        "top": 167.78125,
+        "bottom": 267.609375
+      },
+      {
+        "top": 310.703125,
+        "bottom": 410.53125
+      },
+      {
+        "top": 415.96875,
+        "bottom": 515.796875
+      },
+      {
+        "top": 521.234375,
+        "bottom": 621.0625
+      }
+    ],
+    "snap": "y mandatory"
+  },
+  "servedMainSha256": "353f31fd5225af4aa0aaf9a763785dc6cbe0272bb44dee10854cf291fdcdae5e"
+}

@@ -117,3 +117,11 @@ Frontend: `0fdeea7d2` — MSC-118 Add protected role guides and shared notificat
 controls. Backend changes and this evidence are in the dedicated MSC-118 commit
 that updates the frontend submodule to that revision. Only these two source
 repositories changed; the roadmap issue and Project track delivery.
+
+## Remaining execution — 2026-10-16
+
+The eight-step scoped guide campaign is PASS / CLOSED. Registered Operator Claim,
+Revenue, Community and Deployments bindings and the Admin warning draft passed.
+Unreachable legacy item-preview is N/A. See [final execution](MSC118-20261016/remaining-execution.json).
+Managed windows and agent-started services are closed; paired Registry and role
+fixtures were restored. Template regression remains NOT RUN in template QA.

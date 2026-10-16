@@ -214,3 +214,7 @@ Record item: `operator-release-discovery`. Template ledger: `T-OPERATOR-003`.
     Source campaign closure, historical template PASS and checklist creation alone
     do not close a new template delta. Physical devices, external networks and live
     providers remain in their separate qualification scope.
+
+## Execution owner — 2026-10-16
+
+The remaining checks were copied into the [existing template QA checklist](../../../../../myscoutee-template/guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md). This source record and its QA reference row are retained. Template execution remains NOT RUN.

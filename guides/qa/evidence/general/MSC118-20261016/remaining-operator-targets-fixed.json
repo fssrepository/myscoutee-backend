@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-16T12:50:10.669Z",
+  "result": [
+    {
+      "kind": "node-member-joined",
+      "url": "http://localhost/operator",
+      "inboxClosed": true
+    },
+    {
+      "kind": "security-login",
+      "url": "http://localhost/operator",
+      "inboxClosed": true
+    }
+  ]
+}

@@ -1,0 +1,415 @@
+
+> myscoutee@1.4.0 test
+> node scripts/with-components.mjs test --watch=false --include=**/operator-action-popup.component.spec.ts
+
+
+> @fssrepository/myscoutee-components@1.4.0 build
+> ng-packagr -p ng-package.json -c tsconfig.lib.json
+
+Building Angular Package
+[debug] Found primary entry point: @fssrepository/myscoutee-components
+[debug] Initializing tsconfig for @fssrepository/myscoutee-components
+[debug] Analysing sources for @fssrepository/myscoutee-components
+[debug] tsc program structure is reused: No old program
+
+------------------------------------------------------------------------------
+Building entry point '@fssrepository/myscoutee-components'
+------------------------------------------------------------------------------
+- Compiling with Angular sources in partial compilation mode.
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+WARNING: ▲ [WARNING] You probably don't mean to use the color value orange in interpolation here.
+It may end up represented as orange, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "orange").
+If you really want to use the color value here, use '"" + $tone'. [plugin angular-sass]
+
+    src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.scss:1025:26:
+      1025 │   .calendar-badge-color-#{$tone} { @include badgeColors.tone($to...
+           ╵                           ^
+
+
+
+WARNING: ▲ [WARNING] You probably don't mean to use the color value purple in interpolation here.
+It may end up represented as purple, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "purple").
+If you really want to use the color value here, use '"" + $tone'. [plugin angular-sass]
+
+    src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.scss:1025:26:
+      1025 │   .calendar-badge-color-#{$tone} { @include badgeColors.tone($to...
+           ╵                           ^
+
+
+
+WARNING: ▲ [WARNING] You probably don't mean to use the color value teal in interpolation here.
+It may end up represented as teal, which will likely produce invalid CSS.
+Always quote color names when using them as strings or map keys (for example, "teal").
+If you really want to use the color value here, use '"" + $tone'. [plugin angular-sass]
+
+    src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.scss:1025:26:
+      1025 │   .calendar-badge-color-#{$tone} { @include badgeColors.tone($to...
+           ╵                           ^
+
+
+
+✔ Compiling with Angular sources in partial compilation mode.
+[debug] rollup using native version.
+[debug] rollup using native version.
+[debug] rollup (v4.60.4) /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/components.js to /home/raxim/workspace/myscoutee-backend/frontend/components/dist/fesm2022
+[debug] rollup (v4.60.4) /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/components.d.ts to /home/raxim/workspace/myscoutee-backend/frontend/components/dist/types
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/components.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/components.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/public-api.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/calendar-date-adapter.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/converter.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/date-utils.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/date.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/horoscope-data.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/list.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/number-utils.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/rating.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/translation.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/components/indicator/indicator.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/components/prompt/prompt.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/components/prompt/prompt.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/components/date-input/date-input.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/pipes/i18n.pipe.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/guide/guide.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/guide/explanation-guide.service.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/link-utils.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/items/rate/rate.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/menu-dispatcher.service.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/menu-option-groups.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/menu-summary.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/menu.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/menu.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/outlet/menu-outlet.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/trigger/menu-trigger.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/popup/popup.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/popup/popup.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/dialog/dialog.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/accordion/accordion.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/accordion/accordion.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/floating-launcher/floating-launcher.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/copy-link/copy-link.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/link-input/link-input.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/location-input/location-input.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/context/stores/overlay/dialog.store.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/context/stores/overlay/popup-presence.store.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/context/stores/overlay/overlay-navigation.store.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/context/stores/overlay/floating-launcher-registry.service.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/pipes/counter-badge.pipe.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/image-urls.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/list-defaults.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.converter.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/card.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/header-card/header-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/image-card/image-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/info-card/info-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/pair-card/pair-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/payment-card/payment-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/rate-card.helpers.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/single-card/single-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/single-row/single-row.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/text-card/text-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/warp-image-card/warp-image-card.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/finite-stepper.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/infinite-stepper.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list-calendar.adapter.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list-item-key.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list-local-sort.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list-page.adapter.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list-timeline.adapter.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list-empty-state.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/smart-list.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/scheduler/after-paint.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/scheduler/ui-poll-coordinator.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/scheduler/ui-task-scheduler.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/directives/lazy-bg-image.directive.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/directives/viewport-seen.directive.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/text-cards-input/text-cards-input.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/image-carousel/image-carousel.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/image-gallery/image-gallery-popup.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/image-gallery/image-gallery.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/deployment-brand/deployment-brand.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/context/stores/media/image-gallery.store.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/flow/form-flow.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/flow/form-flow.types.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/flow/form-flow.utils.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/flow/form-flow-control.directive.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/image-details.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/branding.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/form-flow-controls.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/foundation/slot-template.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/route-input/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/slots-input/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/components/indicator/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/menu/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/text-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/popup/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/components/date-input/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/link-input/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/location-input/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/route-input/route-input.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/slots-input/slots-input.component.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/single-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/single-row/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/pair-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/image-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/payment-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/info-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/warp-image-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/header-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/smart-list/card/calendar-card/index.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-typings/lib/ui/components/core/form/inputs/route-input/route-input-editor.store.d.ts
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/public-api.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/calendar-date-adapter.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/converter.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/date-utils.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/date.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/horoscope-data.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/list.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/number-utils.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/rating.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/translation.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/components/indicator/indicator.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/components/prompt/prompt.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/components/prompt/prompt.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/components/date-input/date-input.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/pipes/i18n.pipe.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/guide/guide.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/guide/explanation-guide.service.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/link-utils.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/items/rate/rate.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/menu-dispatcher.service.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/menu-option-groups.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/menu-summary.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/menu.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/menu.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/outlet/menu-outlet.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/trigger/menu-trigger.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/popup/popup.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/popup/popup.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/dialog/dialog.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/accordion/accordion.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/accordion/accordion.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/floating-launcher/floating-launcher.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/copy-link/copy-link.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/link-input/link-input.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/location-input/location-input.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/context/stores/overlay/dialog.store.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/context/stores/overlay/popup-presence.store.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/context/stores/overlay/overlay-navigation.store.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/context/stores/overlay/floating-launcher-registry.service.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/pipes/counter-badge.pipe.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/image-urls.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/list-defaults.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.converter.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/card.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/header-card/header-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/image-card/image-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/info-card/info-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/pair-card/pair-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/payment-card/payment-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/rate-card.helpers.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/single-card/single-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/single-row/single-row.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/text-card/text-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/warp-image-card/warp-image-card.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/finite-stepper.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/infinite-stepper.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list-calendar.adapter.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list-item-key.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list-local-sort.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list-page.adapter.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list-timeline.adapter.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list-empty-state.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/smart-list.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/scheduler/after-paint.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/scheduler/ui-poll-coordinator.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/scheduler/ui-task-scheduler.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/directives/lazy-bg-image.directive.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/directives/viewport-seen.directive.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/text-cards-input/text-cards-input.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/image-carousel/image-carousel.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/image-gallery/image-gallery-popup.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/image-gallery/image-gallery.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/deployment-brand/deployment-brand.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/context/stores/media/image-gallery.store.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/flow/form-flow.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/flow/form-flow.types.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/flow/form-flow.utils.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/flow/form-flow-control.directive.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/image-details.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/branding.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/form-flow-controls.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/foundation/slot-template.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/route-input/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/slots-input/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/pipes/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/menu/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/components/indicator/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/popup/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/route-input/route-input.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/slots-input/slots-input.component.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/image-carousel/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/scheduler/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/components/date-input/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/link-input/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/location-input/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/route-input/route-input-editor.store.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/single-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/single-row/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/pair-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/image-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/payment-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/info-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/warp-image-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/header-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/calendar-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/smart-list/card/text-card/index.js
+[debug] file-loader /home/raxim/workspace/myscoutee-backend/frontend/components/dist/tmp-esm2022/lib/ui/components/core/form/inputs/route-input/route-input-popup/route-input-popup.component.js
+✔ Generating FESM and DTS bundles
+- Copying assets
+✔ Copying assets
+- Writing package manifest
+[debug] Writing package.json
+[debug] Dependency tslib is allowed in 'dependencies'
+ℹ Removing scripts section in package.json as it's considered a potential security vulnerability.
+ℹ Removing devDependencies section in package.json.
+✔ Writing package manifest
+✔ Built @fssrepository/myscoutee-components
+
+------------------------------------------------------------------------------
+Built Angular Package
+- from: /home/raxim/workspace/myscoutee-backend/frontend/components
+- to:   /home/raxim/workspace/myscoutee-backend/frontend/components/dist
+------------------------------------------------------------------------------
+
+Build at: 2026-10-16T13:06:32.626Z - Time: 5990ms
+
+Using Vitest configuration file: /home/raxim/workspace/myscoutee-backend/frontend/vitest.config.ts
+❯ Building...
+✔ Building...
+Initial chunk files                                                                   | Names                                                                              |  Raw size
+spec-app-operator-components-operator-action-popup-operator-action-popup.component.js | spec-app-operator-components-operator-action-popup-operator-action-popup.component | 653.18 kB | 
+chunk-653R7XJV.js                                                                     | -                                                                                  | 213.11 kB | 
+chunk-QQLNYKJV.js                                                                     | -                                                                                  | 173.86 kB | 
+chunk-CMTWVCFK.js                                                                     | -                                                                                  | 129.12 kB | 
+chunk-Z5ZOL7CT.js                                                                     | -                                                                                  | 126.72 kB | 
+chunk-TYVZRQCP.js                                                                     | -                                                                                  |  84.69 kB | 
+chunk-XABABIT6.js                                                                     | -                                                                                  |  81.10 kB | 
+chunk-3JKRHBYP.js                                                                     | -                                                                                  |  67.63 kB | 
+styles.css                                                                            | styles                                                                             |  56.92 kB | 
+chunk-2K2HDCKE.js                                                                     | -                                                                                  |  52.26 kB | 
+chunk-V4GDWUFI.js                                                                     | -                                                                                  |  49.92 kB | 
+chunk-6FZWEYMJ.js                                                                     | -                                                                                  |  31.43 kB | 
+chunk-SRTZBU75.js                                                                     | -                                                                                  |  29.00 kB | 
+chunk-DO3ZTQ27.js                                                                     | -                                                                                  |  16.74 kB | 
+chunk-VJOWTDE6.js                                                                     | -                                                                                  |  14.53 kB | 
+chunk-DO3OAYZ3.js                                                                     | -                                                                                  |  13.84 kB | 
+chunk-KIN5BDNL.js                                                                     | -                                                                                  |  12.98 kB | 
+chunk-SWG5UDPC.js                                                                     | -                                                                                  |  12.53 kB | 
+chunk-QXAYR5IJ.js                                                                     | -                                                                                  |  12.37 kB | 
+chunk-F6SBAHG6.js                                                                     | -                                                                                  |   8.74 kB | 
+init-testbed.js                                                                       | init-testbed                                                                       |   7.34 kB | 
+chunk-7HVESPRX.js                                                                     | -                                                                                  |   6.61 kB | 
+chunk-JJZBSXLQ.js                                                                     | -                                                                                  |   5.80 kB | 
+chunk-56P43TZB.js                                                                     | -                                                                                  |   5.43 kB | 
+chunk-HZXEPMDQ.js                                                                     | -                                                                                  |   5.27 kB | 
+chunk-ZSC5OYRU.js                                                                     | -                                                                                  |   4.90 kB | 
+chunk-JJSJEICS.js                                                                     | -                                                                                  |   4.19 kB | 
+chunk-4L2HSEBS.js                                                                     | -                                                                                  |   3.27 kB | 
+chunk-TRUHP7AS.js                                                                     | -                                                                                  |   1.93 kB | 
+vitest-mock-patch.js                                                                  | vitest-mock-patch                                                                  | 969 bytes | 
+chunk-FNBTIBLD.js                                                                     | -                                                                                  | 935 bytes | 
+chunk-CXHKAGT6.js                                                                     | -                                                                                  | 911 bytes | 
+setup-test-browser.js                                                                 | setup-test-browser                                                                 | 448 bytes | 
+chunk-W55KGMVX.js                                                                     | -                                                                                  | 437 bytes | 
+chunk-NOIOVR6D.js                                                                     | -                                                                                  | 186 bytes | 
+polyfills.js                                                                          | polyfills                                                                          | 105 bytes | 
+
+                                                                                      | Initial total                                                                      |   1.89 MB
+
+Lazy chunk files                                                                      | Names                                                                              |  Raw size
+static-content.service-LARIH4GJ.js                                                    | static-content-service                                                             |   2.98 MB | 
+chunk-FCZP4CML.js                                                                     | -                                                                                  | 907.12 kB | 
+chunk-FHGCZF4L.js                                                                     | -                                                                                  | 846.15 kB | 
+chunk-TERRRZNU.js                                                                     | -                                                                                  | 575.09 kB | 
+pricing-editor-popup.component-V5HC2T4Y.js                                            | pricing-editor-popup-component                                                     | 218.07 kB | 
+policies-input-BUGMXYON.js                                                            | index                                                                              | 122.14 kB | 
+chunk-HYHWNFJO.js                                                                     | -                                                                                  |  33.85 kB | 
+firebase-auth.service-RRGVVJR5.js                                                     | firebase-auth-service                                                              |  11.60 kB | 
+policies-input-popup.component-Z2GWRNOU.js                                            | policies-input-popup-component                                                     |   7.10 kB | 
+firebase-session-registry.service-GW2DLQFQ.js                                         | firebase-session-registry-service                                                  |   2.57 kB | 
+landing-slides-dating-LLB54QPL.js                                                     | landing-slides-dating-json                                                         |   1.93 kB | 
+landing-slides-community-HW7W5NZ7.js                                                  | landing-slides-community-json                                                      |   1.90 kB | 
+chunk-6W5AA53C.js                                                                     | -                                                                                  |   1.87 kB | 
+landing-slides-work-VFGQ5BCS.js                                                       | landing-slides-work-json                                                           |   1.82 kB | 
+deployment-configuration-PAZIKBG5.js                                                  | deployment-configuration-json                                                      |   1.46 kB | 
+...and 6 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [20.266 seconds] - 2026-10-16T13:06:53.461Z
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of ContactsPopupComponent [plugin angular-compiler]
+
+    src/app/profile/components/contacts-popup/contacts-popup.component.ts:189:4:
+      189 │     I18nPipe,
+          ╵     ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CampaignsPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/campaigns-popup/campaigns-popup.component.ts:28:124:
+      28 │ ...CampaignEditorComponent, CampaignHistoryPopupComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CommunityGroupEditorComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/community-groups-popup/community-group-editor.component.ts:27:129:
+      27 │ ...ports: [FormsModule, PopupComponent, FormFlowComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CommunityGroupsPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/community-groups-popup/community-groups-popup.component.ts:29:98:
+      29 │ ...nent, InfoCardComponent, CommunityGroupEditorComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of CashReceiptPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/payment-methods-popup/cash-receipt-popup.component.ts:20:60:
+      20 │ ...ports: [FormsModule, PopupComponent, FormFlowComponent, I18nPipe],
+         ╵                                                            ~~~~~~~~
+
+
+▲ [WARNING] NG8113: I18nPipe is not used within the template of SummaryCurrencyPopupComponent [plugin angular-compiler]
+
+    src/app/shared/ui/components/summary-currency-popup/summary-currency-popup.component.ts:9:46:
+      9 │   imports: [PopupComponent, AppMenuComponent, I18nPipe],
+        ╵                                               ~~~~~~~~
+
+
+
+ RUN  v4.0.18 /home/raxim/workspace/myscoutee-backend/frontend
+
+ ✓ |myscoutee| src/app/operator/components/operator-action-popup/operator-action-popup.component.spec.ts (16 tests) 587ms
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  15:06:53
+   Duration  3.07s (transform 1.07s, setup 1.73s, import 302ms, tests 587ms, environment 352ms)
+

@@ -1,0 +1,645 @@
+{
+  "guide": {
+    "at": "2026-10-16T12:55:34.011Z",
+    "url": "http://localhost/admin",
+    "context": "admin.process-detail",
+    "fields": [
+      {
+        "id": "overview",
+        "targets": [
+          {
+            "tag": "HEADER",
+            "aria": null,
+            "text": "admin.jobs.rule.media.deletion\n\nScheduled process · Ready · Last changed 16 Oct, 14:55\n\ncheck\nclose",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "process-detail-save",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Save process",
+            "text": "check",
+            "rendered": true
+          }
+        ]
+      }
+    ],
+    "focusPresent": true,
+    "loadError": false,
+    "noGuide": false
+  },
+  "state": {
+    "url": "http://localhost/admin",
+    "text": "yScoutee\n\nMYSCOUTEE ADMIN\n\nModeration workspace\n\nReview reported users, support chats, and application feedback with the same app tools.\n\nJobs\n\n27 background jobs\n\nclose\nPROCESS\nSTATUS\nLAST RUN\nRUN WINDOWS\nACTIONS\nplay_circle\nadmin.jobs.rule.media.deletion\nmedia-deletion\nReady\n16 Oct, 14:55\nEvery 1 minute\ntune\npause\nplay_arrow\nsettings_suggest\nAdmin statistics and monitoring\nadmin-telemetry\nReady\n16 Oct, 14:54\nEvery 60 seconds\ntune\npause\nplay_arrow\nsettings_suggest\nAccount deletion warning\nusers.account-deletion-warning\nReady\n16 Oct, 14:51\nEvery 1 hour\ntune\npause\nplay_arrow\nevent_available\nClose past events\nPast events\nReady\n16 Oct, 14:51\nEvery 5 minutes\ntune\npause\nplay_arrow\nemoji_events\nReview tournament stages\nTournament stages\nReady\n16 Oct, 14:51\nEvery 30 minutes\ntune\npause\nplay_arrow\nsettings_suggest\nEvent statistics delivery\nevents-admin-signals\nReady\n16 Oct, 13:51\nEvery 1 hour\ntune\npause\nplay_arrow\nsettings_suggest\nAffinity statistics delivery\naffinity-admin-signals\nReady\n16 Oct, 13:51\nEvery 1 hour\ntune\npause\nplay_arrow\nsettings_suggest\nNotification statistics delivery\nnotifications-admin-signals\nReady\n16 Oct, 13:51\nEvery 1 hour\ntune\npause\nplay_arrow\nperson_add\nFill open event spots\nEligible candidates\nReady\n16 Oct, 13:12\nEvery 2 hours\ntune\npause\nplay_arrow\nschedule_send\nSend scheduled messages\nMessages and reminders\nReady\n16 Oct, 12:51\nEvery 30 minutes\ntune\npause\nplay_arrow\nnotifications_active\nSend notifications\nQueued notifications\nReady\n15 Oct, 19:20\nEvery 1 minute\ntune\npause\nplay_arrow\nsync_alt\nRefresh affinities\nConnection scores\nReady\n15 Oct, 19:05\nEvery 1 minute\ntune\npause\nplay_arrow\nsettings_suggest\nIntegration callbacks\nintegration-webhooks\nReady\n15 Oct, 18:55\nEvery 1 second\ntune\npause\nplay_arrow\nplay_circle\nRefresh exchange rates\nDaily reference rates\nReady\n15 Oct, 15:13\nEvery 1 day\ntune\npause\nplay_arrow\nhub\nAutomatic room assignment\nEvent room assignment\nReady\n15 Oct, 15:13\nEvery 1 day\ntune\npause\nplay_arrow\ndelete_sweep\nFinalize deleted accounts\nAccounts past grace period\nReady\n15 Oct, 15:13\nEvery 1 day\ntune\npause\nplay_arrow\nsettings_suggest\nCheck expired payment cards\npayment.method.expiry\nReady\n15 Oct, 15:12\nEvery 1 day\ntune\npause\nplay_arrow\naccount_tree\nRebuild affinity graph layout\nMaterialized graph layout\nReady\n15 Oct, 15:12\nEvery 1 day\ntune\npause\nplay_arrow\nsettings_suggest\nAdvance Mingle rounds\nevent-mingle-advance\nReady\n14 Oct, 20:46\nEvery 5 seconds\ntune\npause\nplay_arrow\nsettings_suggest\nAffiliate revenue projection\naffiliate-revenue\nNot run yet\nNever\nEvery 30 seconds\ntune\npause\nplay_arrow\nsettings_suggest\nEvent refunds and cancellations\nevent-cancellation\nNot run yet\nNever\nEvery 5 seconds\ntune\npause\nplay_arrow\nsettings_suggest\nEvent watchlist\nevent-watchlist\nNot run yet\nNever\nEvery 60 seconds\ntune\npause\nplay_arrow\nsettings_suggest\nPublish completed encounters\nintegration-encounters\nNot run yet\nNever\nEvery 5 seconds\ntune\npause\nplay_arrow\nsettings_suggest\nPromotional email delivery\npromotional-email-delivery\nNot run yet\nNever\nEvery 60 seconds\ntune\npause\nplay_arrow\nsettings_suggest\nPromotional message planning\npromotional-email-planning\nNot run yet\nNever\nEvery 60 seconds\ntune\npause\nplay_arrow\nshopping_basket\nDelete expired baskets\nExpired checkout drafts\nNot run yet\nNever\nEvery 1 minute\ntune\npause\nplay_arrow\nsettings_suggest\nContent auto approval\ncontent.auto-approve\nNot run yet\nNever\nEvery 1 minute\ntune\npause\nplay_arrow\nadmin.jobs.rule.media.deletion\n\nScheduled process · Ready · Last changed 16 Oct, 14:55\n\ncheck\nclose\nplay_circle\nSCHEDULED PROCESS\nadmin.jobs.rule.media.deletion\n\nadmin.jobs.rule.media.deletion.description\n\npause\nSuspend\nplay_arrow\nRun\nWHAT IT DOES\n\nadmin.jobs.rule.media.deletion.description\n\nmedia.deletion.completed\n100%0%\nTIMING\nschedule\nEdit\nEvery 1 minute\nELIGIBLE BEFORE NEXT RUN\n0\nAffected\n16 Oct, 14:56\nLAST RUN\n16 Oct, 14:55\nmedia.deletion.completed\n0 affected\n24ms\nRUNNER HISTORY\nWHEN\nDURATION\nAFFECTED\nflag\n16 Oct, 14:55\n24ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:54\n30ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:53\n16ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:52\n29ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:51\n16ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:50\n27ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:49\n17ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:48\n24ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:47\n29ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:46\n16ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:45\n23ms\n0\ncheck_circle\ninfo_outline\n16 Oct, 14:44\n27ms\n0\ncheck_circle\ninfo_outline\n4\ntips_and_updates\nnotifications_active\n2\nedit\nADMIN\nAva Moderation\nadmin_panel_settings\nModeration workspace\nfavorite\nDating\nexpand_more\n4\nnotifications\n2\ntips_and_updates\nsettings\nclose\nadmin_panel_settings\nMODERATION & SUPPORT\nfact_check\nContent moderation\nreport\nReports\n2\nfeedback\nFeedback\n2\nchat\nChats\ntune\nCONFIGURATION\npending_actions\nJobs\ntune\nParams\nedit_note\nContent\ntips_and_updates\nArticle\nmonitoring\nMONITORING\nquery_stats\nStats\nmonitoring\nMetrics\nhub\nGraph\nscience\nTESTING\ncredit_card_gear\nPayment simulator\nverified_user\n3DS",
+    "buttons": [
+      {
+        "t": "close",
+        "a": "Close",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "tune",
+        "a": "View process",
+        "field": null
+      },
+      {
+        "t": "pause",
+        "a": "Suspend process",
+        "field": null
+      },
+      {
+        "t": "play_arrow",
+        "a": "Run process",
+        "field": null
+      },
+      {
+        "t": "check",
+        "a": "Save process",
+        "field": null
+      },
+      {
+        "t": "close",
+        "a": "Close detail",
+        "field": null
+      },
+      {
+        "t": "pause\nSuspend",
+        "a": null,
+        "field": null
+      },
+      {
+        "t": "play_arrow\nRun",
+        "a": null,
+        "field": null
+      },
+      {
+        "t": "schedule\nEdit",
+        "a": null,
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "info_outline",
+        "a": "Details",
+        "field": null
+      },
+      {
+        "t": "4",
+        "a": "Open user menu",
+        "field": null
+      },
+      {
+        "t": "tips_and_updates",
+        "a": "Explanations",
+        "field": null
+      },
+      {
+        "t": "notifications_active\n2",
+        "a": "Open notifications, 2 new",
+        "field": null
+      },
+      {
+        "t": "edit",
+        "a": "Open admin profile",
+        "field": "navigation-profile"
+      },
+      {
+        "t": "favorite\nDating\nexpand_more\n4",
+        "a": "Choose workspace",
+        "field": null
+      },
+      {
+        "t": "notifications\n2",
+        "a": "Open notifications, 2 new",
+        "field": null
+      },
+      {
+        "t": "tips_and_updates",
+        "a": "Turn explanations off",
+        "field": null
+      },
+      {
+        "t": "settings",
+        "a": "Open admin settings menu",
+        "field": null
+      },
+      {
+        "t": "close",
+        "a": "Close menu",
+        "field": "close"
+      },
+      {
+        "t": "fact_check\nContent moderation",
+        "a": "Content moderation",
+        "field": null
+      },
+      {
+        "t": "report\nReports\n2",
+        "a": "Open reports",
+        "field": null
+      },
+      {
+        "t": "feedback\nFeedback\n2",
+        "a": "Open application feedback",
+        "field": null
+      },
+      {
+        "t": "chat\nChats",
+        "a": "Open admin chats",
+        "field": null
+      },
+      {
+        "t": "pending_actions\nJobs",
+        "a": "Open jobs",
+        "field": null
+      },
+      {
+        "t": "tune\nParams",
+        "a": "Open parameters",
+        "field": null
+      },
+      {
+        "t": "edit_note\nContent",
+        "a": "Open content editor",
+        "field": null
+      },
+      {
+        "t": "tips_and_updates\nArticle",
+        "a": "Open article editor",
+        "field": null
+      },
+      {
+        "t": "query_stats\nStats",
+        "a": "Open stats",
+        "field": null
+      },
+      {
+        "t": "monitoring\nMetrics",
+        "a": "Open monitoring metrics",
+        "field": null
+      },
+      {
+        "t": "hub\nGraph",
+        "a": "Open affinity graph",
+        "field": null
+      },
+      {
+        "t": "credit_card_gear\nPayment simulator",
+        "a": "Open payment simulator configuration",
+        "field": null
+      },
+      {
+        "t": "verified_user\n3DS",
+        "a": "Open simulated 3DS confirmations",
+        "field": null
+      }
+    ]
+  }
+}

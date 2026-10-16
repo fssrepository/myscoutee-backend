@@ -1068,9 +1068,9 @@ PY
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
-  role-triad:stage|role-triad:status|role-triad:rearm-feedback-resolution|role-triad:reset)
+  role-triad:stage|role-triad:status|role-triad:ready|role-triad:capture-help-guards|role-triad:capture-integration-registry|role-triad:integration-registry-status|role-triad:restore-integration-registry|role-triad:rearm-feedback-resolution|role-triad:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
-    [ "$3" = "ROLE-TRIAD-CORE-001" ] || fail "${command} is restricted to ROLE-TRIAD-CORE-001."
+    [[ "$3" = "ROLE-TRIAD-CORE-001" || "$3" = "ROLE-GUIDES-NOTIFICATIONS-001" ]] || fail "Unknown role checkpoint."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   entry-domain:stage|entry-domain:status|entry-domain:cleanup-demo-control|entry-domain:verify|entry-domain:reset|\

@@ -232,6 +232,23 @@
       "source_evidence": "MSC117-20261016/summary.json",
       "source_result": "Source final focused follow-up PASS: 42/42 connections; 390x844 actual failed peer uses two-line ellipsis/red frame, no avatar overlap. MLS lifetime/handshake regression PASS.",
       "template_result": "NOT RUN. Shared call owner and EN/HU catalogs propagated; only these changed boundaries belong to separate template QA. Preserve existing call-series credit."
+    },
+    {
+      "id": "msc118-desktop-notification-snap",
+      "scope": "Shared Activity-derived first-group marker visibility and generic owned snap targets; one-column notification card-grid.",
+      "propagation": "DONE in components worktrees: source frontend/components, sibling myscoutee-components and template frontend/components; same existing base revision 257ff297.",
+      "source_evidence": "MSC118-20261016/shared-smart-list-group-snap.json",
+      "source_result": "Watcher compilation and compiled runtime transitions PASS. Earlier negative-margin browser evidence superseded; final shared rendering not rerun at user request.",
+      "template_result": "NOT RUN",
+      "checks": [
+        "Sticky header stays visible; first repeated marker uses existing scrollable state across resize.",
+        "Notification and Activity use existing card-grid snap behavior; explicit no-marker/no-sticky cases remain intact."
+      ],
+      "dirtySha256": {
+        "ts": "aef698771c34a2f65f99e5e4b63a7f221918aa9cd758f92b18b2522df46763d9",
+        "html": "d9edd6d94d7ddf30e040ef4b4b32c31c2d09c8be058148a6e609d610790034e5",
+        "scss": "ccd2479d97790e2b5aef024470f3caf570ad5cff875bd02b25be324f779d367e"
+      }
     }
   ],
   "sourceCampaignRouting": {
@@ -254,5 +271,6 @@
     "evidenceCreditRule": "Per explicit user instruction, do not repeat completed tests. Credit matching template evidence first and execute only an uncovered boundary changed by a collected fix. Historical NOT RUN or an unrelated newer revision alone does not justify replay.",
     "templateLedger": "../../../../../myscoutee-template/guides/qa/matrices/TEMPLATE_QA_MATRIX.csv",
     "executionStatusChanged": false
-  }
+  },
+  "executionOwner": "../../../../../myscoutee-template/guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md"
 }

@@ -1,0 +1,213 @@
+{
+  "guide": {
+    "at": "2026-10-16T12:43:14.559Z",
+    "url": "http://localhost/operator",
+    "context": "operator.registration",
+    "fields": [
+      {
+        "id": "overview",
+        "targets": [
+          {
+            "tag": "HEADER",
+            "aria": null,
+            "text": "Node registration\n\nChoose a registry server and register explicitly\n\nrefresh\nclose",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "refresh",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Refresh registry state",
+            "text": "refresh",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "disconnect",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Disable connection",
+            "text": "link_off\nDisable connection",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "register",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Register node",
+            "text": "app_registration\nRegister node",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "close",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Close operator window",
+            "text": "close",
+            "rendered": true
+          }
+        ]
+      }
+    ],
+    "focusPresent": true,
+    "loadError": false,
+    "noGuide": false
+  },
+  "state": {
+    "url": "http://localhost/operator",
+    "text": "yScoutee\nsystem_update_alt\nUpdates\nUpdate this deployment at any time\ntune\nConfiguration\nCheck authentication and messaging\napp_registration\nNode registration\nChoose a registry and register this node\nredeem\nClaim share\nClaim this node's eligible network share\npayments\nRevenue\nReview revenue and the estimated network-pool contribution\nNETWORK CONTRIBUTION\nLeaderboard\nleaderboard\nerror_outline\nRegister this node to view the network leaderboard.\nNode registration\n\nChoose a registry server and register explicitly\n\nrefresh\nclose\ndns\nCurrent registration\nNot registered\nRegistry server URL\n*\nlist_alt\ncontent_paste\nlink\ndelete\nlink_off\nDisable connection\napp_registration\nRegister node\nforum\nCommunity\ntips_and_updates\nedit\nOperator\nDemo Operator\nsettings_input_component\nOperator workspace\nnotifications\n2\ntips_and_updates\nsettings\nclose\nNotifications\n\n2 new notifications\n\nfiber_new\nNew\nexpand_more\n2\nnotifications_active\nclose\napps\nAll\nexpand_more\nThu, 15 Oct 2026\nschedule\n15 Oct, 18:27\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Linux desktop.\nmore_vert\nMon, 27 Jul 2026\nschedule\n27 Jul, 20:29\nverified_user\nNew node member\nMyScoutee\nA new member completed registration on this node.\nmore_vert\nschedule\n27 Jul, 20:28\nwarning_amber\nSecurity alert\nMyScoutee\nNew login from Chrome on Android.\nmore_vert",
+    "buttons": [
+      {
+        "t": "system_update_alt\nUpdates\nUpdate this deployment at any time",
+        "a": "Updates",
+        "field": null
+      },
+      {
+        "t": "tune\nConfiguration\nCheck authentication and messaging",
+        "a": "Configuration",
+        "field": null
+      },
+      {
+        "t": "app_registration\nNode registration\nChoose a registry and register this node",
+        "a": "Node registration",
+        "field": null
+      },
+      {
+        "t": "redeem\nClaim share\nClaim this node's eligible network share",
+        "a": "Claim share",
+        "field": null
+      },
+      {
+        "t": "payments\nRevenue\nReview revenue and the estimated network-pool contribution",
+        "a": "Revenue",
+        "field": null
+      },
+      {
+        "t": "refresh",
+        "a": "Refresh registry state",
+        "field": null
+      },
+      {
+        "t": "close",
+        "a": "Close operator window",
+        "field": null
+      },
+      {
+        "t": "list_alt",
+        "a": "Select an available registry URL",
+        "field": null
+      },
+      {
+        "t": "content_paste",
+        "a": "Paste registry URL",
+        "field": null
+      },
+      {
+        "t": "link",
+        "a": "Open registry URL",
+        "field": null
+      },
+      {
+        "t": "delete",
+        "a": "Clear registry URL",
+        "field": null
+      },
+      {
+        "t": "link_off\nDisable connection",
+        "a": "Disable connection",
+        "field": null
+      },
+      {
+        "t": "app_registration\nRegister node",
+        "a": "Register node",
+        "field": null
+      },
+      {
+        "t": "forum\nCommunity",
+        "a": "Open community",
+        "field": null
+      },
+      {
+        "t": "",
+        "a": "Open user menu",
+        "field": null
+      },
+      {
+        "t": "tips_and_updates",
+        "a": "Explanations",
+        "field": null
+      },
+      {
+        "t": "edit",
+        "a": "Open operator profile",
+        "field": "navigation-profile"
+      },
+      {
+        "t": "notifications\n2",
+        "a": "Open notifications, 2 new",
+        "field": null
+      },
+      {
+        "t": "tips_and_updates",
+        "a": "Turn explanations off",
+        "field": null
+      },
+      {
+        "t": "settings",
+        "a": "Open operator settings menu",
+        "field": null
+      },
+      {
+        "t": "close",
+        "a": "Close menu",
+        "field": "close"
+      },
+      {
+        "t": "fiber_new\nNew\nexpand_more\n2",
+        "a": "2 new notifications",
+        "field": null
+      },
+      {
+        "t": "notifications_active",
+        "a": "Mute notification alerts",
+        "field": null
+      },
+      {
+        "t": "close",
+        "a": "Close notifications",
+        "field": null
+      },
+      {
+        "t": "apps\nAll\nexpand_more",
+        "a": "Choose workspace",
+        "field": null
+      },
+      {
+        "t": "more_vert",
+        "a": "Open menu",
+        "field": "card-actions"
+      },
+      {
+        "t": "more_vert",
+        "a": "Open menu",
+        "field": "card-actions"
+      },
+      {
+        "t": "more_vert",
+        "a": "Open menu",
+        "field": "card-actions"
+      }
+    ]
+  }
+}

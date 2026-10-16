@@ -1,0 +1,903 @@
+{
+  "at": "2026-10-16T11:18:24.364Z",
+  "evidence": [
+    {
+      "step": 6,
+      "result": "PASS",
+      "guardResults": [
+        {
+          "name": "create protected language",
+          "status": 403
+        },
+        {
+          "name": "clone protected into editable",
+          "status": 403
+        },
+        {
+          "name": "activate protected",
+          "status": 403
+        },
+        {
+          "name": "delete protected",
+          "status": 403
+        }
+      ],
+      "member": 403,
+      "anonymous": 401,
+      "unchanged": true
+    },
+    {
+      "actor": "Operator",
+      "scope": "HTTP mute persistence/hidden menu access",
+      "mutedState": {
+        "unread": 4,
+        "muted": true,
+        "attention": false,
+        "enabled": true,
+        "context": "notifications",
+        "guide": false,
+        "inbox": true,
+        "locationMissing": false
+      },
+      "readStateUnchanged": true,
+      "counts": [
+        {
+          "actor": "operator@myscoutee.local",
+          "stored": 3,
+          "unread": 4,
+          "muted": false
+        },
+        {
+          "actor": "admin-demo-ava",
+          "stored": 4,
+          "unread": 6,
+          "muted": false
+        },
+        {
+          "actor": "650000000000000000000061",
+          "stored": 0,
+          "unread": 0,
+          "muted": false
+        }
+      ]
+    },
+    {
+      "scope": "Ava/Casey mute reload/restore",
+      "rows": [
+        {
+          "actor": "Ava",
+          "savedMuted": true,
+          "hidden": true,
+          "rowsUnchanged": true,
+          "restored": true
+        },
+        {
+          "actor": "Casey",
+          "savedMuted": true,
+          "hidden": true,
+          "rowsUnchanged": true,
+          "restored": true
+        }
+      ]
+    },
+    {
+      "scope": "Guide red-X dismissal and menu restore",
+      "rows": [
+        {
+          "actor": "Operator",
+          "redXDismissAndMenuRestore": true
+        },
+        {
+          "actor": "Ava",
+          "redXDismissAndMenuRestore": true
+        },
+        {
+          "actor": "Casey",
+          "redXDismissAndMenuRestore": true
+        }
+      ]
+    },
+    {
+      "scope": "Bell red-X dismissal and hidden menu access",
+      "rows": [
+        {
+          "actor": 0,
+          "hidden": true,
+          "openedFromMenu": true,
+          "state": {
+            "unread": 4,
+            "muted": false,
+            "attention": false,
+            "enabled": true,
+            "context": "notifications",
+            "guide": false,
+            "inbox": true,
+            "locationMissing": false
+          }
+        },
+        {
+          "actor": 1,
+          "hidden": true,
+          "openedFromMenu": true,
+          "state": {
+            "unread": 4,
+            "muted": false,
+            "attention": false,
+            "enabled": true,
+            "context": "notifications",
+            "guide": false,
+            "inbox": true,
+            "locationMissing": false
+          }
+        }
+      ],
+      "unchanged": true
+    }
+  ],
+  "explanations": [
+    {
+      "actor": "Operator",
+      "offSurvivesReload": true,
+      "on": true
+    },
+    {
+      "actor": "Ava",
+      "offSurvivesReload": true,
+      "on": true
+    },
+    {
+      "actor": "Casey",
+      "offSurvivesReload": true,
+      "on": true
+    }
+  ],
+  "drags": [
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 640,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 1252,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 1200,
+      "y": 872,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 640,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 1252,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 1200,
+      "y": 872,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 310,
+      "y": 816,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 310,
+      "y": 816,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 310,
+      "y": 532,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Operator",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 310,
+      "y": 532,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 640,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 1252,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 1200,
+      "y": 872,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 310,
+      "y": 816,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 310,
+      "y": 532,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "x": 310,
+      "y": 532,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 640,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 1252,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 1200,
+      "y": 872,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "result": "N/A no unread launcher"
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 310,
+      "y": 816,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "result": "N/A no unread launcher"
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".explanation-guide-menu",
+      "x": 310,
+      "y": 532,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Casey",
+      "size": {
+        "width": 390,
+        "height": 560
+      },
+      "selector": ".notification-attention-menu",
+      "result": "N/A no unread launcher"
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 640,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 1252,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 1280,
+        "height": 900
+      },
+      "selector": ".notification-attention-menu",
+      "x": 1200,
+      "y": 872,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 28,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 195,
+      "y": 28,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 362,
+      "y": 90,
+      "withinViewport": true,
+      "noActivation": true
+    },
+    {
+      "actor": "Ava",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "selector": ".notification-attention-menu",
+      "x": 310,
+      "y": 816,
+      "withinViewport": true,
+      "noActivation": true
+    }
+  ]
+}

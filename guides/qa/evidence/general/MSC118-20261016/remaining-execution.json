@@ -1,0 +1,138 @@
+{
+  "task": "MSC-118",
+  "date": "2026-10-16",
+  "status": "PASS / CLOSED — eight-step scoped guide campaign",
+  "checklist": "../../../checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md",
+  "source": {
+    "backend": "7a818c20bcbc7dd6e416ffa5aa5d01b489d6885c",
+    "frontend": "89f148b3df6aba4c0f6fc639843031b25af087dd",
+    "components": "1a0ce8b50eee7358feb5fc0ebb5f91afff3a5125"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "result": "PASS",
+      "scope": "Operator release → Updates target, consumed target and unique guide bindings. Historical proof retained.",
+      "evidence": [
+        "remaining-operator-updates.json"
+      ]
+    },
+    {
+      "step": 2,
+      "result": "PASS",
+      "scope": "Operator join and own-security targets; same-route consumption repaired.",
+      "evidence": [
+        "remaining-operator-targets-fixed.json"
+      ]
+    },
+    {
+      "step": 3,
+      "result": "PASS",
+      "scope": "Previously accepted Operator bindings retained. Registered demo Registry: Registration synchronization control, both Claim branches, Revenue, Community and Deployments rendered guide bindings passed. One disposable registration and pending company claim supplied the Deployments prerequisite; paired owner restores both Registry and local state.",
+      "evidence": [
+        "remaining-operator-navigation-final.json",
+        "remaining-operator-registration.json",
+        "remaining-operator-configuration.json",
+        "remaining-operator-claim.json",
+        "remaining-operator-revenue.json",
+        "remaining-operator-community.json",
+        "closure-operator-claim-company.json",
+        "closure-operator-claim-revenue-community.json",
+        "closure-operator-deployments.json"
+      ]
+    },
+    {
+      "step": 4,
+      "result": "PASS",
+      "scope": "Accepted report/feedback target and detail coverage retained. Warn draft opens admin.chat-review: overview, message, send-warning and close bind to rendered elements. Draft discarded without sending. admin.item-preview is N/A: the current UI opens shared sources; its only remaining call is behind a non-community branch of a community-only handler, so no reachable preview surface exists.",
+      "evidence": [
+        "remaining-admin-reports.json",
+        "remaining-admin-feedback.json",
+        "remaining-admin-report-detail.json",
+        "remaining-admin-feedback-detail.json",
+        "remaining-admin-item-preview.json",
+        "closure-admin-review.json"
+      ]
+    },
+    {
+      "step": 5,
+      "result": "PASS",
+      "scope": "Admin join → Statistics and own-security routing; Statistics, Graph help, Affinity overview after repair, Monitoring bindings.",
+      "evidence": [
+        "remaining-admin-stats.json",
+        "remaining-admin-security.json",
+        "remaining-admin-affinity-fixed.json",
+        "remaining-admin-monitoring.json"
+      ]
+    },
+    {
+      "step": 6,
+      "result": "PASS",
+      "scope": "Previously unobserved Admin navigation, moderation/settings, Jobs and Parameters children, payment configuration/authorization bindings checked. Missing child Close bindings, authorization context and media-deletion EN/HU text repaired.",
+      "evidence": [
+        "remaining-admin-navigation.json",
+        "remaining-admin-fields-fixed.json",
+        "remaining-admin-process-schedule-fixed.json",
+        "remaining-admin-payment-authorizations.json"
+      ]
+    },
+    {
+      "step": 7,
+      "result": "PASS",
+      "scope": "Two local-adapter target samples repeated after the shared-menu revert: Operator release → Updates; Admin report → Reports. Both confirmed localModeEnabled=true, closed inbox and zero observed domain API requests during target visits. Existing demo selector used. Backend restored before clicking; the running pages retained local adapters. This does not claim offline-list opening.",
+      "evidence": [
+        "current-local-operator-inbox.json",
+        "current-local-operator-target.json",
+        "current-local-admin-inbox.json",
+        "current-local-admin-target.json",
+        "current-local-admin-count.json"
+      ]
+    },
+    {
+      "step": 8,
+      "result": "PASS / CLOSED",
+      "scope": "Managed windows closed before fixture reset. Paired Registry archive/local node state and Mongo restored through existing owner, then role/session/preference baseline restored. Original stopped stack restored. Template regression queue moved to template QA, remains NOT RUN."
+    }
+  ],
+  "retainedChangesThisContinuation": [
+    "frontend local SeedDemoBootstrapService invokes the existing notification seed repository for Operator/Admin and flushes notifications/users. Member session bootstrap is unchanged.",
+    "Two role seed tests check rows, derived unread counts, IndexedDB persistence and idempotent repeat."
+  ],
+  "validation": {
+    "focusedRoleSeed": "6 passed, 16 outside-filter tests skipped; role-seed-tests.log",
+    "earlierFullSelectedRun": "21 passed, 1 Affinity test failed. The same 48-versus-50 failure reproduced with the original bootstrap source; affinity-baseline-test.log. Not counted as a pass.",
+    "mongoJsonParity": "demo_db/e2e_db/myscoutee_db account unread counters match JSON rows; role records match local builder definitions. No fixed fourth row/count inserted.",
+    "popup": "16 focused tests passed; original popup sizing and shared error bar retained.",
+    "template": "Existing template bootstrap seeds notifications for every seeded user already; no new role startup branch needed. No template runtime qualification claimed."
+  },
+  "withdrawnChanges": [
+    "Hardcoded Operator/Admin failover map, main bootstrap changes and associated tests withdrawn. Their earlier 31-test run is not evidence for retained changes.",
+    "Mongo import counter reconciliation withdrawn: its causal diagnosis was not established.",
+    "Shared-menu offline-opening guard change reverted by user and later restored by explicit user request. Earlier offline-opening screenshots are not current-code proof.",
+    "Earlier custom Community popup sizing/CSS withdrawn; shared SmartList error-bar styling not modified by the popup repair."
+  ],
+  "runtimeDataIncident": {
+    "action": "An earlier ad hoc command recomputed notification counters in the running demo database. This exceeded the requested versioned seed repair and must not be repeated.",
+    "knownBeforeAfter": "Operator stored3/actual4 → stored4; Ava stored4/actual6 → stored6. The query covered personal demo users, not only these actors; no full before-image was captured.",
+    "reversal": "Final owned role-fixture reset restored retained stored/actual baseline Operator 3/4 and Ava 4/6; no ad hoc recount performed."
+  },
+  "limits": {
+    "supersededBy": "steps and closureNotes above"
+  },
+  "closedAt": "2026-10-16",
+  "closureSource": {
+    "backend": "8705f97d6684563f15cc5d2fe01d41db5df28921",
+    "frontend": "1740ee9f0054ae2da8eff37aeadd48fdb22f16e7",
+    "components": "03cc620c58b4964795e8e186cce1eaa4e0c8e2e0"
+  },
+  "closureNotes": [
+    "No product source changed during this final verification. Existing QA retention owner extended for the paired Registry snapshot.",
+    "The template navigation was an erroneous detour, not test evidence or a template PASS. No template test suite ran.",
+    "Original stored/actual notification differences remain in the restored baseline; no ad hoc recount was performed.",
+    "Current source audit: admin-reports-popup.component.html invokes reviewReport only for community; other source cards open their shared source. Unreachable legacy admin.item-preview is not claimed as a browser PASS."
+  ],
+  "cleanupEvidence": {
+    "registry": "{\n  \"scenario\": \"role-triad\",\n  \"checkpointId\": \"ROLE-GUIDES-NOTIFICATIONS-001\",\n  \"phase\": \"restored\",\n  \"counts\": {\n    \"operatorRegistrySettings\": 0,\n    \"operatorClaimSubmissionSnapshots\": 0,\n    \"revenueReportOutbox\": 0,\n    \"qualifiedMauReportOutbox\": 0\n  },\n  \"externalState\": \"Use operator-registry-fixture.py --checkpoint role-guides for paired stage/reset.\"\n}\nPASS: Go archive bytes, local node state and Mongo/session baseline restored. Private recovery archive retained.\n",
+    "roleFixture": "{\n  \"scenario\": \"browser-sessions\",\n  \"fixtureScenario\": \"role-triad\",\n  \"checkpointId\": \"ROLE-GUIDES-NOTIFICATIONS-001\",\n  \"phase\": \"restored-before-fixture-reset\",\n  \"browserUserIds\": [\n    \"operator@myscoutee.local\",\n    \"admin-demo-ava\",\n    \"650000000000000000000061\"\n  ]\n}\n{\n  \"scenario\": \"role-triad\",\n  \"checkpointId\": \"ROLE-GUIDES-NOTIFICATIONS-001\",\n  \"phase\": \"reset-complete\",\n  \"observed\": [\n    {\n      \"userId\": \"operator@myscoutee.local\",\n      \"storedUnread\": 3,\n      \"actualUnread\": 4,\n      \"muted\": false,\n      \"roleRows\": [\n        {\n          \"_id\": \"operator@myscoutee.local:notification-role-v1:release-available\",\n          \"kind\": \"release-available\",\n          \"readAtIso\": null\n        },\n        {\n          \"_id\": \"operator@myscoutee.local:notification-role-v1:node-member-joined\",\n          \"kind\": \"node-member-joined\",\n          \"readAtIso\": null\n        },\n        {\n          \"_id\": \"operator@myscoutee.local:notification-role-v1:security-login\",\n          \"kind\": \"security-login\",\n          \"readAtIso\": null\n        }\n      ]\n    },\n    {\n      \"userId\": \"admin-demo-ava\",\n      \"storedUnread\": 4,\n      \"actualUnread\": 6,\n      \"muted\": false,\n      \"roleRows\": [\n        {\n          \"_id\": \"admin-demo-ava:notification-role-v1:report-submitted\",\n          \"kind\": \"report-submitted\",\n          \"readAtIso\": null\n        },\n        {\n          \"_id\": \"admin-demo-ava:notification-role-v1:feedback-submitted\",\n          \"kind\": \"feedback-submitted\",\n          \"readAtIso\": null\n        },\n        {\n          \"_id\": \"admin-demo-ava:notification-role-v1:node-member-joined\",\n          \"kind\": \"node-member-joined\",\n          \"readAtIso\": null\n        },\n        {\n          \"_id\": \"admin-demo-ava:notification-role-v1:security-login\",\n          \"kind\": \"security-login\",\n          \"readAtIso\": null\n        }\n      ]\n    },\n    {\n      \"userId\": \"650000000000000000000061\",\n      \"storedUnread\": 0,\n      \"actualUnread\": 0,\n      \"muted\": false,\n      \"roleRows\": []\n    }\n  ]\n}\n"
+  }
+}

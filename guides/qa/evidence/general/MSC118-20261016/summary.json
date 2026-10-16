@@ -1,0 +1,94 @@
+{
+  "task": "MSC-118",
+  "date": "2026-10-16",
+  "status": "PASS / CLOSED — scoped MSC-118 guide QA",
+  "source": {
+    "backend": "b69e41820ac2154d312ff5274c52df3e8bb047f0",
+    "frontend": "f73c921de100670b08c6898c4caa12a217d570f5"
+  },
+  "trustMode": "standard (no local override)",
+  "initialRuntime": "All project containers stopped; KVM has no qemu process and libvirt socket absent. Existing monolith services and frontend-sync started for this delegated campaign.",
+  "initialWorktrees": "clean",
+  "currentStep": "8/8 closed; final results in remaining-execution.json",
+  "checks": [
+    {
+      "step": 1,
+      "result": "PASS",
+      "details": "Existing owners only; monolith healthy; served main.js hash equals watcher output."
+    },
+    {
+      "step": 2,
+      "result": "PARTIAL",
+      "details": "Global seed check exposed duplicate identity generation for historical feedback.evaluation ID. Generator now preserves existing revision identity. Other global drift remains: timestamps, scoped jobs and membership ordering; no bulk regeneration performed."
+    },
+    {
+      "step": 3,
+      "result": "PASS",
+      "details": "Role-v1 rows verified; role-triad owner extended with narrow guide snapshot; session snapshot centralized in existing launcher. Stored/actual unread before login: Operator3/4, Ava4/6, Casey0/0."
+    },
+    {
+      "step": 4,
+      "result": "PASS",
+      "details": "Six compiled probe groups passed:37 contexts EN/HU three groups/all Mongo catalogs; context restoration/no per-step fetch; local protected guards; mute/hide/reload/stale realtime; producer idempotence/role isolation; bounded popup registrations. Probe repaired for current shared guide options and translation injection token."
+    },
+    {
+      "step": 5,
+      "result": "PASS",
+      "details": "Versioned launcher verified fixture, retained/cleared sessions, launched Operator/Ava/Casey."
+    },
+    {
+      "step": 6,
+      "result": "PASS",
+      "evidence": "http-guards.json"
+    },
+    {
+      "step": 7,
+      "result": "PASS 222/222",
+      "evidence": "http-guide-parity.json"
+    },
+    {
+      "step": 8,
+      "result": "PASS compiled current-output methods",
+      "details": "Unknown/external converter targets rejected; four wrong-role target attempts caused no navigation, close or read."
+    }
+  ],
+  "inherited": [
+    {
+      "owner": "MSC-116",
+      "evidence": "../MSC116-closure-20261015/summary.json",
+      "scope": "Role producers/readers; do not replay. Live provider push and six-hour observation excluded."
+    }
+  ],
+  "fixes": [
+    {
+      "owner": "frontend/scripts/sync-work-seeds.js",
+      "kind": "seed generator",
+      "status": "duplicate identity repaired; unrelated drift not yet resolved"
+    },
+    {
+      "owner": "frontend/scripts/check-role-guides-notifications-runtime.mjs",
+      "kind": "test harness",
+      "status": "PASS against current served output"
+    },
+    {
+      "owner": "role-triad fixture and browser config",
+      "kind": "fixture harness",
+      "status": "stage + managed launch passed; reset pending"
+    },
+    {
+      "owner": "shared SmartList components",
+      "status": "Previous overlap workaround reverted. Activity group-marker rule centralized; current watcher and compiled checks PASS. Final UI not rechecked at user request.",
+      "evidence": "shared-smart-list-group-snap.json",
+      "userCorrection": "Latest user decision supersedes freeze: reuse Activity marker rule in common SmartList everywhere; retain sticky header and remove custom geometry."
+    }
+  ],
+  "scopeAudit": "session-scope-audit.json",
+  "executionNumbering": "Historical checks retain old37-step numbers; active remaining list has its own numbering.",
+  "remainingExecution": "remaining-execution.json",
+  "currentSource": {
+    "backend": "7a818c20bcbc7dd6e416ffa5aa5d01b489d6885c",
+    "frontend": "89f148b3df6aba4c0f6fc639843031b25af087dd",
+    "components": "1a0ce8b50eee7358feb5fc0ebb5f91afff3a5125"
+  },
+  "finalClosure": "Registered Operator conditional guides and Admin warning draft checked; legacy unreachable preview N/A. Template queue moved to template QA."
+}

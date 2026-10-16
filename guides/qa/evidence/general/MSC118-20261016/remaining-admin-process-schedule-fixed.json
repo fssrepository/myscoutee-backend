@@ -1,0 +1,244 @@
+{
+  "process": {
+    "at": "2026-10-16T12:59:50.671Z",
+    "url": "http://localhost/admin",
+    "context": "admin.process-detail",
+    "fields": [
+      {
+        "id": "overview",
+        "targets": [
+          {
+            "tag": "HEADER",
+            "aria": null,
+            "text": "Admin statistics and monitoring\n\nScheduled process · Ready · Last changed 16 Oct, 14:59\n\ncheck\nclose",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "process-detail-save",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Save process",
+            "text": "check",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "close",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Close detail",
+            "text": "close",
+            "rendered": true
+          }
+        ]
+      }
+    ],
+    "focusPresent": true,
+    "loadError": false,
+    "noGuide": false
+  },
+  "schedule": {
+    "at": "2026-10-16T12:59:51.425Z",
+    "url": "http://localhost/admin",
+    "context": "admin.schedule-edit",
+    "fields": [
+      {
+        "id": "overview",
+        "targets": [
+          {
+            "tag": "HEADER",
+            "aria": null,
+            "text": "Timing\n\nSet the process start time and repeat rule. The checkmark saves these values immediately.\n\ncheck\nclose",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "schedule-save",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Done",
+            "text": "check",
+            "rendered": true
+          }
+        ]
+      },
+      {
+        "id": "close",
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "aria": "Close run window editor",
+            "text": "close",
+            "rendered": true
+          }
+        ]
+      }
+    ],
+    "focusPresent": true,
+    "loadError": false,
+    "noGuide": false
+  },
+  "rows": [
+    {
+      "text": "PROCESS\nSTATUS\nLAST RUN\nRUN WINDOWS\nACTIONS",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row process-list-head\"><span _ngcontent-ng-c4273341565=\"\">Process</span><span _ngcontent-ng-c4273341565=\"\">Status</span><span _ngcontent-ng-c42733"
+    },
+    {
+      "text": "settings_suggest\nAdmin statistics and monitoring\nadmin-telemetry\nReady\n16 Oct, 14:59\nEvery 60 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "play_circle\nadmin.jobs.rule.media.deletion\nmedia-deletion\nReady\n16 Oct, 14:59\nEvery 1 minute\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "event_available\nClose past events\nPast events\nReady\n16 Oct, 14:56\nEvery 5 minutes\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nAccount deletion warning\nusers.account-deletion-warning\nReady\n16 Oct, 14:51\nEvery 1 hour\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "emoji_events\nReview tournament stages\nTournament stages\nReady\n16 Oct, 14:51\nEvery 30 minutes\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nEvent statistics delivery\nevents-admin-signals\nReady\n16 Oct, 13:51\nEvery 1 hour\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nAffinity statistics delivery\naffinity-admin-signals\nReady\n16 Oct, 13:51\nEvery 1 hour\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nNotification statistics delivery\nnotifications-admin-signals\nReady\n16 Oct, 13:51\nEvery 1 hour\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "person_add\nFill open event spots\nEligible candidates\nReady\n16 Oct, 13:12\nEvery 2 hours\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "schedule_send\nSend scheduled messages\nMessages and reminders\nReady\n16 Oct, 12:51\nEvery 30 minutes\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "notifications_active\nSend notifications\nQueued notifications\nReady\n15 Oct, 19:20\nEvery 1 minute\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "sync_alt\nRefresh affinities\nConnection scores\nReady\n15 Oct, 19:05\nEvery 1 minute\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nIntegration callbacks\nintegration-webhooks\nReady\n15 Oct, 18:55\nEvery 1 second\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "play_circle\nRefresh exchange rates\nDaily reference rates\nReady\n15 Oct, 15:13\nEvery 1 day\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "hub\nAutomatic room assignment\nEvent room assignment\nReady\n15 Oct, 15:13\nEvery 1 day\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "delete_sweep\nFinalize deleted accounts\nAccounts past grace period\nReady\n15 Oct, 15:13\nEvery 1 day\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nCheck expired payment cards\npayment.method.expiry\nReady\n15 Oct, 15:12\nEvery 1 day\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "account_tree\nRebuild affinity graph layout\nMaterialized graph layout\nReady\n15 Oct, 15:12\nEvery 1 day\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nAdvance Mingle rounds\nevent-mingle-advance\nReady\n14 Oct, 20:46\nEvery 5 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nAffiliate revenue projection\naffiliate-revenue\nNot run yet\nNever\nEvery 30 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nEvent refunds and cancellations\nevent-cancellation\nNot run yet\nNever\nEvery 5 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nEvent watchlist\nevent-watchlist\nNot run yet\nNever\nEvery 60 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nPublish completed encounters\nintegration-encounters\nNot run yet\nNever\nEvery 5 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nPromotional email delivery\npromotional-email-delivery\nNot run yet\nNever\nEvery 60 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nPromotional message planning\npromotional-email-planning\nNot run yet\nNever\nEvery 60 seconds\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "shopping_basket\nDelete expired baskets\nExpired checkout drafts\nNot run yet\nNever\nEvery 1 minute\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    },
+    {
+      "text": "settings_suggest\nContent auto approval\ncontent.auto-approve\nNot run yet\nNever\nEvery 1 minute\ntune\npause\nplay_arrow",
+      "html": "<div _ngcontent-ng-c4273341565=\"\" class=\"process-list-row is-ready\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-name\"><span _ngcontent-ng-c4273341565=\"\" class=\"process-list-icon is-ready\" d"
+    }
+  ],
+  "buttons": [
+    {
+      "t": "list\nAll\n27\nexpand_more",
+      "a": "Filter jobs",
+      "field": null
+    },
+    {
+      "t": "close",
+      "a": "Close",
+      "field": null
+    },
+    {
+      "t": "tune",
+      "a": "View process",
+      "field": null
+    },
+    {
+      "t": "pause",
+      "a": "Suspend process",
+      "field": null
+    },
+    {
+      "t": "play_arrow",
+      "a": "Run process",
+      "field": null
+    },
+    {
+      "t": "tune",
+      "a": "View process",
+      "field": null
+    },
+    {
+      "t": "pause",
+      "a": "Suspend process",
+      "field": null
+    },
+    {
+      "t": "play_arrow",
+      "a": "Run process",
+      "field": null
+    }
+  ]
+}

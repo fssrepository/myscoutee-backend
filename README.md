@@ -126,11 +126,15 @@ record test results, evidence and the scope of each case.
 The [MyScoutee roadmap](https://github.com/fssrepository/myscoutee-roadmap/tree/master/guides/project-history/myscoutee)
 contains the task history, workstream effort and measurement method.
 
+MSC-118 usage: **182,287,382 tokens** through **2026-10-16 14:49:00 UTC**,
+including implementation, QA and corrections. The [task record](https://github.com/fssrepository/myscoutee-roadmap/issues/156)
+and Project token field use the same measured total.
+
 ## Manual QA status
 
 As of **2026-10-16**, the [development QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
-contains **146 scenarios**, excluding four legend rows: **144 complete,
-1 partial/in progress and1 not started**. Results apply only to their recorded
+contains **146 scenarios**, excluding four legend rows: **145 complete,
+0 partial/in progress and1 not started**. Results apply only to their recorded
 scope. The19 MSC-115 rows represent its accepted, closed119-step development
 campaign; they are not additional pending runs.
 
@@ -141,18 +145,20 @@ central Feedback and the remaining MSC-119 guide introduction. Its existing
 [checklist](guides/qa/checklists/api/MSC-116_AUTOMATIC_QA.md) records results through
 step85. MSC-119 remains closed; no separate QA run or testcase was added.
 Template runtime and real external-host/publication qualification retain their
-separate records. KVM and the monolith are stopped at the user's request.
+separate records. KVM remains stopped. The agent-started review stack is stopped; the independently running local frontend was preserved.
 
 MSC-117 credits October12 shared two-party/repeated/KVM evidence and adds
 three-/seven-party RTP, controls, transport and EN/HU call guides.
 [Closure evidence and limits](guides/qa/evidence/general/MSC117-20261016/summary.json)
 retain the actual scope; completed blocks are not reopened.
-The closed MSC-118 implementation has user-requested remaining role QA in an
-ordered [39-step checklist](guides/qa/checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md),
-crediting today's MSC-115 common-guide/admin evidence.
+The MSC-118 [eight-step guide checklist](guides/qa/checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md)
+is closed. Registered Operator Claim/Revenue/Community/Deployments and Admin
+warning-draft guide bindings passed. The unreachable legacy item-preview context
+is N/A. [Execution evidence](guides/qa/evidence/general/MSC118-20261016/remaining-execution.json)
+retains accepted earlier results and the final fixture restoration.
 
 The separate existing
-[template regression queue](guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md),
+[template regression queue](../myscoutee-template/guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md),
 not another open product task. Template execution stays there. Physical devices,
 external networks and provider/deployed behavior stay in the
 [live qualification points](guides/qualification/MSC117_118_LIVE_CHECKS.md)

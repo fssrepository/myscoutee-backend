@@ -9,7 +9,7 @@ import WebSocket from '../../../frontend/node_modules/ws/index.js';
 
 const [action, actor = 'Ava', ...args] = process.argv.slice(2);
 const checkpointId = process.env.QA_CHECKPOINT || 'NOTIFICATION-ADMIN-LIFECYCLE-001';
-if (!['DEPLOYMENT-SMOKE-001', 'NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001', 'ADMIN-MONITORING-001', 'ADMIN-AFFINITY-GRAPH-001', 'ADMIN-PARAMETERS-001', 'OPERATOR-FIREBASE-001', 'OPERATOR-REGISTRY-LIFECYCLE-001', 'OPERATOR-REVENUE-LIFECYCLE-001', 'OPERATOR-UPDATE-LIFECYCLE-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
+if (!['ROLE-GUIDES-NOTIFICATIONS-001', 'DEPLOYMENT-SMOKE-001', 'NOTIFICATION-ADMIN-LIFECYCLE-001', 'JOB-MESSAGES', 'BELL-RATING-LIFECYCLE-001', 'BELL-RATING-FEEDBACK-001', 'ADMIN-MONITORING-001', 'ADMIN-AFFINITY-GRAPH-001', 'ADMIN-PARAMETERS-001', 'OPERATOR-FIREBASE-001', 'OPERATOR-REGISTRY-LIFECYCLE-001', 'OPERATOR-REVENUE-LIFECYCLE-001', 'OPERATOR-UPDATE-LIFECYCLE-001'].includes(checkpointId)) throw new Error('Unsupported delegated checkpoint');
 const root = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');
 const manifest = JSON.parse(readFileSync(path.join(root, checkpointId + '.json'), 'utf8'));
 const session = manifest.sessions.find(item => item.actor === actor);

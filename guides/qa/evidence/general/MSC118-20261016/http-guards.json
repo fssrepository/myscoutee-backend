@@ -1,0 +1,25 @@
+{
+  "step": 6,
+  "result": "PASS",
+  "guardResults": [
+    {
+      "name": "create protected language",
+      "status": 403
+    },
+    {
+      "name": "clone protected into editable",
+      "status": 403
+    },
+    {
+      "name": "activate protected",
+      "status": 403
+    },
+    {
+      "name": "delete protected",
+      "status": 403
+    }
+  ],
+  "member": 403,
+  "anonymous": 401,
+  "unchanged": true
+}
