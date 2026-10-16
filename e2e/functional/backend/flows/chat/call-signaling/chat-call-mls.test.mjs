@@ -19,6 +19,16 @@ async function group() {
   return { alice, bob, carol, commits, bobCommits };
 }
 
+test('MLS key packages remain valid after a five-second join delay', async () => {
+  const { alice, bob, carol, commits } = await group();
+  try {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    await alice.reconcile([member(alice), member(bob)]);
+    await bob.accept(commits.shift());
+    assert.equal((await bob.decrypt(await alice.encrypt({ delayedJoin: true }))).plaintext, '{"delayedJoin":true}');
+  } finally { await Promise.all([alice, bob, carol].map(client => client.destroy())); }
+});
+
 test('MLS Welcome joins three participants and authenticates group messages', async () => {
   const { alice, bob, carol, commits } = await group();
   try {
@@ -35,6 +45,23 @@ test('MLS Welcome joins three participants and authenticates group messages', as
       await carol.decrypt(encrypted);
       const reply = await bob.encrypt({ answer: i }); await alice.decrypt(reply); await carol.decrypt(reply);
     }
+  } finally { await Promise.all([alice, bob, carol].map(client => client.destroy())); }
+});
+
+test('a new MLS member discards pre-join messages while current signaling remains authenticated', async () => {
+  const { alice, bob, carol, commits } = await group();
+  try {
+    await alice.reconcile([member(alice), member(bob)]);
+    await bob.accept(commits.shift());
+    const inFlight = await bob.encrypt({ target: 'alice', beforeCarolJoined: true });
+    await alice.reconcile([member(alice), member(bob), member(carol)]);
+    const added = commits.shift(); await bob.accept(added); await carol.accept(added);
+    assert.equal(await carol.decrypt(inFlight), null);
+    const current = await bob.encrypt({ target: 'carol', offer: 'current' });
+    assert.deepEqual(await carol.decrypt(current), { clientId: bob.clientId, plaintext: '{"target":"carol","offer":"current"}' });
+    const damaged = decodeCallBytes(await bob.encrypt({ target: 'carol', offer: 'tampered' }));
+    damaged[damaged.length - 1] ^= 1;
+    await assert.rejects(carol.decrypt(encodeCallBytes(damaged)));
   } finally { await Promise.all([alice, bob, carol].map(client => client.destroy())); }
 });
 

@@ -224,6 +224,14 @@
       "template_ledger_row": "T-OPERATOR-003",
       "propagation": "Recorded as propagated in the existing template ledger on 2026-10-15; exact source/template revisions or dirty hashes must be reconciled before execution.",
       "template_result": "NOT RUN: existing ledger follow-up collected here; no test executed during checklist preparation."
+    },
+    {
+      "id": "msc117-call-tile-errors-avatar",
+      "scope": "Per-tile top error/red border, 60px profile avatar/initials, dots below frame, microphone/camera initially off, typed pre-join MLS message handling and authenticated early peer offers.",
+      "propagation": "DONE in source/template working trees, including EN/HU generated seed catalogs.",
+      "source_evidence": "MSC117-20261016/summary.json",
+      "source_result": "Source final focused follow-up PASS: 42/42 connections; 390x844 actual failed peer uses two-line ellipsis/red frame, no avatar overlap. MLS lifetime/handshake regression PASS.",
+      "template_result": "NOT RUN. Shared call owner and EN/HU catalogs propagated; only these changed boundaries belong to separate template QA. Preserve existing call-series credit."
     }
   ],
   "sourceCampaignRouting": {

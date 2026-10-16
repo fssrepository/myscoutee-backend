@@ -123,6 +123,24 @@
         }
       ]
     },
+    "CHAT-CALL-001-PAGING": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "chat-call",
+      "fixtureCheckpointId": "CHAT-CALL-001",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 3 },
+      "sessions": [
+        { "actor": "WebRTC Alice", "sessionKind": "demo", "userId": "6500000000000000000000c1", "expectedName": "WebRTC Alice", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Bob", "sessionKind": "demo", "userId": "6500000000000000000000c2", "expectedName": "WebRTC Bob", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Carol", "sessionKind": "demo", "userId": "6500000000000000000000c3", "expectedName": "WebRTC Carol", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC David", "sessionKind": "demo", "userId": "6500000000000000000000c4", "expectedName": "WebRTC David", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Emma", "sessionKind": "demo", "userId": "6500000000000000000000c5", "expectedName": "WebRTC Emma", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Frank", "sessionKind": "demo", "userId": "6500000000000000000000c6", "expectedName": "WebRTC Frank", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Grace", "sessionKind": "demo", "userId": "6500000000000000000000c7", "expectedName": "WebRTC Grace", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true }
+      ]
+    },
     "MSC115-WORK-COMMUNITY": {
       "preserveOtherSessions": true,
       "fixtureScenario": "work-community",

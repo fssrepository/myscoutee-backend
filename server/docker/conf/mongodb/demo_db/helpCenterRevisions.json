@@ -73338,11 +73338,11 @@
     ]
   },
   {
-    "_id": "explanation-chat-call-default-en-v1",
+    "_id": "explanation-chat-call-default-en-v2",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Chat call",
     "summary": "Talk with people in this chat.",
@@ -73350,7 +73350,7 @@
     "headerColor": "violet",
     "createdDate": "2026-10-07T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -73429,9 +73429,9 @@
         "id": "guide-call-accept",
         "guideStepId": "call-accept",
         "icon": "touch_app",
-        "title": "Join with audio",
+        "title": "Join the call",
         "blurb": "",
-        "contentHtml": "<p>Join this call with your microphone. Your camera starts off and can be enabled later.</p>"
+        "contentHtml": "<p>Join with your microphone and camera off. Turn them on inside the call when you are ready.</p>"
       },
       {
         "id": "guide-call-decline",
@@ -73447,7 +73447,7 @@
         "icon": "touch_app",
         "title": "Microphone on or off",
         "blurb": "",
-        "contentHtml": "<p>Choose whether others can hear you. This does not mute incoming sound. The red button and your tile show when you are muted.</p>"
+        "contentHtml": "<p>Your microphone starts muted. Turn it on when you want others to hear you. This does not mute incoming sound.</p>"
       },
       {
         "id": "guide-call-camera",
@@ -73495,11 +73495,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "explanation-chat-call-default-hu-v1",
+    "_id": "explanation-chat-call-default-hu-v2",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Hívás a chatben",
     "summary": "Beszélgess a chat résztvevőivel.",
@@ -73507,7 +73507,7 @@
     "headerColor": "violet",
     "createdDate": "2026-10-07T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -73586,9 +73586,9 @@
         "id": "guide-call-accept",
         "guideStepId": "call-accept",
         "icon": "touch_app",
-        "title": "Csatlakozás hanggal",
+        "title": "Csatlakozás a híváshoz",
         "blurb": "",
-        "contentHtml": "<p>Csatlakozz a híváshoz mikrofonnal. A kamerád kezdetben ki van kapcsolva, később bekapcsolhatod.</p>"
+        "contentHtml": "<p>Kikapcsolt mikrofonnal és kamerával csatlakozol. A hívásban te kapcsolhatod be őket, amikor szeretnéd.</p>"
       },
       {
         "id": "guide-call-decline",
@@ -73604,7 +73604,7 @@
         "icon": "touch_app",
         "title": "Mikrofon be vagy ki",
         "blurb": "",
-        "contentHtml": "<p>Állítsd be, halljanak-e téged a többiek. Ez nem némítja a bejövő hangot. Némításkor a gomb és a saját csempéd is piros jelzést kap.</p>"
+        "contentHtml": "<p>A mikrofonod kezdetben néma. Kapcsold be, amikor szeretnéd, hogy halljanak. Ez nem némítja a bejövő hangot.</p>"
       },
       {
         "id": "guide-call-camera",
@@ -73806,11 +73806,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "explanation-chats-default-en-v5",
+    "_id": "explanation-chats-default-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Chats",
     "summary": "Find conversations, send messages, and use chat tools.",
@@ -73818,7 +73818,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -73891,7 +73891,7 @@
         "icon": "help_outline",
         "title": "Start or join a call",
         "blurb": "",
-        "contentHtml": "<p>The green phone opens an audio call immediately. Turn on your camera inside the call if you want. A red crossed phone means calling is unavailable.</p>"
+        "contentHtml": "<p>The green phone opens a call with your microphone and camera off. Turn them on inside the call. A red crossed phone means calling is unavailable.</p>"
       },
       {
         "id": "guide-close",
@@ -73907,11 +73907,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "explanation-chats-default-hu-v5",
+    "_id": "explanation-chats-default-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Beszélgetések",
     "summary": "Beszélgetések keresése, üzenetküldés és további eszközök.",
@@ -73919,7 +73919,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -73992,7 +73992,7 @@
         "icon": "help_outline",
         "title": "Hívás indítása vagy csatlakozás",
         "blurb": "",
-        "contentHtml": "<p>A zöld telefon rögtön hanghívást nyit. A kamerát a hívásban kapcsolhatod be. A piros áthúzott telefon azt jelzi, hogy a hívás most nem érhető el.</p>"
+        "contentHtml": "<p>A zöld telefon kikapcsolt mikrofonnal és kamerával nyit hívást. Ezeket a hívásban kapcsolhatod be. A piros áthúzott telefon elérhetetlen hívást jelez.</p>"
       },
       {
         "id": "guide-close",
@@ -74008,11 +74008,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "explanation-event-chat-default-en-v5",
+    "_id": "explanation-event-chat-default-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Event chat",
     "summary": "Coordinate with the event community.",
@@ -74020,7 +74020,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74077,7 +74077,7 @@
         "icon": "help_outline",
         "title": "Start or join a call",
         "blurb": "",
-        "contentHtml": "<p>The green phone opens an audio call immediately. Turn on your camera inside the call if you want. A red crossed phone means calling is unavailable.</p>"
+        "contentHtml": "<p>The green phone opens a call with your microphone and camera off. Turn them on inside the call. A red crossed phone means calling is unavailable.</p>"
       },
       {
         "id": "guide-close",
@@ -74093,11 +74093,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "explanation-event-chat-default-hu-v5",
+    "_id": "explanation-event-chat-default-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Eseménychat",
     "summary": "Egyeztetés az esemény közösségével.",
@@ -74105,7 +74105,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74162,7 +74162,7 @@
         "icon": "help_outline",
         "title": "Hívás indítása vagy csatlakozás",
         "blurb": "",
-        "contentHtml": "<p>A zöld telefon rögtön hanghívást nyit. A kamerát a hívásban kapcsolhatod be. A piros áthúzott telefon azt jelzi, hogy a hívás most nem érhető el.</p>"
+        "contentHtml": "<p>A zöld telefon kikapcsolt mikrofonnal és kamerával nyit hívást. Ezeket a hívásban kapcsolhatod be. A piros áthúzott telefon elérhetetlen hívást jelez.</p>"
       },
       {
         "id": "guide-close",
@@ -74178,11 +74178,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "work:explanation-chats-en-v5",
+    "_id": "work:explanation-chats-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Chats",
     "summary": "Find conversations, send messages, and use chat tools.",
@@ -74190,7 +74190,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74263,7 +74263,7 @@
         "icon": "help_outline",
         "title": "Start or join a call",
         "blurb": "",
-        "contentHtml": "<p>The green phone opens an audio call immediately. Turn on your camera inside the call if you want. A red crossed phone means calling is unavailable.</p>"
+        "contentHtml": "<p>The green phone opens a call with your microphone and camera off. Turn them on inside the call. A red crossed phone means calling is unavailable.</p>"
       },
       {
         "id": "guide-close",
@@ -74279,11 +74279,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:explanation-chats-hu-v5",
+    "_id": "work:explanation-chats-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Beszélgetések",
     "summary": "Beszélgetések keresése, üzenetküldés és további eszközök.",
@@ -74291,7 +74291,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74364,7 +74364,7 @@
         "icon": "help_outline",
         "title": "Hívás indítása vagy csatlakozás",
         "blurb": "",
-        "contentHtml": "<p>A zöld telefon rögtön hanghívást nyit. A kamerát a hívásban kapcsolhatod be. A piros áthúzott telefon azt jelzi, hogy a hívás most nem érhető el.</p>"
+        "contentHtml": "<p>A zöld telefon kikapcsolt mikrofonnal és kamerával nyit hívást. Ezeket a hívásban kapcsolhatod be. A piros áthúzott telefon elérhetetlen hívást jelez.</p>"
       },
       {
         "id": "guide-close",
@@ -74380,11 +74380,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:explanation-event.chat-en-v5",
+    "_id": "work:explanation-event.chat-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Event chat",
     "summary": "Coordinate with the event community.",
@@ -74392,7 +74392,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74449,7 +74449,7 @@
         "icon": "help_outline",
         "title": "Start or join a call",
         "blurb": "",
-        "contentHtml": "<p>The green phone opens an audio call immediately. Turn on your camera inside the call if you want. A red crossed phone means calling is unavailable.</p>"
+        "contentHtml": "<p>The green phone opens a call with your microphone and camera off. Turn them on inside the call. A red crossed phone means calling is unavailable.</p>"
       },
       {
         "id": "guide-close",
@@ -74465,11 +74465,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:explanation-event.chat-hu-v5",
+    "_id": "work:explanation-event.chat-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Eseménychat",
     "summary": "Egyeztetés az esemény közösségével.",
@@ -74477,7 +74477,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74534,7 +74534,7 @@
         "icon": "help_outline",
         "title": "Hívás indítása vagy csatlakozás",
         "blurb": "",
-        "contentHtml": "<p>A zöld telefon rögtön hanghívást nyit. A kamerát a hívásban kapcsolhatod be. A piros áthúzott telefon azt jelzi, hogy a hívás most nem érhető el.</p>"
+        "contentHtml": "<p>A zöld telefon kikapcsolt mikrofonnal és kamerával nyit hívást. Ezeket a hívásban kapcsolhatod be. A piros áthúzott telefon elérhetetlen hívást jelez.</p>"
       },
       {
         "id": "guide-close",
@@ -74550,11 +74550,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "community:explanation-chats-en-v5",
+    "_id": "community:explanation-chats-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Chats",
     "summary": "Find conversations, send messages, and use chat tools.",
@@ -74562,7 +74562,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74635,7 +74635,7 @@
         "icon": "help_outline",
         "title": "Start or join a call",
         "blurb": "",
-        "contentHtml": "<p>The green phone opens an audio call immediately. Turn on your camera inside the call if you want. A red crossed phone means calling is unavailable.</p>"
+        "contentHtml": "<p>The green phone opens a call with your microphone and camera off. Turn them on inside the call. A red crossed phone means calling is unavailable.</p>"
       },
       {
         "id": "guide-close",
@@ -74651,11 +74651,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:explanation-chats-hu-v5",
+    "_id": "community:explanation-chats-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Beszélgetések",
     "summary": "Beszélgetések keresése, üzenetküldés és további eszközök.",
@@ -74663,7 +74663,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74736,7 +74736,7 @@
         "icon": "help_outline",
         "title": "Hívás indítása vagy csatlakozás",
         "blurb": "",
-        "contentHtml": "<p>A zöld telefon rögtön hanghívást nyit. A kamerát a hívásban kapcsolhatod be. A piros áthúzott telefon azt jelzi, hogy a hívás most nem érhető el.</p>"
+        "contentHtml": "<p>A zöld telefon kikapcsolt mikrofonnal és kamerával nyit hívást. Ezeket a hívásban kapcsolhatod be. A piros áthúzott telefon elérhetetlen hívást jelez.</p>"
       },
       {
         "id": "guide-close",
@@ -74752,11 +74752,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:explanation-event.chat-en-v5",
+    "_id": "community:explanation-event.chat-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Event chat",
     "summary": "Coordinate with the event community.",
@@ -74764,7 +74764,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74821,7 +74821,7 @@
         "icon": "help_outline",
         "title": "Start or join a call",
         "blurb": "",
-        "contentHtml": "<p>The green phone opens an audio call immediately. Turn on your camera inside the call if you want. A red crossed phone means calling is unavailable.</p>"
+        "contentHtml": "<p>The green phone opens a call with your microphone and camera off. Turn them on inside the call. A red crossed phone means calling is unavailable.</p>"
       },
       {
         "id": "guide-close",
@@ -74837,11 +74837,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:explanation-event.chat-hu-v5",
+    "_id": "community:explanation-event.chat-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 5,
+    "version": 6,
     "active": true,
     "title": "Eseménychat",
     "summary": "Egyeztetés az esemény közösségével.",
@@ -74849,7 +74849,7 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -74906,7 +74906,7 @@
         "icon": "help_outline",
         "title": "Hívás indítása vagy csatlakozás",
         "blurb": "",
-        "contentHtml": "<p>A zöld telefon rögtön hanghívást nyit. A kamerát a hívásban kapcsolhatod be. A piros áthúzott telefon azt jelzi, hogy a hívás most nem érhető el.</p>"
+        "contentHtml": "<p>A zöld telefon kikapcsolt mikrofonnal és kamerával nyit hívást. Ezeket a hívásban kapcsolhatod be. A piros áthúzott telefon elérhetetlen hívást jelez.</p>"
       },
       {
         "id": "guide-close",
@@ -74980,11 +74980,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "community:explanation-chat.call-en-v1",
+    "_id": "community:explanation-chat.call-en-v2",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Chat call",
     "summary": "Talk with people in this chat.",
@@ -74992,7 +74992,7 @@
     "headerColor": "violet",
     "createdDate": "2026-10-07T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -75071,9 +75071,9 @@
         "id": "guide-call-accept",
         "guideStepId": "call-accept",
         "icon": "touch_app",
-        "title": "Join with audio",
+        "title": "Join the call",
         "blurb": "",
-        "contentHtml": "<p>Join this call with your microphone. Your camera starts off and can be enabled later.</p>"
+        "contentHtml": "<p>Join with your microphone and camera off. Turn them on inside the call when you are ready.</p>"
       },
       {
         "id": "guide-call-decline",
@@ -75089,7 +75089,7 @@
         "icon": "touch_app",
         "title": "Microphone on or off",
         "blurb": "",
-        "contentHtml": "<p>Choose whether others can hear you. This does not mute incoming sound. The red button and your tile show when you are muted.</p>"
+        "contentHtml": "<p>Your microphone starts muted. Turn it on when you want others to hear you. This does not mute incoming sound.</p>"
       },
       {
         "id": "guide-call-camera",
@@ -75137,11 +75137,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:explanation-chat.call-hu-v1",
+    "_id": "community:explanation-chat.call-hu-v2",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Hívás a chatben",
     "summary": "Beszélgess a chat résztvevőivel.",
@@ -75149,7 +75149,7 @@
     "headerColor": "violet",
     "createdDate": "2026-10-07T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -75228,9 +75228,9 @@
         "id": "guide-call-accept",
         "guideStepId": "call-accept",
         "icon": "touch_app",
-        "title": "Csatlakozás hanggal",
+        "title": "Csatlakozás a híváshoz",
         "blurb": "",
-        "contentHtml": "<p>Csatlakozz a híváshoz mikrofonnal. A kamerád kezdetben ki van kapcsolva, később bekapcsolhatod.</p>"
+        "contentHtml": "<p>Kikapcsolt mikrofonnal és kamerával csatlakozol. A hívásban te kapcsolhatod be őket, amikor szeretnéd.</p>"
       },
       {
         "id": "guide-call-decline",
@@ -75246,7 +75246,7 @@
         "icon": "touch_app",
         "title": "Mikrofon be vagy ki",
         "blurb": "",
-        "contentHtml": "<p>Állítsd be, halljanak-e téged a többiek. Ez nem némítja a bejövő hangot. Némításkor a gomb és a saját csempéd is piros jelzést kap.</p>"
+        "contentHtml": "<p>A mikrofonod kezdetben néma. Kapcsold be, amikor szeretnéd, hogy halljanak. Ez nem némítja a bejövő hangot.</p>"
       },
       {
         "id": "guide-call-camera",
@@ -75506,11 +75506,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "work:explanation-chat.call-en-v1",
+    "_id": "work:explanation-chat.call-en-v2",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Chat call",
     "summary": "Talk with people in this chat.",
@@ -75518,7 +75518,7 @@
     "headerColor": "violet",
     "createdDate": "2026-10-07T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -75597,9 +75597,9 @@
         "id": "guide-call-accept",
         "guideStepId": "call-accept",
         "icon": "touch_app",
-        "title": "Join with audio",
+        "title": "Join the call",
         "blurb": "",
-        "contentHtml": "<p>Join this call with your microphone. Your camera starts off and can be enabled later.</p>"
+        "contentHtml": "<p>Join with your microphone and camera off. Turn them on inside the call when you are ready.</p>"
       },
       {
         "id": "guide-call-decline",
@@ -75615,7 +75615,7 @@
         "icon": "touch_app",
         "title": "Microphone on or off",
         "blurb": "",
-        "contentHtml": "<p>Choose whether others can hear you. This does not mute incoming sound. The red button and your tile show when you are muted.</p>"
+        "contentHtml": "<p>Your microphone starts muted. Turn it on when you want others to hear you. This does not mute incoming sound.</p>"
       },
       {
         "id": "guide-call-camera",
@@ -75663,11 +75663,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:explanation-chat.call-hu-v1",
+    "_id": "work:explanation-chat.call-hu-v2",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Hívás a chatben",
     "summary": "Beszélgess a chat résztvevőivel.",
@@ -75675,7 +75675,7 @@
     "headerColor": "violet",
     "createdDate": "2026-10-07T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedDate": "2026-10-16T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -75754,9 +75754,9 @@
         "id": "guide-call-accept",
         "guideStepId": "call-accept",
         "icon": "touch_app",
-        "title": "Csatlakozás hanggal",
+        "title": "Csatlakozás a híváshoz",
         "blurb": "",
-        "contentHtml": "<p>Csatlakozz a híváshoz mikrofonnal. A kamerád kezdetben ki van kapcsolva, később bekapcsolhatod.</p>"
+        "contentHtml": "<p>Kikapcsolt mikrofonnal és kamerával csatlakozol. A hívásban te kapcsolhatod be őket, amikor szeretnéd.</p>"
       },
       {
         "id": "guide-call-decline",
@@ -75772,7 +75772,7 @@
         "icon": "touch_app",
         "title": "Mikrofon be vagy ki",
         "blurb": "",
-        "contentHtml": "<p>Állítsd be, halljanak-e téged a többiek. Ez nem némítja a bejövő hangot. Némításkor a gomb és a saját csempéd is piros jelzést kap.</p>"
+        "contentHtml": "<p>A mikrofonod kezdetben néma. Kapcsold be, amikor szeretnéd, hogy halljanak. Ez nem némítja a bejövő hangot.</p>"
       },
       {
         "id": "guide-call-camera",

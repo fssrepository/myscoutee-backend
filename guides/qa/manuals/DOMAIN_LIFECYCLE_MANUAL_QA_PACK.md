@@ -2710,19 +2710,21 @@ again.
 
 ### `CHAT-CALL-001` — direct audio/video group calls
 
-The stable [29-step remaining development guide](../checklists/general/CHAT-CALL-001.md)
-owns this journey. October12 two-party RTP, repeated-call and KVM continuity
-proof is credited. Remaining blocks cover source controls, three-party media,
-seven-actor paging/video RTP, availability/cleanup and call/volume Help.
-The existing three-actor fixture cannot prove seven-actor paging; extend its
-owner when that block executes, without duplicating identities.
+Closed on2026-10-16 for the accepted development scope. The
+[execution evidence](../evidence/general/MSC117-20261016/summary.json) records
+three-/seven-party actual RTP, authority/coordinator controls, paging, owned
+transport, EN/HU call/volume guides, fixes and cleanup. Completed blocks and the
+October12 shared baseline remain credited; no repeated-call campaign was rerun.
+The authorized final targeted follow-up passed: all 42 directional connections
+across seven fresh browsers, focused lifetime/handshake regressions, and a real
+transport failure at 390x844 with two ellipsized lines, red frame and unobscured
+60px avatar. Completed checklist blocks were not replayed.
 
-Physical audio and external-network checks are in separate live qualification.
-Template checks stay in the existing template QA. The removed CALL-01 observation
-is not reopened. Keep actual peer RTP, UI and signaling evidence distinct;
-media remains direct mesh and a vanished video element is not bandwidth proof.
-Record this campaign once in CHAT-CALL-001; call guides also satisfy their
-assigned guide coverage without another run.
+The [ordered checklist](../checklists/general/CHAT-CALL-001.md) remains the stable
+reference. Call guides are reconciled once under EXPLANATION-GUIDE-001.
+Physical devices/external networks and template runtime retain their separate
+qualification records. All owned sessions/fixture data were restored and the
+original stopped stack state was restored.
 
 ## Event feedback and Impressions checkpoints
 

@@ -128,13 +128,14 @@ contains the task history, workstream effort and measurement method.
 
 ## Manual QA status
 
-As of **2026-10-15**, the [development QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
-contains **146 scenarios**, excluding four legend rows: **143 complete,
-2 partial/in progress and1 not started**. Results apply only to their recorded
+As of **2026-10-16**, the [development QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+contains **146 scenarios**, excluding four legend rows: **144 complete,
+1 partial/in progress and1 not started**. Results apply only to their recorded
 scope. The19 MSC-115 rows represent its accepted, closed119-step development
 campaign; they are not additional pending runs.
 
-The live Project has one open task: **MSC-117**.
+MSC-117 development QA is closed for its accepted scope; precise verification
+limits are retained in its evidence.
 MSC-116 is closed for its consolidated development scope: access, Events,
 central Feedback and the remaining MSC-119 guide introduction. Its existing
 [checklist](guides/qa/checklists/api/MSC-116_AUTOMATIC_QA.md) records results through
@@ -142,14 +143,15 @@ step85. MSC-119 remains closed; no separate QA run or testcase was added.
 Template runtime and real external-host/publication qualification retain their
 separate records. KVM and the monolith are stopped at the user's request.
 
-MSC-117 credits October12 shared two-party/repeated/KVM browser call evidence;
-its remaining group-media, paging/RTP, controls and call guides have an ordered
-[29-step checklist](guides/qa/checklists/general/CHAT-CALL-001.md).
+MSC-117 credits October12 shared two-party/repeated/KVM evidence and adds
+three-/seven-party RTP, controls, transport and EN/HU call guides.
+[Closure evidence and limits](guides/qa/evidence/general/MSC117-20261016/summary.json)
+retain the actual scope; completed blocks are not reopened.
 The closed MSC-118 implementation has user-requested remaining role QA in an
 ordered [39-step checklist](guides/qa/checklists/general/ROLE-GUIDES-NOTIFICATIONS-001.md),
 crediting today's MSC-115 common-guide/admin evidence.
 
-The sixth open ledger row is the separate existing
+The separate existing
 [template regression queue](guides/qa/checklists/general/MSC115-TEMPLATE-REGRESSION.md),
 not another open product task. Template execution stays there. Physical devices,
 external networks and provider/deployed behavior stay in the

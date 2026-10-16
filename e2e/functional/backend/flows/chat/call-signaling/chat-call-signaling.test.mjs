@@ -52,7 +52,7 @@ const mlsEvent = (actor, epoch) => actor.take(m => m.kind === 'mls' && m.epoch =
 test('existing chat WebSocket carries MLS group signaling, rejects wrong authority, and elects a surviving coordinator', async () => {
   const clients = [], engines = [], callId = crypto.randomUUID(); let epoch = 0;
   try {
-    for (const source of baseline.actors) clients.push(await actor(source.id));
+    for (const source of baseline.actors.slice(0, 3)) clients.push(await actor(source.id));
     const [alice, bob, carol] = clients;
     for (const client of clients) {
       engines.push(await ChatCallMls.create(callId, async bundle => {

@@ -1,0 +1,32 @@
+[
+  {
+    "actor": 2,
+    "error": {
+      "name": "Error",
+      "message": "CoreCryptoError.Mls",
+      "tag": "Mls",
+      "inner": {
+        "mlsError": {
+          "tag": "MessageEpochTooOld"
+        }
+      }
+    },
+    "frames": [
+      {
+        "name": "uniffiCheckCallStatus",
+        "url": "",
+        "line": 4385
+      },
+      {
+        "name": "makeRustCall",
+        "url": "",
+        "line": 4373
+      },
+      {
+        "name": "uniffiRustCallAsync",
+        "url": "",
+        "line": 4496
+      }
+    ]
+  }
+]

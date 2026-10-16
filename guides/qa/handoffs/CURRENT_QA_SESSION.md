@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-10-15
+Updated: 2026-10-16
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -82,6 +82,21 @@ dates, next oracle and aggregate counts. This handoff owns only the active
 resume pointer and reusable working method.
 
 ## Active resume point
+
+```yaml
+checkpoint: CHAT-CALL-001
+status: CLOSED — MSC-117 accepted development scope
+checklist: ../checklists/general/CHAT-CALL-001.md
+substage: Steps26-29 closed; prior completed blocks retained, no blanket replay.
+execution_authority: No further automatic MSC-117 testing; explicit user correction requires ordered closure and preserves accepted results.
+next_action: Separate template/live qualification retains its own scope; do not restart completed source blocks.
+resume_gate: All task-started monolith services/frontend-sync stopped; managed browsers closed.
+cleanup: Canonical fixture/session reset complete; owned users/chat/event absent, no active call tracks or peers.
+evidence: ../evidence/general/MSC117-20261016/summary.json
+ledger: CHAT-CALL-001 closed for accepted scope; unobserved branches remain explicit evidence limits.
+```
+
+### Previous resume point — completed MSC-116
 
 ```yaml
 checkpoint: INTEGRATION-ACCESS-001

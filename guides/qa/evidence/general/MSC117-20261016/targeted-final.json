@@ -1,0 +1,343 @@
+{
+  "checkedAt": "2026-10-16T09:18:37.595Z",
+  "frontendRevision": "f73c921de",
+  "buildChecks": [
+    {
+      "actor": "WebRTC Alice",
+      "main": "35d5e50c9be8028abde635dc9a03981516bee2bc6ba24506edadfb863db14d8f",
+      "chunks": [
+        {
+          "file": "chunk-I7CJ7XP4.js",
+          "match": true
+        }
+      ]
+    },
+    {
+      "actor": "WebRTC Bob",
+      "main": "35d5e50c9be8028abde635dc9a03981516bee2bc6ba24506edadfb863db14d8f",
+      "chunks": [
+        {
+          "file": "chunk-I7CJ7XP4.js",
+          "match": true
+        }
+      ]
+    },
+    {
+      "actor": "WebRTC Carol",
+      "main": "35d5e50c9be8028abde635dc9a03981516bee2bc6ba24506edadfb863db14d8f",
+      "chunks": [
+        {
+          "file": "chunk-I7CJ7XP4.js",
+          "match": true
+        }
+      ]
+    },
+    {
+      "actor": "WebRTC David",
+      "main": "35d5e50c9be8028abde635dc9a03981516bee2bc6ba24506edadfb863db14d8f",
+      "chunks": [
+        {
+          "file": "chunk-I7CJ7XP4.js",
+          "match": true
+        }
+      ]
+    },
+    {
+      "actor": "WebRTC Emma",
+      "main": "35d5e50c9be8028abde635dc9a03981516bee2bc6ba24506edadfb863db14d8f",
+      "chunks": [
+        {
+          "file": "chunk-I7CJ7XP4.js",
+          "match": true
+        }
+      ]
+    },
+    {
+      "actor": "WebRTC Frank",
+      "main": "35d5e50c9be8028abde635dc9a03981516bee2bc6ba24506edadfb863db14d8f",
+      "chunks": [
+        {
+          "file": "chunk-I7CJ7XP4.js",
+          "match": true
+        }
+      ]
+    },
+    {
+      "actor": "WebRTC Grace",
+      "main": "35d5e50c9be8028abde635dc9a03981516bee2bc6ba24506edadfb863db14d8f",
+      "chunks": [
+        {
+          "file": "chunk-I7CJ7XP4.js",
+          "match": true
+        }
+      ]
+    }
+  ],
+  "baselineFailure": "MLS lifetime 3600 interpreted as milliseconds; actual Lifetime is not acceptable; five-second WASM regression failed before and passed after converting to 3600000ms.",
+  "concurrentJoin": [
+    {
+      "self": "02932b93-4846-4311-8a7b-4527ad6f615d",
+      "status": "active",
+      "error": null,
+      "muted": true,
+      "connections": [
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected"
+      ],
+      "tracks": [
+        {
+          "kind": "audio",
+          "enabled": false
+        }
+      ],
+      "popupResource": "http://localhost/chat-call-popup.component-XCBMTVXO.js"
+    },
+    {
+      "self": "aa76bfcc-2ea3-4a1a-8c37-5121c9121e32",
+      "status": "active",
+      "error": null,
+      "muted": true,
+      "connections": [
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected"
+      ],
+      "tracks": [
+        {
+          "kind": "audio",
+          "enabled": false
+        }
+      ],
+      "popupResource": "http://localhost/chat-call-popup.component-XCBMTVXO.js"
+    },
+    {
+      "self": "d3eacd15-3724-4e4c-845f-2f2e4fd925ad",
+      "status": "active",
+      "error": null,
+      "muted": true,
+      "connections": [
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected"
+      ],
+      "tracks": [
+        {
+          "kind": "audio",
+          "enabled": false
+        }
+      ],
+      "popupResource": "http://localhost/chat-call-popup.component-XCBMTVXO.js"
+    },
+    {
+      "self": "4bcb5e98-e44a-4a43-9258-c9bf533050f3",
+      "status": "active",
+      "error": null,
+      "muted": true,
+      "connections": [
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected"
+      ],
+      "tracks": [
+        {
+          "kind": "audio",
+          "enabled": false
+        }
+      ],
+      "popupResource": "http://localhost/chat-call-popup.component-XCBMTVXO.js"
+    },
+    {
+      "self": "f06f0361-3062-4a72-8880-835cbe3f1a9a",
+      "status": "active",
+      "error": null,
+      "muted": true,
+      "connections": [
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected"
+      ],
+      "tracks": [
+        {
+          "kind": "audio",
+          "enabled": false
+        }
+      ],
+      "popupResource": "http://localhost/chat-call-popup.component-XCBMTVXO.js"
+    },
+    {
+      "self": "025d0473-8a36-45ea-a334-783a520f9576",
+      "status": "active",
+      "error": null,
+      "muted": true,
+      "connections": [
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected"
+      ],
+      "tracks": [
+        {
+          "kind": "audio",
+          "enabled": false
+        }
+      ],
+      "popupResource": "http://localhost/chat-call-popup.component-XCBMTVXO.js"
+    },
+    {
+      "self": "926da0e7-c3b1-4ef4-8f11-8d46292cf534",
+      "status": "active",
+      "error": null,
+      "muted": true,
+      "connections": [
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected",
+        "connected"
+      ],
+      "tracks": [
+        {
+          "kind": "audio",
+          "enabled": false
+        }
+      ],
+      "popupResource": "http://localhost/chat-call-popup.component-XCBMTVXO.js"
+    }
+  ],
+  "finalBuild": [
+    {
+      "main": "7b35eaca0a64f4bd4f0f916b815cef03f52f5f58fd51b17fe955838c41ccd10e",
+      "popup": "b98e30bea03f0f47591f93d3e9d50b52782db5b9ea4b95c82f586b071136b98b"
+    },
+    {
+      "main": "7b35eaca0a64f4bd4f0f916b815cef03f52f5f58fd51b17fe955838c41ccd10e",
+      "popup": "b98e30bea03f0f47591f93d3e9d50b52782db5b9ea4b95c82f586b071136b98b"
+    },
+    {
+      "main": "7b35eaca0a64f4bd4f0f916b815cef03f52f5f58fd51b17fe955838c41ccd10e",
+      "popup": "b98e30bea03f0f47591f93d3e9d50b52782db5b9ea4b95c82f586b071136b98b"
+    },
+    {
+      "main": "7b35eaca0a64f4bd4f0f916b815cef03f52f5f58fd51b17fe955838c41ccd10e",
+      "popup": "b98e30bea03f0f47591f93d3e9d50b52782db5b9ea4b95c82f586b071136b98b"
+    },
+    {
+      "main": "7b35eaca0a64f4bd4f0f916b815cef03f52f5f58fd51b17fe955838c41ccd10e",
+      "popup": "b98e30bea03f0f47591f93d3e9d50b52782db5b9ea4b95c82f586b071136b98b"
+    },
+    {
+      "main": "7b35eaca0a64f4bd4f0f916b815cef03f52f5f58fd51b17fe955838c41ccd10e",
+      "popup": "b98e30bea03f0f47591f93d3e9d50b52782db5b9ea4b95c82f586b071136b98b"
+    },
+    {
+      "main": "7b35eaca0a64f4bd4f0f916b815cef03f52f5f58fd51b17fe955838c41ccd10e",
+      "popup": "b98e30bea03f0f47591f93d3e9d50b52782db5b9ea4b95c82f586b071136b98b"
+    }
+  ],
+  "mobileError": {
+    "text": "Connection failed.\nRejoin the call.",
+    "error": {
+      "x": 252,
+      "y": 132.96875,
+      "width": 107.609375,
+      "height": 42.21875,
+      "top": 132.96875,
+      "right": 359.609375,
+      "bottom": 175.1875,
+      "left": 252
+    },
+    "tile": {
+      "x": 200,
+      "y": 80.96875,
+      "width": 167.609375,
+      "height": 329.8125,
+      "top": 80.96875,
+      "right": 367.609375,
+      "bottom": 410.78125,
+      "left": 200
+    },
+    "avatar": {
+      "x": 253.796875,
+      "y": 198.375,
+      "width": 60,
+      "height": 60,
+      "top": 198.375,
+      "right": 313.796875,
+      "bottom": 258.375,
+      "left": 253.796875
+    },
+    "height": 30.21875,
+    "lineHeight": 15.12,
+    "whiteSpace": "pre",
+    "textOverflow": "ellipsis",
+    "overflow": "hidden",
+    "pointerEvents": "none",
+    "border": "rgb(239, 68, 68) 0px 0px 0px 4px inset",
+    "noAvatarOverlap": true,
+    "topLevelErrors": 0
+  },
+  "cleanup": [
+    {
+      "status": "idle",
+      "peers": 0,
+      "tracks": 0
+    },
+    {
+      "status": "idle",
+      "peers": 0,
+      "tracks": 0
+    },
+    {
+      "status": "idle",
+      "peers": 0,
+      "tracks": 0
+    },
+    {
+      "status": "idle",
+      "peers": 0,
+      "tracks": 0
+    },
+    {
+      "status": "idle",
+      "peers": 0,
+      "tracks": 0
+    },
+    {
+      "status": "idle",
+      "peers": 0,
+      "tracks": 0
+    },
+    {
+      "status": "idle",
+      "peers": 0,
+      "tracks": 0
+    }
+  ],
+  "finishedAt": "2026-10-16T09:25:59.170Z",
+  "finalFrontendRevision": "f73c921de100670b08c6898c4caa12a217d570f5",
+  "finalTemplateFrontendRevision": "2657554601886ecdac2e5e947580a278c298d7a7",
+  "tests": {
+    "fiveSecondJoinDelay": "FAIL before millisecond correction; PASS after",
+    "earlySignalOnly": "PASS early offer, current-epoch pending handshake, connected-peer preservation and repeated answer"
+  },
+  "runtimeCleanup": "Seven calls idle with zero peers and live tracks; managed browsers closed; canonical fixture/session reset complete; all task-started services stopped."
+}
