@@ -10,7 +10,10 @@ import subprocess
 import sys
 
 
-def run_mongo(script, *, demo=False, capture=False):
+def run_mongo(script, *, demo=False, capture=False, node_heap_mib=None):
+    if node_heap_mib is not None and (type(node_heap_mib) is not int or node_heap_mib < 1):
+        raise ValueError('node_heap_mib must be a positive integer')
+    node_environment = ['NODE_OPTIONS=--max-old-space-size=' + str(node_heap_mib)] if node_heap_mib else []
     prefix = (
         'db = db.getSiblingDB(process.env.MONGO_DEMO_DATABASE || "demo_db");\n'
         'if (!db.auth(process.env.MONGO_APP_USERNAME, process.env.MONGO_APP_PASSWORD)) '
@@ -22,7 +25,8 @@ def run_mongo(script, *, demo=False, capture=False):
     target = os.environ.get('MYSCOUTEE_TEST_MONGO_TARGET', 'monolith')
     if target == 'monolith':
         container = os.environ.get('MYSCOUTEE_TEST_MONGO_CONTAINER', 'mongodb')
-        result = subprocess.run(['docker', 'exec', '-i', container, 'mongosh', '--quiet',
+        environment_args = [arg for value in node_environment for arg in ['-e', value]]
+        result = subprocess.run(['docker', 'exec', '-i', *environment_args, container, 'mongosh', '--quiet',
                                  '--file', '/dev/stdin'], input=prefix + script, text=True,
                                  capture_output=capture, check=True)
         if capture:
@@ -36,7 +40,7 @@ def run_mongo(script, *, demo=False, capture=False):
                 + '/mongodb:27017,mongodb-secondary:27017'] \
             if workloads.CONFIG.get('mongoReplicaSet') else []
         result = workloads.kube('-n', workloads.NAMESPACE, 'exec', '-i',
-                                mongo_replica.member_target(), '--', 'mongosh',
+                                mongo_replica.member_target(), '--', *(['env', *node_environment] if node_environment else []), 'mongosh',
                                 *host, '--quiet', '--file', '/dev/stdin', data=prefix + script,
                                 check=False)
         if result.returncode:
