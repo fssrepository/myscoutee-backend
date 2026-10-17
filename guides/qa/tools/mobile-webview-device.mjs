@@ -156,11 +156,19 @@ const tap = async (selector, index = 0) => {
 try {
   if (action === 'trace-entry') {
     // Observe only this origin's entry requests; never log auth headers/tokens.
+    const observedRequests = new Map();
+    const pathOnly = value => { try { const u = new URL(value); return u.origin === origin ? u.pathname : u.hostname; } catch { return ''; } };
+    const frames = stack => stack?.callFrames?.slice(0, 8).map(f => ({fn: f.functionName, path: pathOnly(f.url), line: f.lineNumber, column: f.columnNumber}));
+    const record = (event, fields) => console.log(JSON.stringify({event, at: new Date().toISOString(), ...fields}));
     socket.on('message', data => {
       const message = JSON.parse(data);
       if (message.method === 'Network.requestWillBeSent') {
         const {request, requestId} = message.params;
         const url = new URL(request.url);
+        if (url.origin === origin) observedRequests.set(requestId, url.pathname);
+        if (url.origin === origin && message.params.type === 'Document') record('document-request', {
+          path: url.pathname, requestId, loaderId: message.params.loaderId,
+          initiator: message.params.initiator?.type, stack: frames(message.params.initiator?.stack)});
         if (url.origin !== origin || !/^\/api\/(auth\/|.*location.*eligibility)/.test(url.pathname)) return;
         console.log(JSON.stringify({event: 'request', at: new Date().toISOString(), requestId,
           path: url.pathname, method: request.method,
@@ -169,13 +177,34 @@ try {
       } else if (message.method === 'Network.responseReceived') {
         const {response, requestId} = message.params;
         const url = new URL(response.url);
+        if (url.origin === origin && ['/api/runtime-status', '/api/runtime-status/events', '/app-version.json'].includes(url.pathname)) {
+          record('runtime-response', {path: url.pathname, status: response.status, requestId});
+        }
         if (url.origin === origin && url.pathname.startsWith('/api/auth/')) {
           console.log(JSON.stringify({event: 'response', at: new Date().toISOString(), requestId,
             path: url.pathname, status: response.status}));
         }
+      } else if (message.method === 'Network.loadingFailed' && observedRequests.has(message.params.requestId)) {
+        record('request-failed', {path: observedRequests.get(message.params.requestId), error: message.params.errorText, canceled: message.params.canceled});
+      } else if (message.method === 'Network.eventSourceMessageReceived' && observedRequests.get(message.params.requestId) === '/api/runtime-status/events') {
+        try { const s = JSON.parse(message.params.data); record('runtime-status', {ready: s.ready, known: s.known}); } catch {}
+      } else if (['Page.frameRequestedNavigation', 'Page.frameScheduledNavigation'].includes(message.method)) {
+        record('navigation-requested', {reason: message.params.reason, path: pathOnly(message.params.url)});
+      } else if (message.method === 'Page.frameNavigated' && !message.params.frame.parentId) {
+        record('navigated', {path: pathOnly(message.params.frame.url), loaderId: message.params.frame.loaderId});
+      } else if (message.method === 'Page.loadEventFired') {
+        void evaluate('({build:document.querySelector("meta[name=myscoutee-build-id]")?.content,type:performance.getEntriesByType("navigation")[0]?.type,wasDiscarded:document.wasDiscarded})')
+          .then(state => record('page-loaded', state)).catch(() => {});
+      } else if (message.method === 'Page.windowOpen') {
+        record('window-open', {path: pathOnly(message.params.url), userGesture: message.params.userGesture});
+      } else if (message.method === 'Runtime.exceptionThrown') {
+        const e = message.params.exceptionDetails;
+        record('exception', {text: e.text, className: e.exception?.className, stack: frames(e.stackTrace)});
       }
     });
     await send('Network.enable');
+    await send('Page.enable');
+    await send('Runtime.enable');
     console.log(JSON.stringify({event: 'ready', origin}));
     const input = createInterface({input: process.stdin});
     await new Promise(resolve => {
@@ -184,6 +213,8 @@ try {
       input.once('close', resolve);
     });
     input.close();
+    await send('Page.disable');
+    await send('Runtime.disable');
     await send('Network.disable');
   } else if (action === 'inspect') {
     console.log(JSON.stringify(await evaluate(`(async()=>({

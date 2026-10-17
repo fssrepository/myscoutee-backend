@@ -9,7 +9,13 @@ candidate image manifest. Signature contexts and update request schemas remain
 unchanged. Run `bash packaging/tests/release-project-test.sh` and the existing
 `packaging/tests/update-worker-test.sh` after changing this boundary.
 
-The current Debian package release is **1.3.0** (`v1.3.0`). The
+The latest published Debian package is **1.4.1**. Its
+[release](../guides/releases/v1.4.1.md) includes the seven-image Docker inventory,
+signed DEB and helpers. The owner’s uploaded DEB hash and canonical catalog/asset
+discovery are verified. Production Netcup now runs the exact signed 1.4.1 DEB;
+host qualification, 13 external checks, Angular render and retained-data checks
+passed. See the linked release evidence.
+The
 [1.3.1 frontend patch](../guides/releases/v1.3.1.md) publishes only an nginx image
 compatible with that package; it does not build or install a new DEB.
 Production packaging includes the MCP

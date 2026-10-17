@@ -29,12 +29,15 @@ input.
 
 ## Current release
 
-The current Debian package release is **1.3.0**, tagged `v1.3.0`. The
+The latest published Debian package is **1.4.1**. Its
+[release](../../guides/releases/v1.4.1.md) includes the signed DEB and published
+Docker images; the owner’s uploaded hash and canonical discovery are verified. The
 [1.3.1 frontend patch](../../guides/releases/v1.3.1.md) publishes only a compatible
 nginx/frontend image; no DEB or automatic-update catalog is produced.
 Package/image versions and
 release qualification boundaries are recorded in
-[the release notes](../../guides/releases/v1.3.0.md). Existing tags remain unchanged.
+[the release notes](../../guides/releases/v1.3.0.md). Historical published release
+tags remain unchanged; the coordinated `v1.4.1` source tag identifies this candidate.
 
 ## Build a QA prerelease from current source
 

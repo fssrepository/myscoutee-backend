@@ -7,14 +7,26 @@ import vm from 'node:vm';
 
 const root = new URL('../../', import.meta.url);
 const read = name => fs.readFileSync(new URL(name, root), 'utf8');
-const catalog = JSON.parse(read('packaging/migrations/seeds/015-runtime-index-parity/runtime-indexes.json'));
+const originalCatalog = JSON.parse(read('packaging/migrations/seeds/015-runtime-index-parity/runtime-indexes.json'));
+const feedbackCatalog = JSON.parse(read('packaging/migrations/seeds/018-feedback-and-worker-indexes/runtime-indexes.json'));
+const legacyFeedback = new Set(['eventFeedbackStates', 'eventFeedbackAnswers']);
+const catalog = {...originalCatalog, indexes: [
+  ...originalCatalog.indexes.filter(row => !legacyFeedback.has(row.collection)),
+  ...feedbackCatalog.indexes
+]};
 const migration = read('packaging/migrations/015-runtime-index-parity.js');
+const feedbackMigration = read('packaging/migrations/018-feedback-and-worker-indexes.js');
 const id = row => row.collection + '/' + row.options.name;
 function definitions(source) {
   return [...source.matchAll(/(?:portalDb\.(\w+)|db\.getCollection\('([^']+)'\))\.createIndex\(([\s\S]*?)\);/g)]
     .map(match => {
       const [key, options] = JSON.parse(JSON.stringify(vm.runInNewContext('[' + match[3] + ']')));
       return { collection: match[1] || match[2], key, options };
+    }).flatMap(row => {
+      if (row.collection !== '${collection_name}') return [row];
+      const names = source.match(/^\s*(mediaDeletionRetries(?:\|\w+)+)\)/m)?.[1].split('|');
+      assert.ok(names?.length, 'Dynamic retry index has no collection selection');
+      return names.map(collection => ({...row, collection}));
     });
 }
 const fresh = definitions(read('server/docker/conf/mongodb/db_init.js'));
@@ -60,11 +72,15 @@ function initializeReset() {
  const db={getSiblingDB(name){check(name==='demo_db','initializer selected a non-demo database');return target;}};
  ${read('server/docker/conf/mongodb/db_init.js')}
 }
-const pinnedCatalog=JSON.stringify(catalog);
+const pinnedCatalog=JSON.stringify(${JSON.stringify(originalCatalog)});
+const pinnedFeedbackCatalog=JSON.stringify(${JSON.stringify(feedbackCatalog)});
 function migrate(db){
- const require=()=>({readFileSync:()=>pinnedCatalog});
+ {const require=()=>({readFileSync:()=>pinnedCatalog});
  const process={env:{MYSCOUTEE_MIGRATION_SEED_DIRECTORY:'/pinned'}};
- ${migration}
+ ${migration}}
+ {const require=()=>({readFileSync:()=>pinnedFeedbackCatalog});
+ const process={env:{MYSCOUTEE_MIGRATION_SEED_DIRECTORY:'/pinned'}};
+ ${feedbackMigration}}
 }
 try {
  for(const retired of catalog.retiredIndexes){
@@ -73,10 +89,21 @@ try {
    :retired.collection==='notificationRuleConfigs'||retired.collection==='emailCampaignRules'?{ruleKey:1}:{templateKey:1};
   target.getCollection(retired.collection).createIndex(key,{name:retired.name,unique:true});
  }
+ target.eventFeedbackStates.insertOne({_id:'legacy-state',viewerUserId:'legacy-member',eventId:'legacy-event',
+  organizerNote:'retain',_class:'com.raxim.myscoutee.domain.events.document.EventFeedbackState'});
+ target.eventFeedbackAnswers.insertOne({_id:'legacy-answer',viewerUserId:'legacy-member',eventId:'legacy-event',cardId:'legacy-card',
+  primaryValue:'retain',_class:'com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer'});
+ const legacyBefore=EJSON.stringify(target.eventFeedbackStates.findOne({_id:'legacy-state'}));
  target.notificationRuleConfigs.insertOne({_id:'operator-rule',ruleKey:'retained',enabled:false,version:9});
  const before=EJSON.stringify(target.notificationRuleConfigs.find().toArray());
  migrate(target);migrate(target);
  check(before===EJSON.stringify(target.notificationRuleConfigs.find().toArray()),'operator data changed');
+ check(target.feedbackStates.findOne({_id:'legacy-state'}).organizerNote==='retain','legacy state not copied');
+ check(target.feedbackAnswers.findOne({_id:'legacy-answer'}).primaryValue==='retain','legacy answer not copied');
+ check(target.feedbackStates.findOne({_id:'legacy-state'})._class==='com.raxim.myscoutee.domain.feedback.document.FeedbackState','legacy class metadata not mapped');
+ check(target.feedbackAnswers.countDocuments({_id:'legacy-answer'})===1,'retry duplicated legacy answer');
+ check(EJSON.stringify(target.eventFeedbackStates.findOne({_id:'legacy-state'}))===legacyBefore,'legacy source mutated');
+
  // Reproduce the installed reset gap, then apply the actual canonical source.
  // Only this unique test database is reachable through initializeReset().
  target.countryPartitions.dropIndexes();
@@ -100,6 +127,12 @@ try {
  const plan=target.notificationRuleConfigs.find({baseGroupId:'work',ruleKey:'retained'}).explain('executionStats');
  check(plan.executionStats.totalDocsExamined===1,'scoped query does not examine exactly one document');
  check(JSON.stringify(plan.queryPlanner.winningPlan).includes('notification_rule_group_key'),'scoped lookup lost its index');
+ target.feedbackStates.updateOne({_id:'legacy-state'},{$set:{organizerNote:'current operator value'}});
+ let conflicting=false;try{migrate(target);}catch(error){conflicting=error.message.includes('Conflicting retained Feedback record:');}
+ check(conflicting,'conflicting current Feedback record was accepted');
+ check(target.feedbackStates.findOne({_id:'legacy-state'}).organizerNote==='current operator value','current Feedback record overwritten');
+ check(EJSON.stringify(target.eventFeedbackStates.findOne({_id:'legacy-state'}))===legacyBefore,'conflict changed legacy source');
+ print('PASS: legacy Feedback copied once, class metadata mapped, sources retained and conflicts rejected without overwrite.');
  print('PASS: '+catalog.indexes.length+' indexes; upgrade and reset initialization repeated; operator data retained; scoped inserts; duplicate rejection; indexed lookup examines one document.');
 } finally {if(target.getUser(prefix))target.dropUser(prefix);target.dropDatabase();}
 `);

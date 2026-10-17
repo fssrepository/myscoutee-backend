@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-17T13:23:02Z",
+  "source": {
+    "backendCommit": "dea66a60feb405e934a673b22dbacb11899e5fa5",
+    "backendCheckoutDirty": true,
+    "registryCommit": "857fbc45df2d4b08cc5d45805b3660dc5beb8114",
+    "registryCheckoutDirty": false,
+    "binding": "checkout context only; package/image hashes are authoritative"
+  },
+  "host": "Linux 6.8.0-138-generic #138~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:43:15 UTC  x86_64 GNU/Linux",
+  "artifacts": {
+    "candidatePackage": {
+      "path": "/home/raxim/workspace/myscoutee-backend/packaging/dist/1.4.1/myscoutee_1.4.1_amd64.deb",
+      "version": "1.4.1",
+      "architecture": "amd64",
+      "sha256": "sha256:46a7c954aaa9868fec798877c50453d0d12c17213c5015859b18ef522629502e",
+      "sizeBytes": 367087472
+    },
+    "oldestSupportedPackage": {
+      "path": "/home/raxim/workspace/myscoutee-backend/packaging/dist/msc122-final-140-migration/myscoutee_1.4.0_amd64.deb",
+      "version": "1.4.0",
+      "architecture": "amd64",
+      "sha256": "sha256:7dc45a465b096ff095fef32d872cd4f9762409c37857f2feb4c59cb16864a34c",
+      "sizeBytes": 366862254
+    },
+    "managedImages": [
+      {
+        "service": "nginx-base",
+        "reference": "myscoutee-nginx:1.4.1-base",
+        "imageID": "sha256:45c0bb9de7a903d626100397a6826a728464a8c1d6a91e4cb643db1a4f9202c7",
+        "contentFingerprint": "sha256:51fbf64fef4f92c8b3c117399d2be5f769f22c9abb97fc9e30de8e7eedf42c17",
+        "archivePath": "opt/myscoutee/images/myscoutee-nginx-1.4.1-base.tar",
+        "archiveSha256": "sha256:e69f3263460492318e50a85ed9e9cbcb4c08c1d4b533996b4fa9dcd1f9443d04",
+        "archiveSizeBytes": 65519616,
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      {
+        "service": "nginx",
+        "reference": "myscoutee-nginx:1.4.1-prod",
+        "imageID": "sha256:86df0223c22a4cf7be5d21714ea20f8b6fdefb68d2295384814a80e2408f6d2a",
+        "contentFingerprint": "sha256:c7613cbe6e725220c005cefc091338add0897673fde86b6f71f41d00f58effba",
+        "archivePath": "opt/myscoutee/images/myscoutee-nginx-1.4.1-prod.tar",
+        "archiveSha256": "sha256:c89172862e617137a6e10acce58d2f00c44ada8c0c00ea2deb397158dbbc8523",
+        "archiveSizeBytes": 123778560,
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      {
+        "service": "profilemanagement",
+        "reference": "myscoutee-api:1.4.1-prod",
+        "imageID": "sha256:f3756dbc39a5a83f1ae9b3a55102fdd05037bcd646519c632048c88393e770c4",
+        "contentFingerprint": "sha256:805d3586079c070c5f047ed8884b7f828082a55dfb383b1c6403a5afc2a5e001",
+        "archivePath": "opt/myscoutee/images/myscoutee-api-1.4.1-prod.tar",
+        "archiveSha256": "sha256:bbc616e9458ec1fe6c5b11fbbf7c6f698903ec6f4a975569d362ac59d01b5f4a",
+        "archiveSizeBytes": 398566912,
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      {
+        "service": "minio",
+        "reference": "myscoutee-minio:1.4.1-prod",
+        "imageID": "sha256:413444dd4c45cc2fe6db5644a39717a88baaa2e51c0fc4ceb30966002571686f",
+        "contentFingerprint": "sha256:6f9d65d9ae7db38bd9b98b85e4e006d37b77922a076dacb23e8f660f37584a85",
+        "archivePath": "opt/myscoutee/images/myscoutee-minio-1.4.1-prod.tar",
+        "archiveSha256": "sha256:f6c40556a701d92581758c780552943bb183c0aaf32e0786c72740d699809983",
+        "archiveSizeBytes": 219613184,
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      {
+        "service": "registry-demo",
+        "reference": "myscoutee-registry:1.4.1-prod",
+        "imageID": "sha256:f7aeaed8110b5a60f41bc4525482dfd18dc24174cbb0e0c95343973bfff12203",
+        "contentFingerprint": "sha256:de78ff9188366662f67b3b1f0f85d66c98675bb8e62624cbd3861c4c6f2474c4",
+        "archivePath": "opt/myscoutee/images/myscoutee-registry-1.4.1-prod.tar",
+        "archiveSha256": "sha256:e0a4878d7864b5a0232b63445860f89814a86e76ea9fbc50d7f9278345192eea",
+        "archiveSizeBytes": 14268416,
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      {
+        "service": "payment-simulator",
+        "reference": "myscoutee-payment-simulator:1.4.1-prod",
+        "imageID": "sha256:6e12179bd46b195193c9211c313854880f43be3e88da7002ecf0d2fc6ae0b116",
+        "contentFingerprint": "sha256:e748939fe7cdd6cd2889aac5ca4efc72613e2e68da1a7750463385fc91304723",
+        "archivePath": "opt/myscoutee/images/myscoutee-payment-simulator-1.4.1-prod.tar",
+        "archiveSha256": "sha256:1bfcc96820ca0fc5cc268e3868fe943838b8f5ca66c46fbe90230e7544a476b0",
+        "archiveSizeBytes": 13522944,
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      {
+        "service": "mcp",
+        "reference": "myscoutee-mcp:1.4.1-prod",
+        "imageID": "sha256:838f106d6b86bcc332b01cc9d8cedc63a3cb15f3a34642fc118c2ecd2f067a76",
+        "contentFingerprint": "sha256:ca3b99df47e5b7977ff670e654261ab23cd629a9f1f364939f10ea77587f3072",
+        "archivePath": "opt/myscoutee/images/myscoutee-mcp-1.4.1-prod.tar",
+        "archiveSha256": "sha256:d548059e3174fdfe5abe4d7a9deedd4d150612f1f997c38cffec95e2f46dc225",
+        "archiveSizeBytes": 9537536,
+        "os": "linux",
+        "architecture": "amd64"
+      }
+    ],
+    "registryImage": {
+      "reference": "myscoutee-registry:1.4.1-prod",
+      "imageID": "sha256:f7aeaed8110b5a60f41bc4525482dfd18dc24174cbb0e0c95343973bfff12203",
+      "contentFingerprint": "sha256:de78ff9188366662f67b3b1f0f85d66c98675bb8e62624cbd3861c4c6f2474c4",
+      "repoDigests": [
+        "ghcr.io/fssrepository/myscoutee-registry@sha256:2135e1f1cb88c96e894db96a007bf8467d792ea423f257c8fe3875e2a3437f12"
+      ],
+      "os": "linux",
+      "architecture": "amd64",
+      "user": "65532:65532",
+      "entrypoint": [
+        "/registry"
+      ],
+      "exposedPorts": [
+        "8080/tcp"
+      ]
+    }
+  },
+  "automatedChecks": {
+    "packageIdentityAndVersionOrdering": "PASS",
+    "packageCredentialAudit": "PASS",
+    "packageVersionMarker": "PASS",
+    "completeBundledImageBinding": "PASS",
+    "packagedExploreRegistryIsolation": "PASS",
+    "registryImageRuntimeContract": "PASS"
+  },
+  "externalDrills": {
+    "exactArtifactJavaGoRail": "OPEN",
+    "hostInstallRestartAndPowerLoss": "OPEN",
+    "cleanHostBackupRestore": "OPEN",
+    "oldestSupportedUpgradeAndRollback": "OPEN",
+    "publicTLSMultiRegistryIsolation": "OPEN",
+    "sustainedAndBurstLoad": "OPEN",
+    "independentSecurityReview": "OPEN"
+  },
+  "publicationVerification": {
+    "releaseId": 415815499,
+    "tag": "v1.4.1",
+    "draft": false,
+    "url": "https://github.com/fssrepository/myscoutee/releases/tag/v1.4.1",
+    "ownerDebUploadVerified": true,
+    "artifactSha256": "sha256:46a7c954aaa9868fec798877c50453d0d12c17213c5015859b18ef522629502e",
+    "canonicalLatestDiscovery": true,
+    "downloadedSignedMetadataMatchesLocal": [
+      "myscoutee-update.json",
+      "myscoutee-release_1.4.1.json",
+      "release-public.pem"
+    ],
+    "canonicalArtifactDownloadStatus": 206,
+    "installedUpdaterUiRetested": false
+  },
+  "netcupDeployment": {
+    "status": "PASS",
+    "version": "1.4.1",
+    "evidence": "NETCUP_1.4.1_20261017.json",
+    "exactArtifactInstalled": true,
+    "hostQualificationPassed": true,
+    "externalChecksPassed": 13,
+    "browserRenderPassed": true,
+    "retainedDataVerified": true
+  }
+}

@@ -336,7 +336,7 @@ ensure_collection_indexes() {
       mongosh --host "${mongo_host}" --port "${mongo_port}" \
         --username "${mongo_username}" --password "${mongo_password}" \
         --authenticationDatabase "${target_db}" --quiet "${target_db}" \
-        --eval "db.getCollection('mediaDeletions').createIndex({retryTaskId:1,status:1},{name:'media_deletion_retry_batch'}); db.getCollection('mediaDeletions').createIndex({status:1,nextAttemptAt:1},{name:'media_deletion_handoff_due'});" >/dev/null
+        --eval "db.getCollection('mediaDeletions').createIndex({retryTaskId:1,status:1},{name:'media_deletion_retry_batch'}); db.getCollection('mediaDeletions').createIndex({status:1,nextAttemptAt:1},{name:'media_deletion_handoff_due'}); db.getCollection('mediaDeletions').createIndex({baseGroupId:1,status:1,nextAttemptAt:1,_id:1},{name:'media_deletion_due_v1'});" >/dev/null
       ;;
 
     mediaDeletionRetries|integrationWebhookRetries|affinityAdminSignalOutboxRetries|eventAdminSignalOutboxRetries|notificationAdminSignalOutboxRetries)

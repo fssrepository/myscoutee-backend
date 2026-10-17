@@ -26,5 +26,21 @@
   {
     "collection": "communityProviders",
     "replace": false
+  },
+  {
+    "collection": "adminWorkerSignals",
+    "replace": false
+  },
+  {
+    "collection": "affinityAdminSignalOutbox",
+    "replace": false
+  },
+  {
+    "collection": "eventAdminSignalOutbox",
+    "replace": false
+  },
+  {
+    "collection": "notificationAdminSignalOutbox",
+    "replace": false
   }
 ]

@@ -514,7 +514,8 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         return group;
     }
     private Group dto(DiscoveryProfile actor, CommunityGroup group, List<CommunityMember> members) {
-        var owner = users.findByUserId(group.ownerUserId()).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        var owner = users.findByUserId(group.ownerUserId()).orElse(null);
+        if (owner == null && !BaseGroups.isBaseId(group.id())) throw error(HttpStatus.NOT_FOUND);
         var own = membership(group.id(), actor.getUserId());
         if (CommunityGroupMapper.restorableMembership(own) && members.stream().noneMatch(m -> actor.getUserId().equals(m.getUserId()))) {
             members = new ArrayList<>(members); members.add(own);

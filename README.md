@@ -35,13 +35,12 @@ measured delivery history. The reusable template and components are delivered.
 
 ### Installer
 
-The coordinated application source snapshot is **1.4.1**. The latest complete installer
-release remains **1.3.0**, with its Debian package, client tools, checksums,
-container references and release metadata available from
-[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.3.0).
+The current installer release is **1.4.1**, with its Debian package, client tools,
+checksums, container references and signed metadata available from
+[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.4.1).
 
 See the [installation guide](packaging/README.md),
-[1.3.0 installer release notes](guides/releases/v1.3.0.md) and
+[1.4.1 installer release notes](guides/releases/v1.4.1.md) and
 [1.3.3 application update notes](guides/releases/v1.3.3.md).
 The later application updates do not replace the full installer release.
 
@@ -129,8 +128,8 @@ retain the allocation boundaries; full API valuation is incomplete.
 
 ## QA status
 
-The development ledger records **145 complete scenarios out of 146** as of
-October 16. Results apply to their recorded scope. The separate
+The development ledger records **146 complete scenarios out of 146** as of
+October 17. Results apply to their recorded scope. The separate
 [template regression](../myscoutee-template/guides/qa/evidence/general/MSC115-TEMPLATE-REGRESSION.json)
 is **PASS / CLOSED through points 1–32** on October 17, including the call and
 notification deltas and fixture/runtime cleanup.

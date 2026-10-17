@@ -38121,7 +38121,7 @@
     "_id": "i18n-message-hu-activities-chat-event-status-underreview",
     "key": "activities.chat.event.status.underReview",
     "lang": "hu",
-    "value": "Under review"
+    "value": "Felülvizsgálat alatt"
   },
   {
     "_id": "i18n-message-hu-add-myscoutee-to-your-home-screen",
@@ -91486,5 +91486,3185 @@
     "key": "admin.jobs.rule.media.deletion.description",
     "lang": "hu",
     "value": "Törli a várakozó médiafájlokat a tárhelyről, és újrapróbálja a sikertelen törléseket."
+  },
+  {
+    "_id": "i18n-message-en-sympathy",
+    "key": "sympathy",
+    "lang": "en",
+    "value": "Sympathy"
+  },
+  {
+    "_id": "i18n-message-hu-sympathy",
+    "key": "sympathy",
+    "lang": "hu",
+    "value": "Szimpátia"
+  },
+  {
+    "_id": "i18n-message-en-invite-candidates-empty-description",
+    "key": "invite.candidates.empty.description",
+    "lang": "en",
+    "value": "Meet more people first or try again later."
+  },
+  {
+    "_id": "i18n-message-en-ui-1-new-notification",
+    "key": "ui.1.new.notification",
+    "lang": "en",
+    "value": "1 new notification"
+  },
+  {
+    "_id": "i18n-message-en-ui-action-failed",
+    "key": "ui.action.failed",
+    "lang": "en",
+    "value": "Action failed."
+  },
+  {
+    "_id": "i18n-message-en-ui-activity-ratings",
+    "key": "ui.activity.ratings",
+    "lang": "en",
+    "value": "Activity ratings"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-a-group-from-the-header-action",
+    "key": "ui.add.a.group.from.the.header.action",
+    "lang": "en",
+    "value": "Add a group from the header action."
+  },
+  {
+    "_id": "i18n-message-en-ui-add-asset-to-basket",
+    "key": "ui.add.asset.to.basket",
+    "lang": "en",
+    "value": "Add asset to basket"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-experience",
+    "key": "ui.add.experience",
+    "lang": "en",
+    "value": "Add Experience"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-experience-373",
+    "key": "ui.add.experience.373",
+    "lang": "en",
+    "value": "Add experience"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-group",
+    "key": "ui.add.group",
+    "lang": "en",
+    "value": "Add Group"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-group-122",
+    "key": "ui.add.group.122",
+    "lang": "en",
+    "value": "Add group"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-match",
+    "key": "ui.add.match",
+    "lang": "en",
+    "value": "Add Match"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-score",
+    "key": "ui.add.score",
+    "lang": "en",
+    "value": "Add Score"
+  },
+  {
+    "_id": "i18n-message-en-ui-add-supply-quantity-row",
+    "key": "ui.add.supply.quantity.row",
+    "lang": "en",
+    "value": "Add supply quantity row"
+  },
+  {
+    "_id": "i18n-message-en-ui-all-notifications",
+    "key": "ui.all.notifications",
+    "lang": "en",
+    "value": "All notifications"
+  },
+  {
+    "_id": "i18n-message-en-ui-already-hosting",
+    "key": "ui.already.hosting",
+    "lang": "en",
+    "value": "Already hosting"
+  },
+  {
+    "_id": "i18n-message-en-ui-animals-nature",
+    "key": "ui.animals.nature",
+    "lang": "en",
+    "value": "Animals & nature"
+  },
+  {
+    "_id": "i18n-message-en-ui-asset-availability-and-requests",
+    "key": "ui.asset.availability.and.requests",
+    "lang": "en",
+    "value": "Asset availability and requests"
+  },
+  {
+    "_id": "i18n-message-en-ui-asset-checkout",
+    "key": "ui.asset.checkout",
+    "lang": "en",
+    "value": "Asset checkout"
+  },
+  {
+    "_id": "i18n-message-en-ui-asset-unavailable-for-this-time",
+    "key": "ui.asset.unavailable.for.this.time",
+    "lang": "en",
+    "value": "Asset unavailable for this time"
+  },
+  {
+    "_id": "i18n-message-en-ui-assets-accommodation",
+    "key": "ui.assets.accommodation",
+    "lang": "en",
+    "value": "Assets · Accommodation"
+  },
+  {
+    "_id": "i18n-message-en-ui-assets-supplies",
+    "key": "ui.assets.supplies",
+    "lang": "en",
+    "value": "Assets · Supplies"
+  },
+  {
+    "_id": "i18n-message-en-ui-assets-tickets",
+    "key": "ui.assets.tickets",
+    "lang": "en",
+    "value": "Assets · Tickets"
+  },
+  {
+    "_id": "i18n-message-en-ui-assets-transport",
+    "key": "ui.assets.transport",
+    "lang": "en",
+    "value": "Assets · Transport"
+  },
+  {
+    "_id": "i18n-message-en-ui-basket-unavailable",
+    "key": "ui.basket.unavailable",
+    "lang": "en",
+    "value": "Basket unavailable"
+  },
+  {
+    "_id": "i18n-message-en-ui-blocked-user-actions",
+    "key": "ui.blocked.user.actions",
+    "lang": "en",
+    "value": "Blocked user actions"
+  },
+  {
+    "_id": "i18n-message-en-ui-board-task",
+    "key": "ui.board.task",
+    "lang": "en",
+    "value": "Board task"
+  },
+  {
+    "_id": "i18n-message-en-ui-bring-items",
+    "key": "ui.bring.items",
+    "lang": "en",
+    "value": "Bring Items"
+  },
+  {
+    "_id": "i18n-message-en-ui-call-volume-and-video-reception",
+    "key": "ui.call.volume.and.video.reception",
+    "lang": "en",
+    "value": "Call volume and video reception"
+  },
+  {
+    "_id": "i18n-message-en-ui-cancel-feedback",
+    "key": "ui.cancel.feedback",
+    "lang": "en",
+    "value": "Cancel feedback"
+  },
+  {
+    "_id": "i18n-message-en-ui-cancel-poll",
+    "key": "ui.cancel.poll",
+    "lang": "en",
+    "value": "Cancel poll"
+  },
+  {
+    "_id": "i18n-message-en-ui-cancel-report",
+    "key": "ui.cancel.report",
+    "lang": "en",
+    "value": "Cancel report"
+  },
+  {
+    "_id": "i18n-message-en-ui-cancel-vote",
+    "key": "ui.cancel.vote",
+    "lang": "en",
+    "value": "Cancel vote"
+  },
+  {
+    "_id": "i18n-message-en-ui-case-board",
+    "key": "ui.case.board",
+    "lang": "en",
+    "value": "Case board"
+  },
+  {
+    "_id": "i18n-message-en-ui-cash-receipt",
+    "key": "ui.cash.receipt",
+    "lang": "en",
+    "value": "Cash receipt"
+  },
+  {
+    "_id": "i18n-message-en-ui-check-back-later-or-invite-people-in",
+    "key": "ui.check.back.later.or.invite.people.in",
+    "lang": "en",
+    "value": "Check back later or invite people in."
+  },
+  {
+    "_id": "i18n-message-en-ui-choose-appointment-slots",
+    "key": "ui.choose.appointment.slots",
+    "lang": "en",
+    "value": "Choose appointment slots"
+  },
+  {
+    "_id": "i18n-message-en-ui-choose-campaign",
+    "key": "ui.choose.campaign",
+    "lang": "en",
+    "value": "Choose campaign"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-affinity-graph",
+    "key": "ui.close.affinity.graph",
+    "lang": "en",
+    "value": "Close affinity graph"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-article-editor",
+    "key": "ui.close.article.editor",
+    "lang": "en",
+    "value": "Close article editor"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-asset-availability",
+    "key": "ui.close.asset.availability",
+    "lang": "en",
+    "value": "Close asset availability"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-asset-editor",
+    "key": "ui.close.asset.editor",
+    "lang": "en",
+    "value": "Close asset editor"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-asset-explore",
+    "key": "ui.close.asset.explore",
+    "lang": "en",
+    "value": "Close asset explore"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-asset-view",
+    "key": "ui.close.asset.view",
+    "lang": "en",
+    "value": "Close asset view"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-bring-items",
+    "key": "ui.close.bring.items",
+    "lang": "en",
+    "value": "Close bring items"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-chat-popup",
+    "key": "ui.close.chat.popup",
+    "lang": "en",
+    "value": "Close chat popup"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-contact-form",
+    "key": "ui.close.contact.form",
+    "lang": "en",
+    "value": "Close contact form"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-day-availability",
+    "key": "ui.close.day.availability",
+    "lang": "en",
+    "value": "Close day availability"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-editor",
+    "key": "ui.close.editor",
+    "lang": "en",
+    "value": "Close editor"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-event-explore",
+    "key": "ui.close.event.explore",
+    "lang": "en",
+    "value": "Close event explore"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-experience-form",
+    "key": "ui.close.experience.form",
+    "lang": "en",
+    "value": "Close experience form"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-experience-manager",
+    "key": "ui.close.experience.manager",
+    "lang": "en",
+    "value": "Close experience manager"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-group-form",
+    "key": "ui.close.group.form",
+    "lang": "en",
+    "value": "Close group form"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-help-popup",
+    "key": "ui.close.help.popup",
+    "lang": "en",
+    "value": "Close help popup"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-import-dialog",
+    "key": "ui.close.import.dialog",
+    "lang": "en",
+    "value": "Close import dialog"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-join-request",
+    "key": "ui.close.join.request",
+    "lang": "en",
+    "value": "Close join request"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-leaderboard-editor",
+    "key": "ui.close.leaderboard.editor",
+    "lang": "en",
+    "value": "Close leaderboard editor"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-notifications",
+    "key": "ui.close.notifications",
+    "lang": "en",
+    "value": "Close notifications"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-pinned-messages",
+    "key": "ui.close.pinned.messages",
+    "lang": "en",
+    "value": "Close pinned messages"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-poll",
+    "key": "ui.close.poll",
+    "lang": "en",
+    "value": "Close poll"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-price-summary",
+    "key": "ui.close.price.summary",
+    "lang": "en",
+    "value": "Close price summary"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-reactions",
+    "key": "ui.close.reactions",
+    "lang": "en",
+    "value": "Close reactions"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-resource-assignment",
+    "key": "ui.close.resource.assignment",
+    "lang": "en",
+    "value": "Close resource assignment"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-slot-picker",
+    "key": "ui.close.slot.picker",
+    "lang": "en",
+    "value": "Close slot picker"
+  },
+  {
+    "_id": "i18n-message-en-ui-close-stage",
+    "key": "ui.close.stage",
+    "lang": "en",
+    "value": "Close Stage"
+  },
+  {
+    "_id": "i18n-message-en-ui-contact-support",
+    "key": "ui.contact.support",
+    "lang": "en",
+    "value": "Contact support"
+  },
+  {
+    "_id": "i18n-message-en-ui-content-language",
+    "key": "ui.content.language",
+    "lang": "en",
+    "value": "Content language"
+  },
+  {
+    "_id": "i18n-message-en-ui-continue-to-payment",
+    "key": "ui.continue.to.payment",
+    "lang": "en",
+    "value": "Continue to payment"
+  },
+  {
+    "_id": "i18n-message-en-ui-count-as-participant",
+    "key": "ui.count.as.participant",
+    "lang": "en",
+    "value": "Count as participant"
+  },
+  {
+    "_id": "i18n-message-en-ui-create-a-poll",
+    "key": "ui.create.a.poll",
+    "lang": "en",
+    "value": "Create a poll"
+  },
+  {
+    "_id": "i18n-message-en-ui-create-poll",
+    "key": "ui.create.poll",
+    "lang": "en",
+    "value": "Create Poll"
+  },
+  {
+    "_id": "i18n-message-en-ui-demand-pricing",
+    "key": "ui.demand.pricing",
+    "lang": "en",
+    "value": "Demand pricing"
+  },
+  {
+    "_id": "i18n-message-en-ui-demo-user-selector",
+    "key": "ui.demo.user.selector",
+    "lang": "en",
+    "value": "Demo user selector"
+  },
+  {
+    "_id": "i18n-message-en-ui-edit-experience",
+    "key": "ui.edit.experience",
+    "lang": "en",
+    "value": "Edit Experience"
+  },
+  {
+    "_id": "i18n-message-en-ui-edit-experience-372",
+    "key": "ui.edit.experience.372",
+    "lang": "en",
+    "value": "Edit experience"
+  },
+  {
+    "_id": "i18n-message-en-ui-enable-ticketing-on-in-an-event-to-generate-a-ticket-here",
+    "key": "ui.enable.ticketing.on.in.an.event.to.generate.a.ticket.here",
+    "lang": "en",
+    "value": "Enable Ticketing On in an event to generate a ticket here."
+  },
+  {
+    "_id": "i18n-message-en-ui-event-editor",
+    "key": "ui.event.editor",
+    "lang": "en",
+    "value": "Event editor"
+  },
+  {
+    "_id": "i18n-message-en-ui-event-feedback-details",
+    "key": "ui.event.feedback.details",
+    "lang": "en",
+    "value": "Event feedback details"
+  },
+  {
+    "_id": "i18n-message-en-ui-event-feedback-unavailable",
+    "key": "ui.event.feedback.unavailable",
+    "lang": "en",
+    "value": "Event feedback unavailable"
+  },
+  {
+    "_id": "i18n-message-en-ui-event-ready",
+    "key": "ui.event.ready",
+    "lang": "en",
+    "value": "Event ready"
+  },
+  {
+    "_id": "i18n-message-en-ui-exit-rates-fullscreen-mode",
+    "key": "ui.exit.rates.fullscreen.mode",
+    "lang": "en",
+    "value": "Exit rates fullscreen mode"
+  },
+  {
+    "_id": "i18n-message-en-ui-experience-manager",
+    "key": "ui.experience.manager",
+    "lang": "en",
+    "value": "Experience manager"
+  },
+  {
+    "_id": "i18n-message-en-ui-experience-type",
+    "key": "ui.experience.type",
+    "lang": "en",
+    "value": "Experience Type"
+  },
+  {
+    "_id": "i18n-message-en-ui-fact-check",
+    "key": "ui.fact.check",
+    "lang": "en",
+    "value": "Fact check"
+  },
+  {
+    "_id": "i18n-message-en-ui-filter-demo-users",
+    "key": "ui.filter.demo.users",
+    "lang": "en",
+    "value": "Filter demo users"
+  },
+  {
+    "_id": "i18n-message-en-ui-finalize-stage",
+    "key": "ui.finalize.stage",
+    "lang": "en",
+    "value": "Finalize Stage"
+  },
+  {
+    "_id": "i18n-message-en-ui-food-drink",
+    "key": "ui.food.drink",
+    "lang": "en",
+    "value": "Food & drink"
+  },
+  {
+    "_id": "i18n-message-en-ui-full-row",
+    "key": "ui.full.row",
+    "lang": "en",
+    "value": "Full row"
+  },
+  {
+    "_id": "i18n-message-en-ui-group-and-asset-members",
+    "key": "ui.group.and.asset.members",
+    "lang": "en",
+    "value": "Group and asset members"
+  },
+  {
+    "_id": "i18n-message-en-ui-group-delete-failed",
+    "key": "ui.group.delete.failed",
+    "lang": "en",
+    "value": "Group delete failed."
+  },
+  {
+    "_id": "i18n-message-en-ui-group-editor",
+    "key": "ui.group.editor",
+    "lang": "en",
+    "value": "Group editor"
+  },
+  {
+    "_id": "i18n-message-en-ui-group-privacy-rules",
+    "key": "ui.group.privacy.rules",
+    "lang": "en",
+    "value": "Group privacy rules"
+  },
+  {
+    "_id": "i18n-message-en-ui-guide-button-introduction",
+    "key": "ui.guide.button.introduction",
+    "lang": "en",
+    "value": "Guide button introduction"
+  },
+  {
+    "_id": "i18n-message-en-ui-help-content-is-not-available-right-now",
+    "key": "ui.help.content.is.not.available.right.now",
+    "lang": "en",
+    "value": "Help content is not available right now."
+  },
+  {
+    "_id": "i18n-message-en-ui-home-cards",
+    "key": "ui.home.cards",
+    "lang": "en",
+    "value": "Home cards"
+  },
+  {
+    "_id": "i18n-message-en-ui-import-experience",
+    "key": "ui.import.experience",
+    "lang": "en",
+    "value": "Import Experience"
+  },
+  {
+    "_id": "i18n-message-en-ui-import-preview-ready",
+    "key": "ui.import.preview.ready",
+    "lang": "en",
+    "value": "Import preview ready"
+  },
+  {
+    "_id": "i18n-message-en-ui-import-preview-unavailable",
+    "key": "ui.import.preview.unavailable",
+    "lang": "en",
+    "value": "Import preview unavailable"
+  },
+  {
+    "_id": "i18n-message-en-ui-integration-permissions",
+    "key": "ui.integration.permissions",
+    "lang": "en",
+    "value": "Integration permissions"
+  },
+  {
+    "_id": "i18n-message-en-ui-invitation-discount",
+    "key": "ui.invitation.discount",
+    "lang": "en",
+    "value": "Invitation discount"
+  },
+  {
+    "_id": "i18n-message-en-ui-invite-friends",
+    "key": "ui.invite.friends",
+    "lang": "en",
+    "value": "Invite friends"
+  },
+  {
+    "_id": "i18n-message-en-ui-loading-explanation",
+    "key": "ui.loading.explanation",
+    "lang": "en",
+    "value": "Loading explanation"
+  },
+  {
+    "_id": "i18n-message-en-ui-loading-feedback",
+    "key": "ui.loading.feedback",
+    "lang": "en",
+    "value": "Loading feedback"
+  },
+  {
+    "_id": "i18n-message-en-ui-loading-help-content",
+    "key": "ui.loading.help.content",
+    "lang": "en",
+    "value": "Loading help content"
+  },
+  {
+    "_id": "i18n-message-en-ui-loading-profile-setup",
+    "key": "ui.loading.profile.setup",
+    "lang": "en",
+    "value": "Loading profile setup"
+  },
+  {
+    "_id": "i18n-message-en-ui-make-manager",
+    "key": "ui.make.manager",
+    "lang": "en",
+    "value": "Make Manager"
+  },
+  {
+    "_id": "i18n-message-en-ui-manage-accounts",
+    "key": "ui.manage.accounts",
+    "lang": "en",
+    "value": "Manage accounts"
+  },
+  {
+    "_id": "i18n-message-en-ui-maximum-price",
+    "key": "ui.maximum.price",
+    "lang": "en",
+    "value": "Maximum price"
+  },
+  {
+    "_id": "i18n-message-en-ui-member-feedback",
+    "key": "ui.member.feedback",
+    "lang": "en",
+    "value": "Member feedback"
+  },
+  {
+    "_id": "i18n-message-en-ui-members-hidden-for-this-event",
+    "key": "ui.members.hidden.for.this.event",
+    "lang": "en",
+    "value": "Members hidden for this event"
+  },
+  {
+    "_id": "i18n-message-en-ui-message-reactions",
+    "key": "ui.message.reactions",
+    "lang": "en",
+    "value": "Message reactions"
+  },
+  {
+    "_id": "i18n-message-en-ui-mingle-setup",
+    "key": "ui.mingle.setup",
+    "lang": "en",
+    "value": "Mingle setup"
+  },
+  {
+    "_id": "i18n-message-en-ui-minimum-price",
+    "key": "ui.minimum.price",
+    "lang": "en",
+    "value": "Minimum price"
+  },
+  {
+    "_id": "i18n-message-en-ui-more-message-actions",
+    "key": "ui.more.message.actions",
+    "lang": "en",
+    "value": "More message actions"
+  },
+  {
+    "_id": "i18n-message-en-ui-mute-alerts",
+    "key": "ui.mute.alerts",
+    "lang": "en",
+    "value": "Mute alerts"
+  },
+  {
+    "_id": "i18n-message-en-ui-my-feedback",
+    "key": "ui.my.feedback",
+    "lang": "en",
+    "value": "My Feedback"
+  },
+  {
+    "_id": "i18n-message-en-ui-myscoutee-system",
+    "key": "ui.myscoutee.system",
+    "lang": "en",
+    "value": "MyScoutee System"
+  },
+  {
+    "_id": "i18n-message-en-ui-new-messages-and-updates-will-appear-here",
+    "key": "ui.new.messages.and.updates.will.appear.here",
+    "lang": "en",
+    "value": "New messages and updates will appear here."
+  },
+  {
+    "_id": "i18n-message-en-ui-new-notifications-will-still-be-counted-and-saved-but-the-floating-al",
+    "key": "ui.new.notifications.will.still.be.counted.and.saved.but.the.floating.alert.button.will.stay.hidden.until.you.unmute.it",
+    "lang": "en",
+    "value": "New notifications will still be counted and saved, but the floating alert button will stay hidden until you unmute it."
+  },
+  {
+    "_id": "i18n-message-en-ui-no-entries-in-this-filter",
+    "key": "ui.no.entries.in.this.filter",
+    "lang": "en",
+    "value": "No entries in this filter"
+  },
+  {
+    "_id": "i18n-message-en-ui-no-experience-items-recognized",
+    "key": "ui.no.experience.items.recognized",
+    "lang": "en",
+    "value": "No experience items recognized"
+  },
+  {
+    "_id": "i18n-message-en-ui-no-members-yet",
+    "key": "ui.no.members.yet",
+    "lang": "en",
+    "value": "No members yet."
+  },
+  {
+    "_id": "i18n-message-en-ui-no-notifications",
+    "key": "ui.no.notifications",
+    "lang": "en",
+    "value": "No notifications"
+  },
+  {
+    "_id": "i18n-message-en-ui-no-quantity-added-yet",
+    "key": "ui.no.quantity.added.yet",
+    "lang": "en",
+    "value": "No quantity added yet"
+  },
+  {
+    "_id": "i18n-message-en-ui-no-slots-in-this-month",
+    "key": "ui.no.slots.in.this.month",
+    "lang": "en",
+    "value": "No slots in this month."
+  },
+  {
+    "_id": "i18n-message-en-ui-no-visible-events-right-now",
+    "key": "ui.no.visible.events.right.now",
+    "lang": "en",
+    "value": "No visible events right now."
+  },
+  {
+    "_id": "i18n-message-en-ui-notification-target-unavailable",
+    "key": "ui.notification.target.unavailable",
+    "lang": "en",
+    "value": "Notification target unavailable"
+  },
+  {
+    "_id": "i18n-message-en-ui-notification-update-failed",
+    "key": "ui.notification.update.failed",
+    "lang": "en",
+    "value": "Notification update failed"
+  },
+  {
+    "_id": "i18n-message-en-ui-one-grid-column",
+    "key": "ui.one.grid.column",
+    "lang": "en",
+    "value": "One grid column"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-accommodation-map",
+    "key": "ui.open.accommodation.map",
+    "lang": "en",
+    "value": "Open accommodation map"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-borrow-basket-with-1-request",
+    "key": "ui.open.borrow.basket.with.1.request",
+    "lang": "en",
+    "value": "Open borrow basket with 1 request"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-chat-context-menu",
+    "key": "ui.open.chat.context.menu",
+    "lang": "en",
+    "value": "Open chat context menu"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-chat-tools",
+    "key": "ui.open.chat.tools",
+    "lang": "en",
+    "value": "Open chat tools"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-contact-method-type",
+    "key": "ui.open.contact.method.type",
+    "lang": "en",
+    "value": "Open contact method type"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-event-actions",
+    "key": "ui.open.event.actions",
+    "lang": "en",
+    "value": "Open event actions"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-event-explore",
+    "key": "ui.open.event.explore",
+    "lang": "en",
+    "value": "Open event explore"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-event-explore-order",
+    "key": "ui.open.event.explore.order",
+    "lang": "en",
+    "value": "Open event explore order"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-event-explore-view",
+    "key": "ui.open.event.explore.view",
+    "lang": "en",
+    "value": "Open event explore view"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-event-members",
+    "key": "ui.open.event.members",
+    "lang": "en",
+    "value": "Open event members"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-experience-actions",
+    "key": "ui.open.experience.actions",
+    "lang": "en",
+    "value": "Open experience actions"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-experience-filter",
+    "key": "ui.open.experience.filter",
+    "lang": "en",
+    "value": "Open experience filter"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-experience-type-selector",
+    "key": "ui.open.experience.type.selector",
+    "lang": "en",
+    "value": "Open experience type selector"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-member-requests",
+    "key": "ui.open.member.requests",
+    "lang": "en",
+    "value": "Open member requests"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-new-demo-profile",
+    "key": "ui.open.new.demo.profile",
+    "lang": "en",
+    "value": "Open new demo profile"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-operator-settings-menu",
+    "key": "ui.open.operator.settings.menu",
+    "lang": "en",
+    "value": "Open operator settings menu"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-pinned-messages",
+    "key": "ui.open.pinned.messages",
+    "lang": "en",
+    "value": "Open pinned messages"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-profile-status-selector",
+    "key": "ui.open.profile.status.selector",
+    "lang": "en",
+    "value": "Open profile status selector"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-rates-fullscreen-mode",
+    "key": "ui.open.rates.fullscreen.mode",
+    "lang": "en",
+    "value": "Open rates fullscreen mode"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-resource-details",
+    "key": "ui.open.resource.details",
+    "lang": "en",
+    "value": "Open resource details"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-route-map",
+    "key": "ui.open.route.map",
+    "lang": "en",
+    "value": "Open route map"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-slot-calendar",
+    "key": "ui.open.slot.calendar",
+    "lang": "en",
+    "value": "Open slot calendar"
+  },
+  {
+    "_id": "i18n-message-en-ui-open-user-moderation-history",
+    "key": "ui.open.user.moderation.history",
+    "lang": "en",
+    "value": "Open user moderation history"
+  },
+  {
+    "_id": "i18n-message-en-ui-optional-up-to-160-characters",
+    "key": "ui.optional.up.to.160.characters",
+    "lang": "en",
+    "value": "Optional · up to 160 characters"
+  },
+  {
+    "_id": "i18n-message-en-ui-per-member-price",
+    "key": "ui.per.member.price",
+    "lang": "en",
+    "value": "Per-member price"
+  },
+  {
+    "_id": "i18n-message-en-ui-pinned-messages",
+    "key": "ui.pinned.messages",
+    "lang": "en",
+    "value": "Pinned messages"
+  },
+  {
+    "_id": "i18n-message-en-ui-plan-check",
+    "key": "ui.plan.check",
+    "lang": "en",
+    "value": "Plan check"
+  },
+  {
+    "_id": "i18n-message-en-ui-preparing-import-preview",
+    "key": "ui.preparing.import.preview",
+    "lang": "en",
+    "value": "Preparing import preview"
+  },
+  {
+    "_id": "i18n-message-en-ui-preview-article",
+    "key": "ui.preview.article",
+    "lang": "en",
+    "value": "Preview article"
+  },
+  {
+    "_id": "i18n-message-en-ui-price-summary",
+    "key": "ui.price.summary",
+    "lang": "en",
+    "value": "Price summary"
+  },
+  {
+    "_id": "i18n-message-en-ui-privacy-tip",
+    "key": "ui.privacy.tip",
+    "lang": "en",
+    "value": "Privacy tip"
+  },
+  {
+    "_id": "i18n-message-en-ui-profile-editor",
+    "key": "ui.profile.editor",
+    "lang": "en",
+    "value": "Profile editor"
+  },
+  {
+    "_id": "i18n-message-en-ui-profile-updated",
+    "key": "ui.profile.updated",
+    "lang": "en",
+    "value": "Profile updated"
+  },
+  {
+    "_id": "i18n-message-en-ui-promote-to-admin",
+    "key": "ui.promote.to.admin",
+    "lang": "en",
+    "value": "Promote to admin"
+  },
+  {
+    "_id": "i18n-message-en-ui-read-only-checkout-price-review",
+    "key": "ui.read.only.checkout.price.review",
+    "lang": "en",
+    "value": "Read-only checkout price review"
+  },
+  {
+    "_id": "i18n-message-en-ui-reason-context",
+    "key": "ui.reason.context",
+    "lang": "en",
+    "value": "Reason / context"
+  },
+  {
+    "_id": "i18n-message-en-ui-remove-asset-from-basket",
+    "key": "ui.remove.asset.from.basket",
+    "lang": "en",
+    "value": "Remove asset from basket"
+  },
+  {
+    "_id": "i18n-message-en-ui-remove-this-asset-from-the-event",
+    "key": "ui.remove.this.asset.from.the.event",
+    "lang": "en",
+    "value": "Remove this Asset from the event?"
+  },
+  {
+    "_id": "i18n-message-en-ui-reopen-scores",
+    "key": "ui.reopen.scores",
+    "lang": "en",
+    "value": "Reopen Scores"
+  },
+  {
+    "_id": "i18n-message-en-ui-replacement-payment",
+    "key": "ui.replacement.payment",
+    "lang": "en",
+    "value": "Replacement payment"
+  },
+  {
+    "_id": "i18n-message-en-ui-report-scoped-preview-only",
+    "key": "ui.report.scoped.preview.only",
+    "lang": "en",
+    "value": "Report-scoped preview only."
+  },
+  {
+    "_id": "i18n-message-en-ui-reported-member-context",
+    "key": "ui.reported.member.context",
+    "lang": "en",
+    "value": "Reported member context"
+  },
+  {
+    "_id": "i18n-message-en-ui-reported-user",
+    "key": "ui.reported.user",
+    "lang": "en",
+    "value": "Reported user"
+  },
+  {
+    "_id": "i18n-message-en-ui-resume-stage",
+    "key": "ui.resume.stage",
+    "lang": "en",
+    "value": "Resume Stage"
+  },
+  {
+    "_id": "i18n-message-en-ui-review-your-answers-before-submitting",
+    "key": "ui.review.your.answers.before.submitting",
+    "lang": "en",
+    "value": "Review your answers before submitting."
+  },
+  {
+    "_id": "i18n-message-en-ui-revoke-manager",
+    "key": "ui.revoke.manager",
+    "lang": "en",
+    "value": "Revoke Manager"
+  },
+  {
+    "_id": "i18n-message-en-ui-save-basket",
+    "key": "ui.save.basket",
+    "lang": "en",
+    "value": "Save basket"
+  },
+  {
+    "_id": "i18n-message-en-ui-save-experience",
+    "key": "ui.save.experience",
+    "lang": "en",
+    "value": "Save experience"
+  },
+  {
+    "_id": "i18n-message-en-ui-save-leaderboard-entry",
+    "key": "ui.save.leaderboard.entry",
+    "lang": "en",
+    "value": "Save leaderboard entry"
+  },
+  {
+    "_id": "i18n-message-en-ui-save-supply-quantity",
+    "key": "ui.save.supply.quantity",
+    "lang": "en",
+    "value": "Save supply quantity"
+  },
+  {
+    "_id": "i18n-message-en-ui-score-a",
+    "key": "ui.score.a",
+    "lang": "en",
+    "value": "Score A"
+  },
+  {
+    "_id": "i18n-message-en-ui-score-b",
+    "key": "ui.score.b",
+    "lang": "en",
+    "value": "Score B"
+  },
+  {
+    "_id": "i18n-message-en-ui-search-emoji",
+    "key": "ui.search.emoji",
+    "lang": "en",
+    "value": "Search emoji"
+  },
+  {
+    "_id": "i18n-message-en-ui-select-a-round-to-view-its-tables",
+    "key": "ui.select.a.round.to.view.its.tables",
+    "lang": "en",
+    "value": "Select a round to view its tables."
+  },
+  {
+    "_id": "i18n-message-en-ui-select-a-tournament-stage-to-manage-groups",
+    "key": "ui.select.a.tournament.stage.to.manage.groups",
+    "lang": "en",
+    "value": "Select a tournament stage to manage groups."
+  },
+  {
+    "_id": "i18n-message-en-ui-select-checkout-slots",
+    "key": "ui.select.checkout.slots",
+    "lang": "en",
+    "value": "Select checkout slots"
+  },
+  {
+    "_id": "i18n-message-en-ui-select-feedback-category",
+    "key": "ui.select.feedback.category",
+    "lang": "en",
+    "value": "Select feedback category"
+  },
+  {
+    "_id": "i18n-message-en-ui-select-friend",
+    "key": "ui.select.friend",
+    "lang": "en",
+    "value": "Select friend"
+  },
+  {
+    "_id": "i18n-message-en-ui-select-game-mode",
+    "key": "ui.select.game.mode",
+    "lang": "en",
+    "value": "Select game mode"
+  },
+  {
+    "_id": "i18n-message-en-ui-select-report-reason",
+    "key": "ui.select.report.reason",
+    "lang": "en",
+    "value": "Select report reason"
+  },
+  {
+    "_id": "i18n-message-en-ui-select-round",
+    "key": "ui.select.round",
+    "lang": "en",
+    "value": "Select round"
+  },
+  {
+    "_id": "i18n-message-en-ui-send-a-voice-clip",
+    "key": "ui.send.a.voice.clip",
+    "lang": "en",
+    "value": "Send a voice clip"
+  },
+  {
+    "_id": "i18n-message-en-ui-send-join-request",
+    "key": "ui.send.join.request",
+    "lang": "en",
+    "value": "Send join request"
+  },
+  {
+    "_id": "i18n-message-en-ui-service-details-and-availability",
+    "key": "ui.service.details.and.availability",
+    "lang": "en",
+    "value": "Service details and availability"
+  },
+  {
+    "_id": "i18n-message-en-ui-service-priorities",
+    "key": "ui.service.priorities",
+    "lang": "en",
+    "value": "Service priorities"
+  },
+  {
+    "_id": "i18n-message-en-ui-show-all-assets",
+    "key": "ui.show.all.assets",
+    "lang": "en",
+    "value": "Show all assets"
+  },
+  {
+    "_id": "i18n-message-en-ui-show-assets-with-pending-requests-only",
+    "key": "ui.show.assets.with.pending.requests.only",
+    "lang": "en",
+    "value": "Show assets with pending requests only"
+  },
+  {
+    "_id": "i18n-message-en-ui-show-selected-basket-item",
+    "key": "ui.show.selected.basket.item",
+    "lang": "en",
+    "value": "Show selected basket item"
+  },
+  {
+    "_id": "i18n-message-en-ui-slot-price-summary",
+    "key": "ui.slot.price.summary",
+    "lang": "en",
+    "value": "Slot price summary"
+  },
+  {
+    "_id": "i18n-message-en-ui-smileys-people",
+    "key": "ui.smileys.people",
+    "lang": "en",
+    "value": "Smileys & people"
+  },
+  {
+    "_id": "i18n-message-en-ui-start-stage",
+    "key": "ui.start.stage",
+    "lang": "en",
+    "value": "Start Stage"
+  },
+  {
+    "_id": "i18n-message-en-ui-step-down",
+    "key": "ui.step.down",
+    "lang": "en",
+    "value": "Step down"
+  },
+  {
+    "_id": "i18n-message-en-ui-submit-vote",
+    "key": "ui.submit.vote",
+    "lang": "en",
+    "value": "Submit vote"
+  },
+  {
+    "_id": "i18n-message-en-ui-suspend-stage",
+    "key": "ui.suspend.stage",
+    "lang": "en",
+    "value": "Suspend Stage"
+  },
+  {
+    "_id": "i18n-message-en-ui-system-generated-room",
+    "key": "ui.system.generated.room",
+    "lang": "en",
+    "value": "System generated room"
+  },
+  {
+    "_id": "i18n-message-en-ui-tables-appear-when-this-round-starts",
+    "key": "ui.tables.appear.when.this.round.starts",
+    "lang": "en",
+    "value": "Tables appear when this round starts."
+  },
+  {
+    "_id": "i18n-message-en-ui-the-floating-alert-button-can-appear-again-when-a-new-notification-ar",
+    "key": "ui.the.floating.alert.button.can.appear.again.when.a.new.notification.arrives",
+    "lang": "en",
+    "value": "The floating alert button can appear again when a new notification arrives."
+  },
+  {
+    "_id": "i18n-message-en-ui-this-entry-will-be-removed-from-your-profile",
+    "key": "ui.this.entry.will.be.removed.from.your.profile",
+    "lang": "en",
+    "value": "This entry will be removed from your profile."
+  },
+  {
+    "_id": "i18n-message-en-ui-this-removes-the-contact-and-all-saved-availability-methods-from-your",
+    "key": "ui.this.removes.the.contact.and.all.saved.availability.methods.from.your.local.list",
+    "lang": "en",
+    "value": "This removes the contact and all saved availability methods from your local list."
+  },
+  {
+    "_id": "i18n-message-en-ui-time-pricing",
+    "key": "ui.time.pricing",
+    "lang": "en",
+    "value": "Time pricing"
+  },
+  {
+    "_id": "i18n-message-en-ui-tournament-groups",
+    "key": "ui.tournament.groups",
+    "lang": "en",
+    "value": "Tournament groups"
+  },
+  {
+    "_id": "i18n-message-en-ui-travel-places",
+    "key": "ui.travel.places",
+    "lang": "en",
+    "value": "Travel & places"
+  },
+  {
+    "_id": "i18n-message-en-ui-try-another-date-range-or-category",
+    "key": "ui.try.another.date.range.or.category",
+    "lang": "en",
+    "value": "Try another date range or category."
+  },
+  {
+    "_id": "i18n-message-en-ui-try-another-filter-or-check-back-later",
+    "key": "ui.try.another.filter.or.check.back.later",
+    "lang": "en",
+    "value": "Try another filter or check back later."
+  },
+  {
+    "_id": "i18n-message-en-ui-two-grid-columns",
+    "key": "ui.two.grid.columns",
+    "lang": "en",
+    "value": "Two grid columns"
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-accept-invitation",
+    "key": "ui.unable.to.accept.invitation",
+    "lang": "en",
+    "value": "Unable to accept invitation."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-approve-request",
+    "key": "ui.unable.to.approve.request",
+    "lang": "en",
+    "value": "Unable to approve request."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-cancel-this-basket-item",
+    "key": "ui.unable.to.cancel.this.basket.item",
+    "lang": "en",
+    "value": "Unable to cancel this basket item."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-cancel-this-borrow",
+    "key": "ui.unable.to.cancel.this.borrow",
+    "lang": "en",
+    "value": "Unable to cancel this borrow."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-cancel-this-checkout",
+    "key": "ui.unable.to.cancel.this.checkout",
+    "lang": "en",
+    "value": "Unable to cancel this checkout."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-continue-booking",
+    "key": "ui.unable.to.continue.booking",
+    "lang": "en",
+    "value": "Unable to continue booking."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-delete-quantity-row",
+    "key": "ui.unable.to.delete.quantity.row",
+    "lang": "en",
+    "value": "Unable to delete quantity row."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-delete-this-contact-right-now",
+    "key": "ui.unable.to.delete.this.contact.right.now",
+    "lang": "en",
+    "value": "Unable to delete this contact right now."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-delete-this-experience",
+    "key": "ui.unable.to.delete.this.experience",
+    "lang": "en",
+    "value": "Unable to delete this experience."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-disqualify-member",
+    "key": "ui.unable.to.disqualify.member",
+    "lang": "en",
+    "value": "Unable to disqualify member."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-leave-event",
+    "key": "ui.unable.to.leave.event",
+    "lang": "en",
+    "value": "Unable to leave event."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-leave-event-another-accepted-admin-must-remain",
+    "key": "ui.unable.to.leave.event.another.accepted.admin.must.remain",
+    "lang": "en",
+    "value": "Unable to leave event. Another accepted admin must remain."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-leave-this-asset",
+    "key": "ui.unable.to.leave.this.asset",
+    "lang": "en",
+    "value": "Unable to leave this Asset."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-leave-this-asset-91",
+    "key": "ui.unable.to.leave.this.asset.91",
+    "lang": "en",
+    "value": "Unable to leave this asset."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-open-chat",
+    "key": "ui.unable.to.open.chat",
+    "lang": "en",
+    "value": "Unable to open chat"
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-open-history",
+    "key": "ui.unable.to.open.history",
+    "lang": "en",
+    "value": "Unable to open history"
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-open-payment-summary",
+    "key": "ui.unable.to.open.payment.summary",
+    "lang": "en",
+    "value": "Unable to open payment summary."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-open-support-chat",
+    "key": "ui.unable.to.open.support.chat",
+    "lang": "en",
+    "value": "Unable to open support chat"
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-promote-member",
+    "key": "ui.unable.to.promote.member",
+    "lang": "en",
+    "value": "Unable to promote member."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-reactivate-account",
+    "key": "ui.unable.to.reactivate.account",
+    "lang": "en",
+    "value": "Unable to reactivate account."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-reinstate-member",
+    "key": "ui.unable.to.reinstate.member",
+    "lang": "en",
+    "value": "Unable to reinstate member."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-remove-this-asset",
+    "key": "ui.unable.to.remove.this.asset",
+    "lang": "en",
+    "value": "Unable to remove this Asset."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-remove-this-checkout-item",
+    "key": "ui.unable.to.remove.this.checkout.item",
+    "lang": "en",
+    "value": "Unable to remove this checkout item."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-restore-event",
+    "key": "ui.unable.to.restore.event",
+    "lang": "en",
+    "value": "Unable to restore event."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-revoke-asset-manager",
+    "key": "ui.unable.to.revoke.asset.manager",
+    "lang": "en",
+    "value": "Unable to revoke Asset Manager."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-save-quantity",
+    "key": "ui.unable.to.save.quantity",
+    "lang": "en",
+    "value": "Unable to save quantity"
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-take-over-asset",
+    "key": "ui.unable.to.take.over.asset",
+    "lang": "en",
+    "value": "Unable to take over asset."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-take-over-this-asset",
+    "key": "ui.unable.to.take.over.this.asset",
+    "lang": "en",
+    "value": "Unable to take over this Asset."
+  },
+  {
+    "_id": "i18n-message-en-ui-unable-to-update-participant-status",
+    "key": "ui.unable.to.update.participant.status",
+    "lang": "en",
+    "value": "Unable to update participant status."
+  },
+  {
+    "_id": "i18n-message-en-ui-unmute-alerts",
+    "key": "ui.unmute.alerts",
+    "lang": "en",
+    "value": "Unmute alerts"
+  },
+  {
+    "_id": "i18n-message-en-ui-unselect-friend",
+    "key": "ui.unselect.friend",
+    "lang": "en",
+    "value": "Unselect friend"
+  },
+  {
+    "_id": "i18n-message-en-ui-use-the-button-in-the-header-to-add-your-quantity-row",
+    "key": "ui.use.the.button.in.the.header.to.add.your.quantity.row",
+    "lang": "en",
+    "value": "Use the + button in the header to add your quantity row."
+  },
+  {
+    "_id": "i18n-message-en-ui-voice-clip",
+    "key": "ui.voice.clip",
+    "lang": "en",
+    "value": "Voice clip"
+  },
+  {
+    "_id": "i18n-message-en-ui-what-would-you-tell-someone-about-this-event",
+    "key": "ui.what.would.you.tell.someone.about.this.event",
+    "lang": "en",
+    "value": "What would you tell someone about this event?"
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-become-responsible-for-this-asset-and-it-will-return-to-its-",
+    "key": "ui.you.will.become.responsible.for.this.asset.and.it.will.return.to.its.previous.active.status",
+    "lang": "en",
+    "value": "You will become responsible for this Asset and it will return to its previous active status."
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-count-toward-the-available-participant-places-in-this-scope",
+    "key": "ui.you.will.count.toward.the.available.participant.places.in.this.scope",
+    "lang": "en",
+    "value": "You will count toward the available participant places in this scope."
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-keep-your-organizer-role-but-will-not-count-toward-the-avail",
+    "key": "ui.you.will.keep.your.organizer.role.but.will.not.count.toward.the.available.participant.places.in.this.scope",
+    "lang": "en",
+    "value": "You will keep your organizer role but will not count toward the available participant places in this scope."
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-leave-this-asset",
+    "key": "ui.you.will.leave.this.asset",
+    "lang": "en",
+    "value": "You will leave this asset."
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-leave-this-asset-and-withdraw-your-pending-request",
+    "key": "ui.you.will.leave.this.asset.and.withdraw.your.pending.request",
+    "lang": "en",
+    "value": "You will leave this asset and withdraw your pending request."
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-leave-this-asset-it-will-remain-under-review-until-an-accept",
+    "key": "ui.you.will.leave.this.asset.it.will.remain.under.review.until.an.accepted.asset.manager.takes.over.responsibility",
+    "lang": "en",
+    "value": "You will leave this Asset. It will remain under review until an accepted Asset Manager takes over responsibility."
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-leave-this-borrowed-asset",
+    "key": "ui.you.will.leave.this.borrowed.asset",
+    "lang": "en",
+    "value": "You will leave this borrowed Asset."
+  },
+  {
+    "_id": "i18n-message-en-ui-you-will-leave-this-event",
+    "key": "ui.you.will.leave.this.event",
+    "lang": "en",
+    "value": "You will leave this event."
+  },
+  {
+    "_id": "i18n-message-en-ui-your-appointment-calendar",
+    "key": "ui.your.appointment.calendar",
+    "lang": "en",
+    "value": "Your appointment calendar"
+  },
+  {
+    "_id": "i18n-message-en-ui-your-opinion-about-the-event",
+    "key": "ui.your.opinion.about.the.event",
+    "lang": "en",
+    "value": "Your opinion about the event"
+  },
+  {
+    "_id": "i18n-message-en-ui-your-services",
+    "key": "ui.your.services",
+    "lang": "en",
+    "value": "Your services"
+  },
+  {
+    "_id": "i18n-message-en-ui-your-share",
+    "key": "ui.your.share",
+    "lang": "en",
+    "value": "Your share"
+  },
+  {
+    "_id": "i18n-message-hu-invite-candidates-empty-description",
+    "key": "invite.candidates.empty.description",
+    "lang": "hu",
+    "value": "Ismerkedj meg több emberrel, vagy próbáld újra később."
+  },
+  {
+    "_id": "i18n-message-hu-ui-1-new-notification",
+    "key": "ui.1.new.notification",
+    "lang": "hu",
+    "value": "1 új értesítés"
+  },
+  {
+    "_id": "i18n-message-hu-ui-action-failed",
+    "key": "ui.action.failed",
+    "lang": "hu",
+    "value": "A művelet nem sikerült."
+  },
+  {
+    "_id": "i18n-message-hu-ui-activity-ratings",
+    "key": "ui.activity.ratings",
+    "lang": "hu",
+    "value": "Aktivitások értékelései"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-a-group-from-the-header-action",
+    "key": "ui.add.a.group.from.the.header.action",
+    "lang": "hu",
+    "value": "A fejléc műveletgombjával adhatsz hozzá csoportot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-asset-to-basket",
+    "key": "ui.add.asset.to.basket",
+    "lang": "hu",
+    "value": "Eszköz hozzáadása a kosárhoz"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-experience",
+    "key": "ui.add.experience",
+    "lang": "hu",
+    "value": "Tapasztalat hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-experience-373",
+    "key": "ui.add.experience.373",
+    "lang": "hu",
+    "value": "Tapasztalat hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-group",
+    "key": "ui.add.group",
+    "lang": "hu",
+    "value": "Csoport hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-group-122",
+    "key": "ui.add.group.122",
+    "lang": "hu",
+    "value": "Csoport hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-match",
+    "key": "ui.add.match",
+    "lang": "hu",
+    "value": "Mérkőzés hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-score",
+    "key": "ui.add.score",
+    "lang": "hu",
+    "value": "Pontszám hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-add-supply-quantity-row",
+    "key": "ui.add.supply.quantity.row",
+    "lang": "hu",
+    "value": "Kellékmennyiségi sor hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-all-notifications",
+    "key": "ui.all.notifications",
+    "lang": "hu",
+    "value": "Összes értesítés"
+  },
+  {
+    "_id": "i18n-message-hu-ui-already-hosting",
+    "key": "ui.already.hosting",
+    "lang": "hu",
+    "value": "Már szervező vagy"
+  },
+  {
+    "_id": "i18n-message-hu-ui-animals-nature",
+    "key": "ui.animals.nature",
+    "lang": "hu",
+    "value": "Állatok és természet"
+  },
+  {
+    "_id": "i18n-message-hu-ui-asset-availability-and-requests",
+    "key": "ui.asset.availability.and.requests",
+    "lang": "hu",
+    "value": "Eszközök elérhetősége és kérések"
+  },
+  {
+    "_id": "i18n-message-hu-ui-asset-checkout",
+    "key": "ui.asset.checkout",
+    "lang": "hu",
+    "value": "Eszközfoglalás"
+  },
+  {
+    "_id": "i18n-message-hu-ui-asset-unavailable-for-this-time",
+    "key": "ui.asset.unavailable.for.this.time",
+    "lang": "hu",
+    "value": "Az eszköz ebben az időpontban nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-ui-assets-accommodation",
+    "key": "ui.assets.accommodation",
+    "lang": "hu",
+    "value": "Eszközök · Szállás"
+  },
+  {
+    "_id": "i18n-message-hu-ui-assets-supplies",
+    "key": "ui.assets.supplies",
+    "lang": "hu",
+    "value": "Eszközök · Kellékek"
+  },
+  {
+    "_id": "i18n-message-hu-ui-assets-tickets",
+    "key": "ui.assets.tickets",
+    "lang": "hu",
+    "value": "Eszközök · Jegyek"
+  },
+  {
+    "_id": "i18n-message-hu-ui-assets-transport",
+    "key": "ui.assets.transport",
+    "lang": "hu",
+    "value": "Eszközök · Szállítás"
+  },
+  {
+    "_id": "i18n-message-hu-ui-basket-unavailable",
+    "key": "ui.basket.unavailable",
+    "lang": "hu",
+    "value": "A kosár nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-ui-blocked-user-actions",
+    "key": "ui.blocked.user.actions",
+    "lang": "hu",
+    "value": "Letiltott felhasználó műveletei"
+  },
+  {
+    "_id": "i18n-message-hu-ui-board-task",
+    "key": "ui.board.task",
+    "lang": "hu",
+    "value": "Táblafeladat"
+  },
+  {
+    "_id": "i18n-message-hu-ui-bring-items",
+    "key": "ui.bring.items",
+    "lang": "hu",
+    "value": "Kellékek biztosítása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-call-volume-and-video-reception",
+    "key": "ui.call.volume.and.video.reception",
+    "lang": "hu",
+    "value": "Híváshangerő és videófogadás"
+  },
+  {
+    "_id": "i18n-message-hu-ui-cancel-feedback",
+    "key": "ui.cancel.feedback",
+    "lang": "hu",
+    "value": "Visszajelzés elvetése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-cancel-poll",
+    "key": "ui.cancel.poll",
+    "lang": "hu",
+    "value": "Szavazás elvetése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-cancel-report",
+    "key": "ui.cancel.report",
+    "lang": "hu",
+    "value": "Jelentés elvetése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-cancel-vote",
+    "key": "ui.cancel.vote",
+    "lang": "hu",
+    "value": "Szavazat visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-case-board",
+    "key": "ui.case.board",
+    "lang": "hu",
+    "value": "Ügytábla"
+  },
+  {
+    "_id": "i18n-message-hu-ui-cash-receipt",
+    "key": "ui.cash.receipt",
+    "lang": "hu",
+    "value": "Készpénz átvételének igazolása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-check-back-later-or-invite-people-in",
+    "key": "ui.check.back.later.or.invite.people.in",
+    "lang": "hu",
+    "value": "Nézz vissza később, vagy hívj meg másokat."
+  },
+  {
+    "_id": "i18n-message-hu-ui-choose-appointment-slots",
+    "key": "ui.choose.appointment.slots",
+    "lang": "hu",
+    "value": "Időpontok kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-choose-campaign",
+    "key": "ui.choose.campaign",
+    "lang": "hu",
+    "value": "Kampány kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-affinity-graph",
+    "key": "ui.close.affinity.graph",
+    "lang": "hu",
+    "value": "Affinitásgráf bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-article-editor",
+    "key": "ui.close.article.editor",
+    "lang": "hu",
+    "value": "Cikkszerkesztő bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-asset-availability",
+    "key": "ui.close.asset.availability",
+    "lang": "hu",
+    "value": "Eszköz elérhetőségének bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-asset-editor",
+    "key": "ui.close.asset.editor",
+    "lang": "hu",
+    "value": "Eszközszerkesztő bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-asset-explore",
+    "key": "ui.close.asset.explore",
+    "lang": "hu",
+    "value": "Eszközök felfedezésének bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-asset-view",
+    "key": "ui.close.asset.view",
+    "lang": "hu",
+    "value": "Eszköznézet bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-bring-items",
+    "key": "ui.close.bring.items",
+    "lang": "hu",
+    "value": "Kellékbiztosítás bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-chat-popup",
+    "key": "ui.close.chat.popup",
+    "lang": "hu",
+    "value": "Csevegőablak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-contact-form",
+    "key": "ui.close.contact.form",
+    "lang": "hu",
+    "value": "Kapcsolatűrlap bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-day-availability",
+    "key": "ui.close.day.availability",
+    "lang": "hu",
+    "value": "Napi elérhetőség bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-editor",
+    "key": "ui.close.editor",
+    "lang": "hu",
+    "value": "Szerkesztő bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-event-explore",
+    "key": "ui.close.event.explore",
+    "lang": "hu",
+    "value": "Események felfedezésének bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-experience-form",
+    "key": "ui.close.experience.form",
+    "lang": "hu",
+    "value": "Tapasztalatűrlap bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-experience-manager",
+    "key": "ui.close.experience.manager",
+    "lang": "hu",
+    "value": "Tapasztalatkezelő bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-group-form",
+    "key": "ui.close.group.form",
+    "lang": "hu",
+    "value": "Csoportűrlap bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-help-popup",
+    "key": "ui.close.help.popup",
+    "lang": "hu",
+    "value": "Súgóablak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-import-dialog",
+    "key": "ui.close.import.dialog",
+    "lang": "hu",
+    "value": "Importálási ablak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-join-request",
+    "key": "ui.close.join.request",
+    "lang": "hu",
+    "value": "Csatlakozási kérelem bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-leaderboard-editor",
+    "key": "ui.close.leaderboard.editor",
+    "lang": "hu",
+    "value": "Ranglistaszerkesztő bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-notifications",
+    "key": "ui.close.notifications",
+    "lang": "hu",
+    "value": "Értesítések bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-pinned-messages",
+    "key": "ui.close.pinned.messages",
+    "lang": "hu",
+    "value": "Rögzített üzenetek bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-poll",
+    "key": "ui.close.poll",
+    "lang": "hu",
+    "value": "Szavazás bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-price-summary",
+    "key": "ui.close.price.summary",
+    "lang": "hu",
+    "value": "Árösszesítő bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-reactions",
+    "key": "ui.close.reactions",
+    "lang": "hu",
+    "value": "Reakciók bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-resource-assignment",
+    "key": "ui.close.resource.assignment",
+    "lang": "hu",
+    "value": "Erőforrás-hozzárendelés bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-slot-picker",
+    "key": "ui.close.slot.picker",
+    "lang": "hu",
+    "value": "Időpontválasztó bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-close-stage",
+    "key": "ui.close.stage",
+    "lang": "hu",
+    "value": "Szakasz lezárása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-contact-support",
+    "key": "ui.contact.support",
+    "lang": "hu",
+    "value": "Kapcsolat az ügyfélszolgálattal"
+  },
+  {
+    "_id": "i18n-message-hu-ui-content-language",
+    "key": "ui.content.language",
+    "lang": "hu",
+    "value": "Tartalom nyelve"
+  },
+  {
+    "_id": "i18n-message-hu-ui-continue-to-payment",
+    "key": "ui.continue.to.payment",
+    "lang": "hu",
+    "value": "Tovább a fizetéshez"
+  },
+  {
+    "_id": "i18n-message-hu-ui-count-as-participant",
+    "key": "ui.count.as.participant",
+    "lang": "hu",
+    "value": "Beszámítás résztvevőként"
+  },
+  {
+    "_id": "i18n-message-hu-ui-create-a-poll",
+    "key": "ui.create.a.poll",
+    "lang": "hu",
+    "value": "Szavazás létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-create-poll",
+    "key": "ui.create.poll",
+    "lang": "hu",
+    "value": "Szavazás létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-demand-pricing",
+    "key": "ui.demand.pricing",
+    "lang": "hu",
+    "value": "Kereslet szerinti árazás"
+  },
+  {
+    "_id": "i18n-message-hu-ui-demo-user-selector",
+    "key": "ui.demo.user.selector",
+    "lang": "hu",
+    "value": "Demófelhasználó kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-edit-experience",
+    "key": "ui.edit.experience",
+    "lang": "hu",
+    "value": "Tapasztalat szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-edit-experience-372",
+    "key": "ui.edit.experience.372",
+    "lang": "hu",
+    "value": "Tapasztalat szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-enable-ticketing-on-in-an-event-to-generate-a-ticket-here",
+    "key": "ui.enable.ticketing.on.in.an.event.to.generate.a.ticket.here",
+    "lang": "hu",
+    "value": "Egy eseménynél kapcsold be a jegykezelést, hogy itt megjelenjen a jegy."
+  },
+  {
+    "_id": "i18n-message-hu-ui-event-editor",
+    "key": "ui.event.editor",
+    "lang": "hu",
+    "value": "Eseményszerkesztő"
+  },
+  {
+    "_id": "i18n-message-hu-ui-event-feedback-details",
+    "key": "ui.event.feedback.details",
+    "lang": "hu",
+    "value": "Esemény-visszajelzés részletei"
+  },
+  {
+    "_id": "i18n-message-hu-ui-event-feedback-unavailable",
+    "key": "ui.event.feedback.unavailable",
+    "lang": "hu",
+    "value": "Az esemény visszajelzése nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-ui-event-ready",
+    "key": "ui.event.ready",
+    "lang": "hu",
+    "value": "Esemény készen áll"
+  },
+  {
+    "_id": "i18n-message-hu-ui-exit-rates-fullscreen-mode",
+    "key": "ui.exit.rates.fullscreen.mode",
+    "lang": "hu",
+    "value": "Kilépés az értékelések teljes képernyős nézetéből"
+  },
+  {
+    "_id": "i18n-message-hu-ui-experience-manager",
+    "key": "ui.experience.manager",
+    "lang": "hu",
+    "value": "Tapasztalatok kezelése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-experience-type",
+    "key": "ui.experience.type",
+    "lang": "hu",
+    "value": "Tapasztalat típusa"
+  },
+  {
+    "_id": "i18n-message-hu-ui-fact-check",
+    "key": "ui.fact.check",
+    "lang": "hu",
+    "value": "Tényellenőrzés"
+  },
+  {
+    "_id": "i18n-message-hu-ui-filter-demo-users",
+    "key": "ui.filter.demo.users",
+    "lang": "hu",
+    "value": "Demófelhasználók szűrése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-finalize-stage",
+    "key": "ui.finalize.stage",
+    "lang": "hu",
+    "value": "Szakasz véglegesítése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-food-drink",
+    "key": "ui.food.drink",
+    "lang": "hu",
+    "value": "Ételek és italok"
+  },
+  {
+    "_id": "i18n-message-hu-ui-full-row",
+    "key": "ui.full.row",
+    "lang": "hu",
+    "value": "Teljes sor"
+  },
+  {
+    "_id": "i18n-message-hu-ui-group-and-asset-members",
+    "key": "ui.group.and.asset.members",
+    "lang": "hu",
+    "value": "Csoportok és eszközök tagjai"
+  },
+  {
+    "_id": "i18n-message-hu-ui-group-delete-failed",
+    "key": "ui.group.delete.failed",
+    "lang": "hu",
+    "value": "Nem sikerült törölni a csoportot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-group-editor",
+    "key": "ui.group.editor",
+    "lang": "hu",
+    "value": "Csoportszerkesztő"
+  },
+  {
+    "_id": "i18n-message-hu-ui-group-privacy-rules",
+    "key": "ui.group.privacy.rules",
+    "lang": "hu",
+    "value": "Csoport adatvédelmi szabályai"
+  },
+  {
+    "_id": "i18n-message-hu-ui-guide-button-introduction",
+    "key": "ui.guide.button.introduction",
+    "lang": "hu",
+    "value": "Útmutatógomb bemutatása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-help-content-is-not-available-right-now",
+    "key": "ui.help.content.is.not.available.right.now",
+    "lang": "hu",
+    "value": "A súgótartalom most nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-ui-home-cards",
+    "key": "ui.home.cards",
+    "lang": "hu",
+    "value": "Kezdőlap kártyái"
+  },
+  {
+    "_id": "i18n-message-hu-ui-import-experience",
+    "key": "ui.import.experience",
+    "lang": "hu",
+    "value": "Tapasztalat importálása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-import-preview-ready",
+    "key": "ui.import.preview.ready",
+    "lang": "hu",
+    "value": "Importálási előnézet elkészült"
+  },
+  {
+    "_id": "i18n-message-hu-ui-import-preview-unavailable",
+    "key": "ui.import.preview.unavailable",
+    "lang": "hu",
+    "value": "Az importálási előnézet nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-ui-integration-permissions",
+    "key": "ui.integration.permissions",
+    "lang": "hu",
+    "value": "Integrációs jogosultságok"
+  },
+  {
+    "_id": "i18n-message-hu-ui-invitation-discount",
+    "key": "ui.invitation.discount",
+    "lang": "hu",
+    "value": "Meghívási kedvezmény"
+  },
+  {
+    "_id": "i18n-message-hu-ui-invite-friends",
+    "key": "ui.invite.friends",
+    "lang": "hu",
+    "value": "Ismerősök meghívása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-loading-explanation",
+    "key": "ui.loading.explanation",
+    "lang": "hu",
+    "value": "Magyarázat betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-loading-feedback",
+    "key": "ui.loading.feedback",
+    "lang": "hu",
+    "value": "Visszajelzés betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-loading-help-content",
+    "key": "ui.loading.help.content",
+    "lang": "hu",
+    "value": "Súgótartalom betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-loading-profile-setup",
+    "key": "ui.loading.profile.setup",
+    "lang": "hu",
+    "value": "Profilbeállítás betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-make-manager",
+    "key": "ui.make.manager",
+    "lang": "hu",
+    "value": "Kezelő kinevezése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-manage-accounts",
+    "key": "ui.manage.accounts",
+    "lang": "hu",
+    "value": "Fiókok kezelése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-maximum-price",
+    "key": "ui.maximum.price",
+    "lang": "hu",
+    "value": "Maximumár"
+  },
+  {
+    "_id": "i18n-message-hu-ui-member-feedback",
+    "key": "ui.member.feedback",
+    "lang": "hu",
+    "value": "Tag visszajelzése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-members-hidden-for-this-event",
+    "key": "ui.members.hidden.for.this.event",
+    "lang": "hu",
+    "value": "Az esemény tagjai rejtettek"
+  },
+  {
+    "_id": "i18n-message-hu-ui-message-reactions",
+    "key": "ui.message.reactions",
+    "lang": "hu",
+    "value": "Üzenetreakciók"
+  },
+  {
+    "_id": "i18n-message-hu-ui-mingle-setup",
+    "key": "ui.mingle.setup",
+    "lang": "hu",
+    "value": "Mingle beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-minimum-price",
+    "key": "ui.minimum.price",
+    "lang": "hu",
+    "value": "Minimumár"
+  },
+  {
+    "_id": "i18n-message-hu-ui-more-message-actions",
+    "key": "ui.more.message.actions",
+    "lang": "hu",
+    "value": "További üzenetműveletek"
+  },
+  {
+    "_id": "i18n-message-hu-ui-mute-alerts",
+    "key": "ui.mute.alerts",
+    "lang": "hu",
+    "value": "Értesítési jelzések némítása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-my-feedback",
+    "key": "ui.my.feedback",
+    "lang": "hu",
+    "value": "Saját visszajelzésem"
+  },
+  {
+    "_id": "i18n-message-hu-ui-myscoutee-system",
+    "key": "ui.myscoutee.system",
+    "lang": "hu",
+    "value": "MyScoutee rendszer"
+  },
+  {
+    "_id": "i18n-message-hu-ui-new-messages-and-updates-will-appear-here",
+    "key": "ui.new.messages.and.updates.will.appear.here",
+    "lang": "hu",
+    "value": "Itt jelennek majd meg az új üzenetek és frissítések."
+  },
+  {
+    "_id": "i18n-message-hu-ui-new-notifications-will-still-be-counted-and-saved-but-the-floating-al",
+    "key": "ui.new.notifications.will.still.be.counted.and.saved.but.the.floating.alert.button.will.stay.hidden.until.you.unmute.it",
+    "lang": "hu",
+    "value": "Az új értesítéseket továbbra is számoljuk és mentjük, de a lebegő értesítési gomb rejtve marad, amíg újra be nem kapcsolod."
+  },
+  {
+    "_id": "i18n-message-hu-ui-no-entries-in-this-filter",
+    "key": "ui.no.entries.in.this.filter",
+    "lang": "hu",
+    "value": "Ebben a szűrésben nincs bejegyzés"
+  },
+  {
+    "_id": "i18n-message-hu-ui-no-experience-items-recognized",
+    "key": "ui.no.experience.items.recognized",
+    "lang": "hu",
+    "value": "Nem található felismerhető tapasztalat"
+  },
+  {
+    "_id": "i18n-message-hu-ui-no-members-yet",
+    "key": "ui.no.members.yet",
+    "lang": "hu",
+    "value": "Még nincsenek tagok."
+  },
+  {
+    "_id": "i18n-message-hu-ui-no-notifications",
+    "key": "ui.no.notifications",
+    "lang": "hu",
+    "value": "Nincsenek értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-ui-no-quantity-added-yet",
+    "key": "ui.no.quantity.added.yet",
+    "lang": "hu",
+    "value": "Még nincs megadott mennyiség"
+  },
+  {
+    "_id": "i18n-message-hu-ui-no-slots-in-this-month",
+    "key": "ui.no.slots.in.this.month",
+    "lang": "hu",
+    "value": "Ebben a hónapban nincs időpont."
+  },
+  {
+    "_id": "i18n-message-hu-ui-no-visible-events-right-now",
+    "key": "ui.no.visible.events.right.now",
+    "lang": "hu",
+    "value": "Most nincs megjeleníthető esemény."
+  },
+  {
+    "_id": "i18n-message-hu-ui-notification-target-unavailable",
+    "key": "ui.notification.target.unavailable",
+    "lang": "hu",
+    "value": "Az értesítés célja nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-ui-notification-update-failed",
+    "key": "ui.notification.update.failed",
+    "lang": "hu",
+    "value": "Nem sikerült frissíteni az értesítést"
+  },
+  {
+    "_id": "i18n-message-hu-ui-one-grid-column",
+    "key": "ui.one.grid.column",
+    "lang": "hu",
+    "value": "Egy rácsoszlop"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-accommodation-map",
+    "key": "ui.open.accommodation.map",
+    "lang": "hu",
+    "value": "Szállás térképének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-borrow-basket-with-1-request",
+    "key": "ui.open.borrow.basket.with.1.request",
+    "lang": "hu",
+    "value": "Kölcsönzési kosár megnyitása 1 kéréssel"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-chat-context-menu",
+    "key": "ui.open.chat.context.menu",
+    "lang": "hu",
+    "value": "Csevegés helyi menüjének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-chat-tools",
+    "key": "ui.open.chat.tools",
+    "lang": "hu",
+    "value": "Csevegőeszközök megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-contact-method-type",
+    "key": "ui.open.contact.method.type",
+    "lang": "hu",
+    "value": "Elérési mód típusának megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-event-actions",
+    "key": "ui.open.event.actions",
+    "lang": "hu",
+    "value": "Eseményműveletek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-event-explore",
+    "key": "ui.open.event.explore",
+    "lang": "hu",
+    "value": "Események felfedezésének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-event-explore-order",
+    "key": "ui.open.event.explore.order",
+    "lang": "hu",
+    "value": "Események rendezésének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-event-explore-view",
+    "key": "ui.open.event.explore.view",
+    "lang": "hu",
+    "value": "Eseménynézet kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-event-members",
+    "key": "ui.open.event.members",
+    "lang": "hu",
+    "value": "Esemény tagjainak megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-experience-actions",
+    "key": "ui.open.experience.actions",
+    "lang": "hu",
+    "value": "Tapasztalatműveletek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-experience-filter",
+    "key": "ui.open.experience.filter",
+    "lang": "hu",
+    "value": "Tapasztalatszűrő megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-experience-type-selector",
+    "key": "ui.open.experience.type.selector",
+    "lang": "hu",
+    "value": "Tapasztalat típusának kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-member-requests",
+    "key": "ui.open.member.requests",
+    "lang": "hu",
+    "value": "Tagi kérések megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-new-demo-profile",
+    "key": "ui.open.new.demo.profile",
+    "lang": "hu",
+    "value": "Új demóprofil megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-operator-settings-menu",
+    "key": "ui.open.operator.settings.menu",
+    "lang": "hu",
+    "value": "Operátori beállítások menüjének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-pinned-messages",
+    "key": "ui.open.pinned.messages",
+    "lang": "hu",
+    "value": "Rögzített üzenetek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-profile-status-selector",
+    "key": "ui.open.profile.status.selector",
+    "lang": "hu",
+    "value": "Profilállapot kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-rates-fullscreen-mode",
+    "key": "ui.open.rates.fullscreen.mode",
+    "lang": "hu",
+    "value": "Értékelések teljes képernyős nézetének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-resource-details",
+    "key": "ui.open.resource.details",
+    "lang": "hu",
+    "value": "Erőforrás részleteinek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-route-map",
+    "key": "ui.open.route.map",
+    "lang": "hu",
+    "value": "Útvonaltérkép megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-slot-calendar",
+    "key": "ui.open.slot.calendar",
+    "lang": "hu",
+    "value": "Időpontnaptár megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-open-user-moderation-history",
+    "key": "ui.open.user.moderation.history",
+    "lang": "hu",
+    "value": "Felhasználó moderációs előzményeinek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-optional-up-to-160-characters",
+    "key": "ui.optional.up.to.160.characters",
+    "lang": "hu",
+    "value": "Opcionális · legfeljebb 160 karakter"
+  },
+  {
+    "_id": "i18n-message-hu-ui-per-member-price",
+    "key": "ui.per.member.price",
+    "lang": "hu",
+    "value": "Tagonkénti ár"
+  },
+  {
+    "_id": "i18n-message-hu-ui-pinned-messages",
+    "key": "ui.pinned.messages",
+    "lang": "hu",
+    "value": "Rögzített üzenetek"
+  },
+  {
+    "_id": "i18n-message-hu-ui-plan-check",
+    "key": "ui.plan.check",
+    "lang": "hu",
+    "value": "Terv ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-preparing-import-preview",
+    "key": "ui.preparing.import.preview",
+    "lang": "hu",
+    "value": "Importálási előnézet előkészítése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-preview-article",
+    "key": "ui.preview.article",
+    "lang": "hu",
+    "value": "Cikk előnézete"
+  },
+  {
+    "_id": "i18n-message-hu-ui-price-summary",
+    "key": "ui.price.summary",
+    "lang": "hu",
+    "value": "Árösszesítő"
+  },
+  {
+    "_id": "i18n-message-hu-ui-privacy-tip",
+    "key": "ui.privacy.tip",
+    "lang": "hu",
+    "value": "Adatvédelmi tipp"
+  },
+  {
+    "_id": "i18n-message-hu-ui-profile-editor",
+    "key": "ui.profile.editor",
+    "lang": "hu",
+    "value": "Profilszerkesztő"
+  },
+  {
+    "_id": "i18n-message-hu-ui-profile-updated",
+    "key": "ui.profile.updated",
+    "lang": "hu",
+    "value": "Profil frissítve"
+  },
+  {
+    "_id": "i18n-message-hu-ui-promote-to-admin",
+    "key": "ui.promote.to.admin",
+    "lang": "hu",
+    "value": "Adminná kinevezés"
+  },
+  {
+    "_id": "i18n-message-hu-ui-read-only-checkout-price-review",
+    "key": "ui.read.only.checkout.price.review",
+    "lang": "hu",
+    "value": "Foglalási árak megtekintése szerkesztés nélkül"
+  },
+  {
+    "_id": "i18n-message-hu-ui-reason-context",
+    "key": "ui.reason.context",
+    "lang": "hu",
+    "value": "Indoklás / háttér"
+  },
+  {
+    "_id": "i18n-message-hu-ui-remove-asset-from-basket",
+    "key": "ui.remove.asset.from.basket",
+    "lang": "hu",
+    "value": "Eszköz eltávolítása a kosárból"
+  },
+  {
+    "_id": "i18n-message-hu-ui-remove-this-asset-from-the-event",
+    "key": "ui.remove.this.asset.from.the.event",
+    "lang": "hu",
+    "value": "Eltávolítod ezt az eszközt az eseményből?"
+  },
+  {
+    "_id": "i18n-message-hu-ui-reopen-scores",
+    "key": "ui.reopen.scores",
+    "lang": "hu",
+    "value": "Pontszámok újranyitása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-replacement-payment",
+    "key": "ui.replacement.payment",
+    "lang": "hu",
+    "value": "Pótlási díj"
+  },
+  {
+    "_id": "i18n-message-hu-ui-report-scoped-preview-only",
+    "key": "ui.report.scoped.preview.only",
+    "lang": "hu",
+    "value": "Csak a jelentéshez tartozó előnézet."
+  },
+  {
+    "_id": "i18n-message-hu-ui-reported-member-context",
+    "key": "ui.reported.member.context",
+    "lang": "hu",
+    "value": "Jelentett tag adatai"
+  },
+  {
+    "_id": "i18n-message-hu-ui-reported-user",
+    "key": "ui.reported.user",
+    "lang": "hu",
+    "value": "Jelentett felhasználó"
+  },
+  {
+    "_id": "i18n-message-hu-ui-resume-stage",
+    "key": "ui.resume.stage",
+    "lang": "hu",
+    "value": "Szakasz folytatása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-review-your-answers-before-submitting",
+    "key": "ui.review.your.answers.before.submitting",
+    "lang": "hu",
+    "value": "Beküldés előtt nézd át a válaszaidat."
+  },
+  {
+    "_id": "i18n-message-hu-ui-revoke-manager",
+    "key": "ui.revoke.manager",
+    "lang": "hu",
+    "value": "Kezelői szerep visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-save-basket",
+    "key": "ui.save.basket",
+    "lang": "hu",
+    "value": "Kosár mentése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-save-experience",
+    "key": "ui.save.experience",
+    "lang": "hu",
+    "value": "Tapasztalat mentése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-save-leaderboard-entry",
+    "key": "ui.save.leaderboard.entry",
+    "lang": "hu",
+    "value": "Ranglistaelem mentése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-save-supply-quantity",
+    "key": "ui.save.supply.quantity",
+    "lang": "hu",
+    "value": "Kellékmennyiség mentése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-score-a",
+    "key": "ui.score.a",
+    "lang": "hu",
+    "value": "A pontszám"
+  },
+  {
+    "_id": "i18n-message-hu-ui-score-b",
+    "key": "ui.score.b",
+    "lang": "hu",
+    "value": "B pontszám"
+  },
+  {
+    "_id": "i18n-message-hu-ui-search-emoji",
+    "key": "ui.search.emoji",
+    "lang": "hu",
+    "value": "Emoji keresése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-a-round-to-view-its-tables",
+    "key": "ui.select.a.round.to.view.its.tables",
+    "lang": "hu",
+    "value": "Válassz fordulót az asztalai megtekintéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-a-tournament-stage-to-manage-groups",
+    "key": "ui.select.a.tournament.stage.to.manage.groups",
+    "lang": "hu",
+    "value": "Válassz versenyszakaszt a csoportok kezeléséhez."
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-checkout-slots",
+    "key": "ui.select.checkout.slots",
+    "lang": "hu",
+    "value": "Foglalási időpontok kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-feedback-category",
+    "key": "ui.select.feedback.category",
+    "lang": "hu",
+    "value": "Visszajelzési kategória kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-friend",
+    "key": "ui.select.friend",
+    "lang": "hu",
+    "value": "Ismerős kijelölése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-game-mode",
+    "key": "ui.select.game.mode",
+    "lang": "hu",
+    "value": "Játékmód kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-report-reason",
+    "key": "ui.select.report.reason",
+    "lang": "hu",
+    "value": "Jelentés okának kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-select-round",
+    "key": "ui.select.round",
+    "lang": "hu",
+    "value": "Forduló kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-send-a-voice-clip",
+    "key": "ui.send.a.voice.clip",
+    "lang": "hu",
+    "value": "Hangüzenet küldése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-send-join-request",
+    "key": "ui.send.join.request",
+    "lang": "hu",
+    "value": "Csatlakozási kérelem küldése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-service-details-and-availability",
+    "key": "ui.service.details.and.availability",
+    "lang": "hu",
+    "value": "Szolgáltatás adatai és elérhetősége"
+  },
+  {
+    "_id": "i18n-message-hu-ui-service-priorities",
+    "key": "ui.service.priorities",
+    "lang": "hu",
+    "value": "Szolgáltatási prioritások"
+  },
+  {
+    "_id": "i18n-message-hu-ui-show-all-assets",
+    "key": "ui.show.all.assets",
+    "lang": "hu",
+    "value": "Összes eszköz megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-show-assets-with-pending-requests-only",
+    "key": "ui.show.assets.with.pending.requests.only",
+    "lang": "hu",
+    "value": "Csak a függőben lévő kéréssel rendelkező eszközök megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-show-selected-basket-item",
+    "key": "ui.show.selected.basket.item",
+    "lang": "hu",
+    "value": "Kiválasztott kosártétel megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-slot-price-summary",
+    "key": "ui.slot.price.summary",
+    "lang": "hu",
+    "value": "Időpont árösszesítője"
+  },
+  {
+    "_id": "i18n-message-hu-ui-smileys-people",
+    "key": "ui.smileys.people",
+    "lang": "hu",
+    "value": "Hangulatjelek és emberek"
+  },
+  {
+    "_id": "i18n-message-hu-ui-start-stage",
+    "key": "ui.start.stage",
+    "lang": "hu",
+    "value": "Szakasz indítása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-step-down",
+    "key": "ui.step.down",
+    "lang": "hu",
+    "value": "Lemondás a szerepről"
+  },
+  {
+    "_id": "i18n-message-hu-ui-submit-vote",
+    "key": "ui.submit.vote",
+    "lang": "hu",
+    "value": "Szavazat beküldése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-suspend-stage",
+    "key": "ui.suspend.stage",
+    "lang": "hu",
+    "value": "Szakasz felfüggesztése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-system-generated-room",
+    "key": "ui.system.generated.room",
+    "lang": "hu",
+    "value": "Rendszer által létrehozott szoba"
+  },
+  {
+    "_id": "i18n-message-hu-ui-tables-appear-when-this-round-starts",
+    "key": "ui.tables.appear.when.this.round.starts",
+    "lang": "hu",
+    "value": "A forduló indulásakor megjelennek az asztalok."
+  },
+  {
+    "_id": "i18n-message-hu-ui-the-floating-alert-button-can-appear-again-when-a-new-notification-ar",
+    "key": "ui.the.floating.alert.button.can.appear.again.when.a.new.notification.arrives",
+    "lang": "hu",
+    "value": "Új értesítés érkezésekor ismét megjelenhet a lebegő értesítési gomb."
+  },
+  {
+    "_id": "i18n-message-hu-ui-this-entry-will-be-removed-from-your-profile",
+    "key": "ui.this.entry.will.be.removed.from.your.profile",
+    "lang": "hu",
+    "value": "Ez a bejegyzés törlődik a profilodból."
+  },
+  {
+    "_id": "i18n-message-hu-ui-this-removes-the-contact-and-all-saved-availability-methods-from-your",
+    "key": "ui.this.removes.the.contact.and.all.saved.availability.methods.from.your.local.list",
+    "lang": "hu",
+    "value": "Ezzel eltávolítod a kapcsolatot és az összes mentett elérési módját a helyi listádból."
+  },
+  {
+    "_id": "i18n-message-hu-ui-time-pricing",
+    "key": "ui.time.pricing",
+    "lang": "hu",
+    "value": "Időalapú árazás"
+  },
+  {
+    "_id": "i18n-message-hu-ui-tournament-groups",
+    "key": "ui.tournament.groups",
+    "lang": "hu",
+    "value": "Versenycsoportok"
+  },
+  {
+    "_id": "i18n-message-hu-ui-travel-places",
+    "key": "ui.travel.places",
+    "lang": "hu",
+    "value": "Utazás és helyek"
+  },
+  {
+    "_id": "i18n-message-hu-ui-try-another-date-range-or-category",
+    "key": "ui.try.another.date.range.or.category",
+    "lang": "hu",
+    "value": "Próbálj másik időszakot vagy kategóriát."
+  },
+  {
+    "_id": "i18n-message-hu-ui-try-another-filter-or-check-back-later",
+    "key": "ui.try.another.filter.or.check.back.later",
+    "lang": "hu",
+    "value": "Próbálj másik szűrőt, vagy nézz vissza később."
+  },
+  {
+    "_id": "i18n-message-hu-ui-two-grid-columns",
+    "key": "ui.two.grid.columns",
+    "lang": "hu",
+    "value": "Két rácsoszlop"
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-accept-invitation",
+    "key": "ui.unable.to.accept.invitation",
+    "lang": "hu",
+    "value": "Nem sikerült elfogadni a meghívást."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-approve-request",
+    "key": "ui.unable.to.approve.request",
+    "lang": "hu",
+    "value": "Nem sikerült jóváhagyni a kérelmet."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-cancel-this-basket-item",
+    "key": "ui.unable.to.cancel.this.basket.item",
+    "lang": "hu",
+    "value": "Nem sikerült lemondani ezt a kosártételt."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-cancel-this-borrow",
+    "key": "ui.unable.to.cancel.this.borrow",
+    "lang": "hu",
+    "value": "Nem sikerült lemondani ezt a kölcsönzést."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-cancel-this-checkout",
+    "key": "ui.unable.to.cancel.this.checkout",
+    "lang": "hu",
+    "value": "Nem sikerült lemondani ezt a foglalást."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-continue-booking",
+    "key": "ui.unable.to.continue.booking",
+    "lang": "hu",
+    "value": "Nem sikerült folytatni a foglalást."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-delete-quantity-row",
+    "key": "ui.unable.to.delete.quantity.row",
+    "lang": "hu",
+    "value": "Nem sikerült törölni a mennyiségi sort."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-delete-this-contact-right-now",
+    "key": "ui.unable.to.delete.this.contact.right.now",
+    "lang": "hu",
+    "value": "Most nem sikerült törölni ezt a kapcsolatot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-delete-this-experience",
+    "key": "ui.unable.to.delete.this.experience",
+    "lang": "hu",
+    "value": "Nem sikerült törölni ezt a tapasztalatot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-disqualify-member",
+    "key": "ui.unable.to.disqualify.member",
+    "lang": "hu",
+    "value": "Nem sikerült kizárni a tagot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-leave-event",
+    "key": "ui.unable.to.leave.event",
+    "lang": "hu",
+    "value": "Nem sikerült kilépni az eseményből."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-leave-event-another-accepted-admin-must-remain",
+    "key": "ui.unable.to.leave.event.another.accepted.admin.must.remain",
+    "lang": "hu",
+    "value": "Nem tudsz kilépni az eseményből. Legalább egy másik elfogadott adminnak maradnia kell."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-leave-this-asset",
+    "key": "ui.unable.to.leave.this.asset",
+    "lang": "hu",
+    "value": "Nem sikerült kilépni ebből az eszközből."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-leave-this-asset-91",
+    "key": "ui.unable.to.leave.this.asset.91",
+    "lang": "hu",
+    "value": "Nem sikerült kilépni ebből az eszközből."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-open-chat",
+    "key": "ui.unable.to.open.chat",
+    "lang": "hu",
+    "value": "Nem sikerült megnyitni a csevegést"
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-open-history",
+    "key": "ui.unable.to.open.history",
+    "lang": "hu",
+    "value": "Nem sikerült megnyitni az előzményeket"
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-open-payment-summary",
+    "key": "ui.unable.to.open.payment.summary",
+    "lang": "hu",
+    "value": "Nem sikerült megnyitni a fizetési összesítőt."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-open-support-chat",
+    "key": "ui.unable.to.open.support.chat",
+    "lang": "hu",
+    "value": "Nem sikerült megnyitni az ügyfélszolgálati csevegést"
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-promote-member",
+    "key": "ui.unable.to.promote.member",
+    "lang": "hu",
+    "value": "Nem sikerült kinevezni a tagot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-reactivate-account",
+    "key": "ui.unable.to.reactivate.account",
+    "lang": "hu",
+    "value": "Nem sikerült újraaktiválni a fiókot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-reinstate-member",
+    "key": "ui.unable.to.reinstate.member",
+    "lang": "hu",
+    "value": "Nem sikerült visszahelyezni a tagot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-remove-this-asset",
+    "key": "ui.unable.to.remove.this.asset",
+    "lang": "hu",
+    "value": "Nem sikerült eltávolítani ezt az eszközt."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-remove-this-checkout-item",
+    "key": "ui.unable.to.remove.this.checkout.item",
+    "lang": "hu",
+    "value": "Nem sikerült eltávolítani ezt a tételt a fizetési kosárból."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-restore-event",
+    "key": "ui.unable.to.restore.event",
+    "lang": "hu",
+    "value": "Nem sikerült visszaállítani az eseményt."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-revoke-asset-manager",
+    "key": "ui.unable.to.revoke.asset.manager",
+    "lang": "hu",
+    "value": "Nem sikerült visszavonni az eszközkezelői szerepet."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-save-quantity",
+    "key": "ui.unable.to.save.quantity",
+    "lang": "hu",
+    "value": "Nem sikerült menteni a mennyiséget"
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-take-over-asset",
+    "key": "ui.unable.to.take.over.asset",
+    "lang": "hu",
+    "value": "Nem sikerült átvenni az eszközt."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-take-over-this-asset",
+    "key": "ui.unable.to.take.over.this.asset",
+    "lang": "hu",
+    "value": "Nem sikerült átvenni ezt az eszközt."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unable-to-update-participant-status",
+    "key": "ui.unable.to.update.participant.status",
+    "lang": "hu",
+    "value": "Nem sikerült módosítani a résztvevői állapotot."
+  },
+  {
+    "_id": "i18n-message-hu-ui-unmute-alerts",
+    "key": "ui.unmute.alerts",
+    "lang": "hu",
+    "value": "Értesítési jelzések visszakapcsolása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-unselect-friend",
+    "key": "ui.unselect.friend",
+    "lang": "hu",
+    "value": "Ismerős kijelölésének törlése"
+  },
+  {
+    "_id": "i18n-message-hu-ui-use-the-button-in-the-header-to-add-your-quantity-row",
+    "key": "ui.use.the.button.in.the.header.to.add.your.quantity.row",
+    "lang": "hu",
+    "value": "A fejléc + gombjával adhatsz hozzá saját mennyiségi sort."
+  },
+  {
+    "_id": "i18n-message-hu-ui-voice-clip",
+    "key": "ui.voice.clip",
+    "lang": "hu",
+    "value": "Hangüzenet"
+  },
+  {
+    "_id": "i18n-message-hu-ui-what-would-you-tell-someone-about-this-event",
+    "key": "ui.what.would.you.tell.someone.about.this.event",
+    "lang": "hu",
+    "value": "Mit mondanál másoknak erről az eseményről?"
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-become-responsible-for-this-asset-and-it-will-return-to-its-",
+    "key": "ui.you.will.become.responsible.for.this.asset.and.it.will.return.to.its.previous.active.status",
+    "lang": "hu",
+    "value": "Átveszed a felelősséget ezért az eszközért, amely visszatér a korábbi aktív állapotába."
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-count-toward-the-available-participant-places-in-this-scope",
+    "key": "ui.you.will.count.toward.the.available.participant.places.in.this.scope",
+    "lang": "hu",
+    "value": "Ebben a körben beleszámítasz a rendelkezésre álló résztvevői helyekbe."
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-keep-your-organizer-role-but-will-not-count-toward-the-avail",
+    "key": "ui.you.will.keep.your.organizer.role.but.will.not.count.toward.the.available.participant.places.in.this.scope",
+    "lang": "hu",
+    "value": "Megtartod a szervezői szerepedet, de ebben a körben nem számítasz bele a rendelkezésre álló résztvevői helyekbe."
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-leave-this-asset",
+    "key": "ui.you.will.leave.this.asset",
+    "lang": "hu",
+    "value": "Kilépsz ebből az eszközből."
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-leave-this-asset-and-withdraw-your-pending-request",
+    "key": "ui.you.will.leave.this.asset.and.withdraw.your.pending.request",
+    "lang": "hu",
+    "value": "Kilépsz ebből az eszközből, és visszavonod a függőben lévő kérelmedet."
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-leave-this-asset-it-will-remain-under-review-until-an-accept",
+    "key": "ui.you.will.leave.this.asset.it.will.remain.under.review.until.an.accepted.asset.manager.takes.over.responsibility",
+    "lang": "hu",
+    "value": "Kilépsz ebből az eszközből. Az eszköz felülvizsgálat alatt marad, amíg egy elfogadott eszközkezelő át nem veszi a felelősséget."
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-leave-this-borrowed-asset",
+    "key": "ui.you.will.leave.this.borrowed.asset",
+    "lang": "hu",
+    "value": "Kilépsz ebből a kölcsönzött eszközből."
+  },
+  {
+    "_id": "i18n-message-hu-ui-you-will-leave-this-event",
+    "key": "ui.you.will.leave.this.event",
+    "lang": "hu",
+    "value": "Kilépsz ebből az eseményből."
+  },
+  {
+    "_id": "i18n-message-hu-ui-your-appointment-calendar",
+    "key": "ui.your.appointment.calendar",
+    "lang": "hu",
+    "value": "Időpontnaptárad"
+  },
+  {
+    "_id": "i18n-message-hu-ui-your-opinion-about-the-event",
+    "key": "ui.your.opinion.about.the.event",
+    "lang": "hu",
+    "value": "Véleményed az eseményről"
+  },
+  {
+    "_id": "i18n-message-hu-ui-your-services",
+    "key": "ui.your.services",
+    "lang": "hu",
+    "value": "Szolgáltatásaid"
+  },
+  {
+    "_id": "i18n-message-hu-ui-your-share",
+    "key": "ui.your.share",
+    "lang": "hu",
+    "value": "Rád eső rész"
+  },
+  {
+    "_id": "i18n-message-en-ui-cancel-borrow-action",
+    "key": "ui.cancel.borrow.action",
+    "lang": "en",
+    "value": "Cancel borrow"
+  },
+  {
+    "_id": "i18n-message-en-ui-leave-asset-action",
+    "key": "ui.leave.asset.action",
+    "lang": "en",
+    "value": "Leave asset"
+  },
+  {
+    "_id": "i18n-message-en-ui-mute-notification-alerts",
+    "key": "ui.mute.notification.alerts",
+    "lang": "en",
+    "value": "Mute notification alerts"
+  },
+  {
+    "_id": "i18n-message-en-ui-unmute-notification-alerts",
+    "key": "ui.unmute.notification.alerts",
+    "lang": "en",
+    "value": "Unmute notification alerts"
+  },
+  {
+    "_id": "i18n-message-hu-ui-cancel-borrow-action",
+    "key": "ui.cancel.borrow.action",
+    "lang": "hu",
+    "value": "Kölcsönzés lemondása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-leave-asset-action",
+    "key": "ui.leave.asset.action",
+    "lang": "hu",
+    "value": "Kilépés az eszközből"
+  },
+  {
+    "_id": "i18n-message-hu-ui-mute-notification-alerts",
+    "key": "ui.mute.notification.alerts",
+    "lang": "hu",
+    "value": "Értesítési jelzések némítása"
+  },
+  {
+    "_id": "i18n-message-hu-ui-unmute-notification-alerts",
+    "key": "ui.unmute.notification.alerts",
+    "lang": "hu",
+    "value": "Értesítési jelzések visszakapcsolása"
+  },
+  {
+    "_id": "i18n-message-en-event-partner-invite-notfound",
+    "key": "event.partner.invite.notFound",
+    "lang": "en",
+    "value": "The invitation was not found or is unavailable."
+  },
+  {
+    "_id": "i18n-message-hu-event-partner-invite-notfound",
+    "key": "event.partner.invite.notFound",
+    "lang": "hu",
+    "value": "A meghívó nem található vagy nem érhető el."
   }
 ]
