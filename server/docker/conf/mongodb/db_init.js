@@ -770,6 +770,20 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.helpCenterRevisions.createIndex({"active":1}, {"name":"help_revision_active"});
   portalDb.helpCenterGuideFields.createIndex({"screenKey":1,"id":1}, {"name":"help_guide_field_screen_id","unique":true});
   portalDb.helpCenterGuideFields.createIndex({"screenKey":1,"order":1}, {"name":"help_guide_field_screen_order"});
+  // Match the application worker indexes before services start.
+  portalDb.mediaDeletions.createIndex({"retryTaskId":1,"status":1}, {"name":"media_deletion_retry_batch"});
+  portalDb.mediaDeletions.createIndex({"status":1,"nextAttemptAt":1}, {"name":"media_deletion_handoff_due"});
+  portalDb.mediaDeletions.createIndex({"baseGroupId":1,"status":1,"nextAttemptAt":1,"_id":1}, {"name":"media_deletion_due_v1"});
+  portalDb.mediaDeletionRetries.createIndex({"operation":1,"status":1,"nextAttemptAt":1,"_id":1}, {"name":"outbound_retry_due"});
+  portalDb.mediaDeletionRetries.createIndex({"operation":1,"reportAt":1,"_id":1}, {"name":"outbound_retry_report_due"});
+  portalDb.integrationWebhookRetries.createIndex({"operation":1,"status":1,"nextAttemptAt":1,"_id":1}, {"name":"outbound_retry_due"});
+  portalDb.integrationWebhookRetries.createIndex({"operation":1,"reportAt":1,"_id":1}, {"name":"outbound_retry_report_due"});
+  portalDb.affinityAdminSignalOutboxRetries.createIndex({"operation":1,"status":1,"nextAttemptAt":1,"_id":1}, {"name":"outbound_retry_due"});
+  portalDb.affinityAdminSignalOutboxRetries.createIndex({"operation":1,"reportAt":1,"_id":1}, {"name":"outbound_retry_report_due"});
+  portalDb.eventAdminSignalOutboxRetries.createIndex({"operation":1,"status":1,"nextAttemptAt":1,"_id":1}, {"name":"outbound_retry_due"});
+  portalDb.eventAdminSignalOutboxRetries.createIndex({"operation":1,"reportAt":1,"_id":1}, {"name":"outbound_retry_report_due"});
+  portalDb.notificationAdminSignalOutboxRetries.createIndex({"operation":1,"status":1,"nextAttemptAt":1,"_id":1}, {"name":"outbound_retry_due"});
+  portalDb.notificationAdminSignalOutboxRetries.createIndex({"operation":1,"reportAt":1,"_id":1}, {"name":"outbound_retry_report_due"});
   if (portalDb.notificationRuleConfigs.getIndexes().some(index => index.name === 'notification_rule_config_rule_key')) {
     portalDb.notificationRuleConfigs.dropIndex('notification_rule_config_rule_key');
   }

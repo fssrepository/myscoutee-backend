@@ -100,6 +100,39 @@ class CommunityGroupInviteClaimTest {
         verify(profiles, atLeastOnce()).activate(eq("recipient"), eq("group"));
     }
 
+    @Test void builtInWorkspaceAdmissionReturnsItsMembershipWithoutASyntheticSystemAccount() {
+        var recipient = new Users(); recipient.setUserId("recipient"); recipient.setName("Recipient");
+        for (String baseId : CommunityGroup.BASE_IDS) {
+            var base = new CommunityGroup(baseId, "system", "MyScoutee", "", null,
+                    "work", "public", false, new GroupPolicy(true, false, List.of()),
+                    "now", "now", 0L, "accepted", 0L);
+            var membership = member("recipient", "Member", "accepted", null);
+            membership.setOwnerId(baseId);
+            when(groups.findById(baseId)).thenReturn(Optional.of(base));
+            when(members.findByOwnerTypeAndOwnerId("community", baseId)).thenReturn(List.of(membership));
+            when(members.findByOwnerTypeAndOwnerIdAndUserId("community", baseId, "recipient"))
+                    .thenReturn(Optional.of(membership));
+
+            var result = service.join(recipient, baseId);
+
+            assertThat(result.membershipStatus()).isEqualTo("accepted");
+            assertThat(result.ownerUserId()).isEqualTo("system");
+            assertThat(result.ownerName()).isEmpty();
+            assertThat(result.ownerAvatarUrl()).isNull();
+            assertThat(result.distanceKm()).isNull();
+        }
+        verify(users, never()).save(any());
+    }
+
+    @Test void ordinaryGroupStillRequiresItsRealOwnerProfile() {
+        var recipient = new Users(); recipient.setUserId("recipient");
+        rows.put("recipient", member("recipient", "Member", "accepted", null));
+        when(users.findByUserId("owner")).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> service.detail(recipient, "group"))
+                .isInstanceOfSatisfying(ResponseStatusException.class,
+                        error -> assertThat(error.getStatusCode().value()).isEqualTo(404));
+    }
+
     @Test void eventLinkFromAnAcceptedMemberCreatesOneAcceptedMembershipAndReusesItsProfile() {
         eventInviter();
         var selected = new Users(); selected.setUserId("group-recipient"); selected.setWorkspaceGroupId("group"); selected.setAccountUserId("recipient");

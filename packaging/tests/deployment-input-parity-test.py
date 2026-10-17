@@ -205,6 +205,8 @@ def audit_environments():
 def print_mongo_audit():
     """Emit read-only mongosh inventory; differences require ownership review."""
     catalog = json.loads((ROOT / 'packaging/migrations/seeds/015-runtime-index-parity/runtime-indexes.json').read_text())
+    feedback = json.loads((ROOT / 'packaging/migrations/seeds/018-feedback-and-worker-indexes/runtime-indexes.json').read_text())
+    catalog['indexes'] = [row for row in catalog['indexes'] if row['collection'] not in ('eventFeedbackStates', 'eventFeedbackAnswers')] + feedback['indexes']
     print('const catalog=' + json.dumps(catalog) + ';')
     print(r'''
 function canonical(value) {
@@ -302,6 +304,7 @@ def main():
     installed = args.stage / 'opt' / package
     subprocess.run(['node', str(ROOT / 'packaging/tests/runtime-index-parity-test.mjs')], check=True)
     subprocess.run(['node', str(ROOT / 'packaging/tests/release-catalog-parity-test.mjs')], check=True)
+    subprocess.run(['node', str(ROOT / 'packaging/tests/feedback-access-migration-test.mjs')], check=True)
     subprocess.run(['python3', str(ROOT / 'tools/seeds/check-system-seed-parity.py'), '--packaged-root', str(installed)], check=True)
     for directory in ['packaging/scripts', 'packaging/migrations', 'packaging/templates']:
         expected = files(ROOT / directory)

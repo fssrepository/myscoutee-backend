@@ -5,12 +5,12 @@ downloadable PDF releases of the English manuals and integration guide.
 
 | Manual | Document ID | Document version | PDF |
 |---|---:|---:|---|
-| Operations Manual | MSC-OM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
-| Administrator Manual | MSC-AM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
-| User Manual | MSC-UM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
-| Integration API Guide | MSC-API-001 | 1.0.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
-| MCP User Guide | MSC-MCP-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf) |
-| Microservices Guide (implementation preview) | MSC-MS-001 | 0.1.1 | [Download PDF](MyScoutee_Microservices_Guide_EN.pdf) |
+| Operations Manual | MSC-OM-001 | 1.4.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Operations_Manual_EN.pdf) |
+| Administrator Manual | MSC-AM-001 | 1.4.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Administrator_Manual_EN.pdf) |
+| User Manual | MSC-UM-001 | 1.4.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_User_Manual_EN.pdf) |
+| Integration API Guide | MSC-API-001 | 1.4.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Integration_API_Guide_EN.pdf) |
+| MCP User Guide | MSC-MCP-001 | 1.4.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_MCP_User_Guide_EN.pdf) |
+| Microservices Guide (implementation preview) | MSC-MS-001 | 1.4.1 | [Download PDF](MyScoutee_Microservices_Guide_EN.pdf) |
 
 ## Regenerating the PDFs
 
@@ -41,20 +41,21 @@ The build overwrites the selected PDFs and automatically copies them to
 `frontend/guides/manuals` in the public frontend repository. The public README
 download links point to these copies.
 
-When document content changes, update the document version on the cover, in
-the document-control table and in the build metadata. Keep the PDF filename and
-download links stable: Git history and release tags retain earlier revisions.
+When document content changes, update the version on the cover, in the
+document-control table and in the build metadata. Keep version numbers inside
+the documents, never in PDF filenames. Download links remain stable; Git history
+and release tags retain earlier revisions.
 Do not keep successive versions of the same manual side by side in the working
 tree. The Microservices Guide uses `MyScoutee_Microservices_Guide_EN.pdf`.
 
 ## Release verification
 
 ```bash
-pdfinfo guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf
-pdfinfo guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf
-pdfinfo guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf
-pdfinfo guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf
-pdfinfo guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf
+pdfinfo guides/manuals/MyScoutee_Operations_Manual_EN.pdf
+pdfinfo guides/manuals/MyScoutee_Administrator_Manual_EN.pdf
+pdfinfo guides/manuals/MyScoutee_User_Manual_EN.pdf
+pdfinfo guides/manuals/MyScoutee_Integration_API_Guide_EN.pdf
+pdfinfo guides/manuals/MyScoutee_MCP_User_Guide_EN.pdf
 pdfinfo guides/manuals/MyScoutee_Microservices_Guide_EN.pdf
 ```
 

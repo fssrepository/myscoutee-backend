@@ -6,4 +6,4 @@
 
 Upload the cover and article to LinkedIn, then share the published article using the short post. These files are drafts stored in the private backend repository; nothing has been posted to LinkedIn.
 
-The cover embeds the existing MyScoutee logo without changing it. Regenerate the PNG with `inkscape cover.svg --export-filename=cover.png` from this directory. Software version: 1.4.0.
+The cover embeds the existing MyScoutee logo without changing it. Regenerate the PNG with `inkscape cover.svg --export-filename=cover.png` from this directory. Software version: 1.4.1.

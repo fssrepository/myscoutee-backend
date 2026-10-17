@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MyScoutee 1.0.1 Integration API Guide">
+  <meta name="description" content="MyScoutee 1.4.1 Integration API Guide">
   <title>MyScoutee Integration API Guide · MSC-API-001</title>
   <link rel="stylesheet" href="manuals.css">
 </head>
@@ -26,11 +26,11 @@
 
     <div class="cover-meta" aria-label="Document metadata">
       <div><strong>Document ID</strong><span>MSC-API-001</span></div>
-      <div><strong>Document version</strong><span>1.0.1</span></div>
-      <div><strong>Applicable software version</strong><span>MyScoutee 1.0.1</span></div>
+      <div><strong>Document version</strong><span>1.4.1</span></div>
+      <div><strong>Applicable software version</strong><span>MyScoutee 1.4.1</span></div>
       <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Released</span></div>
-      <div><strong>Release date</strong><time datetime="2026-09-20">2026-09-20</time></div>
-      <div><strong>Source revision</strong><span>2026-09-21</span></div>
+      <div><strong>Release date</strong><time datetime="2026-10-17">2026-10-17</time></div>
+      <div><strong>Source revision</strong><span>1.4.1 release · 2026-10-17</span></div>
       <div><strong>Language</strong><span>EN</span></div>
     </div>
   </section>
@@ -40,25 +40,28 @@
     <table>
       <caption>Document status and applicability</caption>
       <tbody>
+      <tr><th scope="row">Document version</th><td>1.4.1</td></tr>
+      <tr><th scope="row">Documentation release</th><td>2026-10-17</td></tr>
         <tr><th scope="row">Document owner</th><td>MyScoutee project — integration documentation</td></tr>
         <tr><th scope="row">Intended audience</th><td>External system developers, integration operators, and maintainers of the MyScoutee Java client</td></tr>
         <tr><th scope="row">Normative API prefix</th><td>The deployment-specific Base URL shown in the profile API popup; its usual path is <code>/api/integrations/v1</code></td></tr>
-        <tr><th scope="row">Reference implementation</th><td><code>myscoutee-client</code> version 1.0.1, Java 17</td></tr>
+        <tr><th scope="row">Reference implementation</th><td><code>myscoutee-client</code> version 1.6.0, Java 17</td></tr>
       </tbody>
     </table>
 
     <h3>Version History</h3>
-    <table>
+    <table class="small">
       <thead><tr><th scope="col">Version</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col">Change</th></tr></thead>
-      <tbody><tr><td>1.0.1</td><td>2026-09-20</td><td>Released</td><td>Initial public batch API, scoped callback watch, and Java client guide.</td></tr>
+      <tbody>
+        <tr><td>1.4.1</td><td>2026-10-17</td><td>Released documentation</td><td>Align applicability with MyScoutee 1.4.1 and client 1.6.0; reconcile access/Events development verification and external-host limits.</td></tr><tr><td>1.0.1</td><td>2026-09-20</td><td>Released</td><td>Initial public batch API, scoped callback watch, and Java client guide.</td></tr>
         <tr><td>1.0.1 + source extensions</td><td>2026-09-21</td><td>Implementation revision</td><td>Organizer event links, Speed meeting configuration, participant links, event reads and completed encounter export/watch. New commands require a client built from this source revision.</td></tr>
         <tr><td>MSC-116 source extension</td><td>2026-10-06</td><td>Implementation revision; execution QA pending</td><td>Three access packs, application reads and organizing commands. Java client 1.5.0 and MCP 1.4.0. No public plugin release is implied.</td></tr>
-        <tr><td>MSC-119 source extension</td><td>2026-10-07</td><td>Implementation revision; execution QA pending</td><td>Four cumulative packs, main MCP Blocked default, role statistics and Events guidance. Java client / MCP 1.6.0. See the companion <a href="MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf">MCP User Guide</a> for setup.</td></tr></tbody>
+        <tr><td>MSC-119 source extension</td><td>2026-10-07</td><td>Implementation revision; execution QA pending</td><td>Four cumulative packs, main MCP Blocked default, role statistics and Events guidance. Java client / MCP 1.6.0. See the companion <a href="MyScoutee_MCP_User_Guide_EN.pdf">MCP User Guide</a> for setup.</td></tr></tbody>
     </table>
 
     <aside class="callout note">
       <strong class="callout-title">Small by design</strong>
-      The token fixes the owner for batch writes, managed-event reads, participant invitation links and encounter exports. This guide includes the current source extensions; their presence in a deployment depends on its installed server and client revision.
+      The token fixes the owner for batch writes, managed-event reads, participant invitation links and encounter exports. This guide covers the 1.4.1 application with Java client/MCP 1.6.0. An older deployment may expose fewer operations. Historical implementation revisions above retain their original dates and verification state; the 15 October development closure supersedes their pending development-QA entries.
     </aside>
   </section>
 
@@ -405,7 +408,7 @@ myscoutee-client unwatch</code></pre>
     <p class="source-note">Normative machine-readable contract: <code>myscoutee-client/openapi.yaml</code>. Reference client and versioned fixtures: <code>myscoutee-client/src/</code>.</p>
   </section>
   <section id="access-packs" aria-labelledby="access-packs-title">
-    <h2 id="access-packs-title">12. MSC-119: Access Packs and Role Queries</h2>
+    <h2 id="access-packs-title">12. Access Packs and Role Queries</h2>
     <p>This source extension requires the corresponding deployed backend, Java client 1.6.0 and MCP 1.6.0. Consult authenticated <code>connect</code> for the actual installed operation list and effective access.</p>
     <table><thead><tr><th>Pack</th><th>Meaning</th></tr></thead><tbody>
       <tr><td>Blocked (main MCP default)</td><td>No private integration calls. Already issued OAuth tokens and queued callbacks honor blocking.</td></tr>
@@ -439,7 +442,7 @@ myscoutee-client command updateCampaign campaign-update.json campaign-id</code><
     <p>The filter is the API resource's externalId. Callback destinations use public HTTPS on port 443. The receiver supplies a whsec_ signing secret and must echo a signed verification challenge. Delivery uses Standard Webhooks signatures over the exact body, event ID and timestamp. Keys are encrypted with the existing deployment configuration key. The ordinary protected key backup procedure applies.</p>
     <p>The backend reuses its durable webhook queue. Subscriptions default to a maximum one-day lifetime and can be refreshed with the same identity; shorter positive ttlMs values are honored. Secret rotation provides a two-minute overlap. There is no replay: cursor is null. Expiry, unsubscribe, revoked grant/client, access downgrade and loss of ownership or membership stop delivery. Human ratings and decisions remain in the application.</p>
     <p>Virtual delivery threads retain the common concurrency cap. Events defaults to four callback starts per second with burst four, eight concurrent requests and two simultaneous verifications. The normal INTEGRATION_EVENTS_REQUESTS_PER_SECOND, INTEGRATION_EVENTS_BURST and INTEGRATION_EVENTS_MAX_CONCURRENT environment values tune these limits per process. Slow responses are limited to ten seconds; transient failures have two retries. Local throttling does not spend those retries.</p>
-    <p>Queue admission is bounded at 1000 pending Events deliveries per profile and 10000 per database, with at most 100 active subscriptions per profile. Already admitted concurrent publications may briefly exceed queue admission ceilings. Overload records a gap and reports truncated on refresh; it does not fail the source app action. Events deliveries have seven-day retention. Rescan the plugin in the host after upgrading. Live callback, ChatGPT and load QA remain pending under MCP-EVENTS-001.</p>
+    <p>Queue admission is bounded at 1000 pending Events deliveries per profile and 10000 per database, with at most 100 active subscriptions per profile. Already admitted concurrent publications may briefly exceed queue admission ceilings. Overload records a gap and reports truncated on refresh; it does not fail the source app action. Events deliveries have seven-day retention. Rescan the plugin in the host after upgrading. Development access, OAuth, callback security, retries/recovery, role filters and bounded-delivery checks passed on 15 October 2026 under MCP-EVENTS-001. Real vendor-host connections, Scheduled execution, publication and production load remain separate qualification scopes.</p>
   </section>
 </article>
 </body>

@@ -174,7 +174,7 @@ Status: **NOT RUN**. Earlier guide checks do not establish these new behaviors.
 
 ## MSC-119 MCP User Guide verification — NOT RUN
 
-Use MSC-MCP-001, `guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf`.
+Use MSC-MCP-001, `guides/manuals/MyScoutee_MCP_User_Guide_EN.pdf`.
 Artifact generation, source anchors, text extraction, the cover/table rendering
 and identical backend/frontend copies were checked; these are document checks.
 

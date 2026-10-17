@@ -1,0 +1,270 @@
+{
+  "indexes": [
+    {
+      "collection": "feedbackStates",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "feedback_state_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "feedbackStates",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1
+      },
+      "options": {
+        "name": "feedback_state_user_event",
+        "unique": true
+      }
+    },
+    {
+      "collection": "feedbackStates",
+      "key": {
+        "viewerUserId": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "feedback_state_user_updated"
+      }
+    },
+    {
+      "collection": "feedbackStates",
+      "key": {
+        "eventId": 1,
+        "updatedDate": -1
+      },
+      "options": {
+        "name": "feedback_state_event_updated"
+      }
+    },
+    {
+      "collection": "feedbackStates",
+      "key": {
+        "removed": 1,
+        "submittedAtIso": 1,
+        "viewerUserId": 1,
+        "eventId": 1
+      },
+      "options": {
+        "name": "feedback_state_qmau_window"
+      }
+    },
+    {
+      "collection": "feedbackAnswers",
+      "key": {
+        "syncKey": 1
+      },
+      "options": {
+        "name": "feedback_answer_sync_key",
+        "unique": true,
+        "sparse": true
+      }
+    },
+    {
+      "collection": "feedbackAnswers",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1,
+        "cardId": 1
+      },
+      "options": {
+        "name": "feedback_answer_user_event_card",
+        "unique": true
+      }
+    },
+    {
+      "collection": "feedbackAnswers",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1
+      },
+      "options": {
+        "name": "feedback_answer_user_event"
+      }
+    },
+    {
+      "collection": "feedbackAnswers",
+      "key": {
+        "viewerUserId": 1,
+        "eventId": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "feedback_answer_user_event_submitted"
+      }
+    },
+    {
+      "collection": "feedbackAnswers",
+      "key": {
+        "eventId": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "feedback_answer_event_submitted"
+      }
+    },
+    {
+      "collection": "feedbackAnswers",
+      "key": {
+        "targetUserId": 1,
+        "submittedAtIso": -1
+      },
+      "options": {
+        "name": "feedback_answer_target_user_submitted"
+      }
+    },
+    {
+      "collection": "mediaDeletions",
+      "key": {
+        "retryTaskId": 1,
+        "status": 1
+      },
+      "options": {
+        "name": "media_deletion_retry_batch"
+      }
+    },
+    {
+      "collection": "mediaDeletions",
+      "key": {
+        "status": 1,
+        "nextAttemptAt": 1
+      },
+      "options": {
+        "name": "media_deletion_handoff_due"
+      }
+    },
+    {
+      "collection": "mediaDeletions",
+      "key": {
+        "baseGroupId": 1,
+        "status": 1,
+        "nextAttemptAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "media_deletion_due_v1"
+      }
+    },
+    {
+      "collection": "mediaDeletionRetries",
+      "key": {
+        "operation": 1,
+        "status": 1,
+        "nextAttemptAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_due"
+      }
+    },
+    {
+      "collection": "mediaDeletionRetries",
+      "key": {
+        "operation": 1,
+        "reportAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_report_due"
+      }
+    },
+    {
+      "collection": "integrationWebhookRetries",
+      "key": {
+        "operation": 1,
+        "status": 1,
+        "nextAttemptAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_due"
+      }
+    },
+    {
+      "collection": "integrationWebhookRetries",
+      "key": {
+        "operation": 1,
+        "reportAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_report_due"
+      }
+    },
+    {
+      "collection": "affinityAdminSignalOutboxRetries",
+      "key": {
+        "operation": 1,
+        "status": 1,
+        "nextAttemptAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_due"
+      }
+    },
+    {
+      "collection": "affinityAdminSignalOutboxRetries",
+      "key": {
+        "operation": 1,
+        "reportAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_report_due"
+      }
+    },
+    {
+      "collection": "eventAdminSignalOutboxRetries",
+      "key": {
+        "operation": 1,
+        "status": 1,
+        "nextAttemptAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_due"
+      }
+    },
+    {
+      "collection": "eventAdminSignalOutboxRetries",
+      "key": {
+        "operation": 1,
+        "reportAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_report_due"
+      }
+    },
+    {
+      "collection": "notificationAdminSignalOutboxRetries",
+      "key": {
+        "operation": 1,
+        "status": 1,
+        "nextAttemptAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_due"
+      }
+    },
+    {
+      "collection": "notificationAdminSignalOutboxRetries",
+      "key": {
+        "operation": 1,
+        "reportAt": 1,
+        "_id": 1
+      },
+      "options": {
+        "name": "outbound_retry_report_due"
+      }
+    }
+  ],
+  "retiredIndexes": []
+}

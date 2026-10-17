@@ -7,6 +7,9 @@ SHARED = (
     'emailCampaignRules', 'notificationTemplates', 'i18n_messages', 'i18n_bundles',
     'scheduledMessageTasks', 'exchangeRates',
     'landingSlides', 'helpCenterGuideFields',
+    # Shared zero-revision inputs, inserted once; live worker revisions are retained.
+    'adminWorkerSignals', 'affinityAdminSignalOutbox',
+    'eventAdminSignalOutbox', 'notificationAdminSignalOutbox',
 )
 CONFIGURED = (
     'affinityConfigs', 'appSettings', 'deploymentConfigurations',
@@ -19,6 +22,9 @@ RUNTIME = (
     'chats', 'chatMessages', 'events', 'feedbackStates', 'feedbackAnswers',
     'navigatorContacts', 'payments', 'savedPaymentMethods', 'userAffinityEdges',
     'userExperienceProfiles', 'userFeedback', 'userNotifications', 'userReports',
+    'affinityAdminSignalOutboxRetries', 'eventAdminSignalOutboxRetries',
+    'notificationAdminSignalOutboxRetries', 'integrationWebhookRetries',
+    'mediaDeletionRetries', 'mediaDeletions',
 )
 # These product scenarios have DEMO/E2E fixtures and no production seed file.
 DEMO_ONLY_RUNTIME = (
@@ -33,6 +39,14 @@ def identity(value):
 
 def audit_project(data, errors):
     demo = data['demo_db']
+    for name in ('adminWorkerSignals', 'affinityAdminSignalOutbox',
+                 'eventAdminSignalOutbox', 'notificationAdminSignalOutbox'):
+        ids = ('affinity', 'events', 'notifications') if name == 'adminWorkerSignals' else ('inputs',)
+        fields = ('derivedRevision', 'queuesRevision') + (() if name == 'adminWorkerSignals'
+                  else ('deliveredDerivedRevision', 'deliveredQueuesRevision'))
+        expected = [{'_id': key, **dict.fromkeys(fields, 0)} for key in ids]
+        if demo[name] != expected:
+            errors.append(f'{name}: worker bootstrap must contain only canonical zero revisions')
     for mode in ('myscoutee_db', 'e2e_db'):
         target = data[mode]
         for name in SHARED:
@@ -62,6 +76,9 @@ def audit_project(data, errors):
                         row['timing'].update(intervalMinutes=1, intervalSeconds=5,
                                              intervalAmount=5, intervalUnit='seconds',
                                              cronExpression='0/5 * * * * ?')
+            if name == 'notificationRuleConfigs':
+                actual = sorted(actual, key=lambda row: row['_id'])
+                reference = sorted(reference, key=lambda row: row['_id'])
             if actual != reference:
                 errors.append(f'{mode}/{name}: unexpected configuration difference')
         for name in ('adminStats', 'adminMonitoring'):

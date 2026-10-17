@@ -4,45 +4,51 @@
   "manuals": [
     {
       "source": "myscoutee-operations-manual-en.html",
-      "output": "MyScoutee_Operations_Manual_v1.0.0_EN.pdf",
+      "output": "MyScoutee_Operations_Manual_EN.pdf",
       "title": "Operations Manual",
-      "documentId": "MSC-OM-001"
+      "documentId": "MSC-OM-001",
+      "documentVersion": "1.4.1",
+      "releaseDate": "2026-10-17"
     },
     {
       "source": "myscoutee-administrator-manual-en.html",
-      "output": "MyScoutee_Administrator_Manual_v1.0.0_EN.pdf",
+      "output": "MyScoutee_Administrator_Manual_EN.pdf",
       "title": "Administrator Manual",
-      "documentId": "MSC-AM-001"
+      "documentId": "MSC-AM-001",
+      "documentVersion": "1.4.1",
+      "releaseDate": "2026-10-17"
     },
     {
       "source": "myscoutee-user-manual-en.html",
-      "output": "MyScoutee_User_Manual_v1.0.0_EN.pdf",
+      "output": "MyScoutee_User_Manual_EN.pdf",
       "title": "User Manual",
-      "documentId": "MSC-UM-001"
+      "documentId": "MSC-UM-001",
+      "documentVersion": "1.4.1",
+      "releaseDate": "2026-10-17"
     },
     {
       "source": "myscoutee-integration-api-guide-en.html",
-      "output": "MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf",
+      "output": "MyScoutee_Integration_API_Guide_EN.pdf",
       "title": "Integration API Guide",
       "documentId": "MSC-API-001",
-      "documentVersion": "1.0.1",
-      "releaseDate": "2026-09-20"
+      "documentVersion": "1.4.1",
+      "releaseDate": "2026-10-17"
     },
     {
       "source": "myscoutee-microservices-guide-en.html",
       "output": "MyScoutee_Microservices_Guide_EN.pdf",
       "title": "Microservices Guide",
       "documentId": "MSC-MS-001",
-      "documentVersion": "0.1.2",
-      "releaseDate": "2026-10-15"
+      "documentVersion": "1.4.1",
+      "releaseDate": "2026-10-17"
     },
     {
       "source": "myscoutee-mcp-user-guide-en.html",
-      "output": "MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf",
+      "output": "MyScoutee_MCP_User_Guide_EN.pdf",
       "title": "MCP User Guide",
       "documentId": "MSC-MCP-001",
-      "documentVersion": "1.0.0",
-      "releaseDate": "2026-10-07"
+      "documentVersion": "1.4.1",
+      "releaseDate": "2026-10-17"
     }
   ]
 }

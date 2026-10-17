@@ -24,11 +24,11 @@
     </div>
     <div class="cover-meta" aria-label="Document metadata">
       <div><strong>Document ID</strong><span>MSC-MCP-001</span></div>
-      <div><strong>Document version</strong><span>1.0.0</span></div>
-      <div><strong>Applicable software version</strong><span>MCP / Java client 1.6.0<br>MyScoutee MSC-119 source revision</span></div>
+      <div><strong>Document version</strong><span>1.4.1</span></div>
+      <div><strong>Applicable software version</strong><span>MCP / Java client 1.6.0<br>MyScoutee 1.4.1</span></div>
       <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Released documentation</span></div>
-      <div><strong>Release date</strong><time datetime="2026-10-07">2026-10-07</time></div>
-      <div><strong>Source revision</strong><span>MSC-119 · 2026-10-07</span></div>
+      <div><strong>Release date</strong><time datetime="2026-10-17">2026-10-17</time></div>
+      <div><strong>Source revision</strong><span>MSC-119 · 2026-10-17</span></div>
       <div><strong>Language</strong><span>EN</span></div>
     </div>
   </section>
@@ -38,18 +38,24 @@
     <table>
       <caption>Scope and applicability</caption>
       <tbody>
+      <tr><th scope="row">Document version</th><td>1.4.1</td></tr>
+      <tr><th scope="row">Documentation release</th><td>2026-10-17</td></tr>
         <tr><th scope="row">Document owner</th><td>MyScoutee project — product and integration documentation</td></tr>
         <tr><th scope="row">Audience</th><td>Members, organizers, community administrators, installation administrators and operators connecting an AI assistant</td></tr>
-        <tr><th scope="row">Companion guide</th><td>MSC-API-001, <a href="MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf">Integration API Guide</a>, for request formats, batch IDs and the Java client</td></tr>
+        <tr><th scope="row">Companion guide</th><td>MSC-API-001, <a href="MyScoutee_Integration_API_Guide_EN.pdf">Integration API Guide</a>, for request formats, batch IDs and the Java client</td></tr>
         <tr><th scope="row">Implementation</th><td>Four access packs; profile-bound OAuth; 40 supported API operations; anonymous help; member and role Events</td></tr>
         <tr><th scope="row">Provider instructions checked</th><td>7 October 2026. Provider names, menus, plans and workspace controls can change; official references appear in section 16.</td></tr>
-        <tr><th scope="row">Verification boundary</th><td>Based on the implemented source and current provider documentation. Live ChatGPT/Claude connection, callback, security and load QA for this extension remains pending. A PDF release does not certify a deployment or publish a marketplace plugin.</td></tr>
+        <tr><th scope="row">Verification boundary</th><td>Based on the implemented source and current provider documentation. Development access, OAuth, callback security/recovery and bounded-delivery QA passed on 15 October 2026. Real ChatGPT/Claude host connections, Scheduled execution and marketplace publication require separate qualification. A PDF release does not certify a deployment or publish a marketplace plugin. Provider setup references retain their 7 October check date.</td></tr>
       </tbody>
     </table>
+    <p>Event and service Feedback share the application's central Feedback owner. Reading
+      existing results through an allowed query does not authorize submitting a person's
+      feedback through an integration. The live application form owns that decision.</p>
     <h3>Version History</h3>
-    <table>
+    <table class="small">
       <thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead>
-      <tbody><tr><td>1.0.0</td><td>2026-10-07</td><td>Initial complete MCP user guide: connection types, generation, access tables, ChatGPT/Claude setup, role reports, Events, schedules, examples and troubleshooting.</td></tr></tbody>
+      <tbody>
+        <tr><td>1.4.1</td><td>2026-10-17</td><td>Reconcile access/Events development verification, central Feedback boundaries and 1.4.1 applicability; preserve dated provider setup references.</td></tr><tr><td>1.0.0</td><td>2026-10-07</td><td>Initial complete MCP user guide: connection types, generation, access tables, ChatGPT/Claude setup, role reports, Events, schedules, examples and troubleshooting.</td></tr></tbody>
     </table>
     <aside class="callout note"><strong>Use your installation’s address</strong>Copy the MCP URL from MyScoutee. The marketing website address, API Base URL and MCP URL have different purposes. Examples in this guide use placeholders and contain no working credentials.</aside>
   </section>
@@ -315,7 +321,7 @@
     <p class="keep-together">MyScoutee subscriptions last at most one day per grant and need host refresh to continue. Ask the host to stop monitoring to unsubscribe. To stop Events from MyScoutee while retaining queries, save Read on the main link or relevant client. To stop the connection entirely, use Blocked or revoke its authorization.</p>
     <p class="keep-together">Delivery uses a bounded queue and retries; duplicates or delays are possible. There is no replay history. After expiry, an interruption or a reported gap, request the current resource state instead of assuming every change was delivered. The host’s acknowledgement of a notification is not proof that the requested follow-up completed.</p>
     <p class="keep-together">Changing access, revoking the connection, losing membership, ownership or a required role prevents further eligible delivery. Existing chats and information already retrieved by the host are not erased by revocation.</p>
-    <p class="keep-together">Ordinary connector support is not evidence of MCP Events support in Claude. Its scheduled-query workflow is documented separately below. Live host acceptance still needs the deployment’s pending QA.</p>
+    <p class="keep-together">Ordinary connector support is not evidence of MCP Events support in Claude. Its scheduled-query workflow is documented separately below. Development Events/OAuth checks passed on 15 October 2026; acceptance by the actual external host remains separately qualified.</p>
   </section>
 
   <section id="schedules" aria-labelledby="schedules-title">
@@ -464,7 +470,7 @@
     </ol>
     <h3>MyScoutee references</h3>
     <ul>
-      <li><a href="MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf">MSC-API-001 — Integration API Guide</a></li>
+      <li><a href="MyScoutee_Integration_API_Guide_EN.pdf">MSC-API-001 — Integration API Guide</a></li>
       <li><a href="https://github.com/fssrepository/myscoutee-mcp">MCP adapter, deployment notes and plugin packaging</a></li>
       <li><a href="https://github.com/fssrepository/myscoutee-client">Java client, canonical OpenAPI contract and CLI</a></li>
       <li>The application’s live Help and Explanations for the currently deployed interface, available in English and Hungarian.</li>

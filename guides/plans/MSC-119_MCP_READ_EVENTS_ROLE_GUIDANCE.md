@@ -136,7 +136,7 @@ Provider-specific instructions must cite current official documentation.
 ## MCP User Guide — completed
 
 - Added `guides/manuals/myscoutee-mcp-user-guide-en.html` and the versioned
-  `MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf` (MSC-MCP-001), built by the existing
+  `MyScoutee_MCP_User_Guide_EN.pdf` (MSC-MCP-001), built by the existing
   manual renderer and copied identically into the public frontend manual folder.
 - Reuses the official M logo, cover, document-control table, linked contents,
   shared typography, PDF header/footer and page numbering. Client generation,

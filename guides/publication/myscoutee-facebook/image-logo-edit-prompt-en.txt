@@ -1,0 +1,10 @@
+Generation mode: built-in image_gen edit
+Output: cover-en.png (replaces initial artwork)
+Edit target: initial square cover-en.png before the logo correction
+Official logo reference: frontend/docs/assets/logo/heart.png
+
+Use case: precise-object-edit
+Edit target: Image 1, the square MyScoutee Facebook campaign artwork.
+Supporting insert: Image 2, the official transparent MyScoutee logo shaped like an M with violet/blue/magenta wings, a white heart opening and golden star. Use this exact official mark, preserving its proportions, shape and colors.
+Change only the leading capital M in the top product name. Remove the ordinary typographic M and replace that ONE character with the official logo from Image 2. The resulting wordmark is [official M logo] immediately followed by the literal text "yScoutee". The logo functions as the first letter of the name. Align it optically with the text, around capital-letter height, with natural letter spacing. The whole wordmark remains centered. Never write the full "MyScoutee" after the logo; the text after the mark must be only "yScoutee".
+Keep everything else unchanged: exact headline "More ways to connect.", all three photographs and people, scene layout, bottom captions "Dating", "Work", "Community", palette, background curves, square format and margins. Preserve all typography except replacing the leading M. No extra logos or text.

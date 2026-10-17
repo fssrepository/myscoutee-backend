@@ -7,57 +7,32 @@ priorities, group and event coordination, work campaigns, service offerings,
 community cases, announcements and voting. Ratings remain human decisions;
 API/MCP exposes the permitted organizing operations and scoped queries.
 
-Development QA results and deployment qualification are recorded in the
-[verification ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv).
-The Java client and MCP adapter provide Blocked / Write / Read / Full access
-packs, OAuth Events and scoped administrator/operator statistics.
-
-Its goal is a **completed, mutually welcomed real-world meeting**—not simply a
-match or a message.
-
-## Microservices playground
-
-[MSC-121](https://github.com/fssrepository/myscoutee-roadmap/issues/159) is closed
-for developer-playground delivery. The final verified lab is Helm **123**, with
-six backends, Mongo StatefulSet **2/2**, shared change streams/cache invalidation,
-Kubernetes status/SSE and a bounded blocking Redis telemetry reader. Infrastructure
-and operations are versioned in [microservices](microservices/README.md).
-[Delivery and test evidence](microservices/PROGRESS.md) ·
-[CPU attribution](microservices/IDLE_CPU_PROFILE_2026-10-09.md) ·
-[Polling/freshness audit](microservices/DATABASE_POLLING_AUDIT.md).
-
-The latest reader passed **28 focused tests** and live durable-cursor checks.
-Production installer qualification remains separate from this source snapshot.
-[Task usage and restorable Project](guides/project-history/README.md) retain the
-measured delivery history. The reusable template and components are delivered.
+Its goal is a **completed, mutually welcomed real-world meeting**.
 
 ## Downloads
 
 ### Installer
 
-The coordinated application source snapshot is **1.4.1**. The latest complete installer
-release remains **1.3.0**, with its Debian package, client tools, checksums,
-container references and release metadata available from
-[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.3.0).
+The current installer release is **1.4.1**, with its Debian package, client tools,
+checksums, container references and signed metadata available from
+[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.4.1).
 
 See the [installation guide](packaging/README.md),
-[1.3.0 installer release notes](guides/releases/v1.3.0.md) and
+[1.4.1 installer release notes](guides/releases/v1.4.1.md) and
 [1.3.3 application update notes](guides/releases/v1.3.3.md).
-The later application updates do not replace the full installer release.
 
 ### Documentation PDFs
 
 | Document | Document version | Applies to | PDF |
 |---|---:|---:|---|
-| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
-| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
-| User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
-| Integration API Guide | 1.0.1 | 1.0.1 + MSC-119 source extensions | [PDF](guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
-| MCP User Guide | 1.0.0 | MCP / client 1.6.0 · MSC-119 | [PDF](guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf) |
-| Microservices Guide | 0.1.1 | MSC-121; KVM/Helm, replica set, operations and monolith comparison | [HTML source](guides/manuals/myscoutee-microservices-guide-en.html) · [PDF](guides/manuals/MyScoutee_Microservices_Guide_EN.pdf) |
+| Operations Manual | 1.4.1 | MyScoutee 1.4.1 | [PDF](guides/manuals/MyScoutee_Operations_Manual_EN.pdf) |
+| Administrator Manual | 1.4.1 | MyScoutee 1.4.1 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_EN.pdf) |
+| User Manual | 1.4.1 | MyScoutee 1.4.1 | [PDF](guides/manuals/MyScoutee_User_Manual_EN.pdf) |
+| Integration API Guide | 1.4.1 | MyScoutee 1.4.1 / client 1.6.0 | [PDF](guides/manuals/MyScoutee_Integration_API_Guide_EN.pdf) |
+| MCP User Guide | 1.4.1 | MyScoutee 1.4.1 / client 1.6.0 | [PDF](guides/manuals/MyScoutee_MCP_User_Guide_EN.pdf) |
+| Microservices Guide | 1.4.1 | KVM laboratory / eight-service assemblies | [HTML source](guides/manuals/myscoutee-microservices-guide-en.html) · [PDF](guides/manuals/MyScoutee_Microservices_Guide_EN.pdf) |
 
-Document versions are independent of software versions. The MCP guide documents
-MSC-119 source behavior, including its pending live-host QA.
+These manuals cover MyScoutee 1.4.1. The API/MCP guides distinguish verified development behavior from external-host qualification.
 
 Editable manual sources and PDF build instructions are in
 [`guides/manuals`](guides/manuals/README.md).
@@ -114,26 +89,7 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## Verification and project history
 
-The [development QA matrix (XLSX)](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
-and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
-record test results, evidence and the scope of each case.
-
-The [MyScoutee roadmap](https://github.com/fssrepository/myscoutee-roadmap/tree/master/guides/project-history/myscoutee)
-contains the task history, workstream effort and measurement method.
-
-The Project records **40,360,397,264 measured tokens** through October 17,
-07:51:53 UTC. [Task measurements and method](https://github.com/fssrepository/myscoutee-roadmap/tree/master/guides/project-history/myscoutee)
-retain the allocation boundaries; full API valuation is incomplete.
-
-![Daily AI token usage](https://raw.githubusercontent.com/fssrepository/myscoutee-roadmap/master/guides/project-history/media/token-activity.png)
-
-## QA status
-
-The development ledger records **145 complete scenarios out of 146** as of
-October 16. Results apply to their recorded scope. The separate
-[template regression](../myscoutee-template/guides/qa/evidence/general/MSC115-TEMPLATE-REGRESSION.json)
-is **PASS / CLOSED through points 1–32** on October 17, including the call and
-notification deltas and fixture/runtime cleanup.
-
-Physical devices, external networks and deployed-provider behavior retain their
-[separate qualification record](guides/qualification/MSC117_118_LIVE_CHECKS.md).
+[QA records](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) ·
+[Deployment qualification](guides/qualification/MSC117_118_LIVE_CHECKS.md) ·
+[Microservices architecture and operations](microservices/README.md) ·
+[Project history and measurements](https://github.com/fssrepository/myscoutee-roadmap/tree/master/guides/project-history/myscoutee)

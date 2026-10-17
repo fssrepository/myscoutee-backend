@@ -26,7 +26,7 @@ public final class CommunityGroupMapper {
             List<CommunityMember> members, long activity, java.util.Map<String, Integer> menuCounters) {
         CommunityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && (List.of("accepted", "pending").contains(m.getStatus()) || restorableMembership(m))).findFirst().orElse(null);
         boolean admin = own != null && "accepted".equals(own.getStatus()) && "Admin".equals(own.getRole());
-        return new Group(group.id(), group.ownerUserId(), owner.getName(), avatar(owner),
+        return new Group(group.id(), group.ownerUserId(), owner == null ? "" : owner.getName(), avatar(owner),
                 group.name(), group.description(), group.imageUrl(), group.category(), group.visibility(),
                 group.hideMembers(), group.policy(), group.createdAtIso(), group.updatedAtIso(), group.version(),
                 own == null ? null : own.getRole(), own == null ? null : own.getStatus(),
@@ -67,9 +67,10 @@ public final class CommunityGroupMapper {
                 m.getUpdatedDate(), null, null, null, null, m.getManagerGrantedByUserId(), m.getOrganizerOnly(), m.getVotingEligible());
     }
     private static String avatar(DiscoveryProfile user) {
-        return user.getImages() == null || user.getImages().isEmpty() ? null : user.getImages().getFirst();
+        return user == null || user.getImages() == null || user.getImages().isEmpty() ? null : user.getImages().getFirst();
     }
     private static Double distance(DiscoveryProfile owner, DiscoveryProfile viewer) {
+        if (owner == null) return null;
         var a = owner.getLocationCoordinates(); var b = viewer.getLocationCoordinates();
         if (a == null || b == null || a.latitude() == null || a.longitude() == null
                 || b.latitude() == null || b.longitude() == null) return null;

@@ -15,6 +15,27 @@ import static org.mockito.ArgumentMatchers.*;
 
 @org.junit.jupiter.api.Tag("standard")
 class ServiceOfferingsServiceTest {
+    @org.junit.jupiter.api.Test
+    void emptyDiscoveryUsesPersistedCommunityProfileAndItsRatingIdentity() {
+        var records = mock(ServiceOfferingsRepository.class);
+        var profiles = mock(DiscoveryProfiles.class);
+        var ratings = mock(com.raxim.myscoutee.domain.affinity.api.AccountRatings.class);
+        var service = new ServiceOfferingsService(records, mock(CommunityAuthority.class), profiles,
+                ratings, mock(CommunityMemberships.class));
+        var profile = mock(DiscoveryProfile.class);
+        when(profile.getUserId()).thenReturn("group-persisted-profile-uuid");
+        doReturn(List.of(profile)).when(profiles).findByWorkspaceGroupIdAndAccountUserIdIn(
+                eq(BaseGroups.COMMUNITY_BASE_ID), eq(List.of("account")));
+        when(records.findByBaseGroupIdAndStatus(BaseGroups.COMMUNITY_BASE_ID, "published")).thenReturn(List.of());
+
+        var page = service.page("account", "discover", "published", null, null, null, 10, null);
+
+        assertThat(page.items()).isEmpty();
+        assertThat(page.total()).isZero();
+        verify(ratings).scoresGiven("group-persisted-profile-uuid");
+        verify(profiles, never()).findByUserId(anyString());
+    }
+
     @ParameterizedTest
     @CsvSource({"publish,draft,published", "unpublish,published,draft", "trash,published,trash", "restore,trash,draft"})
     void lifecycleUsesCurrentRecordAndRetainsPersistenceAndOwnershipGuards(String action, String status, String expected) {
@@ -28,7 +49,8 @@ class ServiceOfferingsServiceTest {
         when(records.save(any())).thenAnswer(call -> call.getArgument(0));
         var profile = mock(DiscoveryProfile.class);
         when(profile.getUserId()).thenReturn("group:owner");
-        when(profiles.findByUserId(anyString())).thenAnswer(call -> Optional.of(profile));
+        doReturn(List.of(profile)).when(profiles).findByWorkspaceGroupIdAndAccountUserIdIn(
+                eq(BaseGroups.COMMUNITY_BASE_ID), eq(List.of("owner")));
         var command = new Command("owner", action, 0L);
         var result = service.action("owner", "service", command);
         assertThat(result.service().status()).isEqualTo(expected);

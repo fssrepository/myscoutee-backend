@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="MyScoutee">
-  <meta name="description" content="The official user manual for MyScoutee 1.0.0.">
+  <meta name="description" content="The official user manual for MyScoutee 1.4.1.">
   <title>MyScoutee User Manual · MSC-UM-001</title>
   <link rel="stylesheet" href="manuals.css">
 </head>
@@ -24,7 +24,7 @@
         <h1 id="cover-title">MyScoutee User Manual</h1>
         <p class="cover-lead">
           Sign-in, profiles, recommendations, ratings, events, chats,
-          assets, privacy, and account management in MyScoutee 1.0.0.
+          assets, privacy, and account management in MyScoutee 1.4.1.
         </p>
       </div>
 
@@ -35,11 +35,11 @@
         </div>
         <div>
           <strong>Document version</strong>
-          <span>1.0.0</span>
+          <span>1.4.1</span>
         </div>
         <div>
           <strong>Applicable software version</strong>
-          <span>MyScoutee 1.0.0</span>
+          <span>MyScoutee 1.4.1</span>
         </div>
         <div>
           <strong>Status</strong>
@@ -47,7 +47,7 @@
         </div>
         <div>
           <strong>Release date</strong>
-          <time datetime="2026-07-30">2026-07-30</time>
+          <time datetime="2026-10-17">2026-10-17</time>
         </div>
         <div>
           <strong>Language</strong>
@@ -71,11 +71,11 @@
           </tr>
           <tr>
             <th scope="row">Document version</th>
-            <td>1.0.0</td>
+            <td>1.4.1</td>
           </tr>
           <tr>
             <th scope="row">Applicable software version</th>
-            <td>MyScoutee 1.0.0</td>
+            <td>MyScoutee 1.4.1</td>
           </tr>
           <tr>
             <th scope="row">Status</th>
@@ -83,7 +83,7 @@
           </tr>
           <tr>
             <th scope="row">Release date</th>
-            <td>2026-07-30</td>
+            <td>2026-10-17</td>
           </tr>
           <tr>
             <th scope="row">Audience</th>
@@ -107,6 +107,7 @@
           </tr>
         </thead>
         <tbody>
+        <tr><td>1.4.1</td><td>2026-10-17</td><td>Released documentation</td><td>Add Work campaigns, Community cases and services, group calls, central Feedback, role guides, and current payment/PWA/offline behavior.</td></tr>
           <tr>
             <td>1.0.0</td>
             <td>2026-07-30</td>
@@ -118,7 +119,7 @@
 
       <h2>Validity and maintenance</h2>
       <p>
-        This manual describes the 1.0.0 features that can be verified in the
+        This manual describes MyScoutee 1.4.1 and the workflows implemented in its
         source code. On a newer release, a differently configured deployment,
         or a custom-branded installation, on-screen labels and available
         features may differ. In that case, the interface, privacy notice, and
@@ -161,6 +162,7 @@
         <li><a href="#foglalas">9. Booking, cart, policies, and prices</a></li>
         <li><a href="#eszkozok">10. My assets, resources, and tickets</a></li>
         <li><a href="#kommunikacio">11. Chats and notifications</a></li>
+        <li><a href="#work-community">11A. Work, Community, Feedback and help</a></li>
         <li><a href="#biztonsag">12. Safety, privacy, and account management</a></li>
         <li><a href="#offline">13. Offline and limited operation</a></li>
         <li><a href="#hibaelharitas">14. Troubleshooting</a></li>
@@ -260,9 +262,10 @@
         would not want stored in a demonstration environment.
       </div>
       <p>
-        Payment integration is disabled in the current 1.0.0 frontend
-        configurations. A cart, pricing, or payment summary may be displayed,
-        but its presence alone does not indicate an active payment provider.
+        Payment integration is enabled in backend-connected production and development
+        builds and disabled in the browser-only demo. Explore uses its isolated
+        simulator. A live deployment still needs configured provider credentials;
+        a cart or payment summary alone does not prove a successful charge.
       </p>
     </section>
 
@@ -314,7 +317,7 @@
       <p>
         Options shown on the landing page depend on the deployment. A
         Firebase-based deployment may provide Google and email sign-in. The
-        Facebook option is disabled and marked “Coming soon” in the 1.0.0
+        Facebook option is disabled and marked “Coming soon” in the current
         interface. A build with Firebase sign-in disabled may open a
         demonstration profile selector instead.
       </p>
@@ -365,7 +368,7 @@
       <div class="callout warning">
         <strong>Password security</strong>
         Use a unique password, do not share it, and do not enter it into a
-        demo or a deployment of unknown origin. The 1.0.0 sign-in panel does
+        demo or a deployment of unknown origin. The current sign-in panel does
         not provide a separate “forgot password” workflow; use the support
         channel for the relevant deployment.
       </div>
@@ -1143,7 +1146,7 @@
           <li>If the price differs by slot or optional sub-event, assign the line item to the relevant element.</li>
           <li>Enter the promotion-code rule and validity period if supported by the interface.</li>
           <li>In the summary, verify base price, line items, quantity, and total.</li>
-          <li>Save the event, but do not promise live online payment in the current release: frontend payment integration is disabled.</li>
+          <li>Save the event. Online payment is enabled in backend-connected production and development builds and requires the deployment's configured payment provider. The browser-only demo disables payment integration; Explore uses simulated payments.</li>
         </ol>
       </div>
 
@@ -1284,7 +1287,7 @@
           </tr>
           <tr>
             <td>Pay</td>
-            <td>Can be completed only with an active provider integration. It is disabled in the current 1.0.0 frontend configurations.</td>
+            <td>Requires the deployment's enabled and configured payment provider. Explore uses simulated payments; the browser-only demo does not make live payments.</td>
           </tr>
           <tr>
             <td>Failed / Cancelled / Rejected</td>
@@ -1322,12 +1325,10 @@
         from an active payment provider.
       </p>
       <div class="callout danger">
-        <strong>Do not enter real card details in the current 1.0.0 release</strong>
-        Payment integration is <em>disabled</em> in the released frontend
-        environments. Displayed demo card numbers or locked payment fields
-        are interface previews only. Enter real card details only in a later
-        deployment that clearly names an active payment provider and shows a
-        secure provider redirect.
+        <strong>Check the payment environment before entering card details</strong>
+        Explore payment screens use a simulator. Never enter real card details there
+        or in the browser-only demo. For a real booking, check the deployment,
+        named provider, currency, amount and secure provider page before paying.
       </div>
     </section>
 
@@ -1442,7 +1443,7 @@
           <li>Enter start and end dates and a quantity within the available maximum.</li>
           <li>Review line items, cancellation terms, and the current refund preview.</li>
           <li>Accept required borrowing policies.</li>
-          <li>Submit the request. For a paid asset, the interface may indicate a payment step, but in the released 1.0.0 frontend this is a demo or locked state, not active card payment.</li>
+          <li>Submit the request. For a paid asset, the interface may indicate a payment step, but completion depends on the selected environment and its configured provider. Explore payments are simulated.</li>
           <li>Monitor the request list for pending or accepted/borrowed status.</li>
         </ol>
       </div>
@@ -1639,6 +1640,17 @@
         </ol>
       </div>
 
+      <h2>Audio and video group calls</h2>
+      <p>Open the chat and use its call control when available. Choose the offered connection
+        node, allow microphone/camera access and join. Incoming calls can be accepted or
+        declined. The call panel shows participants and their connection state; use its
+        microphone, camera and leave controls as needed. Only an authorized moderator can
+        use the moderator controls.</p>
+      <p>Calls require an online secure browser connection. Media travels directly between
+        participants; the configured STUN service helps establish connectivity. Some NATs
+        or restricted networks cannot establish a direct route. A participant error or
+        disconnected tile is not proof that everyone else has left.</p>
+
       <h2>11.6 Notification centre</h2>
       <div class="procedure">
         <h3>Mark a notification as read</h3>
@@ -1664,6 +1676,49 @@
         counter. Only the floating attention button remains hidden until
         unmuted.
       </div>
+    </section>
+
+    <section class="major" id="work-community" aria-labelledby="work-community-title">
+      <h1 id="work-community-title">11A. Work and Community</h1>
+      <h2>Work campaigns and groups</h2>
+      <p>Select the Work workspace before opening Campaigns. A campaign contains a title,
+        description, kind (Work, Business or both), category, images and optional attachments.
+        Save a draft, review it, then publish it when ready. Its menu provides the available
+        unpublish, trash and restore actions. Own and discovery filters have different scopes.</p>
+      <p>Choose a campaign when preparing a related Work event. Review that event's capacity,
+        policies and recipients separately. Campaign selection does not accept an invitation
+        or grant event membership. Review an invitation in the existing confirmation flow;
+        the resulting membership or checkout state determines the next step.</p>
+      <h2>Community cases, services and appointments</h2>
+      <p>Select the intended Community group, then open Cases. Create a case with a type,
+        description and affected audience. The case can show members, invited providers,
+        service recommendations, quotations, appointments and a task board. Available
+        actions depend on your membership and the case's current status.</p>
+      <ol>
+        <li>Read the case and its audience before joining or responding to an invitation.</li>
+        <li>If responsible for the case, review providers and invite the required participants.</li>
+        <li>Compare quotation amount, currency, work and refund policies before deciding.</li>
+        <li>Use the board's To do, In progress and Done columns to manage tasks, assignees,
+          dependencies and linked offers. Review appointments in their calendar.</li>
+        <li>Use the offered case status action when work starts, completes or is cancelled.</li>
+      </ol>
+      <p>Community services describe a provider's offering and availability. Case tasks and
+        service appointments are related records; changing one does not mean all work has
+        been accepted or paid. Recurring Community tasks have their own schedule and
+        pause/resume controls.</p>
+      <h2>Feedback and guided help</h2>
+      <p>Open the relevant event or service Feedback entry. Review its subject and choose
+        an answer for each labelled criterion, then submit using the form confirmation.
+        A submitted response reopens read-only. Event and service Feedback use the same
+        Feedback workflow; a summary or green badge does not replace the original answers.</p>
+      <p>Use the question-mark help entry for the current popup or workspace. Guides follow
+        the available controls and your role. Close or dismiss a guide using its controls;
+        dismissing introductory help does not change privacy consent.</p>
+      <h2>API and AI connections</h2>
+      <p>Manage client keys and AI/MCP connections in the profile's API settings.
+        Review the identity and pack, then save the parent form. The main MCP pack caps each client.
+        See the <a href="MyScoutee_MCP_User_Guide_EN.pdf">MCP User Guide</a>
+        for setup. Personal ratings, votes and invitation/offer decisions remain in the app.</p>
     </section>
 
     <section class="major" id="biztonsag" aria-labelledby="biztonsag-cim">
@@ -1872,6 +1927,17 @@
         critical admission.
       </div>
 
+      <h2>Cached sign-in and installed PWA updates</h2>
+      <p>After an online sign-in and warm cache, an installed PWA can restore the cached
+        Firebase session and profile while offline. It still cannot confirm server-side
+        writes without connectivity. Reconnect and let the application refresh the session
+        and data before relying on a changed membership, payment or notification state.</p>
+      <p>When an application update is ready, follow the update prompt. An update may finish
+        downloading after the first check; leave connectivity available until activation
+        completes. Android Back closes the current guide or popup before leaving its
+        enclosing screen. Backgrounding and reopening the app preserves the ordinary
+        session subject to browser storage, sign-out and server access rules.</p>
+
       <h2>13.2 Browser and device limitations</h2>
       <ul>
         <li>The QR scanner requires a camera, a secure website, and browser QR/BarcodeDetector support. Without support, it cannot scan.</li>
@@ -1917,7 +1983,7 @@
           </tr>
           <tr>
             <td>The Facebook button is disabled.</td>
-            <td>It is marked “Coming soon” in the 1.0.0 interface.</td>
+            <td>It is marked “Coming soon” in the current interface.</td>
             <td>Use an enabled Google or email method for that deployment.</td>
           </tr>
           <tr>
@@ -1992,7 +2058,7 @@
           </tr>
           <tr>
             <td>Payment fields are locked or show demo values.</td>
-            <td>Payment integration is disabled in the 1.0.0 frontend.</td>
+            <td>The browser-only demo disables payments; Explore uses simulated values. A backend deployment may also lack an active provider configuration.</td>
             <td>Do not enter real card details. Follow the booking state and operator instructions.</td>
           </tr>
           <tr>
@@ -2055,7 +2121,7 @@
 
     <section class="major" id="fogalomtar" aria-labelledby="fogalomtar-cim">
       <h1 id="fogalomtar-cim">15. Glossary</h1>
-      <table>
+      <table class="small">
         <thead>
           <tr>
             <th scope="col">Term</th>
@@ -2208,14 +2274,14 @@
 
       <div class="callout success">
         <strong>End of manual</strong>
-        This is the released version 1.0.0 of user manual MSC-UM-001. For a
+        This is the released version 1.4.1 of user manual MSC-UM-001. For a
         different software version, consult that release's documentation.
       </div>
       <p class="source-note">
-        Source basis: MyScoutee 1.0.0 frontend routes, components,
+        Source basis: MyScoutee 1.4.1 frontend routes, components,
         environment configurations, user-facing contracts, and project
         documentation for the demo/live data-source boundary. Released:
-        <time datetime="2026-07-30">2026-07-30</time>.
+        <time datetime="2026-10-17">2026-10-17</time>.
       </p>
     </section>
   </article>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MyScoutee 1.0.0 Operations Manual">
+  <meta name="description" content="MyScoutee 1.4.1 Operations Manual">
   <title>MyScoutee Operations Manual · MSC-OM-001</title>
   <link rel="stylesheet" href="manuals.css">
 </head>
@@ -31,11 +31,11 @@
       </div>
       <div>
         <strong>Document version</strong>
-        <span>1.0.0</span>
+        <span>1.4.1</span>
       </div>
       <div>
         <strong>Applicable software version</strong>
-        <span>MyScoutee 1.0.0</span>
+        <span>MyScoutee 1.4.1</span>
       </div>
       <div>
         <strong>Status</strong>
@@ -43,7 +43,7 @@
       </div>
       <div>
         <strong>Release date</strong>
-        <time datetime="2026-07-30">2026-07-30</time>
+        <time datetime="2026-10-17">2026-10-17</time>
       </div>
       <div>
         <strong>Language</strong>
@@ -58,6 +58,8 @@
     <table>
       <caption>Document status and applicability</caption>
       <tbody>
+      <tr><th scope="row">Document version</th><td>1.4.1</td></tr>
+      <tr><th scope="row">Documentation release</th><td>2026-10-17</td></tr>
         <tr>
           <th scope="row">Document owner</th>
           <td>MyScoutee project — operations documentation</td>
@@ -68,7 +70,7 @@
         </tr>
         <tr>
           <th scope="row">Normative deployment method</th>
-          <td>The production system installed from the <code>myscoutee_1.0.0_amd64.deb</code> package and managed by systemd</td>
+          <td>The production system installed from the <code>myscoutee_1.4.1_amd64.deb</code> package and managed by systemd</td>
         </tr>
         <tr>
           <th scope="row">Review triggers</th>
@@ -88,6 +90,7 @@
         </tr>
       </thead>
       <tbody>
+        <tr><td>1.4.1</td><td>2026-10-17</td><td>Released documentation</td><td>Refresh the signed 1.4.1 installer, nine-service topology, STUN/MCP/payment boundaries, retained-data migrations and upgrade verification.</td></tr>
         <tr>
           <td>1.0.0</td>
           <td>2026-07-30</td>
@@ -99,7 +102,7 @@
 
     <aside class="callout warning">
       <h3>Version Boundary</h3>
-      <p>This document is based exclusively on the verified repository sources for software version 1.0.0. It may be applied to another version only after a release-specific review has verified all differences in the package, image manifest, Compose files, and operating scripts.</p>
+      <p>This document describes the repository sources and operating procedures for MyScoutee 1.4.1. It may be applied to another software version only after a release-specific review has verified all differences in the package, image manifest, Compose files, and operating scripts.</p>
     </aside>
 
     <h3>Evidence Base</h3>
@@ -146,7 +149,7 @@
 
   <section id="purpose-and-scope" aria-labelledby="purpose-and-scope-title">
     <h2 id="purpose-and-scope-title">1. Purpose and Scope</h2>
-    <p>This manual provides repeatable, verifiable, and security-conscious procedures for installing and operating a MyScoutee 1.0.0 production instance.</p>
+    <p>This manual provides repeatable, verifiable, and security-conscious procedures for installing and operating a MyScoutee 1.4.1 production instance.</p>
 
     <h3>In Scope</h3>
     <ul>
@@ -232,6 +235,7 @@ Nginx ─────────────► Java API (profilemanagement)
   │ loopback 27017          ├──► MongoDB (production_db + demo_db)
   ▼                         ├──► Redis
 MongoDB                     ├──► MinIO
+                            ├──► MCP adapter and isolated payment simulator
                             ├──► internal Explore registry
                             └──► Operator-selected external HTTPS registry
 
@@ -288,6 +292,9 @@ systemd
           <td>No host port</td>
           <td>Two isolated Docker named volumes</td>
         </tr>
+        <tr><td>MCP adapter</td><td><code>mcp</code></td><td>HTTPS through Nginx; private tools require OAuth</td><td>Authority and grants belong to the backend</td></tr>
+        <tr><td>Explore payment simulator</td><td><code>payment-simulator</code></td><td>Isolated demo provider routes</td><td>Dedicated simulator volume and credentials</td></tr>
+        <tr><td>Direct-call STUN</td><td><code>stun</code></td><td>Configured UDP/TCP STUN endpoint</td><td>Package-managed configuration; no TURN media relay</td></tr>
       </tbody>
     </table>
 
@@ -303,16 +310,16 @@ systemd
     <h3>Supported Installation Platform</h3>
     <ul>
       <li>An <code>apt</code>-based Debian/Ubuntu system with systemd service management;</li>
-      <li>amd64 architecture for the released 1.0.0 package;</li>
+      <li>amd64 architecture for the released 1.4.1 package;</li>
       <li>root or <code>sudo</code> privileges;</li>
       <li>Docker Engine and Docker Compose v2;</li>
       <li>a public domain and DNS when Internet-facing TLS is required;</li>
-      <li>inbound TCP 80 and 443, while preserving a source-restricted SSH path through both the guest and provider network controls;</li>
+      <li>inbound TCP 80 and 443, plus the configured UDP/TCP STUN port (3478 by default) for direct calls, while preserving a source-restricted SSH path through both the guest and provider network controls;</li>
       <li>outbound access at minimum for missing MongoDB/Redis images, certificate issuance, and approved external providers.</li>
     </ul>
 
     <h3>System Requirements and Initial Sizing</h3>
-    <p>The following values are conservative planning baselines for the packaged six-container stack. They are not measured capacity limits, user-count guarantees, or an SLA. Use the small-deployment column only for evaluation, commissioning, or a low-traffic deployment; use the production column as the initial production size and validate it with representative load, data-retention, media, backup, and restore tests.</p>
+    <p>The following values are conservative planning baselines for the packaged nine-container stack. They are not measured capacity limits, user-count guarantees, or an SLA. Use the small-deployment column only for evaluation, commissioning, or a low-traffic deployment; use the production column as the initial production size and validate it with representative load, data-retention, media, backup, and restore tests.</p>
 
     <table>
       <caption>Approximate host sizing baseline</caption>
@@ -393,7 +400,7 @@ sudo /opt/myscoutee/packaging/scripts/doctor-production.sh</code></pre>
     <p>This chapter maps the supported MyScoutee host contract to common infrastructure products. Provider consoles create the VM, network, stable address, firewall policy, storage, and DNS records; they do not replace the MyScoutee package installer. The same released Debian package and the same operating procedures are used on every platform.</p>
 
     <h3>5.1. Runtime Boundary and Available Deployment Surfaces</h3>
-    <p>The supported runtime is one amd64 Debian/Ubuntu guest with <code>apt</code>, systemd, Docker Engine, and Docker Compose v2. The package runs a stateful six-container stack, uses fixed host paths, and installs privileged local update and TLS workers. The host does not need Java because the Java runtime is contained in the packaged API image.</p>
+    <p>The supported runtime is one amd64 Debian/Ubuntu guest with <code>apt</code>, systemd, Docker Engine, and Docker Compose v2. The package runs a stateful nine-container stack, uses fixed host paths, and installs privileged local update and TLS workers. The host does not need Java because the Java runtime is contained in the packaged API image.</p>
 
     <table>
       <caption>Infrastructure products that can provide the supported VM</caption>
@@ -508,7 +515,7 @@ sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub</code></pre>
       <li>Create a Compute Engine VM from an approved amd64 Debian/Ubuntu image. Map the Chapter 4 baseline to a machine type with at least 4 vCPUs, 8 GiB RAM, and an 80 GiB persistent SSD for a small deployment, or begin production qualification at 8 vCPUs, 16 GiB RAM, and 160 GiB. Increase storage for measured database, media, log, update, and backup retention.</li>
       <li>Attach the reserved address and use OS Login, IAP, a bastion, or approved SSH keys. The VM’s Google Cloud service account needs no broad Firebase role; grant only permissions required for separately selected Google Cloud agents or backup automation.</li>
       <li>Create the canonical DNS record described in 5.6, wait for public propagation, and verify that it resolves to the reserved address. Verify host-to-public-name reachability after the package and Nginx have started.</li>
-      <li>Transfer the approved <code>myscoutee_1.0.0_amd64.deb</code>, verify its SHA-256 digest, and continue with Chapter 6. Take the first logical backup after commissioning; Compute Engine disk snapshots remain an additional infrastructure control only.</li>
+      <li>Transfer the approved <code>myscoutee_1.4.1_amd64.deb</code>, verify its SHA-256 digest, and continue with Chapter 6. Take the first logical backup after commissioning; Compute Engine disk snapshots remain an additional infrastructure control only.</li>
     </ol>
 
     <aside class="callout note">
@@ -629,22 +636,22 @@ curl --fail --silent --show-error http://app.example.com/nginx-health</code></pr
       </thead>
       <tbody>
         <tr>
-          <td><code>myscoutee_1.0.0_amd64.deb</code></td>
+          <td><code>myscoutee_1.4.1_amd64.deb</code></td>
           <td>Target Debian/Ubuntu VM</td>
           <td>The product installer. <code>apt</code> resolves dependencies and invokes package configuration.</td>
         </tr>
         <tr>
-          <td><code>myscoutee-client-tools_1.0.0.tar.gz</code></td>
+          <td><code>myscoutee-client-tools_1.4.1.tar.gz</code></td>
           <td>Trusted Operator management workstation</td>
           <td>Release-packaged verifier, SSH/SCP wrappers, secret-free configuration example, and external read-only deployment smoke.</td>
         </tr>
         <tr>
-          <td><code>myscoutee-release_1.0.0.json</code>, release public key, and independently obtained key fingerprint</td>
+          <td><code>myscoutee-release_1.4.1.json</code>, release public key, and independently obtained key fingerprint</td>
           <td>Trusted Operator management workstation</td>
           <td>Signed metadata and trust inputs used to authenticate both the Debian package and the client-tools archive.</td>
         </tr>
         <tr>
-          <td><code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code></td>
+          <td><code>/usr/share/myscoutee/myscoutee-client-tools_1.4.1.tar.gz</code></td>
           <td>Target VM storage; transfer to a trusted Operator management workstation</td>
           <td>A byte-identical, version-matched copy of the client archive. It is not expanded or executed on the deployment host.</td>
         </tr>
@@ -663,20 +670,20 @@ curl --fail --silent --show-error http://app.example.com/nginx-health</code></pr
     <h4>Authenticate and prepare the Operator client bundle</h4>
     <p>An authorized Operator with SFTP access can download the exact version-matched archive from an already installed host to the administrative workstation. Use the workstation's approved SSH configuration; do not place a password or private-key content in the command:</p>
     <pre><code>sftp myscoutee-host
-sftp&gt; get /usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz ./myscoutee-client-tools_1.0.0.tar.gz
+sftp&gt; get /usr/share/myscoutee/myscoutee-client-tools_1.4.1.tar.gz ./myscoutee-client-tools_1.4.1.tar.gz
 sftp&gt; bye</code></pre>
     <p>SFTP provides transport, not release authenticity. The archive must be authenticated before extraction, and every client helper—including <code>install.sh</code>, <code>forward-localhost.sh</code>, and <code>verify-deployment</code>—must be extracted and executed only on the trusted workstation, never on the deployment host.</p>
     <p>Authenticate the client archive before extracting or executing anything from it. Use an already trusted copy of <code>verify-release.sh</code>—for example, one retained from a previously approved release, extracted from an independently authenticated package, or distributed through the organization’s controlled verifier channel:</p>
     <pre><code>/approved/trusted/verify-release.sh \
-  myscoutee-client-tools_1.0.0.tar.gz \
-  myscoutee-release_1.0.0.json \
+  myscoutee-client-tools_1.4.1.tar.gz \
+  myscoutee-release_1.4.1.json \
   release-public-key.pem \
   sha256:&lt;independently-obtained-64-lowercase-hex-characters&gt;
 
-mkdir myscoutee-client-tools-1.0.0
-tar -xzf myscoutee-client-tools_1.0.0.tar.gz \
-  -C myscoutee-client-tools-1.0.0
-cd myscoutee-client-tools-1.0.0
+mkdir myscoutee-client-tools-1.4.1
+tar -xzf myscoutee-client-tools_1.4.1.tar.gz \
+  -C myscoutee-client-tools-1.4.1
+cd myscoutee-client-tools-1.4.1
 cp install.env.example install.env
 chmod 0600 install.env</code></pre>
     <p>Do not bootstrap trust by running the verifier from the same unauthenticated archive it is supposed to verify. The pinned fingerprint authenticates the release public key; it does not authenticate arbitrary verifier code obtained beside that key.</p>
@@ -689,7 +696,7 @@ REMOTE_HOST_KEY_CHECKING=yes
 START_SERVICE=true
 STOP_ON_FAILURE=true
 QUALIFY_TIMEOUT_SECONDS=300
-RELEASE_MANIFEST_PATH=/approved/path/myscoutee-release_1.0.0.json
+RELEASE_MANIFEST_PATH=/approved/path/myscoutee-release_1.4.1.json
 RELEASE_PUBLIC_KEY_PATH=/approved/path/release-public-key.pem
 RELEASE_PUBLIC_KEY_FINGERPRINT=sha256:&lt;64-lowercase-hex-characters&gt;</code></pre>
     <p>The remote account must already exist, accept SSH/SCP, and be root or have the <code>sudo</code> authority required for APT, systemd, Docker, and package-owned host commands. If a bastion is required, use the workstation’s OpenSSH configuration or an approved quoted <code>REMOTE_SSH_OPTIONS</code> value such as <code>"-J bastion-user@bastion.example.com"</code>. Prefer a dedicated SSH key. If <code>REMOTE_PASSWORD</code> or <code>REMOTE_SUDO_PASSWORD</code> is used, the helper rejects an <code>install.env</code> mode other than 0600 or 0400. The real <code>install.env</code> is deliberately absent from both release artifacts.</p>
@@ -700,7 +707,7 @@ RELEASE_PUBLIC_KEY_FINGERPRINT=sha256:&lt;64-lowercase-hex-characters&gt;</code>
     </aside>
 
     <h4>Install, reinstall, or perform an approved manual upgrade</h4>
-    <pre><code>./install.sh /approved/path/myscoutee_1.0.0_amd64.deb</code></pre>
+    <pre><code>./install.sh /approved/path/myscoutee_1.4.1_amd64.deb</code></pre>
     <p>Before uploading anything, <code>install.sh</code> calls the packaged <code>verify-release.sh</code>. For a published release, the verifier requires all three configured release inputs and checks the independently pinned Ed25519 SPKI fingerprint, canonical signing-key ID and signatures for both release artifacts, declared size and SHA-256, canonical filenames, and the Debian package identity and version. It refuses an unverified package. <code>ALLOW_UNSIGNED_LOCAL_PACKAGE=true</code> is an explicit development-only escape hatch for an artifact built directly from a trusted local checkout; never use it for a downloaded or published artifact.</p>
     <p>After verification, <code>install.sh</code> uploads the package to the configured simple path under <code>/tmp</code>, reads the installed version, calls remote <code>apt-get install</code>, and then invokes the package-provided <code>qualify-deployment.sh</code>. A same-version operation uses APT <code>--reinstall</code> without removing the package first. A downgrade is refused unless <code>ALLOW_DOWNGRADE=true</code> was explicitly approved. <code>RUN_APT_UPDATE</code>, <code>START_SERVICE</code>, <code>STOP_ON_FAILURE</code>, and the qualification timeout remain explicit local policy inputs. Setting <code>START_SERVICE=false</code> selects qualification of an already active service; it does not skip qualification or start a stopped service.</p>
     <p>The wrapper does not run the public deployment smoke. <code>SMOKE_PUBLIC_BASE_URL</code> only makes it print the exact follow-up command; the external check must still run from the management workstation as described in 6.6.</p>
@@ -835,7 +842,7 @@ local 127.0.0.1:443 → remote 127.0.0.1:443</code></pre>
     <aside class="callout success">
       <h3>Regional Registry Partnership</h3>
       <p>Where registry functions must also remain country-local, a separately governed MyScoutee registry can be supplied and qualified through a regional technical partnership. Country-local deployments select that regional HTTPS endpoint and scope, while deployments elsewhere may use a different global registry. Each application deployment binds to one real registry at a time; the application package’s isolated Explore registry is never used as the real service. The MyScoutee registry is distinct from the private OCI image repository used to distribute container images inside the region. Its server release, technical operating material, and host administration form a restricted regional-partnership workstream separate from ordinary MyScoutee application operations.</p>
-      <p><strong>Please contact MyScoutee if you want to deploy this topology.</strong> This is a partnership deployment: the real registry server is not publicly distributed in release 1.0.0, and country-local registry delivery and qualification are arranged for the target environment.</p>
+      <p><strong>Please contact MyScoutee if you want to deploy this topology.</strong> This is a partnership deployment: the real registry server is not publicly distributed in release 1.4.1, and country-local registry delivery and qualification are arranged for the target environment.</p>
     </aside>
 
     <aside class="callout danger">
@@ -862,13 +869,13 @@ local 127.0.0.1:443 → remote 127.0.0.1:443</code></pre>
 
     <h3>6.1. Verify the Package</h3>
     <p>For a published release, use the authenticated client workflow in 5.8 so the signed release manifest, Ed25519 signature, pinned key fingerprint, artifact size, SHA-256, and Debian identity are all verified before upload. The following inspection is useful additional evidence, but a bare digest without an independently authenticated value is not release authentication:</p>
-    <pre><code>sha256sum myscoutee_1.0.0_amd64.deb
-dpkg-deb --info myscoutee_1.0.0_amd64.deb</code></pre>
+    <pre><code>sha256sum myscoutee_1.4.1_amd64.deb
+dpkg-deb --info myscoutee_1.4.1_amd64.deb</code></pre>
     <p>Compare the SHA-256 value with the approved release evidence. Do not install a package of unknown origin or with a mismatched digest.</p>
 
     <h3>6.2. Install</h3>
     <p>Use direct APT for an initial production installation when the host configuration must be reviewed before the first application start:</p>
-    <pre><code>sudo apt install ./myscoutee_1.0.0_amd64.deb</code></pre>
+    <pre><code>sudo apt install ./myscoutee_1.4.1_amd64.deb</code></pre>
 
     <aside class="callout danger">
       <h3>Do Not Use <code>dpkg -i</code> by Itself</h3>
@@ -917,7 +924,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
     <h3>6.5. Run Package-Provided Host Qualification</h3>
     <pre><code>sudo /opt/myscoutee/packaging/scripts/qualify-deployment.sh \
   restart-and-check \
-  --expected-version 1.0.0 \
+  --expected-version 1.4.1 \
   --timeout-seconds 300</code></pre>
     <p>This explicit command verifies the installed package version, restarts and waits for the systemd service, rejects restart loops, runs the application and MongoDB compatibility smoke, checks the Hungarian i18n bundle, and reports registry identity state. The MongoDB smoke creates, modifies, and drops the fixed temporary collection <code>_myscoutee_mongo_compat_smoke</code>; it does not operate on business collections. On failure, qualification prints scoped diagnostics and stops <code>myscoutee.service</code> by default. Use <code>check</code> instead of <code>restart-and-check</code> only when the already-running service must not be restarted. The client installer already performs the corresponding mode and does not require this command to be repeated without cause.</p>
 
@@ -925,7 +932,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
     <p>After public DNS and a normally trusted TLS certificate are active, run the client bundle’s read-only black-box smoke from a network outside the VM:</p>
     <pre><code>node smoke/deployment/run.mjs \
   --url https://app.example.com \
-  --expected-version 1.0.0</code></pre>
+  --expected-version 1.4.1</code></pre>
     <p>Use Node.js 20 or later. The runner checks the normal TLS chain, HSTS, HTTP-to-HTTPS behavior, the forged-Host boundary, frontend/PWA assets, backend health/configuration/i18n/landing responses, and the anonymous Operator boundary. It deliberately has no insecure-TLS mode and refuses <code>NODE_TLS_REJECT_UNAUTHORIZED=0</code>. When local policy uses a private CA, provide it with <code>NODE_EXTRA_CA_CERTS=/approved/path/ca.pem</code>. A tunnel-based smoke is useful for transport isolation, but it does not replace a public-path test.</p>
 
     <h3>6.7. Record Commissioning Evidence</h3>
@@ -937,7 +944,7 @@ curl --fail --silent --show-error https://app.example.com/api/health</code></pre
     <ul class="checklist">
       <li>The systemd unit is active.</li>
       <li>All six containers are running, and containers with health checks are healthy.</li>
-      <li>The package-provided host qualification passed for version 1.0.0.</li>
+      <li>The package-provided host qualification passed for version 1.4.1.</li>
       <li>The separate external smoke passed from an approved external network.</li>
       <li>HTTP application requests receive a 308 redirect to HTTPS.</li>
       <li>The public HTTPS certificate covers the correct domain.</li>
@@ -1452,6 +1459,26 @@ curl --fail --silent --show-error https://app.example.com/api/health</code></pre
 
     <p>A registry <code>UPDATE</code> announcement only reports an available release. Download and installation occur solely after explicit approval by an authenticated Operator. The Debian package installs this local update mechanism; no remote shell session or separate remote automation is required, and neither the package nor the worker performs unattended polling and installation.</p>
 
+    <h3>Signed 1.4.1 release and retained data</h3>
+    <p>Obtain the Debian installer, client tools, checksums and signed release metadata from
+      <a href="https://github.com/fssrepository/myscoutee/releases/tag/v1.4.1">MyScoutee 1.4.1</a>.
+      Verify the pinned release key and artifact identities using the existing client installer.
+      The signed update catalog's minimum installed package is 1.4.0; the separately verified
+      Netcup 1.3.0-to-1.4.1 operation used the signed manual client installer.</p>
+    <p>Before upgrading, require a complete backup and retain the deployment secrets,
+      configuration master key, registry identity, TLS material and operator media using
+      their documented backup owners. Package migrations run in order through 019.
+      The Feedback migration retains historical answers and stops on conflicting canonical
+      data; permission migration preserves explicit operator restrictions and grants.</p>
+    <p>After installation, run host qualification and the external smoke with expected
+      version 1.4.1. Verify the rendered frontend, all nine service health states,
+      retained records and media, provider settings and existing TLS/secret identities.
+      A healthy container alone does not establish a working browser session.</p>
+    <p>The 1.4.1 Netcup upgrade passed these recorded checks. Rollback, power-loss,
+      clean-host restore and sustained-load drills remain separate. Exact package hashes,
+      image digests and qualification limits are in the
+      <a href="https://github.com/fssrepository/myscoutee-backend/blob/master/guides/releases/v1.4.1.md">release notes</a>.</p>
+
     <h3>14.1. Prepare the Host</h3>
     <ol>
       <li>Through an independent channel, verify the full SPKI DER SHA-256 fingerprint of the vendor's Ed25519 release public key.</li>
@@ -1797,7 +1824,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
     <pre><code>MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
   bash packaging/release/qualify-release-artifacts.sh \
   /absolute/myscoutee_1.2.0_amd64.deb \
-  /absolute/myscoutee_1.0.0_amd64.deb \
+  /absolute/myscoutee_1.4.1_amd64.deb \
   myscoutee-registry:1.2.0-prod</code></pre>
     <p>This is a read-only artifact preflight; it does not replace host-modifying upgrade and restore drills.</p>
   </section>
@@ -1807,7 +1834,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
 
     <h3>Remove the Package While Retaining Data</h3>
     <pre><code>sudo apt remove myscoutee</code></pre>
-    <p>The process stops and removes the Compose containers and disables the application, update, and TLS units. It retains substantial state under <code>/etc/myscoutee</code> and <code>/var/lib/myscoutee</code>, the complete manual TLS pair under the otherwise removed package tree, the demo registry volumes, and MyScoutee image tags for a later reinstallation. The package-owned archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code> is removed; a separately downloaded and extracted workstation copy is unaffected.</p>
+    <p>The process stops and removes the Compose containers and disables the application, update, and TLS units. It retains substantial state under <code>/etc/myscoutee</code> and <code>/var/lib/myscoutee</code>, the complete manual TLS pair under the otherwise removed package tree, the demo registry volumes, and MyScoutee image tags for a later reinstallation. The package-owned archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.4.1.tar.gz</code> is removed; a separately downloaded and extracted workstation copy is unaffected.</p>
 
     <aside class="callout note">
       <h3>Manual TLS Pair Is Preserved Until Purge</h3>
@@ -1936,9 +1963,9 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
         <tr><td>Restart</td><td><code>sudo systemctl restart myscoutee</code></td></tr>
         <tr><td>Stack status</td><td><code>sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></td></tr>
         <tr><td>Stack logs</td><td><code>sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh logs --tail=200</code></td></tr>
-        <tr><td>Host qualification</td><td><code>sudo /opt/myscoutee/packaging/scripts/qualify-deployment.sh check --expected-version 1.0.0 --timeout-seconds 300</code></td></tr>
+        <tr><td>Host qualification</td><td><code>sudo /opt/myscoutee/packaging/scripts/qualify-deployment.sh check --expected-version 1.4.1 --timeout-seconds 300</code></td></tr>
         <tr><td>Scoped diagnostics</td><td><code>sudo /opt/myscoutee/packaging/scripts/deployment-diagnostics.sh</code></td></tr>
-        <tr><td>External smoke (client)</td><td><code>node smoke/deployment/run.mjs --url https://app.example.com --expected-version 1.0.0</code></td></tr>
+        <tr><td>External smoke (client)</td><td><code>node smoke/deployment/run.mjs --url https://app.example.com --expected-version 1.4.1</code></td></tr>
         <tr><td>Nginx health</td><td><code>curl -fsS http://127.0.0.1/nginx-health</code></td></tr>
         <tr><td>Backend health</td><td><code>sudo docker exec myscoutee wget -qO- http://127.0.0.1:8080/health</code></td></tr>
         <tr><td>Complete backup</td><td><code>sudo env MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true /opt/myscoutee/packaging/scripts/backup-production.sh</code></td></tr>
@@ -1959,7 +1986,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
       </thead>
       <tbody>
         <tr><td><code>/opt/myscoutee</code></td><td>Packaged application, Compose files, scripts, and image manifest.</td></tr>
-        <tr><td><code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code></td><td>Package-owned version-matched client archive for controlled SFTP retrieval; never extract or execute it on the host.</td></tr>
+        <tr><td><code>/usr/share/myscoutee/myscoutee-client-tools_1.4.1.tar.gz</code></td><td>Package-owned version-matched client archive for controlled SFTP retrieval; never extract or execute it on the host.</td></tr>
         <tr><td><code>/etc/myscoutee</code></td><td>Deployment configuration, secrets, and keys.</td></tr>
         <tr><td><code>/var/lib/myscoutee/data</code></td><td>MongoDB, MinIO, and Certbot data.</td></tr>
         <tr><td><code>/var/lib/myscoutee/registry</code></td><td>Real registry state and receipts.</td></tr>
@@ -1989,20 +2016,20 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
 
     <h3>A.1. Build Production Artifacts from Source</h3>
     <p>From the repository root:</p>
-    <pre><code>MYSCOUTEE_VERSION=1.0.0 \
+    <pre><code>MYSCOUTEE_VERSION=1.4.1 \
   bash packaging/release/build-production.sh</code></pre>
     <p>By default, the script builds and synchronizes the production frontend bundle, runs the Gradle <code>bootJar</code> build, creates the base Nginx image, and then builds the source-production Compose images. The build environment must also have access to the adjacent MyScoutee registry source.</p>
 
     <h3>A.2. Build the Debian Package and Client Bundle</h3>
     <p>In one step, including an automatic artifact build:</p>
-    <pre><code>MYSCOUTEE_VERSION=1.0.0 \
+    <pre><code>MYSCOUTEE_VERSION=1.4.1 \
   bash packaging/release/package-production.sh</code></pre>
     <p>If the preceding production build was created from exactly the same source state and version, avoid rebuilding it:</p>
-    <pre><code>MYSCOUTEE_VERSION=1.0.0 \
+    <pre><code>MYSCOUTEE_VERSION=1.4.1 \
   BUILD_ARTIFACTS=false \
   bash packaging/release/package-production.sh</code></pre>
-    <p>Expected outputs are <code>packaging/dist/myscoutee_1.0.0_amd64.deb</code> and <code>packaging/dist/myscoutee-client-tools_1.0.0.tar.gz</code>. The package build saves the five managed MyScoutee images into the Debian archive, creates an image manifest, runs a credential audit, embeds a byte-identical copy of the versioned client archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code>, and emits the standalone workstation archive. It does not install expanded client scripts on the deployment host. The source-only convenience entry point <code>packaging/release/build-debian-release.sh</code> invokes the same package builder.</p>
-    <p>Building does not by itself establish a published release. On an isolated release workstation, use the source-only <code>packaging/release/sign-release-artifacts.sh</code> with an approved pre-existing Ed25519 PKCS#8 private key to validate and sign the matching Debian and client artifacts and to produce <code>myscoutee-release_1.0.0.json</code>. The signing tool neither creates nor copies the private key. Publish the Debian package, client archive, signed manifest, and public key; distribute the full SPKI fingerprint through an independent trusted channel. Production use still requires release qualification and approval.</p>
+    <p>Expected outputs are <code>packaging/dist/myscoutee_1.4.1_amd64.deb</code> and <code>packaging/dist/myscoutee-client-tools_1.4.1.tar.gz</code>. The package build saves the five managed MyScoutee images into the Debian archive, creates an image manifest, runs a credential audit, embeds a byte-identical copy of the versioned client archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.4.1.tar.gz</code>, and emits the standalone workstation archive. It does not install expanded client scripts on the deployment host. The source-only convenience entry point <code>packaging/release/build-debian-release.sh</code> invokes the same package builder.</p>
+    <p>Building does not by itself establish a published release. On an isolated release workstation, use the source-only <code>packaging/release/sign-release-artifacts.sh</code> with an approved pre-existing Ed25519 PKCS#8 private key to validate and sign the matching Debian and client artifacts and to produce <code>myscoutee-release_1.4.1.json</code>. The signing tool neither creates nor copies the private key. Publish the Debian package, client archive, signed manifest, and public key; distribute the full SPKI fingerprint through an independent trusted channel. Production use still requires release qualification and approval.</p>
 
     <p>The release lifecycle is therefore: build both artifacts; sign them on the controlled release host; publish the two artifacts, signed manifest, and public key; authenticate the full SPKI fingerprint independently; verify the client archive with an already trusted verifier; extract it; and let its installer reverify the Debian package before SCP and APT.</p>
 
@@ -2018,8 +2045,8 @@ docker compose up --build</code></pre>
   </section>
 
   <footer class="document-footer">
-    <p><strong>End of document — MSC-OM-001 / 1.0.0 / Released</strong></p>
-    <p>Applicable software version: MyScoutee 1.0.0 · Release date: 2026-07-30 · Language: EN</p>
+    <p><strong>End of document — MSC-OM-001 / 1.4.1 / Released</strong></p>
+    <p>Applicable software version: MyScoutee 1.4.1 · Release date: 2026-10-17 · Language: EN</p>
   </footer>
 </article>
 </body>

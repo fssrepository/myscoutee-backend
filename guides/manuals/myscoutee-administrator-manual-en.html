@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="MyScoutee">
-    <meta name="description" content="MyScoutee 1.0.0 Administrator Manual">
+    <meta name="description" content="MyScoutee 1.4.1 Administrator Manual">
     <title>MyScoutee Administrator Manual · MSC-AM-001</title>
     <link rel="stylesheet" href="manuals.css">
   </head>
@@ -24,7 +24,7 @@
           <h1>MyScoutee Administrator Manual</h1>
           <p class="cover-lead">
             Moderation, content-management, configuration, and network
-            administration procedures for MyScoutee 1.0.0.
+            administration procedures for MyScoutee 1.4.1.
           </p>
         </div>
 
@@ -35,11 +35,11 @@
           </div>
           <div>
             <strong>Document version</strong>
-            1.0.0
+            1.4.1
           </div>
           <div>
             <strong>Applicable software version</strong>
-            MyScoutee 1.0.0
+            MyScoutee 1.4.1
           </div>
           <div>
             <strong>Status</strong>
@@ -47,7 +47,7 @@
           </div>
           <div>
             <strong>Release date</strong>
-            2026-07-30
+            2026-10-17
           </div>
           <div>
             <strong>Language</strong>
@@ -71,15 +71,15 @@
             </tr>
             <tr>
               <th>Document version</th>
-              <td>1.0.0</td>
+              <td>1.4.1</td>
             </tr>
             <tr>
               <th>Applicable software version</th>
-              <td>MyScoutee 1.0.0</td>
+              <td>MyScoutee 1.4.1</td>
             </tr>
             <tr>
               <th>Status and release</th>
-              <td>Released · 2026-07-30 · EN</td>
+              <td>Released · 2026-10-17 · EN</td>
             </tr>
             <tr>
               <th>Document owner</th>
@@ -106,6 +106,7 @@
             </tr>
           </thead>
           <tbody>
+        <tr><td>1.4.1</td><td>2026-10-17</td><td>Released documentation</td><td>Refresh workspace administration, central Feedback, protected guides, API/MCP permissions and signed 1.4.1 update guidance.</td></tr>
             <tr>
               <td>1.0.0</td>
               <td>2026-07-30</td>
@@ -121,7 +122,7 @@
 
         <div class="callout warning">
           <strong>Version boundary</strong>
-          This manual describes only the verified 1.0.0 user interface.
+          This manual describes only the 1.4.1 user interface and the current workflows described here.
           Menus, fields, permissions, and background processes may differ in
           other releases; suitability must be reviewed again before use.
         </div>
@@ -171,7 +172,8 @@
           <li><a href="#escalation">20. Incident response and escalation</a></li>
           <li><a href="#limitations">21. Known limitations and functional gaps</a></li>
           <li><a href="#quick-checklists">22. Quick checklists</a></li>
-          <li><a href="#appendix-a">A. Statuses and their meaning</a></li>
+          <li><a href="#current-workspaces">23. Workspace administration, Feedback and connections</a></li>
+            <li><a href="#appendix-a">A. Statuses and their meaning</a></li>
           <li><a href="#appendix-b">B. Source and verification register</a></li>
           <li><a href="#appendix-c">C. Glossary</a></li>
         </ol>
@@ -219,7 +221,7 @@
         <div class="callout note">
           <strong>Evidence rule</strong>
           This manual treats a function as available only when it is present in
-          the verified 1.0.0 source and interface. Where there is no
+          the 1.4.1 source and interface. Where there is no
           self-service UI, revocation control, or complete audit view, the
           limitation is stated explicitly.
         </div>
@@ -1067,7 +1069,7 @@
         </div>
         <div class="callout note">
           <strong>Layout rebuild</strong>
-          A layout-rebuild backend endpoint exists, but MyScoutee 1.0.0 has no
+          A layout-rebuild backend endpoint exists, but the interface has no
           control for it in the Admin graph panel. Do not invoke it manually
           from the browser; escalate it as an approved technical change.
         </div>
@@ -1108,7 +1110,7 @@
         <p>
           <strong>Node registration</strong> shows lifecycle state and the
           selected registry URL. In real mode, the candidate must use HTTPS.
-          MyScoutee 1.0.0 permits selection only from the registry catalog
+          The current interface permits selection only from the registry catalog
           supplied by the server; the text field is read-only and there is no
           manual URL entry.
         </p>
@@ -1688,7 +1690,7 @@
           <thead>
             <tr>
               <th>Area</th>
-              <th>1.0.0 limitation</th>
+              <th>Interface limitation</th>
               <th>Procedural control</th>
             </tr>
           </thead>
@@ -1824,6 +1826,43 @@
         </div>
       </section>
 
+      <section class="major" id="current-workspaces">
+        <h1>23. Workspace administration, Feedback and connections</h1>
+        <h2>Work and Community responsibilities</h2>
+        <p>Select the intended workspace and group before taking an administrative action.
+          Work campaigns have draft/published/trash states and related events with their own
+          recipients and capacity. Community cases have affected members, provider invitations,
+          quotations, appointments and a task board. Follow the controls available to your
+          current group role; application Admin access does not replace a case owner's decision.</p>
+        <p>For recurring Community tasks, review the affected audience, next due time and
+          pause/resume state. A scheduled task, generated case, service appointment and board
+          task have separate lifecycles. Review the specific record before changing its state.</p>
+        <h2>Central Feedback and protected help</h2>
+        <p>Product suggestions and bug reports in chapter 6 are separate from event/service
+          Feedback. Event and service responses use central Feedback ownership, labelled
+          criteria and read-only reopening after submission. The displayed badge and counters
+          summarize the owner's records; they are not editable numeric scores.</p>
+        <p>Role guides and notifications follow the active role and available surface.
+          System-provided guide content is protected. Use the governed-content editor's allowed
+          revision workflow; do not delete or overwrite protected system definitions to change
+          a label or dismiss an introduction. Introduction dismissal is separate from consent.</p>
+        <h2>API/MCP access</h2>
+        <p>Review API keys, manual MCP clients, OAuth permissions and the main MCP link in the
+          existing API settings. Blocked denies access; Write permits supported organizing
+          commands; Read adds queries; Full adds Events. Each MCP client's effective pack is
+          capped by the main MCP pack. Confirm the nested selector, then save the parent form;
+          closing a draft is not a permission change.</p>
+        <p>Administrator and Operator queries remain scoped to the signed-in role and node.
+          Full access does not authorize personal ratings, feedback, ballots, invitation
+          responses or offer decisions. Revoke a connection through its own settings entry;
+          browser logout is not OAuth revocation. Consult the
+          <a href="MyScoutee_MCP_User_Guide_EN.pdf">MCP User Guide</a> for setup.</p>
+        <h2>Signed updates</h2>
+        <p>The current full installer is 1.4.1. Review its signed catalog, compatibility,
+          backup and verification requirements in the Operations Manual before approval.
+          Publication of the package does not prove an automatic updater or rollback drill.</p>
+      </section>
+
       <section class="major" id="appendix-a">
         <h1>A. Statuses and their meaning</h1>
         <table>
@@ -1883,7 +1922,7 @@
         <h1>B. Source and verification register</h1>
         <p>
           Functional claims in this manual were verified against the following
-          components of the MyScoutee 1.0.0 repository:
+          components of the MyScoutee 1.4.1 repository:
         </p>
         <table>
           <thead>
@@ -2001,8 +2040,8 @@
 
         <div class="callout success">
           <strong>End of document</strong>
-          MSC-AM-001 · document version 1.0.0 · MyScoutee 1.0.0 · Released ·
-          2026-07-30 · EN
+          MSC-AM-001 · document version 1.4.1 · MyScoutee 1.4.1 · Released ·
+          2026-10-17 · EN
         </div>
       </section>
     </article>

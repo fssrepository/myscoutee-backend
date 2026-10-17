@@ -1,0 +1,86 @@
+[
+  {
+    "_id": "access-policy-feedback-submit",
+    "syncKey": "access-policy-feedback-submit",
+    "policyKey": "feedback.submit",
+    "permission": "feedback.submit",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may submit feedback.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-feedback-note",
+    "syncKey": "access-policy-feedback-note",
+    "policyKey": "feedback.note",
+    "permission": "feedback.note",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may save feedback note.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-feedback-remove",
+    "syncKey": "access-policy-feedback-remove",
+    "policyKey": "feedback.remove",
+    "permission": "feedback.remove",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may remove feedback from own list.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-feedback-restore",
+    "syncKey": "access-policy-feedback-restore",
+    "policyKey": "feedback.restore",
+    "permission": "feedback.restore",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may restore feedback to own list.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  }
+]

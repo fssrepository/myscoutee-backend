@@ -24,10 +24,10 @@
     </div>
     <div class="cover-meta" aria-label="Document metadata">
       <div><strong>Document ID</strong><span>MSC-MS-001</span></div>
-      <div><strong>Document version</strong><span>0.1.2</span></div>
+      <div><strong>Document version</strong><span>1.4.1</span></div>
       <div><strong>Applicable software version</strong><span>Canonical backend and eight-service assembly configuration</span></div>
       <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Implementation preview</span></div>
-      <div><strong>Released</strong><time datetime="2026-10-15">2026-10-15</time></div>
+      <div><strong>Released</strong><time datetime="2026-10-17">2026-10-17</time></div>
       <div><strong>Language</strong><span>EN</span></div>
     </div>
   </section>
@@ -35,13 +35,21 @@
   <section class="document-control" id="document-control">
     <h2>Document Control</h2>
     <table><caption>Scope and authority</caption><tbody>
+      <tr><th scope="row">Document version</th><td>1.4.1</td></tr>
+      <tr><th scope="row">Documentation release</th><td>2026-10-17</td></tr>
       <tr><th>Document owner</th><td>MyScoutee — backend architecture and deployment</td></tr>
       <tr><th>Audience</th><td>Contributors and operators, including readers new to virtualization, Kubernetes and metrics</td></tr>
       <tr><th>Source of truth</th><td><code>microservices/assemblies.json</code>, versioned lifecycle scripts, canonical domain sources and recorded verification</td></tr>
       <tr><th>Review triggers</th><td>Domain regrouping, new dependencies, transport/security changes, runtime versions, resource budgets or qualification results</td></tr>
     </tbody></table>
+    <p>The signed MyScoutee 1.4.1 installer is the separate Compose/monolith product.
+      Its VMware/device and Netcup evidence does not qualify this Kubernetes laboratory.
+      This guide retains the assembly and lab boundaries described below; package releases
+      do not change the number or placement of laboratory services automatically.</p>
+
     <h3>Version History</h3>
     <table><thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead><tbody>
+        <tr><td>1.4.1</td><td>2026-10-17</td><td>Align manual release metadata and document the separate signed monolith 1.4.1 deployment boundary.</td></tr>
       <tr><td>0.1.2</td><td>2026-10-15</td><td>Central Feedback ownership, 22-domain composition, combined page contract and domain transport boundaries.</td></tr>
       <tr><td>0.1.1</td><td>2026-10-10</td><td>Eight-service separation, platform deployment capabilities, retained minimal-template models, KVM deployment and local release simulator.</td></tr>
       <tr><td>0.1.0</td><td>2026-10-09</td><td>Service assemblies, native recovery journals, replica-write checks, bounded read-load tooling, canonical data imports and observability. Includes the KVM/Kubernetes/Helm layer map, operation and cleanup procedures.</td></tr>

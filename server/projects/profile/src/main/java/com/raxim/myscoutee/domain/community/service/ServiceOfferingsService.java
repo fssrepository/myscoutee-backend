@@ -43,14 +43,19 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
         this.services=services;this.access=access;this.users=users;this.rates=rates;this.members=members;
     }
     public String actor(String userId) {return access.actor(userId);}
-    public String profileId(String account) {return "group:"+BaseGroups.COMMUNITY_BASE_ID+":"+account;}
     public ServiceOffering visible(String actor,String id) {
         var s=services.findById(id).orElseThrow(()->error(HttpStatus.NOT_FOUND));
         if (!BaseGroups.COMMUNITY_BASE_ID.equals(s.baseGroupId()) || !s.ownerAccountId().equals(actor) && !"published".equals(s.status())) throw error(HttpStatus.NOT_FOUND);
         return s;
     }
-    private DiscoveryProfile profile(String account) {return users.findByUserId(profileId(account)).orElseThrow(()->error(HttpStatus.NOT_FOUND));}
-    public Item detail(String actor,String id) {var s=visible(actor,id);return dto(actor,s,profile(s.ownerAccountId()),profile(actor),ratingByOwner(actor));}
+    private DiscoveryProfile profile(String account) {
+        return users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,List.of(account))
+            .stream().findFirst().orElseThrow(()->error(HttpStatus.NOT_FOUND));
+    }
+    public Item detail(String actor,String id) {
+        var s=visible(actor,id);var viewer=profile(actor);
+        return dto(actor,s,s.ownerAccountId().equals(actor)?viewer:profile(s.ownerAccountId()),viewer,ratingByOwner(viewer));
+    }
     public Page<Item> page(String actor,String scope,String status,String category,String search,Double distance,int pageSize,String cursor) {
         return page(actor,scope,status,category,search,distance,pageSize,cursor,null);
     }
@@ -70,7 +75,7 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
         var owners=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,ownerIds).stream()
             .filter(u->!Set.of("inactive","blocked","deleted").contains(Objects.toString(u.getProfileStatus(),"")))
             .collect(Collectors.toMap(DiscoveryProfile::getAccountUserId,u->u));
-        var viewer=profile(actor);var ratings=ratingByOwner(actor);
+        var viewer=profile(actor);var ratings=ratingByOwner(viewer);
         var rows=records.stream().filter(s->owners.containsKey(s.ownerAccountId())).map(s->dto(actor,s,owners.get(s.ownerAccountId()),viewer,ratings))
             .filter(s->distance==null||s.distanceKm()!=null&&s.distanceKm()<=distance)
             .filter(s->!"discover".equals(scope)||(s.service().maxDistanceKm()==null||s.distanceKm()!=null&&s.distanceKm()<=s.service().maxDistanceKm())
@@ -80,8 +85,8 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
         int page=CommunityCasesService.page(cursor),size=Math.max(1,Math.min(50,pageSize)),start=(int)Math.min((long)page*size,rows.size()),end=Math.min(start+size,rows.size());
         return new Page<>(rows.subList(start,end),rows.size(),end<rows.size()?""+(page+1):null);
     }
-    private Map<String,Double> ratingByOwner(String actor) {
-        return rates.scoresGiven(profileId(actor));
+    private Map<String,Double> ratingByOwner(DiscoveryProfile viewer) {
+        return rates.scoresGiven(viewer.getUserId());
     }
     private Item dto(String actor,ServiceOffering s,DiscoveryProfile owner,DiscoveryProfile viewer,Map<String,Double> ratings) {
         if(!s.ownerAccountId().equals(actor)&&Set.of("inactive","blocked","deleted").contains(Objects.toString(owner.getProfileStatus(),"")))throw error(HttpStatus.NOT_FOUND);
@@ -92,13 +97,14 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
         validate(actor,r);var old=r.id()==null?null:visible(actor,r.id());
         if(old!=null&&(!actor.equals(old.ownerAccountId())||"trash".equals(old.status())))throw error(HttpStatus.FORBIDDEN);
         if(old!=null&&!Objects.equals(old.version(),r.version()))throw error(HttpStatus.CONFLICT);
-        if (r.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(url, profileId(actor)))) throw error(HttpStatus.BAD_REQUEST);
+        var viewer=profile(actor);
+        if (r.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(url, viewer.getUserId()))) throw error(HttpStatus.BAD_REQUEST);
         String now=Instant.now().toString();
         var s=persist(new ServiceOffering(old==null?UUID.randomUUID().toString():old.id(),BaseGroups.COMMUNITY_BASE_ID,actor,
             r.title().trim(),r.description().trim(),r.category(),List.copyOf(r.imageUrls()),r.maxDistanceKm(),r.languages().stream().distinct().toList(),r.staffAccountIds().stream().distinct().toList(),
             r.slotsEnabled(),r.slotsEnabled()?Instant.parse(r.startAtIso()).toString():null,r.slotsEnabled()?Instant.parse(r.endAtIso()).toString():null,r.frequency(),r.durationMinutes(),List.copyOf(r.slotTemplates()),r.pricing(),
             old==null?"draft":old.status(),old==null?now:old.createdAtIso(),now,old==null?null:old.version(),Objects.toString(r.sourceLink(), "").trim()));
-        return dto(actor,s,profile(actor),profile(actor),Map.of());
+        return dto(actor,s,viewer,viewer,Map.of());
     }
     public Item action(String actor,String id,Command r) {
         var s=visible(actor,id);if(!s.ownerAccountId().equals(actor))throw error(HttpStatus.FORBIDDEN);
@@ -110,9 +116,10 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
             case "restore" -> "trash".equals(s.status())?"draft":null;
             default -> null;};
         if(status==null)throw error(HttpStatus.BAD_REQUEST);
+        var viewer=profile(actor);
         var saved=persist(new ServiceOffering(s.id(),s.baseGroupId(),s.ownerAccountId(),s.title(),s.description(),s.category(),s.imageUrls(),s.maxDistanceKm(),s.languages(),s.staffAccountIds(),
             s.slotsEnabled(),s.startAtIso(),s.endAtIso(),s.frequency(),s.durationMinutes(),s.slotTemplates(),s.pricing(),status,s.createdAtIso(),Instant.now().toString(),s.version(),s.sourceLink()));
-        return dto(actor,saved,profile(actor),profile(actor),Map.of());
+        return dto(actor,saved,viewer,viewer,Map.of());
     }
     private ServiceOffering persist(ServiceOffering s) {try{return services.save(s);}catch(org.springframework.dao.OptimisticLockingFailureException ex){throw error(HttpStatus.CONFLICT);}}
     private void validate(String actor,Save r) {

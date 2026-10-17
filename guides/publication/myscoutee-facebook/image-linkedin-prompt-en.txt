@@ -1,0 +1,15 @@
+Generation mode: built-in image_gen edit
+Output: cover-linkedin-en.png
+Edit target: cover-en.png
+Official logo reference: frontend/docs/assets/logo/heart.png
+Generated raster: 1672 x 941 px; final export: 1920 x 1080 px (16:9).
+Intended placement: LinkedIn article cover.
+LinkedIn article-cover guidance: https://www.linkedin.com/help/linkedin/answer/a6524328
+LinkedIn link-preview guidance (separate placement, 1200 x 627 px): https://www.linkedin.com/help/linkedin/answer/a521928
+
+Use case: precise-object-edit
+Asset type: LinkedIn ARTICLE COVER, horizontal 16:9, EXACTLY 1920 pixels wide by 1080 pixels tall. Do not output a square.
+Image 1 is the edit target: current square campaign artwork. Image 2 is the official M-shaped MyScoutee logo reference.
+Recompose the existing artwork into a true landscape 16:9 article cover. This is a layout adaptation: preserve the visual concept, the same three lifestyle scenes and the identity of the people as closely as possible. Give each of the three panels equal width, with the Dating coffee conversation left, the Work collaboration middle, the Community gathering right. Use a shallow title band across the top, three wide photos across the middle, and a shallow indigo caption band at bottom. Compress the title band's vertical footprint and extend the photo scenes horizontally as necessary, so the layout is elegantly designed for landscape, not a square pasted onto a wider background. Do not crop off faces or any text. Keep logo, title, captions and faces within generous safe margins, including a central horizontal safe band that survives modest top/bottom preview cropping.
+At the top, the wordmark MUST be [exact official M-shaped logo from Image 2] immediately followed by only "yScoutee", replacing the initial M with the logo. Preserve the official logo shape, star, heart cutout, proportions and colors. Do not add an ordinary M. Below the wordmark retain exactly "More ways to connect." Bottom captions exactly "Dating", "Work", "Community".
+Preserve warm natural light, indigo/violet/magenta accents, warm cream header, golden curves, realistic photography, readable typography. Retain the original people and activities. No extra copy, no watermarks, no extra logo. Output a full-bleed horizontal 16:9 image at 1920x1080, without letterboxing.

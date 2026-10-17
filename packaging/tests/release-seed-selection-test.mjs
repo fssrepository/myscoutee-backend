@@ -33,7 +33,8 @@ for (const selection of [native, minimal]) {
 }
 assert(!run(minimal).reads.some(path => path.includes('exchangeRates')));
 assert(!run(minimal).reads.some(path => path.includes('community')));
-for (const name of ['communityGroups', 'communityProviders']) {
+for (const name of ['communityGroups', 'communityProviders', 'adminWorkerSignals',
+  'affinityAdminSignalOutbox', 'eventAdminSignalOutbox', 'notificationAdminSignalOutbox']) {
   assert.equal(native.find(row => row.collection === name)?.replace, false,
     'upgrades may insert missing system defaults but must retain operator changes');
 }
