@@ -6,6 +6,7 @@ usage() {
   cat <<'EOF'
 Usage (on the deployment host):
   sudo bash install-temporary-image.sh install SERVICE ghcr.io/OWNER/IMAGE@sha256:DIGEST
+  sudo bash install-temporary-image.sh install-local SERVICE sha256:IMAGE_ID
   sudo bash install-temporary-image.sh status SERVICE
   sudo bash install-temporary-image.sh rollback SERVICE
 
@@ -14,6 +15,7 @@ Services: nginx, profilemanagement, mongodb, redis, minio, registry, payment-sim
 Use a trusted, compatible image published for the installed package version.
 nginx-base is a build dependency, not a running service; it is not restartable.
 GHCR login for private images must be configured separately with docker login.
+install-local selects an already-loaded image from a trusted local source build.
 Persists the selected image in the deployment environment, including same-version
 patches. Restarts/reboots retain it. Rollback restores the prior image setting.
 Does not rebuild/install a DEB, modify package files, or reset demo data.
@@ -21,7 +23,8 @@ EOF
 }
 fail() { printf 'Error: %s\n' "$*" >&2; exit 1; }
 action="${1:---help}"
-case "$action" in --help|-h) usage; exit 0;; install|rollback|status) ;; *) usage >&2; exit 2;; esac
+local_image=false
+case "$action" in --help|-h) usage; exit 0;; install-local) local_image=true; action=install;; install|rollback|status) ;; *) usage >&2; exit 2;; esac
 service="${2:-}"
 case "$service" in
   nginx) container=nginx; image_var=NGINX_PRODUCTION_IMAGE; image_name=myscoutee-nginx; label_service=nginx;;
@@ -35,8 +38,12 @@ case "$service" in
 esac
 reference="${3:-}"
 if [[ "$action" == install ]]; then
-  [[ $# == 3 && "$reference" =~ ^ghcr\.io/[a-z0-9][a-z0-9._/-]*@sha256:[a-f0-9]{64}$ ]] \
-    || fail 'Provide an exact ghcr.io image digest, not a mutable tag.'
+  if [[ "$local_image" == true ]]; then
+    [[ $# == 3 && "$reference" =~ ^sha256:[a-f0-9]{64}$ ]] || fail 'Provide the exact already-loaded local image ID.'
+  else
+    [[ $# == 3 && "$reference" =~ ^ghcr\.io/[a-z0-9][a-z0-9._/-]*@sha256:[a-f0-9]{64}$ ]] \
+      || fail 'Provide an exact ghcr.io image digest, not a mutable tag.'
+  fi
 else
   [[ $# == 2 ]] || fail 'Unexpected arguments.'
 fi
@@ -194,10 +201,13 @@ if [[ -f "$state" ]]; then
     fi
   fi
 fi
-printf 'Pulling the explicitly selected image...\n'
-docker pull "$reference"
+if [[ "$local_image" == false ]]; then
+  printf 'Pulling the explicitly selected image...\n'
+  docker pull "$reference"
+fi
 target_id="$(docker image inspect "$reference" | jq -er '.[0].Id')"
 [[ "$target_id" =~ ^sha256:[a-f0-9]{64}$ ]] || fail 'Invalid pulled image identity.'
+[[ "$local_image" == false || "$target_id" == "$reference" ]] || fail 'Loaded image identity differs from the selected image.'
 current_platform="$(docker image inspect "$current_id" | jq -er '.[0] | .Os+"/"+.Architecture')"
 target_platform="$(docker image inspect "$target_id" | jq -er '.[0] | .Os+"/"+.Architecture')"
 [[ "$current_platform" == "$target_platform" ]] || fail 'Image platform does not match the running frontend.'

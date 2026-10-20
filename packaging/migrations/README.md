@@ -21,6 +21,15 @@ actual retained deployment document and Configuration API.
 
 ## Ordered chain and repeatable seed loading
 
+Migration020 adds the EN/HU corrections and DE/ES help, guide, article and
+email/notification-template catalogs, including the non-blocking setup launcher
+guide step. Its pinned `020-four-language-content/catalog-updates.json` reuses
+migration017's unchanged default/custom/inactive/version-collision policy.
+New editable catalog rows preserve both stored and semantic operator identities.
+The existing recurring i18n seed sync supplies all four message bundles after
+the migration. Both DEB startup and partial releases execute this same numbered
+step; existing migration scripts and receipts remain unchanged.
+
 `run-data-migrations.js` discovers numbered migration files in order and records
 successful steps in `schemaMigrations` with a source SHA-256. Already-applied
 steps are skipped; changing an applied script is rejected. Failed steps are not

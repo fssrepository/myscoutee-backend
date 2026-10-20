@@ -1,0 +1,2948 @@
+{
+  "fields": [
+    {
+      "_id": "landing.home--setup-launcher",
+      "id": "setup-launcher",
+      "screenKey": "landing.home",
+      "group": "menus",
+      "i18nKey": "guide.landing.home.setup-launcher",
+      "order": 5
+    }
+  ],
+  "removedFieldIds": [],
+  "previousRevisions": [
+    {
+      "_id": "work:explanation-landing.home-en-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Getting started",
+      "summary": "Getting started",
+      "description": "Getting started",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Choose a mode",
+          "blurb": "",
+          "contentHtml": "<p>Switch between Dating, Work and Community introductions and articles. The website privacy acceptance remains shared across these modes.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Your own account",
+          "blurb": "",
+          "contentHtml": "<p>Sign in to keep your own profile and activity. The demo uses sample identities; it does not register a personal account.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Try a sample profile",
+          "blurb": "",
+          "contentHtml": "<p>Explore opens the demo selector. Choose a role and a sample person to see the app from their perspective; a new profile lets you try setup.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Start your own profile",
+          "blurb": "",
+          "contentHtml": "<p>Joining opens the available sign-in flow. Device permissions and installation are separate choices; creating an account does not install the app.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website privacy",
+          "blurb": "",
+          "contentHtml": "<p>The same website privacy acceptance applies across Dating, Work and Community. Changing the mode does not ask you to accept that identical revision again.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permissions & app icon",
+          "blurb": "",
+          "contentHtml": "<p>Location shows nearby people and events. Notifications keep you informed. Add a home-screen icon for quick access. All are optional; you can sign in or register without them.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "work:explanation-landing.home-hu-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Első lépések",
+      "summary": "Első lépések",
+      "description": "Első lépések",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Mód választása",
+          "blurb": "",
+          "contentHtml": "<p>Válts a Dating, Work és Community bemutatkozó felületei és cikkei között. A webhely adatvédelmi elfogadása közös marad.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Saját fiók",
+          "blurb": "",
+          "contentHtml": "<p>Bejelentkezve a saját profilodat és tevékenységeidet használod. A demó mintaprofilokat nyit meg, nem regisztrál saját fiókot.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Próba mintaprofillal",
+          "blurb": "",
+          "contentHtml": "<p>A felfedezés megnyitja a demó profilválasztóját. Válassz szerepet és személyt az ő nézetük kipróbálásához; új profillal a kitöltést is végigjárhatod.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Saját profil indítása",
+          "blurb": "",
+          "contentHtml": "<p>A csatlakozás a rendelkezésre álló bejelentkezést nyitja meg. Az eszközengedélyek és a telepítés külön döntések: a fióklétrehozás nem telepíti az appot.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Webhelyszintű adatvédelem",
+          "blurb": "",
+          "contentHtml": "<p>Ugyanaz az adatvédelmi elfogadás érvényes a Dating, Work és Community felületen. A módváltás nem kéri újra ugyanannak a változatnak az elfogadását.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Engedélyek és appikon",
+          "blurb": "",
+          "contentHtml": "<p>A helyadat közeli embereket és eseményeket mutat. Az értesítések tájékoztatnak. A kezdőképernyős ikon gyors elérést ad. Mind opcionális; nélkülük is beléphetsz és regisztrálhatsz.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "work:explanation-landing.setup-en-v5",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Device setup",
+      "summary": "Device setup",
+      "description": "Device setup",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Device-specific instructions",
+          "blurb": "",
+          "contentHtml": "<p>The question mark explains browser and phone differences, including blocked permissions. Open it if your device does not offer the expected permission or install prompt.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Location and nearby access",
+          "blurb": "",
+          "contentHtml": "<p>Enable location to find nearby people and events. Your browser asks for permission and the ring shows progress. The setting saves automatically; sign-in can continue without it.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notifications on this device",
+          "blurb": "",
+          "contentHtml": "<p>Enable alerts for new messages and events. The browser asks for permission and the ring shows progress. This saves automatically; installing the app does not grant this permission.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Add to home screen",
+          "blurb": "",
+          "contentHtml": "<p>Add an icon to open this web app in its own window. Sign-in and permissions stay separate. Available on supported devices.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "work:explanation-landing.setup-hu-v5",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Eszközbeállítás",
+      "summary": "Eszközbeállítás",
+      "description": "Eszközbeállítás",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Útmutató az eszközödhöz",
+          "blurb": "",
+          "contentHtml": "<p>A kérdőjel a böngészők és telefonok eltéréseit, valamint a blokkolt engedélyeket magyarázza el. Nyisd meg, ha nem jelenik meg a várt engedélykérés vagy telepítés.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Helyadat és közeli találatok",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be a helyadatokat a közeli emberekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot jelzi. A beállítás automatikusan mentődik; nélküle is beléphetsz.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Értesítések ezen az eszközön",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be az értesítéseket az új üzenetekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot mutatja. Automatikusan mentődik; a telepítés nem ad értesítési engedélyt.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Kezdőképernyőre",
+          "blurb": "",
+          "contentHtml": "<p>Saját ikonról, külön ablakban nyitja meg a webappot. A belépés és az engedélyek külön kezelhetők. Támogatott eszközön érhető el.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "community:explanation-landing.home-en-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Getting started",
+      "summary": "Getting started",
+      "description": "Getting started",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Choose a mode",
+          "blurb": "",
+          "contentHtml": "<p>Switch between Dating, Work and Community introductions and articles. The website privacy acceptance remains shared across these modes.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Your own account",
+          "blurb": "",
+          "contentHtml": "<p>Sign in to keep your own profile and activity. The demo uses sample identities; it does not register a personal account.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Try a sample profile",
+          "blurb": "",
+          "contentHtml": "<p>Explore opens the demo selector. Choose a role and a sample person to see the app from their perspective; a new profile lets you try setup.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Start your own profile",
+          "blurb": "",
+          "contentHtml": "<p>Joining opens the available sign-in flow. Device permissions and installation are separate choices; creating an account does not install the app.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website privacy",
+          "blurb": "",
+          "contentHtml": "<p>The same website privacy acceptance applies across Dating, Work and Community. Changing the mode does not ask you to accept that identical revision again.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permissions & app icon",
+          "blurb": "",
+          "contentHtml": "<p>Location shows nearby people and events. Notifications keep you informed. Add a home-screen icon for quick access. All are optional; you can sign in or register without them.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "_id": "community:explanation-landing.home-hu-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Első lépések",
+      "summary": "Első lépések",
+      "description": "Első lépések",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Mód választása",
+          "blurb": "",
+          "contentHtml": "<p>Válts a Dating, Work és Community bemutatkozó felületei és cikkei között. A webhely adatvédelmi elfogadása közös marad.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Saját fiók",
+          "blurb": "",
+          "contentHtml": "<p>Bejelentkezve a saját profilodat és tevékenységeidet használod. A demó mintaprofilokat nyit meg, nem regisztrál saját fiókot.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Próba mintaprofillal",
+          "blurb": "",
+          "contentHtml": "<p>A felfedezés megnyitja a demó profilválasztóját. Válassz szerepet és személyt az ő nézetük kipróbálásához; új profillal a kitöltést is végigjárhatod.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Saját profil indítása",
+          "blurb": "",
+          "contentHtml": "<p>A csatlakozás a rendelkezésre álló bejelentkezést nyitja meg. Az eszközengedélyek és a telepítés külön döntések: a fióklétrehozás nem telepíti az appot.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Webhelyszintű adatvédelem",
+          "blurb": "",
+          "contentHtml": "<p>Ugyanaz az adatvédelmi elfogadás érvényes a Dating, Work és Community felületen. A módváltás nem kéri újra ugyanannak a változatnak az elfogadását.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Engedélyek és appikon",
+          "blurb": "",
+          "contentHtml": "<p>A helyadat közeli embereket és eseményeket mutat. Az értesítések tájékoztatnak. A kezdőképernyős ikon gyors elérést ad. Mind opcionális; nélkülük is beléphetsz és regisztrálhatsz.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "_id": "community:explanation-landing.setup-en-v5",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Device setup",
+      "summary": "Device setup",
+      "description": "Device setup",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Device-specific instructions",
+          "blurb": "",
+          "contentHtml": "<p>The question mark explains browser and phone differences, including blocked permissions. Open it if your device does not offer the expected permission or install prompt.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Location and nearby access",
+          "blurb": "",
+          "contentHtml": "<p>Enable location to find nearby people and events. Your browser asks for permission and the ring shows progress. The setting saves automatically; sign-in can continue without it.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notifications on this device",
+          "blurb": "",
+          "contentHtml": "<p>Enable alerts for new messages and events. The browser asks for permission and the ring shows progress. This saves automatically; installing the app does not grant this permission.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Add to home screen",
+          "blurb": "",
+          "contentHtml": "<p>Add an icon to open this web app in its own window. Sign-in and permissions stay separate. Available on supported devices.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "_id": "community:explanation-landing.setup-hu-v5",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Eszközbeállítás",
+      "summary": "Eszközbeállítás",
+      "description": "Eszközbeállítás",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Útmutató az eszközödhöz",
+          "blurb": "",
+          "contentHtml": "<p>A kérdőjel a böngészők és telefonok eltéréseit, valamint a blokkolt engedélyeket magyarázza el. Nyisd meg, ha nem jelenik meg a várt engedélykérés vagy telepítés.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Helyadat és közeli találatok",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be a helyadatokat a közeli emberekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot jelzi. A beállítás automatikusan mentődik; nélküle is beléphetsz.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Értesítések ezen az eszközön",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be az értesítéseket az új üzenetekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot mutatja. Automatikusan mentődik; a telepítés nem ad értesítési engedélyt.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Kezdőképernyőre",
+          "blurb": "",
+          "contentHtml": "<p>Saját ikonról, külön ablakban nyitja meg a webappot. A belépés és az engedélyek külön kezelhetők. Támogatott eszközön érhető el.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.home-de-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.home",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Erste Schritte",
+      "summary": "Erste Schritte",
+      "description": "Erste Schritte",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Wählen Sie einen Modus",
+          "blurb": "",
+          "contentHtml": "<p>Wechseln Sie zwischen Einführungen und Artikeln zu Dating, Arbeit und Community. Die Datenschutzakzeptanz der Website bleibt in diesen Modi gleich.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Ihr eigenes Konto",
+          "blurb": "",
+          "contentHtml": "<p>Melden Sie sich an, um Ihr eigenes Profil und Ihre eigenen Aktivitäten zu behalten. Die Demo verwendet Beispielidentitäten; Es wird kein persönliches Konto registriert.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Probieren Sie ein Beispielprofil aus",
+          "blurb": "",
+          "contentHtml": "<p>Explore öffnet den Demo-Selektor. Wählen Sie eine Rolle und eine Beispielperson, um die App aus ihrer Perspektive zu sehen. Mit einem neuen Profil können Sie die Einrichtung ausprobieren.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Starten Sie Ihr eigenes Profil",
+          "blurb": "",
+          "contentHtml": "<p>Durch den Beitritt wird der verfügbare Anmeldefluss geöffnet. Geräteberechtigungen und Installation sind separate Optionen; Durch das Erstellen eines Kontos wird die App nicht installiert.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website-Datenschutz",
+          "blurb": "",
+          "contentHtml": "<p>Die gleiche Website-Datenschutzakzeptanz gilt für Dating, Arbeit und Community. Beim Ändern des Modus werden Sie nicht aufgefordert, die identische Revision erneut zu akzeptieren.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Rechte & App-Symbol",
+          "blurb": "",
+          "contentHtml": "<p>Der Standort zeigt Menschen und Events in der Nähe. Mitteilungen halten dich auf dem Laufenden. Ein Startsymbol bietet schnellen Zugriff. Alles ist optional, auch vor der Anmeldung.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.home-es-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.home",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Primeros pasos",
+      "summary": "Primeros pasos",
+      "description": "Primeros pasos",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Elige un modo",
+          "blurb": "",
+          "contentHtml": "<p>Cambie entre introducciones y artículos de citas, trabajo y comunidad. La aceptación de la privacidad del sitio web sigue siendo compartida en estos modos.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Tu propia cuenta",
+          "blurb": "",
+          "contentHtml": "<p>Inicia sesión para mantener tu propio perfil y actividad. La demostración utiliza identidades de muestra; no registra una cuenta personal.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Pruebe un perfil de muestra",
+          "blurb": "",
+          "contentHtml": "<p>Explorar abre el selector de demostración. Elija un rol y una persona de muestra para ver la aplicación desde su perspectiva; un nuevo perfil le permite probar la configuración.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Inicia tu propio perfil",
+          "blurb": "",
+          "contentHtml": "<p>Al unirse se abre el flujo de inicio de sesión disponible. Los permisos y la instalación del dispositivo son opciones independientes; Crear una cuenta no instala la aplicación.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Privacidad del sitio web",
+          "blurb": "",
+          "contentHtml": "<p>La misma aceptación de privacidad del sitio web se aplica en Citas, Trabajo y Comunidad. Cambiar el modo no le pide que acepte nuevamente esa revisión idéntica.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permisos e icono",
+          "blurb": "",
+          "contentHtml": "<p>La ubicación muestra personas y eventos cercanos. Los avisos te informan. El icono de inicio da acceso rápido. Todo es opcional; puedes entrar o registrarte sin ello.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.home-de-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.home",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Erste Schritte",
+      "summary": "Erste Schritte",
+      "description": "Erste Schritte",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Wählen Sie einen Modus",
+          "blurb": "",
+          "contentHtml": "<p>Wechseln Sie zwischen Einführungen und Artikeln zu Dating, Arbeit und Community. Die Datenschutzakzeptanz der Website bleibt in diesen Modi gleich.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Ihr eigenes Konto",
+          "blurb": "",
+          "contentHtml": "<p>Melden Sie sich an, um Ihr eigenes Profil und Ihre eigenen Aktivitäten zu behalten. Die Demo verwendet Beispielidentitäten; Es wird kein persönliches Konto registriert.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Probieren Sie ein Beispielprofil aus",
+          "blurb": "",
+          "contentHtml": "<p>Explore öffnet den Demo-Selektor. Wählen Sie eine Rolle und eine Beispielperson, um die App aus ihrer Perspektive zu sehen. Mit einem neuen Profil können Sie die Einrichtung ausprobieren.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Starten Sie Ihr eigenes Profil",
+          "blurb": "",
+          "contentHtml": "<p>Durch den Beitritt wird der verfügbare Anmeldefluss geöffnet. Geräteberechtigungen und Installation sind separate Optionen; Durch das Erstellen eines Kontos wird die App nicht installiert.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website-Datenschutz",
+          "blurb": "",
+          "contentHtml": "<p>Die gleiche Website-Datenschutzakzeptanz gilt für Dating, Arbeit und Community. Beim Ändern des Modus werden Sie nicht aufgefordert, die identische Revision erneut zu akzeptieren.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Rechte & App-Symbol",
+          "blurb": "",
+          "contentHtml": "<p>Der Standort zeigt Menschen und Events in der Nähe. Mitteilungen halten dich auf dem Laufenden. Ein Startsymbol bietet schnellen Zugriff. Alles ist optional, auch vor der Anmeldung.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.home-es-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.home",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Primeros pasos",
+      "summary": "Primeros pasos",
+      "description": "Primeros pasos",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Elige un modo",
+          "blurb": "",
+          "contentHtml": "<p>Cambie entre introducciones y artículos de citas, trabajo y comunidad. La aceptación de la privacidad del sitio web sigue siendo compartida en estos modos.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Tu propia cuenta",
+          "blurb": "",
+          "contentHtml": "<p>Inicia sesión para mantener tu propio perfil y actividad. La demostración utiliza identidades de muestra; no registra una cuenta personal.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Pruebe un perfil de muestra",
+          "blurb": "",
+          "contentHtml": "<p>Explorar abre el selector de demostración. Elija un rol y una persona de muestra para ver la aplicación desde su perspectiva; un nuevo perfil le permite probar la configuración.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Inicia tu propio perfil",
+          "blurb": "",
+          "contentHtml": "<p>Al unirse se abre el flujo de inicio de sesión disponible. Los permisos y la instalación del dispositivo son opciones independientes; Crear una cuenta no instala la aplicación.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Privacidad del sitio web",
+          "blurb": "",
+          "contentHtml": "<p>La misma aceptación de privacidad del sitio web se aplica en Citas, Trabajo y Comunidad. Cambiar el modo no le pide que acepte nuevamente esa revisión idéntica.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permisos e icono",
+          "blurb": "",
+          "contentHtml": "<p>La ubicación muestra personas y eventos cercanos. Los avisos te informan. El icono de inicio da acceso rápido. Todo es opcional; puedes entrar o registrarte sin ello.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-home-default-de-v6",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.home",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Erste Schritte",
+      "summary": "Erste Schritte",
+      "description": "Erste Schritte",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Wählen Sie einen Modus",
+          "blurb": "",
+          "contentHtml": "<p>Wechseln Sie zwischen Einführungen und Artikeln zu Dating, Arbeit und Community. Die Datenschutzakzeptanz der Website bleibt in diesen Modi gleich.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Ihr eigenes Konto",
+          "blurb": "",
+          "contentHtml": "<p>Melden Sie sich an, um Ihr eigenes Profil und Ihre eigenen Aktivitäten zu behalten. Die Demo verwendet Beispielidentitäten; Es wird kein persönliches Konto registriert.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Probieren Sie ein Beispielprofil aus",
+          "blurb": "",
+          "contentHtml": "<p>Explore öffnet den Demo-Selektor. Wählen Sie eine Rolle und eine Beispielperson, um die App aus ihrer Perspektive zu sehen. Mit einem neuen Profil können Sie die Einrichtung ausprobieren.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Starten Sie Ihr eigenes Profil",
+          "blurb": "",
+          "contentHtml": "<p>Durch den Beitritt wird der verfügbare Anmeldefluss geöffnet. Geräteberechtigungen und Installation sind separate Optionen; Durch das Erstellen eines Kontos wird die App nicht installiert.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website-Datenschutz",
+          "blurb": "",
+          "contentHtml": "<p>Die gleiche Website-Datenschutzakzeptanz gilt für Dating, Arbeit und Community. Beim Ändern des Modus werden Sie nicht aufgefordert, die identische Revision erneut zu akzeptieren.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Rechte & App-Symbol",
+          "blurb": "",
+          "contentHtml": "<p>Der Standort zeigt Menschen und Events in der Nähe. Mitteilungen halten dich auf dem Laufenden. Ein Startsymbol bietet schnellen Zugriff. Alles ist optional, auch vor der Anmeldung.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-home-default-en-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Getting started",
+      "summary": "Getting started",
+      "description": "Getting started",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Choose a mode",
+          "blurb": "",
+          "contentHtml": "<p>Switch between Dating, Work and Community introductions and articles. The website privacy acceptance remains shared across these modes.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Your own account",
+          "blurb": "",
+          "contentHtml": "<p>Sign in to keep your own profile and activity. The demo uses sample identities; it does not register a personal account.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Try a sample profile",
+          "blurb": "",
+          "contentHtml": "<p>Explore opens the demo selector. Choose a role and a sample person to see the app from their perspective; a new profile lets you try setup.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Start your own profile",
+          "blurb": "",
+          "contentHtml": "<p>Joining opens the available sign-in flow. Device permissions and installation are separate choices; creating an account does not install the app.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website privacy",
+          "blurb": "",
+          "contentHtml": "<p>The same website privacy acceptance applies across Dating, Work and Community. Changing the mode does not ask you to accept that identical revision again.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permissions & app icon",
+          "blurb": "",
+          "contentHtml": "<p>Location shows nearby people and events. Notifications keep you informed. Add a home-screen icon for quick access. All are optional; you can sign in or register without them.</p>"
+        }
+      ],
+      "baseGroupId": null
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-home-default-es-v6",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.home",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Primeros pasos",
+      "summary": "Primeros pasos",
+      "description": "Primeros pasos",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Elige un modo",
+          "blurb": "",
+          "contentHtml": "<p>Cambie entre introducciones y artículos de citas, trabajo y comunidad. La aceptación de la privacidad del sitio web sigue siendo compartida en estos modos.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Tu propia cuenta",
+          "blurb": "",
+          "contentHtml": "<p>Inicia sesión para mantener tu propio perfil y actividad. La demostración utiliza identidades de muestra; no registra una cuenta personal.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Pruebe un perfil de muestra",
+          "blurb": "",
+          "contentHtml": "<p>Explorar abre el selector de demostración. Elija un rol y una persona de muestra para ver la aplicación desde su perspectiva; un nuevo perfil le permite probar la configuración.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Inicia tu propio perfil",
+          "blurb": "",
+          "contentHtml": "<p>Al unirse se abre el flujo de inicio de sesión disponible. Los permisos y la instalación del dispositivo son opciones independientes; Crear una cuenta no instala la aplicación.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Privacidad del sitio web",
+          "blurb": "",
+          "contentHtml": "<p>La misma aceptación de privacidad del sitio web se aplica en Citas, Trabajo y Comunidad. Cambiar el modo no le pide que acepte nuevamente esa revisión idéntica.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permisos e icono",
+          "blurb": "",
+          "contentHtml": "<p>La ubicación muestra personas y eventos cercanos. Los avisos te informan. El icono de inicio da acceso rápido. Todo es opcional; puedes entrar o registrarte sin ello.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-home-default-hu-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Első lépések",
+      "summary": "Első lépések",
+      "description": "Első lépések",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Mód választása",
+          "blurb": "",
+          "contentHtml": "<p>Válts a Dating, Work és Community bemutatkozó felületei és cikkei között. A webhely adatvédelmi elfogadása közös marad.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Saját fiók",
+          "blurb": "",
+          "contentHtml": "<p>Bejelentkezve a saját profilodat és tevékenységeidet használod. A demó mintaprofilokat nyit meg, nem regisztrál saját fiókot.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Próba mintaprofillal",
+          "blurb": "",
+          "contentHtml": "<p>A felfedezés megnyitja a demó profilválasztóját. Válassz szerepet és személyt az ő nézetük kipróbálásához; új profillal a kitöltést is végigjárhatod.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Saját profil indítása",
+          "blurb": "",
+          "contentHtml": "<p>A csatlakozás a rendelkezésre álló bejelentkezést nyitja meg. Az eszközengedélyek és a telepítés külön döntések: a fióklétrehozás nem telepíti az appot.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Webhelyszintű adatvédelem",
+          "blurb": "",
+          "contentHtml": "<p>Ugyanaz az adatvédelmi elfogadás érvényes a Dating, Work és Community felületen. A módváltás nem kéri újra ugyanannak a változatnak az elfogadását.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Engedélyek és appikon",
+          "blurb": "",
+          "contentHtml": "<p>A helyadat közeli embereket és eseményeket mutat. Az értesítések tájékoztatnak. A kezdőképernyős ikon gyors elérést ad. Mind opcionális; nélkülük is beléphetsz és regisztrálhatsz.</p>"
+        }
+      ],
+      "baseGroupId": null
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.setup-de-v5",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.setup",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Geräteeinrichtung",
+      "summary": "Geräteeinrichtung",
+      "description": "Geräteeinrichtung",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Gerätespezifische Anweisungen",
+          "blurb": "",
+          "contentHtml": "<p>Das Fragezeichen erläutert die Unterschiede zwischen Browser und Telefon, einschließlich blockierter Berechtigungen. Öffnen Sie es, wenn Ihr Gerät nicht die erwartete Berechtigung oder Installationsaufforderung bietet.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Lage und nahegelegene Anbindung",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere den Standort für Menschen und Events in der Nähe. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Du kannst dich auch ohne anmelden.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Benachrichtigungen auf diesem Gerät",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere Hinweise für Nachrichten und Events. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Die Installation erteilt keine Erlaubnis.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Zum Startbildschirm",
+          "blurb": "",
+          "contentHtml": "<p>Ein Symbol öffnet die Web-App im eigenen Fenster. Anmeldung und Rechte bleiben separat. Auf unterstützten Geräten verfügbar.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.setup-es-v5",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.setup",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Configuración del dispositivo",
+      "summary": "Configuración del dispositivo",
+      "description": "Configuración del dispositivo",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Instrucciones específicas del dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>El signo de interrogación explica las diferencias entre navegador y teléfono, incluidos los permisos bloqueados. Ábralo si su dispositivo no ofrece el permiso esperado o el mensaje de instalación.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Ubicación y acceso cercano",
+          "blurb": "",
+          "contentHtml": "<p>Activa la ubicación para ver personas y eventos cercanos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; puedes entrar sin activarla.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notificaciones en este dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>Activa los avisos de mensajes y eventos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; instalar la app no concede este permiso.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Añadir al inicio",
+          "blurb": "",
+          "contentHtml": "<p>Añade un icono para abrir esta web en su propia ventana. El acceso y los permisos van aparte. En dispositivos compatibles.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-setup-default-de-v5",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.setup",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Geräteeinrichtung",
+      "summary": "Geräteeinrichtung",
+      "description": "Geräteeinrichtung",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Gerätespezifische Anweisungen",
+          "blurb": "",
+          "contentHtml": "<p>Das Fragezeichen erläutert die Unterschiede zwischen Browser und Telefon, einschließlich blockierter Berechtigungen. Öffnen Sie es, wenn Ihr Gerät nicht die erwartete Berechtigung oder Installationsaufforderung bietet.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Lage und nahegelegene Anbindung",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere den Standort für Menschen und Events in der Nähe. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Du kannst dich auch ohne anmelden.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Benachrichtigungen auf diesem Gerät",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere Hinweise für Nachrichten und Events. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Die Installation erteilt keine Erlaubnis.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Zum Startbildschirm",
+          "blurb": "",
+          "contentHtml": "<p>Ein Symbol öffnet die Web-App im eigenen Fenster. Anmeldung und Rechte bleiben separat. Auf unterstützten Geräten verfügbar.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-setup-default-en-v5",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Device setup",
+      "summary": "Device setup",
+      "description": "Device setup",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Device-specific instructions",
+          "blurb": "",
+          "contentHtml": "<p>The question mark explains browser and phone differences, including blocked permissions. Open it if your device does not offer the expected permission or install prompt.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Location and nearby access",
+          "blurb": "",
+          "contentHtml": "<p>Enable location to find nearby people and events. Your browser asks for permission and the ring shows progress. The setting saves automatically; sign-in can continue without it.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notifications on this device",
+          "blurb": "",
+          "contentHtml": "<p>Enable alerts for new messages and events. The browser asks for permission and the ring shows progress. This saves automatically; installing the app does not grant this permission.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Add to home screen",
+          "blurb": "",
+          "contentHtml": "<p>Add an icon to open this web app in its own window. Sign-in and permissions stay separate. Available on supported devices.</p>"
+        }
+      ],
+      "baseGroupId": null
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-setup-default-es-v5",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.setup",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Configuración del dispositivo",
+      "summary": "Configuración del dispositivo",
+      "description": "Configuración del dispositivo",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Instrucciones específicas del dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>El signo de interrogación explica las diferencias entre navegador y teléfono, incluidos los permisos bloqueados. Ábralo si su dispositivo no ofrece el permiso esperado o el mensaje de instalación.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Ubicación y acceso cercano",
+          "blurb": "",
+          "contentHtml": "<p>Activa la ubicación para ver personas y eventos cercanos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; puedes entrar sin activarla.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notificaciones en este dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>Activa los avisos de mensajes y eventos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; instalar la app no concede este permiso.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Añadir al inicio",
+          "blurb": "",
+          "contentHtml": "<p>Añade un icono para abrir esta web en su propia ventana. El acceso y los permisos van aparte. En dispositivos compatibles.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-setup-default-hu-v5",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Eszközbeállítás",
+      "summary": "Eszközbeállítás",
+      "description": "Eszközbeállítás",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Útmutató az eszközödhöz",
+          "blurb": "",
+          "contentHtml": "<p>A kérdőjel a böngészők és telefonok eltéréseit, valamint a blokkolt engedélyeket magyarázza el. Nyisd meg, ha nem jelenik meg a várt engedélykérés vagy telepítés.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Helyadat és közeli találatok",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be a helyadatokat a közeli emberekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot jelzi. A beállítás automatikusan mentődik; nélküle is beléphetsz.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Értesítések ezen az eszközön",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be az értesítéseket az új üzenetekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot mutatja. Automatikusan mentődik; a telepítés nem ad értesítési engedélyt.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Kezdőképernyőre",
+          "blurb": "",
+          "contentHtml": "<p>Saját ikonról, külön ablakban nyitja meg a webappot. A belépés és az engedélyek külön kezelhetők. Támogatott eszközön érhető el.</p>"
+        }
+      ],
+      "baseGroupId": null
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.setup-de-v5",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.setup",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Geräteeinrichtung",
+      "summary": "Geräteeinrichtung",
+      "description": "Geräteeinrichtung",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Gerätespezifische Anweisungen",
+          "blurb": "",
+          "contentHtml": "<p>Das Fragezeichen erläutert die Unterschiede zwischen Browser und Telefon, einschließlich blockierter Berechtigungen. Öffnen Sie es, wenn Ihr Gerät nicht die erwartete Berechtigung oder Installationsaufforderung bietet.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Lage und nahegelegene Anbindung",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere den Standort für Menschen und Events in der Nähe. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Du kannst dich auch ohne anmelden.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Benachrichtigungen auf diesem Gerät",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere Hinweise für Nachrichten und Events. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Die Installation erteilt keine Erlaubnis.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Zum Startbildschirm",
+          "blurb": "",
+          "contentHtml": "<p>Ein Symbol öffnet die Web-App im eigenen Fenster. Anmeldung und Rechte bleiben separat. Auf unterstützten Geräten verfügbar.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.setup-es-v5",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.setup",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 5,
+      "active": true,
+      "presentation": "tour",
+      "title": "Configuración del dispositivo",
+      "summary": "Configuración del dispositivo",
+      "description": "Configuración del dispositivo",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Instrucciones específicas del dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>El signo de interrogación explica las diferencias entre navegador y teléfono, incluidos los permisos bloqueados. Ábralo si su dispositivo no ofrece el permiso esperado o el mensaje de instalación.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Ubicación y acceso cercano",
+          "blurb": "",
+          "contentHtml": "<p>Activa la ubicación para ver personas y eventos cercanos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; puedes entrar sin activarla.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notificaciones en este dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>Activa los avisos de mensajes y eventos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; instalar la app no concede este permiso.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Añadir al inicio",
+          "blurb": "",
+          "contentHtml": "<p>Añade un icono para abrir esta web en su propia ventana. El acceso y los permisos van aparte. En dispositivos compatibles.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    }
+  ],
+  "addedRevisions": [
+    {
+      "_id": "work:explanation-landing.home-en-v7",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Getting started",
+      "summary": "Getting started",
+      "description": "Getting started",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Choose a mode",
+          "blurb": "",
+          "contentHtml": "<p>Switch between Dating, Work and Community introductions and articles. The website privacy acceptance remains shared across these modes.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Your own account",
+          "blurb": "",
+          "contentHtml": "<p>Sign in to keep your own profile and activity. The demo uses sample identities; it does not register a personal account.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Try a sample profile",
+          "blurb": "",
+          "contentHtml": "<p>Explore opens the demo selector. Choose a role and a sample person to see the app from their perspective; a new profile lets you try setup.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Start your own profile",
+          "blurb": "",
+          "contentHtml": "<p>Joining opens the available sign-in flow. Device permissions and installation are separate choices; creating an account does not install the app.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website privacy",
+          "blurb": "",
+          "contentHtml": "<p>The same website privacy acceptance applies across Dating, Work and Community. Changing the mode does not ask you to accept that identical revision again.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permissions & app icon",
+          "blurb": "",
+          "contentHtml": "<p>Your own profile needs location for nearby people and events. The demo uses the sample profile’s location. Notifications and the home-screen icon are optional.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "work:explanation-landing.home-hu-v7",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Első lépések",
+      "summary": "Első lépések",
+      "description": "Első lépések",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Mód választása",
+          "blurb": "",
+          "contentHtml": "<p>Válts a Dating, Work és Community bemutatkozó felületei és cikkei között. A webhely adatvédelmi elfogadása közös marad.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Saját fiók",
+          "blurb": "",
+          "contentHtml": "<p>Bejelentkezve a saját profilodat és tevékenységeidet használod. A demó mintaprofilokat nyit meg, nem regisztrál saját fiókot.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Próba mintaprofillal",
+          "blurb": "",
+          "contentHtml": "<p>A felfedezés megnyitja a demó profilválasztóját. Válassz szerepet és személyt az ő nézetük kipróbálásához; új profillal a kitöltést is végigjárhatod.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Saját profil indítása",
+          "blurb": "",
+          "contentHtml": "<p>A csatlakozás a rendelkezésre álló bejelentkezést nyitja meg. Az eszközengedélyek és a telepítés külön döntések: a fióklétrehozás nem telepíti az appot.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Webhelyszintű adatvédelem",
+          "blurb": "",
+          "contentHtml": "<p>Ugyanaz az adatvédelmi elfogadás érvényes a Dating, Work és Community felületen. A módváltás nem kéri újra ugyanannak a változatnak az elfogadását.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Engedélyek és appikon",
+          "blurb": "",
+          "contentHtml": "<p>Saját profilnál a helyadat a közeli emberekhez és eseményekhez kell. A demó a mintaprofil helyét használja. Az értesítések és a kezdőképernyős ikon opcionálisak.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "work:explanation-landing.setup-en-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Device setup",
+      "summary": "Device setup",
+      "description": "Device setup",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Device-specific instructions",
+          "blurb": "",
+          "contentHtml": "<p>The question mark explains browser and phone differences, including blocked permissions. Open it if your device does not offer the expected permission or install prompt.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Location and nearby access",
+          "blurb": "",
+          "contentHtml": "<p>Allow location access to see nearby people and events. Your choice saves automatically.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notifications on this device",
+          "blurb": "",
+          "contentHtml": "<p>Enable alerts for new messages and events. The browser asks for permission and the ring shows progress. This saves automatically; installing the app does not grant this permission.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Add to home screen",
+          "blurb": "",
+          "contentHtml": "<p>Add an icon to open this web app in its own window. Sign-in and permissions stay separate. Available on supported devices.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "work:explanation-landing.setup-hu-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Eszközbeállítás",
+      "summary": "Eszközbeállítás",
+      "description": "Eszközbeállítás",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Útmutató az eszközödhöz",
+          "blurb": "",
+          "contentHtml": "<p>A kérdőjel a böngészők és telefonok eltéréseit, valamint a blokkolt engedélyeket magyarázza el. Nyisd meg, ha nem jelenik meg a várt engedélykérés vagy telepítés.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Helyadat és közeli találatok",
+          "blurb": "",
+          "contentHtml": "<p>A közeli emberek és események megjelenítéséhez engedélyezd a helyhozzáférést. A beállítás automatikusan mentődik.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Értesítések ezen az eszközön",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be az értesítéseket az új üzenetekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot mutatja. Automatikusan mentődik; a telepítés nem ad értesítési engedélyt.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Kezdőképernyőre",
+          "blurb": "",
+          "contentHtml": "<p>Saját ikonról, külön ablakban nyitja meg a webappot. A belépés és az engedélyek külön kezelhetők. Támogatott eszközön érhető el.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-work"
+    },
+    {
+      "_id": "community:explanation-landing.home-en-v7",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Getting started",
+      "summary": "Getting started",
+      "description": "Getting started",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Choose a mode",
+          "blurb": "",
+          "contentHtml": "<p>Switch between Dating, Work and Community introductions and articles. The website privacy acceptance remains shared across these modes.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Your own account",
+          "blurb": "",
+          "contentHtml": "<p>Sign in to keep your own profile and activity. The demo uses sample identities; it does not register a personal account.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Try a sample profile",
+          "blurb": "",
+          "contentHtml": "<p>Explore opens the demo selector. Choose a role and a sample person to see the app from their perspective; a new profile lets you try setup.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Start your own profile",
+          "blurb": "",
+          "contentHtml": "<p>Joining opens the available sign-in flow. Device permissions and installation are separate choices; creating an account does not install the app.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website privacy",
+          "blurb": "",
+          "contentHtml": "<p>The same website privacy acceptance applies across Dating, Work and Community. Changing the mode does not ask you to accept that identical revision again.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permissions & app icon",
+          "blurb": "",
+          "contentHtml": "<p>Your own profile needs location for nearby people and events. The demo uses the sample profile’s location. Notifications and the home-screen icon are optional.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "_id": "community:explanation-landing.home-hu-v7",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Első lépések",
+      "summary": "Első lépések",
+      "description": "Első lépések",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Mód választása",
+          "blurb": "",
+          "contentHtml": "<p>Válts a Dating, Work és Community bemutatkozó felületei és cikkei között. A webhely adatvédelmi elfogadása közös marad.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Saját fiók",
+          "blurb": "",
+          "contentHtml": "<p>Bejelentkezve a saját profilodat és tevékenységeidet használod. A demó mintaprofilokat nyit meg, nem regisztrál saját fiókot.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Próba mintaprofillal",
+          "blurb": "",
+          "contentHtml": "<p>A felfedezés megnyitja a demó profilválasztóját. Válassz szerepet és személyt az ő nézetük kipróbálásához; új profillal a kitöltést is végigjárhatod.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Saját profil indítása",
+          "blurb": "",
+          "contentHtml": "<p>A csatlakozás a rendelkezésre álló bejelentkezést nyitja meg. Az eszközengedélyek és a telepítés külön döntések: a fióklétrehozás nem telepíti az appot.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Webhelyszintű adatvédelem",
+          "blurb": "",
+          "contentHtml": "<p>Ugyanaz az adatvédelmi elfogadás érvényes a Dating, Work és Community felületen. A módváltás nem kéri újra ugyanannak a változatnak az elfogadását.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Engedélyek és appikon",
+          "blurb": "",
+          "contentHtml": "<p>Saját profilnál a helyadat a közeli emberekhez és eseményekhez kell. A demó a mintaprofil helyét használja. Az értesítések és a kezdőképernyős ikon opcionálisak.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "_id": "community:explanation-landing.setup-en-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Device setup",
+      "summary": "Device setup",
+      "description": "Device setup",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Device-specific instructions",
+          "blurb": "",
+          "contentHtml": "<p>The question mark explains browser and phone differences, including blocked permissions. Open it if your device does not offer the expected permission or install prompt.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Location and nearby access",
+          "blurb": "",
+          "contentHtml": "<p>Allow location access to see nearby people and events. Your choice saves automatically.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notifications on this device",
+          "blurb": "",
+          "contentHtml": "<p>Enable alerts for new messages and events. The browser asks for permission and the ring shows progress. This saves automatically; installing the app does not grant this permission.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Add to home screen",
+          "blurb": "",
+          "contentHtml": "<p>Add an icon to open this web app in its own window. Sign-in and permissions stay separate. Available on supported devices.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "_id": "community:explanation-landing.setup-hu-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Eszközbeállítás",
+      "summary": "Eszközbeállítás",
+      "description": "Eszközbeállítás",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Útmutató az eszközödhöz",
+          "blurb": "",
+          "contentHtml": "<p>A kérdőjel a böngészők és telefonok eltéréseit, valamint a blokkolt engedélyeket magyarázza el. Nyisd meg, ha nem jelenik meg a várt engedélykérés vagy telepítés.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Helyadat és közeli találatok",
+          "blurb": "",
+          "contentHtml": "<p>A közeli emberek és események megjelenítéséhez engedélyezd a helyhozzáférést. A beállítás automatikusan mentődik.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Értesítések ezen az eszközön",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be az értesítéseket az új üzenetekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot mutatja. Automatikusan mentődik; a telepítés nem ad értesítési engedélyt.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Kezdőképernyőre",
+          "blurb": "",
+          "contentHtml": "<p>Saját ikonról, külön ablakban nyitja meg a webappot. A belépés és az engedélyek külön kezelhetők. Támogatott eszközön érhető el.</p>"
+        }
+      ],
+      "baseGroupId": "myscoutee-community"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.home-de-v7",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.home",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Erste Schritte",
+      "summary": "Erste Schritte",
+      "description": "Erste Schritte",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Wählen Sie einen Modus",
+          "blurb": "",
+          "contentHtml": "<p>Wechseln Sie zwischen Einführungen und Artikeln zu Dating, Arbeit und Community. Die Datenschutzakzeptanz der Website bleibt in diesen Modi gleich.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Ihr eigenes Konto",
+          "blurb": "",
+          "contentHtml": "<p>Melden Sie sich an, um Ihr eigenes Profil und Ihre eigenen Aktivitäten zu behalten. Die Demo verwendet Beispielidentitäten; Es wird kein persönliches Konto registriert.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Probieren Sie ein Beispielprofil aus",
+          "blurb": "",
+          "contentHtml": "<p>Explore öffnet den Demo-Selektor. Wählen Sie eine Rolle und eine Beispielperson, um die App aus ihrer Perspektive zu sehen. Mit einem neuen Profil können Sie die Einrichtung ausprobieren.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Starten Sie Ihr eigenes Profil",
+          "blurb": "",
+          "contentHtml": "<p>Durch den Beitritt wird der verfügbare Anmeldefluss geöffnet. Geräteberechtigungen und Installation sind separate Optionen; Durch das Erstellen eines Kontos wird die App nicht installiert.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website-Datenschutz",
+          "blurb": "",
+          "contentHtml": "<p>Die gleiche Website-Datenschutzakzeptanz gilt für Dating, Arbeit und Community. Beim Ändern des Modus werden Sie nicht aufgefordert, die identische Revision erneut zu akzeptieren.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Rechte & App-Symbol",
+          "blurb": "",
+          "contentHtml": "<p>Dein eigenes Profil benötigt den Standort für Menschen und Veranstaltungen in der Nähe. Die Demo nutzt den Standort des Beispielprofils. Mitteilungen und das Startbildschirm-Symbol sind optional.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.home-es-v7",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.home",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Primeros pasos",
+      "summary": "Primeros pasos",
+      "description": "Primeros pasos",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Elige un modo",
+          "blurb": "",
+          "contentHtml": "<p>Cambie entre introducciones y artículos de citas, trabajo y comunidad. La aceptación de la privacidad del sitio web sigue siendo compartida en estos modos.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Tu propia cuenta",
+          "blurb": "",
+          "contentHtml": "<p>Inicia sesión para mantener tu propio perfil y actividad. La demostración utiliza identidades de muestra; no registra una cuenta personal.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Pruebe un perfil de muestra",
+          "blurb": "",
+          "contentHtml": "<p>Explorar abre el selector de demostración. Elija un rol y una persona de muestra para ver la aplicación desde su perspectiva; un nuevo perfil le permite probar la configuración.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Inicia tu propio perfil",
+          "blurb": "",
+          "contentHtml": "<p>Al unirse se abre el flujo de inicio de sesión disponible. Los permisos y la instalación del dispositivo son opciones independientes; Crear una cuenta no instala la aplicación.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Privacidad del sitio web",
+          "blurb": "",
+          "contentHtml": "<p>La misma aceptación de privacidad del sitio web se aplica en Citas, Trabajo y Comunidad. Cambiar el modo no le pide que acepte nuevamente esa revisión idéntica.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permisos e icono",
+          "blurb": "",
+          "contentHtml": "<p>Tu perfil necesita la ubicación para personas y eventos cercanos. La demo usa la ubicación del perfil de ejemplo. Los avisos y el icono de inicio son opcionales.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.home-de-v7",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.home",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Erste Schritte",
+      "summary": "Erste Schritte",
+      "description": "Erste Schritte",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Wählen Sie einen Modus",
+          "blurb": "",
+          "contentHtml": "<p>Wechseln Sie zwischen Einführungen und Artikeln zu Dating, Arbeit und Community. Die Datenschutzakzeptanz der Website bleibt in diesen Modi gleich.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Ihr eigenes Konto",
+          "blurb": "",
+          "contentHtml": "<p>Melden Sie sich an, um Ihr eigenes Profil und Ihre eigenen Aktivitäten zu behalten. Die Demo verwendet Beispielidentitäten; Es wird kein persönliches Konto registriert.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Probieren Sie ein Beispielprofil aus",
+          "blurb": "",
+          "contentHtml": "<p>Explore öffnet den Demo-Selektor. Wählen Sie eine Rolle und eine Beispielperson, um die App aus ihrer Perspektive zu sehen. Mit einem neuen Profil können Sie die Einrichtung ausprobieren.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Starten Sie Ihr eigenes Profil",
+          "blurb": "",
+          "contentHtml": "<p>Durch den Beitritt wird der verfügbare Anmeldefluss geöffnet. Geräteberechtigungen und Installation sind separate Optionen; Durch das Erstellen eines Kontos wird die App nicht installiert.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website-Datenschutz",
+          "blurb": "",
+          "contentHtml": "<p>Die gleiche Website-Datenschutzakzeptanz gilt für Dating, Arbeit und Community. Beim Ändern des Modus werden Sie nicht aufgefordert, die identische Revision erneut zu akzeptieren.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Rechte & App-Symbol",
+          "blurb": "",
+          "contentHtml": "<p>Dein eigenes Profil benötigt den Standort für Menschen und Veranstaltungen in der Nähe. Die Demo nutzt den Standort des Beispielprofils. Mitteilungen und das Startbildschirm-Symbol sind optional.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.home-es-v7",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.home",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Primeros pasos",
+      "summary": "Primeros pasos",
+      "description": "Primeros pasos",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Elige un modo",
+          "blurb": "",
+          "contentHtml": "<p>Cambie entre introducciones y artículos de citas, trabajo y comunidad. La aceptación de la privacidad del sitio web sigue siendo compartida en estos modos.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Tu propia cuenta",
+          "blurb": "",
+          "contentHtml": "<p>Inicia sesión para mantener tu propio perfil y actividad. La demostración utiliza identidades de muestra; no registra una cuenta personal.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Pruebe un perfil de muestra",
+          "blurb": "",
+          "contentHtml": "<p>Explorar abre el selector de demostración. Elija un rol y una persona de muestra para ver la aplicación desde su perspectiva; un nuevo perfil le permite probar la configuración.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Inicia tu propio perfil",
+          "blurb": "",
+          "contentHtml": "<p>Al unirse se abre el flujo de inicio de sesión disponible. Los permisos y la instalación del dispositivo son opciones independientes; Crear una cuenta no instala la aplicación.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Privacidad del sitio web",
+          "blurb": "",
+          "contentHtml": "<p>La misma aceptación de privacidad del sitio web se aplica en Citas, Trabajo y Comunidad. Cambiar el modo no le pide que acepte nuevamente esa revisión idéntica.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permisos e icono",
+          "blurb": "",
+          "contentHtml": "<p>Tu perfil necesita la ubicación para personas y eventos cercanos. La demo usa la ubicación del perfil de ejemplo. Los avisos y el icono de inicio son opcionales.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.setup-de-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.setup",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Geräteeinrichtung",
+      "summary": "Geräteeinrichtung",
+      "description": "Geräteeinrichtung",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Gerätespezifische Anweisungen",
+          "blurb": "",
+          "contentHtml": "<p>Das Fragezeichen erläutert die Unterschiede zwischen Browser und Telefon, einschließlich blockierter Berechtigungen. Öffnen Sie es, wenn Ihr Gerät nicht die erwartete Berechtigung oder Installationsaufforderung bietet.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Lage und nahegelegene Anbindung",
+          "blurb": "",
+          "contentHtml": "<p>Erlaube den Standortzugriff, um Menschen und Veranstaltungen in deiner Nähe zu sehen. Die Einstellung wird automatisch gespeichert.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Benachrichtigungen auf diesem Gerät",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere Hinweise für Nachrichten und Events. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Die Installation erteilt keine Erlaubnis.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Zum Startbildschirm",
+          "blurb": "",
+          "contentHtml": "<p>Ein Symbol öffnet die Web-App im eigenen Fenster. Anmeldung und Rechte bleiben separat. Auf unterstützten Geräten verfügbar.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "community:explanation-landing.setup-es-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-community",
+      "contextKey": "landing.setup",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Configuración del dispositivo",
+      "summary": "Configuración del dispositivo",
+      "description": "Configuración del dispositivo",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Instrucciones específicas del dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>El signo de interrogación explica las diferencias entre navegador y teléfono, incluidos los permisos bloqueados. Ábralo si su dispositivo no ofrece el permiso esperado o el mensaje de instalación.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Ubicación y acceso cercano",
+          "blurb": "",
+          "contentHtml": "<p>Permite el acceso a la ubicación para ver personas y eventos cercanos. La elección se guarda automáticamente.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notificaciones en este dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>Activa los avisos de mensajes y eventos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; instalar la app no concede este permiso.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Añadir al inicio",
+          "blurb": "",
+          "contentHtml": "<p>Añade un icono para abrir esta web en su propia ventana. El acceso y los permisos van aparte. En dispositivos compatibles.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.setup-de-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.setup",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Geräteeinrichtung",
+      "summary": "Geräteeinrichtung",
+      "description": "Geräteeinrichtung",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Gerätespezifische Anweisungen",
+          "blurb": "",
+          "contentHtml": "<p>Das Fragezeichen erläutert die Unterschiede zwischen Browser und Telefon, einschließlich blockierter Berechtigungen. Öffnen Sie es, wenn Ihr Gerät nicht die erwartete Berechtigung oder Installationsaufforderung bietet.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Lage und nahegelegene Anbindung",
+          "blurb": "",
+          "contentHtml": "<p>Erlaube den Standortzugriff, um Menschen und Veranstaltungen in deiner Nähe zu sehen. Die Einstellung wird automatisch gespeichert.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Benachrichtigungen auf diesem Gerät",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere Hinweise für Nachrichten und Events. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Die Installation erteilt keine Erlaubnis.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Zum Startbildschirm",
+          "blurb": "",
+          "contentHtml": "<p>Ein Symbol öffnet die Web-App im eigenen Fenster. Anmeldung und Rechte bleiben separat. Auf unterstützten Geräten verfügbar.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "work:explanation-landing.setup-es-v6",
+      "documentType": "explanation",
+      "baseGroupId": "myscoutee-work",
+      "contextKey": "landing.setup",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Configuración del dispositivo",
+      "summary": "Configuración del dispositivo",
+      "description": "Configuración del dispositivo",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Instrucciones específicas del dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>El signo de interrogación explica las diferencias entre navegador y teléfono, incluidos los permisos bloqueados. Ábralo si su dispositivo no ofrece el permiso esperado o el mensaje de instalación.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Ubicación y acceso cercano",
+          "blurb": "",
+          "contentHtml": "<p>Permite el acceso a la ubicación para ver personas y eventos cercanos. La elección se guarda automáticamente.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notificaciones en este dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>Activa los avisos de mensajes y eventos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; instalar la app no concede este permiso.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Añadir al inicio",
+          "blurb": "",
+          "contentHtml": "<p>Añade un icono para abrir esta web en su propia ventana. El acceso y los permisos van aparte. En dispositivos compatibles.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-home-default-de-v7",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.home",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Erste Schritte",
+      "summary": "Erste Schritte",
+      "description": "Erste Schritte",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Wählen Sie einen Modus",
+          "blurb": "",
+          "contentHtml": "<p>Wechseln Sie zwischen Einführungen und Artikeln zu Dating, Arbeit und Community. Die Datenschutzakzeptanz der Website bleibt in diesen Modi gleich.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Ihr eigenes Konto",
+          "blurb": "",
+          "contentHtml": "<p>Melden Sie sich an, um Ihr eigenes Profil und Ihre eigenen Aktivitäten zu behalten. Die Demo verwendet Beispielidentitäten; Es wird kein persönliches Konto registriert.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Probieren Sie ein Beispielprofil aus",
+          "blurb": "",
+          "contentHtml": "<p>Explore öffnet den Demo-Selektor. Wählen Sie eine Rolle und eine Beispielperson, um die App aus ihrer Perspektive zu sehen. Mit einem neuen Profil können Sie die Einrichtung ausprobieren.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Starten Sie Ihr eigenes Profil",
+          "blurb": "",
+          "contentHtml": "<p>Durch den Beitritt wird der verfügbare Anmeldefluss geöffnet. Geräteberechtigungen und Installation sind separate Optionen; Durch das Erstellen eines Kontos wird die App nicht installiert.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website-Datenschutz",
+          "blurb": "",
+          "contentHtml": "<p>Die gleiche Website-Datenschutzakzeptanz gilt für Dating, Arbeit und Community. Beim Ändern des Modus werden Sie nicht aufgefordert, die identische Revision erneut zu akzeptieren.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Rechte & App-Symbol",
+          "blurb": "",
+          "contentHtml": "<p>Dein eigenes Profil benötigt den Standort für Menschen und Veranstaltungen in der Nähe. Die Demo nutzt den Standort des Beispielprofils. Mitteilungen und das Startbildschirm-Symbol sind optional.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-home-default-en-v7",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Getting started",
+      "summary": "Getting started",
+      "description": "Getting started",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Choose a mode",
+          "blurb": "",
+          "contentHtml": "<p>Switch between Dating, Work and Community introductions and articles. The website privacy acceptance remains shared across these modes.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Your own account",
+          "blurb": "",
+          "contentHtml": "<p>Sign in to keep your own profile and activity. The demo uses sample identities; it does not register a personal account.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Try a sample profile",
+          "blurb": "",
+          "contentHtml": "<p>Explore opens the demo selector. Choose a role and a sample person to see the app from their perspective; a new profile lets you try setup.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Start your own profile",
+          "blurb": "",
+          "contentHtml": "<p>Joining opens the available sign-in flow. Device permissions and installation are separate choices; creating an account does not install the app.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Website privacy",
+          "blurb": "",
+          "contentHtml": "<p>The same website privacy acceptance applies across Dating, Work and Community. Changing the mode does not ask you to accept that identical revision again.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permissions & app icon",
+          "blurb": "",
+          "contentHtml": "<p>Your own profile needs location for nearby people and events. The demo uses the sample profile’s location. Notifications and the home-screen icon are optional.</p>"
+        }
+      ],
+      "baseGroupId": null
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-home-default-es-v7",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.home",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Primeros pasos",
+      "summary": "Primeros pasos",
+      "description": "Primeros pasos",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Elige un modo",
+          "blurb": "",
+          "contentHtml": "<p>Cambie entre introducciones y artículos de citas, trabajo y comunidad. La aceptación de la privacidad del sitio web sigue siendo compartida en estos modos.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Tu propia cuenta",
+          "blurb": "",
+          "contentHtml": "<p>Inicia sesión para mantener tu propio perfil y actividad. La demostración utiliza identidades de muestra; no registra una cuenta personal.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Pruebe un perfil de muestra",
+          "blurb": "",
+          "contentHtml": "<p>Explorar abre el selector de demostración. Elija un rol y una persona de muestra para ver la aplicación desde su perspectiva; un nuevo perfil le permite probar la configuración.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Inicia tu propio perfil",
+          "blurb": "",
+          "contentHtml": "<p>Al unirse se abre el flujo de inicio de sesión disponible. Los permisos y la instalación del dispositivo son opciones independientes; Crear una cuenta no instala la aplicación.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Privacidad del sitio web",
+          "blurb": "",
+          "contentHtml": "<p>La misma aceptación de privacidad del sitio web se aplica en Citas, Trabajo y Comunidad. Cambiar el modo no le pide que acepte nuevamente esa revisión idéntica.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Permisos e icono",
+          "blurb": "",
+          "contentHtml": "<p>Tu perfil necesita la ubicación para personas y eventos cercanos. La demo usa la ubicación del perfil de ejemplo. Los avisos y el icono de inicio son opcionales.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-home-default-hu-v7",
+      "documentType": "explanation",
+      "contextKey": "landing.home",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 7,
+      "active": true,
+      "presentation": "tour",
+      "title": "Első lépések",
+      "summary": "Első lépések",
+      "description": "Első lépések",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-usage-mode",
+          "guideStepId": "usage-mode",
+          "icon": "help_outline",
+          "title": "Mód választása",
+          "blurb": "",
+          "contentHtml": "<p>Válts a Dating, Work és Community bemutatkozó felületei és cikkei között. A webhely adatvédelmi elfogadása közös marad.</p>"
+        },
+        {
+          "id": "guide-login",
+          "guideStepId": "login",
+          "icon": "help_outline",
+          "title": "Saját fiók",
+          "blurb": "",
+          "contentHtml": "<p>Bejelentkezve a saját profilodat és tevékenységeidet használod. A demó mintaprofilokat nyit meg, nem regisztrál saját fiókot.</p>"
+        },
+        {
+          "id": "guide-explore",
+          "guideStepId": "explore",
+          "icon": "help_outline",
+          "title": "Próba mintaprofillal",
+          "blurb": "",
+          "contentHtml": "<p>A felfedezés megnyitja a demó profilválasztóját. Válassz szerepet és személyt az ő nézetük kipróbálásához; új profillal a kitöltést is végigjárhatod.</p>"
+        },
+        {
+          "id": "guide-join",
+          "guideStepId": "join",
+          "icon": "help_outline",
+          "title": "Saját profil indítása",
+          "blurb": "",
+          "contentHtml": "<p>A csatlakozás a rendelkezésre álló bejelentkezést nyitja meg. Az eszközengedélyek és a telepítés külön döntések: a fióklétrehozás nem telepíti az appot.</p>"
+        },
+        {
+          "id": "guide-footer-privacy",
+          "guideStepId": "footer-privacy",
+          "icon": "help_outline",
+          "title": "Webhelyszintű adatvédelem",
+          "blurb": "",
+          "contentHtml": "<p>Ugyanaz az adatvédelmi elfogadás érvényes a Dating, Work és Community felületen. A módváltás nem kéri újra ugyanannak a változatnak az elfogadását.</p>"
+        },
+        {
+          "id": "guide-setup-launcher",
+          "guideStepId": "setup-launcher",
+          "icon": "help_outline",
+          "title": "Engedélyek és appikon",
+          "blurb": "",
+          "contentHtml": "<p>Saját profilnál a helyadat a közeli emberekhez és eseményekhez kell. A demó a mintaprofil helyét használja. Az értesítések és a kezdőképernyős ikon opcionálisak.</p>"
+        }
+      ],
+      "baseGroupId": null
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-setup-default-de-v6",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.setup",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Geräteeinrichtung",
+      "summary": "Geräteeinrichtung",
+      "description": "Geräteeinrichtung",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Gerätespezifische Anweisungen",
+          "blurb": "",
+          "contentHtml": "<p>Das Fragezeichen erläutert die Unterschiede zwischen Browser und Telefon, einschließlich blockierter Berechtigungen. Öffnen Sie es, wenn Ihr Gerät nicht die erwartete Berechtigung oder Installationsaufforderung bietet.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Lage und nahegelegene Anbindung",
+          "blurb": "",
+          "contentHtml": "<p>Erlaube den Standortzugriff, um Menschen und Veranstaltungen in deiner Nähe zu sehen. Die Einstellung wird automatisch gespeichert.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Benachrichtigungen auf diesem Gerät",
+          "blurb": "",
+          "contentHtml": "<p>Aktiviere Hinweise für Nachrichten und Events. Der Browser fragt nach; der Ring zeigt den Fortschritt. Die Wahl wird gespeichert. Die Installation erteilt keine Erlaubnis.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Zum Startbildschirm",
+          "blurb": "",
+          "contentHtml": "<p>Ein Symbol öffnet die Web-App im eigenen Fenster. Anmeldung und Rechte bleiben separat. Auf unterstützten Geräten verfügbar.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-setup-default-en-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "en",
+      "languageLabel": "English",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Device setup",
+      "summary": "Device setup",
+      "description": "Device setup",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Device-specific instructions",
+          "blurb": "",
+          "contentHtml": "<p>The question mark explains browser and phone differences, including blocked permissions. Open it if your device does not offer the expected permission or install prompt.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Location and nearby access",
+          "blurb": "",
+          "contentHtml": "<p>Allow location access to see nearby people and events. Your choice saves automatically.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notifications on this device",
+          "blurb": "",
+          "contentHtml": "<p>Enable alerts for new messages and events. The browser asks for permission and the ring shows progress. This saves automatically; installing the app does not grant this permission.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Add to home screen",
+          "blurb": "",
+          "contentHtml": "<p>Add an icon to open this web app in its own window. Sign-in and permissions stay separate. Available on supported devices.</p>"
+        }
+      ],
+      "baseGroupId": null
+    },
+    {
+      "isSystem": false,
+      "createdDate": "2026-10-07T00:00:00.000Z",
+      "createdUser": "system",
+      "_id": "explanation-landing-setup-default-es-v6",
+      "documentType": "explanation",
+      "baseGroupId": null,
+      "contextKey": "landing.setup",
+      "lang": "es",
+      "languageLabel": "Español",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Configuración del dispositivo",
+      "summary": "Configuración del dispositivo",
+      "description": "Configuración del dispositivo",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Instrucciones específicas del dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>El signo de interrogación explica las diferencias entre navegador y teléfono, incluidos los permisos bloqueados. Ábralo si su dispositivo no ofrece el permiso esperado o el mensaje de instalación.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Ubicación y acceso cercano",
+          "blurb": "",
+          "contentHtml": "<p>Permite el acceso a la ubicación para ver personas y eventos cercanos. La elección se guarda automáticamente.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Notificaciones en este dispositivo",
+          "blurb": "",
+          "contentHtml": "<p>Activa los avisos de mensajes y eventos. El navegador pide permiso y el aro muestra el progreso. Se guarda automáticamente; instalar la app no concede este permiso.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Añadir al inicio",
+          "blurb": "",
+          "contentHtml": "<p>Añade un icono para abrir esta web en su propia ventana. El acceso y los permisos van aparte. En dispositivos compatibles.</p>"
+        }
+      ],
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system"
+    },
+    {
+      "_id": "explanation-landing-setup-default-hu-v6",
+      "documentType": "explanation",
+      "contextKey": "landing.setup",
+      "lang": "hu",
+      "languageLabel": "Magyar",
+      "version": 6,
+      "active": true,
+      "presentation": "tour",
+      "title": "Eszközbeállítás",
+      "summary": "Eszközbeállítás",
+      "description": "Eszközbeállítás",
+      "headerColor": "violet",
+      "createdDate": "2026-09-30T00:00:00.000Z",
+      "createdUser": "system",
+      "updatedDate": "2026-10-07T00:00:00.000Z",
+      "updatedUser": "system",
+      "sections": [
+        {
+          "id": "guide-help",
+          "guideStepId": "help",
+          "icon": "help_outline",
+          "title": "Útmutató az eszközödhöz",
+          "blurb": "",
+          "contentHtml": "<p>A kérdőjel a böngészők és telefonok eltéréseit, valamint a blokkolt engedélyeket magyarázza el. Nyisd meg, ha nem jelenik meg a várt engedélykérés vagy telepítés.</p>"
+        },
+        {
+          "id": "guide-location",
+          "guideStepId": "location",
+          "icon": "help_outline",
+          "title": "Helyadat és közeli találatok",
+          "blurb": "",
+          "contentHtml": "<p>A közeli emberek és események megjelenítéséhez engedélyezd a helyhozzáférést. A beállítás automatikusan mentődik.</p>"
+        },
+        {
+          "id": "guide-notifications",
+          "guideStepId": "notifications",
+          "icon": "help_outline",
+          "title": "Értesítések ezen az eszközön",
+          "blurb": "",
+          "contentHtml": "<p>Kapcsold be az értesítéseket az új üzenetekhez és eseményekhez. A böngésző engedélyt kér, a gyűrű a folyamatot mutatja. Automatikusan mentődik; a telepítés nem ad értesítési engedélyt.</p>"
+        },
+        {
+          "id": "guide-install",
+          "guideStepId": "install",
+          "icon": "help_outline",
+          "title": "Kezdőképernyőre",
+          "blurb": "",
+          "contentHtml": "<p>Saját ikonról, külön ablakban nyitja meg a webappot. A belépés és az engedélyek külön kezelhetők. Támogatott eszközön érhető el.</p>"
+        }
+      ],
+      "baseGroupId": null
+    }
+  ],
+  "revisionUpdates": [],
+  "retiredRevisions": [],
+  "catalogUpdates": []
+}

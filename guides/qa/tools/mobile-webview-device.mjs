@@ -227,13 +227,14 @@ try {
     }))()`), null, 2));
   } else if (action === 'language') {
     const language = args[0];
-    if (!['en', 'hu'].includes(language)) throw Error('Use language en|hu');
+    if (!['en', 'hu', 'de', 'es'].includes(language)) throw Error('Use language en|hu|de|es');
     // Browser-level language configuration for this QA target; no injected
     // application state, translation bundles or navigator property replacement.
     const original = await evaluate('({userAgent:navigator.userAgent,platform:navigator.platform,acceptLanguage:navigator.languages.join(",")})');
     const input = createInterface({input: process.stdin});
     try {
-      await send('Network.setUserAgentOverride', {...original, acceptLanguage: language === 'en' ? 'en-US,en' : 'hu-HU,hu'});
+      const locales = { en: 'en-US,en', hu: 'hu-HU,hu', de: 'de-DE,de', es: 'es-ES,es' };
+      await send('Network.setUserAgentOverride', {...original, acceptLanguage: locales[language]});
       await send('Page.reload');
       console.log(JSON.stringify({action, language, restoreOnStop: true}));
       await new Promise(resolve => {

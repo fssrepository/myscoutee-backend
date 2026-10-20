@@ -81,6 +81,21 @@ class HelpCenterServiceTest {
     }
 
     @Test
+    void germanAndSpanishHelpReadsSelectTheirOwnPublishedRevision() {
+        for (String lang : List.of("de", "es")) {
+            var translated = revision("help-" + lang, 1);
+            translated.setDocumentType("help");
+            translated.setLang(lang);
+            translated.setActive(true);
+            when(revisionsRepository.findByBaseGroupIdOrderByVersionDesc(null)).thenReturn(List.of(translated));
+            var state = service.activeState("help", null, lang + "-" + lang.toUpperCase());
+            assertThat(state.activeRevision()).isNotNull();
+            assertThat(state.activeRevision().lang()).isEqualTo(lang);
+            assertThat(state.activeRevision().languageLabel()).isEqualTo("de".equals(lang) ? "Deutsch" : "Español");
+        }
+    }
+
+    @Test
     void workAdminCannotActivateOrDeleteADatingRevision() {
         var moderation = org.mockito.Mockito.mock(AdministrativeActors.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", moderation);

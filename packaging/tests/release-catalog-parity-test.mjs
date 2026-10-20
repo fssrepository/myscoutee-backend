@@ -12,20 +12,36 @@ const files = Object.fromEntries(['catalog-defaults','helpCenterRevisions','help
 const refreshMigration = fs.readFileSync(new URL('packaging/migrations/017-release-catalog-refresh.js',root),'utf8');
 const refreshInput = fs.readFileSync(new URL('packaging/migrations/seeds/017-release-catalog-refresh/catalog-updates.json',root),'utf8');
 const refresh = JSON.parse(refreshInput);
+const languageRefresh = JSON.parse(fs.readFileSync(new URL('packaging/migrations/seeds/020-four-language-content/catalog-updates.json',root),'utf8'));
+const locationGuideRefresh = JSON.parse(fs.readFileSync(new URL('packaging/migrations/seeds/021-location-setup-guidance/catalog-updates.json',root),'utf8'));
 assert.ok(isDeepStrictEqual(refresh.previousRevisions, JSON.parse(files.helpCenterRevisions)), 'Refresh must recognize the immutable prior defaults');
 const upgradedFields = new Map(JSON.parse(files.helpCenterGuideFields).map(row=>[row._id,row]));
 for (const row of refresh.fields) upgradedFields.set(row._id,row);
 for (const id of refresh.removedFieldIds) upgradedFields.delete(id);
 const currentFields = JSON.parse(fs.readFileSync(new URL('server/docker/conf/mongodb/myscoutee_db/helpCenterGuideFields.json',root),'utf8'));
 const sorted = rows => [...rows].sort((a,b)=>a._id.localeCompare(b._id));
-assert.ok(isDeepStrictEqual(sorted(upgradedFields.values()),sorted(currentFields)), 'Guide metadata refresh differs from the current production seed');
+const languageFields = new Map(upgradedFields);
+for (const row of languageRefresh.fields) languageFields.set(row._id,row);
+for (const id of languageRefresh.removedFieldIds) languageFields.delete(id);
+for (const row of locationGuideRefresh.fields) languageFields.set(row._id,row);
+assert.ok(isDeepStrictEqual(sorted(languageFields.values()),sorted(currentFields)), 'Guide metadata refresh differs from the current production seed');
+const currentGuideRevisions = JSON.parse(fs.readFileSync(new URL('server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json',root),'utf8'));
+const correctedGuideRevisions = currentGuideRevisions.filter(row => row.active && row.documentType==='explanation'
+  && ['landing.home','landing.setup'].includes(row.contextKey));
+assert.equal(correctedGuideRevisions.length,24,'Both guide contexts must cover all four languages and three workspace scopes');
+assert.ok(isDeepStrictEqual(sorted(locationGuideRefresh.addedRevisions),sorted(correctedGuideRevisions)),
+  'The pinned location-guide correction differs from the current source');
+assert.equal(locationGuideRefresh.previousRevisions.length,24);
+assert.ok(locationGuideRefresh.previousRevisions.every(row => ['landing.home','landing.setup'].includes(row.contextKey)));
+assert.deepEqual(locationGuideRefresh.fields.map(row=>row._id),['landing.home--setup-launcher']);
+for (const name of ['removedFieldIds','revisionUpdates','retiredRevisions','catalogUpdates']) assert.deepEqual(locationGuideRefresh[name],[]);
 const upgradedRevisions = new Map(JSON.parse(files.helpCenterRevisions).map(row=>[row._id,row]));
 for (const row of refresh.addedRevisions) { assert.ok(!upgradedRevisions.has(row._id)); upgradedRevisions.set(row._id,row); }
 for (const {previous,target} of refresh.revisionUpdates) {
   assert.ok(isDeepStrictEqual(upgradedRevisions.get(previous._id),previous), 'Refresh previous revision differs from the immutable baseline');
   upgradedRevisions.set(target._id,target);
 }
-const currentRevisions = JSON.parse(fs.readFileSync(new URL('server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json',root),'utf8'));
+const currentRevisions = languageRefresh.previousRevisions;
 const revisionScope = row => JSON.stringify([row.baseGroupId??null,row.documentType,row.lang,row.contextKey??null]);
 const currentScopes = new Set(currentRevisions.map(revisionScope));
 assert.ok(isDeepStrictEqual(refresh.retiredRevisions,refresh.previousRevisions.filter(row=>!currentScopes.has(revisionScope(row)))), 'Only obsolete packaged guide scopes may be retired');
@@ -37,19 +53,22 @@ for (const row of JSON.parse(files['catalog-defaults'])) {
     assert.ok(isDeepStrictEqual(upgraded.get(key(update.previous)),update.previous), 'Refresh catalog baseline differs');
     upgraded.set(key(update.target),update.target);
   }
-  assert.ok(isDeepStrictEqual([...upgraded.values()],JSON.parse(fs.readFileSync(new URL('server/docker/conf/mongodb/myscoutee_db/'+row.collection+'.json',root),'utf8'))),
+  for (const update of languageRefresh.catalogUpdates.filter(value=>value.collection===row.collection)) upgraded.set(key(update.target),update.target);
+  for (const added of languageRefresh.addedCatalogs.filter(value=>value.collection===row.collection)) for (const value of added.rows) upgraded.set(key(value),value);
+  assert.ok(isDeepStrictEqual(sorted(upgraded.values()),sorted(JSON.parse(fs.readFileSync(new URL('server/docker/conf/mongodb/myscoutee_db/'+row.collection+'.json',root),'utf8')))),
     `Pinned upgrade catalog differs from the current production seed: ${row.collection}`);
 }
 if (!process.argv.includes('--print-script')) {
-  console.log('PASS: immutable migration016 plus migration017 covers the current production catalogs.');
+  console.log('PASS: immutable migrations016/017/020 and the scoped migration021 match the current production catalogs.');
 } else console.log(`
 const inputDirectory=${JSON.stringify(inputDirectory)};
 const inputFs=require('fs');
 const inputs=Object.fromEntries(['catalog-defaults','helpCenterRevisions','helpCenterGuideFields'].map(name=>[name,inputFs.readFileSync(inputDirectory+'/016/'+name+'.json','utf8')]));
 const refreshInput=inputFs.readFileSync(inputDirectory+'/catalog-updates.json','utf8');
 const catalogs=EJSON.parse(inputs['catalog-defaults']);
-const seeds=EJSON.parse(inputFs.readFileSync(inputDirectory+'/current-helpCenterRevisions.json','utf8'));
-const fields=EJSON.parse(inputFs.readFileSync(inputDirectory+'/current-helpCenterGuideFields.json','utf8'));
+// Historical 016/017 checks retain their own expected catalogs after 020.
+const seeds=EJSON.parse(${JSON.stringify(JSON.stringify(currentRevisions))});
+const fields=EJSON.parse(${JSON.stringify(JSON.stringify([...upgradedFields.values()]))});
 const target=db.getSiblingDB('qa_release_catalogs_'+new ObjectId().toHexString());
 const names=[...catalogs.map(row=>row.collection),'helpCenterRevisions','helpCenterGuideFields'];
 const scope=row=>JSON.stringify([row.baseGroupId??null,row.documentType,row.lang,row.contextKey??null]);

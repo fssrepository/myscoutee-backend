@@ -1,0 +1,16 @@
+Browser notice variant — 2026-10-20
+
+Tool: built-in image_gen, edit mode.
+Source: myscoutee-promo-feed-v1.png (tracked original).
+Output: myscoutee-promo-feed-browser-notice-v2.png
+
+Final prompt:
+Use case: precise marketing-text addition.
+Input image is the EDIT TARGET: the original MyScoutee portrait feed artwork from the repository, 1122 x 1402 pixels.
+Make a minimal edit: add one conspicuous compact browser advisory in the empty pale central space BETWEEN the line "Standard · Tournament · Speed meeting" and the "Interest 1–10" panel. There is generous empty space there. Place the notice between the side portrait cards without covering any cards, existing words, faces, connecting lines or the interest slider.
+The advisory should be a polished dark navy rounded rectangular panel with a fine vivid purple edge. Use bold highly legible white sans-serif for its first line, and light warm yellow for its two smaller explanatory lines. Exact text, three lines:
+"OPEN IN EXTERNAL BROWSER"
+"Facebook / Instagram may"
+"block location access."
+Make the notice readable on a phone, visually important and tidy, fitting the original typography and palette. It is an informational notice printed on an image, not a fake clickable app button.
+Preserve EVERYTHING else in the source: same entire framing and portrait aspect ratio, exact brand logo and wordmark, all six profile cards and their exact faces, all six friends at the cafe, background, lighting, every icon, connecting line, interest slider, colors and all original text including "6 people · 6 priority lists → 1 team", "Standard · Tournament · Speed meeting", "Interest 1–10", "8", "Mutual interest.", "Group chat. Real plans.", "Meet through events.", "FREE TO JOIN". Do not redesign, crop, stretch, replace or omit any existing content. Do not add a browser logo or any other text or icon. Output one complete opaque edited image, retaining original dimensions if supported.

@@ -52,11 +52,16 @@ public class IdeaPostMapper {
         if (dashIndex > 0) {
             normalized = normalized.substring(0, dashIndex);
         }
-        return "hu".equals(normalized) ? "hu" : DEFAULT_LANG;
+        return List.of("en", "hu", "de", "es").contains(normalized) ? normalized : DEFAULT_LANG;
     }
 
     private String languageLabel(String lang) {
-        return "hu".equals(contentLang(lang)) ? "Magyar" : "English";
+        return switch (contentLang(lang)) {
+            case "hu" -> "Magyar";
+            case "de" -> "Deutsch";
+            case "es" -> "Español";
+            default -> "English";
+        };
     }
 
     private String contentKeyFromId(String id) {
@@ -64,9 +69,7 @@ public class IdeaPostMapper {
         if (!StringUtils.hasText(normalized)) {
             return "";
         }
-        return normalized.endsWith("-hu")
-                ? normalized.substring(0, normalized.length() - 3)
-                : normalized;
+        return normalized.replaceFirst("-(hu|de|es)$", "");
     }
 
     private String text(String value, String fallback) {

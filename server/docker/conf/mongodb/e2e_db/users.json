@@ -11556,14 +11556,17 @@
     "languages": [
       "English"
     ],
-    "locationCoordinates": null,
+    "locationCoordinates": {
+      "latitude": 51.5002,
+      "longitude": -0.1398
+    },
     "name": "Ivy Stone",
     "physique": "Athletic",
     "profileStatus": "friends only",
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "c543a956-f1a8-5905-8a19-e9efe0256922",
-    "partitionKey": null,
+    "partitionKey": "country:gb",
     "userId": "e76d63199eff33a6945cb797",
     "profileFormVersion": 2,
     "email": "member47@myscoutee.local",
@@ -11797,14 +11800,17 @@
       "English",
       "Spanish"
     ],
-    "locationCoordinates": null,
+    "locationCoordinates": {
+      "latitude": 51.5014,
+      "longitude": -0.1398
+    },
     "name": "Leo Stone",
     "physique": "Average",
     "profileStatus": "public",
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "0fdfbe29-d92b-5815-90d2-a0766432a35f",
-    "partitionKey": null,
+    "partitionKey": "country:gb",
     "userId": "f01086c19a00a6f46b6d41a7",
     "profileFormVersion": 2,
     "email": "member48@myscoutee.local",
@@ -12800,6 +12806,12 @@
     "menuCounterVersions": {
       "group-member-05503ec7c5b9191dec7eeb3958deef8f": 1,
       "group-member-22310dbc6c5fcdeed9953ee7c38888fc": 1
+    },
+    "city": "Budapest",
+    "partitionKey": "country:hu",
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
     }
   },
   {
@@ -12875,6 +12887,12 @@
     "menuCounterVersions": {
       "group-member-97ca80f34a92ba0a807046bc599338c6": 1,
       "group-member-58bd2605214264ecac4c6b1f5f01c37e": 1
+    },
+    "city": "Budapest",
+    "partitionKey": "country:hu",
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
     }
   },
   {
@@ -12883,7 +12901,7 @@
     "userId": "operator@myscoutee.local",
     "email": "operator1@myscoutee.local",
     "name": "Demo Operator",
-    "city": "Deployment sandbox",
+    "city": "Budapest",
     "initials": "DO",
     "gender": "woman",
     "statusText": "Operator workspace",
@@ -12949,7 +12967,12 @@
       "groups_invitations": 0,
       "groups_trash": 0
     },
-    "menuCounterVersions": {}
+    "menuCounterVersions": {},
+    "partitionKey": "country:hu",
+    "locationCoordinates": {
+      "latitude": 47.4919,
+      "longitude": 19.045
+    }
   },
   {
     "_id": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
@@ -19030,8 +19053,11 @@
       "https://randomuser.me/api/portraits/women/39.jpg",
       "https://randomuser.me/api/portraits/women/56.jpg"
     ],
-    "locationCoordinates": null,
-    "partitionKey": null,
+    "locationCoordinates": {
+      "latitude": 51.5002,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb",
     "profileDetails": [
       {
         "title": "Lifestyle",
@@ -19231,8 +19257,11 @@
       "https://randomuser.me/api/portraits/men/46.jpg",
       "https://randomuser.me/api/portraits/men/63.jpg"
     ],
-    "locationCoordinates": null,
-    "partitionKey": null,
+    "locationCoordinates": {
+      "latitude": 51.5014,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb",
     "profileDetails": [
       {
         "title": "Lifestyle",
@@ -19415,9 +19444,15 @@
     "name": "Ava Moderation",
     "initials": "AM",
     "gender": "woman",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [],
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",
@@ -19452,9 +19487,15 @@
     "name": "Noel Safety",
     "initials": "NS",
     "gender": "woman",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [],
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",
@@ -21232,9 +21273,15 @@
     "name": "Ava Moderation",
     "initials": "AM",
     "gender": "woman",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [],
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",
@@ -21259,9 +21306,15 @@
     "name": "Noel Safety",
     "initials": "NS",
     "gender": "woman",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [],
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",

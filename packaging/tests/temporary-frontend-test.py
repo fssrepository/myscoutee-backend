@@ -64,6 +64,17 @@ class TemporaryFrontendTest(unittest.TestCase):
  def test_mutable_tag_is_rejected_before_docker_access(self):
   self.run_helper('install','ghcr.io/fssrepository/myscoutee-nginx:1.0.0',ok=False)
   self.assertEqual(self.log.read_text(),'')
+ def test_local_image_uses_same_checks_persistence_and_rollback_without_pull(self):
+  self.run_helper('install-local',NEW)
+  self.assertIn('NGINX_PRODUCTION_IMAGE='+NEW,(self.server/'.env').read_text())
+  self.assertFalse(any(json.loads(line)[0]=='pull' for line in self.log.read_text().splitlines()))
+  self.run_helper('rollback')
+  self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+ def test_local_image_refuses_mutable_tags_and_wrong_service(self):
+  self.run_helper('install-local','myscoutee-nginx:test',ok=False)
+  self.assertEqual(self.log.read_text(),'')
+  self.run_helper('install-local',NEW,ok=False,MOCK_SERVICE='registry-demo')
+  self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
  def test_version_change_is_rejected_before_recreation(self):
   self.run_helper('install',REF,ok=False,MOCK_VERSION='2.0.0')
   self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)

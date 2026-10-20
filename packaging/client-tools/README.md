@@ -156,6 +156,13 @@ UI, not just the unchanged `1.0.0` version string.
 
 ## Install or reinstall
 
+For a trusted local source build on a QA host, transfer a checksum-verified
+`docker save` archive, load it, then run
+`install-temporary-image.sh install-local SERVICE sha256:IMAGE_ID` with the exact
+image ID reported by `docker image inspect` on that target host. This uses the same compatibility, health, persistent-selection
+and rollback checks without a registry pull. Mutable local tags are refused.
+Keep the source revision/worktree and artifact checksums with the QA receipt.
+
 ```bash
 ./install.sh /path/to/myscoutee_1.0.0_amd64.deb
 ```

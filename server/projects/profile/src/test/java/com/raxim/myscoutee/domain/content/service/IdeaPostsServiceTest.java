@@ -93,7 +93,7 @@ class IdeaPostsServiceTest {
 
         IdeaPostPublicPageDto result = service.publicPostsPage(
                 null,
-                "de-DE;q=0.9, hu-HU;q=0.8, en;q=0.7",
+                "fr-FR;q=0.9, hu-HU;q=0.8, en;q=0.7",
                 -5,
                 500,
                 null);
@@ -103,6 +103,18 @@ class IdeaPostsServiceTest {
         assertThat(result.nextCursor()).isNull();
         verify(landingArticlesRepository).findPage("hu", 0, 50, null, null);
         verify(landingArticlesRepository).findPage("en", 0, 50, null, null);
+    }
+
+    @Test
+    void germanAndSpanishPublicReadsDoNotCollapseToEnglish() {
+        for (String lang : List.of("de", "es")) {
+            IdeaPost translated = post("article-" + lang, lang, "2026-07-20T10:00:00Z");
+            when(landingArticlesRepository.findPage(lang, 0, 10, null, null))
+                    .thenReturn(new LandingArticleSlice(List.of(translated), 1L, false));
+            var result = service.publicPostsPage(null, lang + "-" + lang.toUpperCase(), 0, 10, null);
+            assertThat(result.records()).extracting(record -> record.lang()).containsExactly(lang);
+            verify(landingArticlesRepository).findPage(lang, 0, 10, null, null);
+        }
     }
 
     @Test

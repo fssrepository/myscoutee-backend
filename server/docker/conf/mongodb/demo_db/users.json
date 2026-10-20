@@ -11583,14 +11583,17 @@
     "languages": [
       "English"
     ],
-    "locationCoordinates": null,
+    "locationCoordinates": {
+      "latitude": 51.5002,
+      "longitude": -0.1398
+    },
     "name": "Ivy Stone",
     "physique": "Athletic",
     "profileStatus": "friends only",
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "c543a956-f1a8-5905-8a19-e9efe0256922",
-    "partitionKey": null,
+    "partitionKey": "country:gb",
     "userId": "e76d63199eff33a6945cb797",
     "profileFormVersion": 2,
     "email": "member47@myscoutee.local",
@@ -11824,14 +11827,17 @@
       "English",
       "Spanish"
     ],
-    "locationCoordinates": null,
+    "locationCoordinates": {
+      "latitude": 51.5014,
+      "longitude": -0.1398
+    },
     "name": "Leo Stone",
     "physique": "Average",
     "profileStatus": "public",
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "0fdfbe29-d92b-5815-90d2-a0766432a35f",
-    "partitionKey": null,
+    "partitionKey": "country:gb",
     "userId": "f01086c19a00a6f46b6d41a7",
     "profileFormVersion": 2,
     "email": "member48@myscoutee.local",
@@ -12766,7 +12772,7 @@
     "userId": "admin-demo-ava",
     "email": "admin1@myscoutee.local",
     "name": "Ava Moderation",
-    "city": "Safety desk",
+    "city": "Budapest",
     "initials": "AM",
     "gender": "woman",
     "statusText": "Admin workspace",
@@ -12836,6 +12842,11 @@
     "menuCounterVersions": {
       "group-member-05503ec7c5b9191dec7eeb3958deef8f": 1,
       "group-member-22310dbc6c5fcdeed9953ee7c38888fc": 1
+    },
+    "partitionKey": "country:hu",
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
     }
   },
   {
@@ -12844,7 +12855,7 @@
     "userId": "admin-demo-noel",
     "email": "admin2@myscoutee.local",
     "name": "Noel Safety",
-    "city": "Trust desk",
+    "city": "Budapest",
     "initials": "NS",
     "gender": "man",
     "statusText": "Admin workspace",
@@ -12914,6 +12925,11 @@
     "menuCounterVersions": {
       "group-member-97ca80f34a92ba0a807046bc599338c6": 1,
       "group-member-58bd2605214264ecac4c6b1f5f01c37e": 1
+    },
+    "partitionKey": "country:hu",
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
     }
   },
   {
@@ -12922,7 +12938,7 @@
     "userId": "operator@myscoutee.local",
     "email": "operator1@myscoutee.local",
     "name": "Demo Operator",
-    "city": "Deployment sandbox",
+    "city": "Budapest",
     "initials": "DO",
     "gender": "woman",
     "statusText": "Operator workspace",
@@ -12990,7 +13006,12 @@
       "groups_invitations": 0,
       "groups_trash": 0
     },
-    "menuCounterVersions": {}
+    "menuCounterVersions": {},
+    "partitionKey": "country:hu",
+    "locationCoordinates": {
+      "latitude": 47.4919,
+      "longitude": 19.045
+    }
   },
   {
     "_id": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
@@ -19212,8 +19233,11 @@
     "images": [
       "/media/public?key=images/demo-profiles/e76d63199eff33a6945cb797/photo-01/large.webp"
     ],
-    "locationCoordinates": null,
-    "partitionKey": null,
+    "locationCoordinates": {
+      "latitude": 51.5002,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb",
     "profileDetails": [
       {
         "title": "Lifestyle",
@@ -19412,8 +19436,11 @@
       "/media/public?key=images/demo-profiles/f01086c19a00a6f46b6d41a7/photo-01/large.webp",
       "/media/public?key=images/demo-profiles/f01086c19a00a6f46b6d41a7/photo-02/large.webp"
     ],
-    "locationCoordinates": null,
-    "partitionKey": null,
+    "locationCoordinates": {
+      "latitude": 51.5014,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb",
     "profileDetails": [
       {
         "title": "Lifestyle",
@@ -19596,12 +19623,17 @@
     "name": "Ava Moderation",
     "initials": "AM",
     "gender": "woman",
-    "city": "Safety desk",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [
       "/media/public?key=images/demo-profiles/admin-demo-ava/photo-01/large.webp"
     ],
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",
@@ -19636,12 +19668,17 @@
     "name": "Noel Safety",
     "initials": "NS",
     "gender": "man",
-    "city": "Trust desk",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [
       "/media/public?key=images/demo-profiles/admin-demo-noel/photo-01/large.webp"
     ],
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",
@@ -21408,12 +21445,17 @@
     "name": "Ava Moderation",
     "initials": "AM",
     "gender": "woman",
-    "city": "Safety desk",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [
       "/media/public?key=images/demo-profiles/admin-demo-ava/photo-01/large.webp"
     ],
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",
@@ -21438,12 +21480,17 @@
     "name": "Noel Safety",
     "initials": "NS",
     "gender": "man",
-    "city": "Trust desk",
+    "city": "Budapest",
     "headline": "Moderation workspace",
     "about": "Reviews reports, feedback, and support chats.",
     "images": [
       "/media/public?key=images/demo-profiles/admin-demo-noel/photo-01/large.webp"
     ],
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu",
     "profileStatus": "public",
     "status": "A",
     "statusText": "Admin workspace",

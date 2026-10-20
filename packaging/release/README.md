@@ -32,7 +32,7 @@ input.
 The latest published Debian package is **1.4.1**. Its
 [release](../../guides/releases/v1.4.1.md) includes the signed DEB and published
 Docker images; the owner’s uploaded hash and canonical discovery are verified. The
-[1.3.1 frontend patch](../../guides/releases/v1.3.1.md) publishes only a compatible
+[1.4.3 frontend patch](../../guides/releases/v1.4.3.md) publishes only a compatible
 nginx/frontend image; no DEB or automatic-update catalog is produced.
 Package/image versions and
 release qualification boundaries are recorded in

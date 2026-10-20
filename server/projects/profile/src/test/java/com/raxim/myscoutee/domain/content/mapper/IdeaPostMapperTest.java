@@ -21,6 +21,19 @@ class IdeaPostMapperTest {
         assertThat(mapper.toDto(weighted).languageLabel()).isEqualTo("Magyar");
     }
 
+    @Test
+    void preservesGermanAndSpanishLanguageAndSharedContentIdentity() {
+        for (String lang : new String[] {"de", "es"}) {
+            IdeaPost post = post(lang + "-" + lang.toUpperCase());
+            post.setId("article-" + lang);
+            post.setContentKey(null);
+            var dto = mapper.toDto(post);
+            assertThat(dto.lang()).isEqualTo(lang);
+            assertThat(dto.contentKey()).isEqualTo("article");
+            assertThat(dto.languageLabel()).isEqualTo("de".equals(lang) ? "Deutsch" : "Español");
+        }
+    }
+
     private IdeaPost post(String lang) {
         IdeaPost post = new IdeaPost();
         post.setId("article-hu");

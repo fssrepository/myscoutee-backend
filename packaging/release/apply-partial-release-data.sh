@@ -7,8 +7,12 @@ release=$(realpath "$1")
 server=/opt/myscoutee/server
 package=/opt/myscoutee/packaging
 [[ -f "$release/migrations/006-release-system-defaults.js" && -f "$server/docker-compose-prod.yml" ]] || exit 1
+# Use the same selection as the shared synchronizer, plus migration-owned catalogs.
+# Validate the complete input set before any package backup or database mutation.
+seed_selection="$(jq -er '[.[].collection] + ["deploymentConfigurations", "helpCenterRevisions", "helpCenterGuideFields", "ideaPosts", "emailTemplates", "notificationTemplates"] | unique[]' "$release/scripts/release-system-seeds.json")"
+mapfile -t seed_names <<< "$seed_selection"
 for database in production_db demo_db; do
- for name in deploymentConfigurations exchangeRates notificationRuleConfigs countryPartitions helpCenterRevisions helpCenterGuideFields i18n_messages i18n_bundles; do
+ for name in "${seed_names[@]}"; do
   [[ -f "$release/seeds/$database/$name.json" && ! -L "$release/seeds/$database/$name.json" ]] || exit 1
  done
 done
@@ -27,7 +31,7 @@ for database in production_db demo_db; do
  MYSCOUTEE_MIGRATION_SEED_DIRECTORY="$seed_directory/$database" \
   bash "$release/scripts/migrate-production-data.sh"
  directory=$database; [[ "$database" != production_db ]] || directory=myscoutee_db
- for name in deploymentConfigurations exchangeRates notificationRuleConfigs countryPartitions helpCenterRevisions helpCenterGuideFields i18n_messages i18n_bundles; do
+ for name in "${seed_names[@]}"; do
   install -m 0644 "$release/seeds/$database/$name.json" "$server/docker/conf/mongodb/$directory/$name.json"
  done
 done
@@ -41,6 +45,7 @@ fi
 for name in migrate-production-data.sh run-data-migrations.js sync-release-system-seeds.js sync-i18n-seeds.sh; do
  install -m 0755 "$release/scripts/$name" "$package/scripts/$name"
 done
+install -m 0644 "$release/scripts/release-system-seeds.json" "$package/scripts/release-system-seeds.json"
 # Keep the installed startup order consistent: Mongo readiness, schema, seeds.
 unit=/lib/systemd/system/myscoutee.service
 if [[ -f "$unit" ]] && grep -q '^ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh$' "$unit"; then

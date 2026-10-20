@@ -688,7 +688,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
         if (dashIndex > 0) {
             normalized = normalized.substring(0, dashIndex);
         }
-        return "hu".equals(normalized) || DEFAULT_LANG.equals(normalized) ? normalized : "";
+        return List.of("en", "hu", "de", "es").contains(normalized) ? normalized : "";
     }
 
     private String requestContentLang(String explicitLang, String acceptLanguage) {
@@ -705,7 +705,12 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     }
 
     private String languageLabel(String lang) {
-        return "hu".equals(contentLang(lang)) ? "Magyar" : "English";
+        return switch (contentLang(lang)) {
+            case "hu" -> "Magyar";
+            case "de" -> "Deutsch";
+            case "es" -> "Español";
+            default -> "English";
+        };
     }
 
     private String contentKeyFromId(String id) {
@@ -713,9 +718,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
         if (!StringUtils.hasText(normalized)) {
             return "";
         }
-        return normalized.endsWith("-hu")
-                ? normalized.substring(0, normalized.length() - 3)
-                : normalized;
+        return normalized.replaceFirst("-(hu|de|es)$", "");
     }
 
     private String normalize(String value) {

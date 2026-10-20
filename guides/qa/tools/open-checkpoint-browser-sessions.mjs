@@ -103,8 +103,10 @@ if (checkpoint.device === 'android') {
     const statusPath = process.env.QA_DEPLOY_FIXTURE_STATUS;
     if (!statusPath) fail('Verify the configured deployment fixture and provide QA_DEPLOY_FIXTURE_STATUS.');
     baseline = JSON.parse(await readFile(statusPath, 'utf8'));
+    const authenticationReady = checkpoint.authenticationMode === 'demo'
+      ? baseline.demoActive === true : baseline.firebaseActive === true;
     if (baseline.checkpointId !== checkpointId || baseline.phase !== 'baseline-ready'
-      || baseline.firebaseActive !== true || Date.now() - Date.parse(baseline.checkedAt) > 300000
+      || !authenticationReady || Date.now() - Date.parse(baseline.checkedAt) > 300000
       || !Number.isFinite(Date.parse(baseline.checkedAt))) {
       fail('A current verified configured-deployment baseline is required.');
     }

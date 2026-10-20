@@ -1,0 +1,1483 @@
+[
+  {
+    "_id": {
+      "$oid": "bf057de7c586eede7e84bdc7"
+    },
+    "userId": "bf057de7c586eede7e84bdc7",
+    "name": "Farkas Anna",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5075,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "b29df68956f3fe15e04558de"
+    },
+    "userId": "b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5087,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "9f3b3f085e23af6c89dbc432"
+    },
+    "userId": "9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5099,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "1b1c70be2349b3359a8f6f94"
+    },
+    "userId": "1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5111,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "178e8d0cbe164fa3fede5884"
+    },
+    "userId": "178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5344,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "f4b2ebd8f56628ab7df58221"
+    },
+    "userId": "f4b2ebd8f56628ab7df58221",
+    "name": "Iris Bloom",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5356,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "cdd937e0adcbd1a5e38f3ceb"
+    },
+    "userId": "cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "1d7d3545ba5e0f1d63918589"
+    },
+    "userId": "1d7d3545ba5e0f1d63918589",
+    "name": "Evan Reed",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5032,
+      "longitude": 13.4014
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "7822c5f99eff99d63abe8933"
+    },
+    "userId": "7822c5f99eff99d63abe8933",
+    "name": "Kai Morgan",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4012,
+      "longitude": -3.7074
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "d182041b8a54132d5168034f"
+    },
+    "userId": "d182041b8a54132d5168034f",
+    "name": "Luca Hale",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4288,
+      "longitude": -3.7206
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "d04cd419e735549e3f312977"
+    },
+    "userId": "d04cd419e735549e3f312977",
+    "name": "Theo Lane",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.43,
+      "longitude": -3.7206
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "eb1ca0b761885bb0763e2929"
+    },
+    "userId": "eb1ca0b761885bb0763e2929",
+    "name": "Milo Grant",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4312,
+      "longitude": -3.7206
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "fcad6954169063f106a7a240"
+    },
+    "userId": "fcad6954169063f106a7a240",
+    "name": "Emma Parker",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.523,
+      "longitude": -0.1446
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "2d520f3c98b0440c1556f4af"
+    },
+    "userId": "2d520f3c98b0440c1556f4af",
+    "name": "Liam Parker",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.5242,
+      "longitude": -0.1446
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "0216b1ceb256d6f2c89073b8"
+    },
+    "userId": "0216b1ceb256d6f2c89073b8",
+    "name": "Sophia Lane",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4906,
+      "longitude": -0.1434
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "eac11b0685f9799953a40dd4"
+    },
+    "userId": "eac11b0685f9799953a40dd4",
+    "name": "Noah Lane",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.1434
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "7313a9379f60200cba7b9f71"
+    },
+    "userId": "7313a9379f60200cba7b9f71",
+    "name": "Olivia Rivera",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4835,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "f6f22ba0a6f14cfcf4585d47"
+    },
+    "userId": "f6f22ba0a6f14cfcf4585d47",
+    "name": "Ethan Rivera",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4847,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "0c3ab5da9af33d4e688e809c"
+    },
+    "userId": "0c3ab5da9af33d4e688e809c",
+    "name": "Mia Grant",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4859,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "76da95a9109da485555c0d25"
+    },
+    "userId": "76da95a9109da485555c0d25",
+    "name": "Mason Grant",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5123,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "0b8e5df4ec85d858c304a350"
+    },
+    "userId": "0b8e5df4ec85d858c304a350",
+    "name": "Lina Stone",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5356,
+      "longitude": 13.3894
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "4da20eb049179e73d4757808"
+    },
+    "userId": "4da20eb049179e73d4757808",
+    "name": "Lucas Stone",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.3894
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "9184901a15076d32ea8b626f"
+    },
+    "userId": "9184901a15076d32ea8b626f",
+    "name": "Nora Hale",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5032,
+      "longitude": 13.3906
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "e1dccfc3443239865c6ac69a"
+    },
+    "userId": "e1dccfc3443239865c6ac69a",
+    "name": "Owen Hale",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5044,
+      "longitude": 13.3906
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "4b5bad1292fb6db05dc0e455"
+    },
+    "userId": "4b5bad1292fb6db05dc0e455",
+    "name": "Chloe Brooks",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4024,
+      "longitude": -3.7182
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "ed4924c22a5240a54e48c0b5"
+    },
+    "userId": "ed4924c22a5240a54e48c0b5",
+    "name": "Elijah Brooks",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4036,
+      "longitude": -3.7182
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "a0fb804ad6f347d6a9dab526"
+    },
+    "userId": "a0fb804ad6f347d6a9dab526",
+    "name": "Ivy Reed",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4048,
+      "longitude": -3.7182
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "0f9350e50f1ffc3cf002b7ed"
+    },
+    "userId": "0f9350e50f1ffc3cf002b7ed",
+    "name": "Leo Reed",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.406,
+      "longitude": -3.7182
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "9d3ba3d74edabe4695e6d3f9"
+    },
+    "userId": "9d3ba3d74edabe4695e6d3f9",
+    "name": "Ava Baker",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4978,
+      "longitude": -0.1422
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "8f6ff3752a1f0912cd63e912"
+    },
+    "userId": "8f6ff3752a1f0912cd63e912",
+    "name": "Ryan Baker",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.5242,
+      "longitude": -0.1422
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "b0971e779dbdb71f9327eabb"
+    },
+    "userId": "b0971e779dbdb71f9327eabb",
+    "name": "Zoe Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4906,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "af0436815ab38f4864dd1e24"
+    },
+    "userId": "af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "d94ebcdf7bf9c8f33bb3f32c"
+    },
+    "userId": "d94ebcdf7bf9c8f33bb3f32c",
+    "name": "Emma Reed",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4835,
+      "longitude": 19.027
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "904ee3c526298f6921cde3f3"
+    },
+    "userId": "904ee3c526298f6921cde3f3",
+    "name": "Liam Reed",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4847,
+      "longitude": 19.027
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "4a008502646a200488911f45"
+    },
+    "userId": "4a008502646a200488911f45",
+    "name": "Sophia Baker",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4859,
+      "longitude": 19.027
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "e904dad402b47dd2cdaa8bec"
+    },
+    "userId": "e904dad402b47dd2cdaa8bec",
+    "name": "Noah Baker",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4871,
+      "longitude": 19.027
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "25f4744ead36d038064d62c3"
+    },
+    "userId": "25f4744ead36d038064d62c3",
+    "name": "Olivia Turner",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5104,
+      "longitude": 13.3918
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "c100132b3ae88b47890def59"
+    },
+    "userId": "c100132b3ae88b47890def59",
+    "name": "Ethan Turner",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5116,
+      "longitude": 13.3918
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "c033e546ef7c928fb8cf073b"
+    },
+    "userId": "c033e546ef7c928fb8cf073b",
+    "name": "Mia Parker",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5128,
+      "longitude": 13.3918
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "ec342d9af3f2cfd6adfd4ee5"
+    },
+    "userId": "ec342d9af3f2cfd6adfd4ee5",
+    "name": "Mason Parker",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5044,
+      "longitude": 13.393
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": {
+      "$oid": "931a01221376d8e28a068fe8"
+    },
+    "userId": "931a01221376d8e28a068fe8",
+    "name": "Lina Lane",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4024,
+      "longitude": -3.7158
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "23820c1e76d3bd843f61c799"
+    },
+    "userId": "23820c1e76d3bd843f61c799",
+    "name": "Lucas Lane",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4036,
+      "longitude": -3.7158
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "63bae8417bd352e5013c2e93"
+    },
+    "userId": "63bae8417bd352e5013c2e93",
+    "name": "Nora Rivera",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4048,
+      "longitude": -3.7158
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "41f4659dbd75a03abc20cd6d"
+    },
+    "userId": "41f4659dbd75a03abc20cd6d",
+    "name": "Owen Rivera",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.406,
+      "longitude": -3.7158
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": {
+      "$oid": "af70e41dbe826cbd7d8b3500"
+    },
+    "userId": "af70e41dbe826cbd7d8b3500",
+    "name": "Chloe Grant",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4978,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "0cc9990d08304ab26ee67784"
+    },
+    "userId": "0cc9990d08304ab26ee67784",
+    "name": "Elijah Grant",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.499,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "e76d63199eff33a6945cb797"
+    },
+    "userId": "e76d63199eff33a6945cb797",
+    "name": "Ivy Stone",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.5002,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "f01086c19a00a6f46b6d41a7"
+    },
+    "userId": "f01086c19a00a6f46b6d41a7",
+    "name": "Leo Stone",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.5014,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": {
+      "$oid": "f7bcd28c65ea349b4ee7aed2"
+    },
+    "userId": "f7bcd28c65ea349b4ee7aed2",
+    "name": "Ava Hale",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4931,
+      "longitude": 19.0282
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "b5e2db6882d989d8532af12c"
+    },
+    "userId": "b5e2db6882d989d8532af12c",
+    "name": "Ryan Hale",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4847,
+      "longitude": 19.0294
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "650000000000000000000061"
+    },
+    "userId": "650000000000000000000061",
+    "name": "Casey Bridge",
+    "city": "Austin",
+    "locationCoordinates": {
+      "latitude": 47.5019,
+      "longitude": 19.0421
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "650000000000000000000062"
+    },
+    "userId": "650000000000000000000062",
+    "name": "Nova Social",
+    "city": "Austin",
+    "locationCoordinates": {
+      "latitude": 47.5098,
+      "longitude": 19.0372
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": {
+      "$oid": "650000000000000000000063"
+    },
+    "userId": "650000000000000000000063",
+    "name": "Riley Outside",
+    "city": "Austin",
+    "locationCoordinates": {
+      "latitude": 47.4963,
+      "longitude": 19.031
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "admin-demo-ava",
+    "userId": "admin-demo-ava",
+    "name": "Ava Moderation",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "admin-demo-noel",
+    "userId": "admin-demo-noel",
+    "name": "Noel Safety",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "operator@myscoutee.local",
+    "userId": "operator@myscoutee.local",
+    "name": "Demo Operator",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4919,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:seed-community-seattle-friends:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-seattle-friends:9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5099,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:seed-community-design-circle:178e8d0cbe164fa3fede5884",
+    "userId": "group:seed-community-design-circle:178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5344,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:seed-community-trail-club:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-trail-club:9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5099,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-trail-club:7822c5f99eff99d63abe8933",
+    "userId": "group:seed-community-trail-club:7822c5f99eff99d63abe8933",
+    "name": "Kai Morgan",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4012,
+      "longitude": -3.7074
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": "group:seed-community-trail-club:bf057de7c586eede7e84bdc7",
+    "userId": "group:seed-community-trail-club:bf057de7c586eede7e84bdc7",
+    "name": "Farkas Anna",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5075,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+    "userId": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5111,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-language-lab:b29df68956f3fe15e04558de",
+    "userId": "group:seed-community-language-lab:b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5087,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-photo-walks:178e8d0cbe164fa3fede5884",
+    "userId": "group:seed-community-photo-walks:178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5344,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:seed-community-photo-walks:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-photo-walks:9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5099,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-makers:cdd937e0adcbd1a5e38f3ceb",
+    "userId": "group:seed-community-makers:cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:seed-community-makers:178e8d0cbe164fa3fede5884",
+    "userId": "group:seed-community-makers:178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5344,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:seed-community-game-night:7822c5f99eff99d63abe8933",
+    "userId": "group:seed-community-game-night:7822c5f99eff99d63abe8933",
+    "name": "Kai Morgan",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4012,
+      "longitude": -3.7074
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": "group:seed-community-game-night:cdd937e0adcbd1a5e38f3ceb",
+    "userId": "group:seed-community-game-night:cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+    "userId": "group:seed-community-neighbours:9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5099,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+    "userId": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5111,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-book-circle:bf057de7c586eede7e84bdc7",
+    "userId": "group:seed-community-book-circle:bf057de7c586eede7e84bdc7",
+    "name": "Farkas Anna",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5075,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-book-circle:b29df68956f3fe15e04558de",
+    "userId": "group:seed-community-book-circle:b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5087,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-study-buddies:b29df68956f3fe15e04558de",
+    "userId": "group:seed-community-study-buddies:b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5087,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+    "userId": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:af0436815ab38f4864dd1e24",
+    "userId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:bf057de7c586eede7e84bdc7",
+    "userId": "group:myscoutee-work:bf057de7c586eede7e84bdc7",
+    "name": "Farkas Anna",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5075,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:b29df68956f3fe15e04558de",
+    "userId": "group:myscoutee-work:b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5087,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:9f3b3f085e23af6c89dbc432",
+    "userId": "group:myscoutee-work:9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5099,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:1b1c70be2349b3359a8f6f94",
+    "userId": "group:myscoutee-work:1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5111,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:178e8d0cbe164fa3fede5884",
+    "userId": "group:myscoutee-work:178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5344,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:f4b2ebd8f56628ab7df58221",
+    "userId": "group:myscoutee-work:f4b2ebd8f56628ab7df58221",
+    "name": "Iris Bloom",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5356,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:cdd937e0adcbd1a5e38f3ceb",
+    "userId": "group:myscoutee-work:cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:1d7d3545ba5e0f1d63918589",
+    "userId": "group:myscoutee-work:1d7d3545ba5e0f1d63918589",
+    "name": "Evan Reed",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5032,
+      "longitude": 13.4014
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:7822c5f99eff99d63abe8933",
+    "userId": "group:myscoutee-work:7822c5f99eff99d63abe8933",
+    "name": "Kai Morgan",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4012,
+      "longitude": -3.7074
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": "group:myscoutee-work:d182041b8a54132d5168034f",
+    "userId": "group:myscoutee-work:d182041b8a54132d5168034f",
+    "name": "Luca Hale",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4288,
+      "longitude": -3.7206
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": "group:myscoutee-work:d04cd419e735549e3f312977",
+    "userId": "group:myscoutee-work:d04cd419e735549e3f312977",
+    "name": "Theo Lane",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.43,
+      "longitude": -3.7206
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": "group:myscoutee-work:eb1ca0b761885bb0763e2929",
+    "userId": "group:myscoutee-work:eb1ca0b761885bb0763e2929",
+    "name": "Milo Grant",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4312,
+      "longitude": -3.7206
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": "group:myscoutee-work:fcad6954169063f106a7a240",
+    "userId": "group:myscoutee-work:fcad6954169063f106a7a240",
+    "name": "Emma Parker",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.523,
+      "longitude": -0.1446
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:2d520f3c98b0440c1556f4af",
+    "userId": "group:myscoutee-work:2d520f3c98b0440c1556f4af",
+    "name": "Liam Parker",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.5242,
+      "longitude": -0.1446
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:0216b1ceb256d6f2c89073b8",
+    "userId": "group:myscoutee-work:0216b1ceb256d6f2c89073b8",
+    "name": "Sophia Lane",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4906,
+      "longitude": -0.1434
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:eac11b0685f9799953a40dd4",
+    "userId": "group:myscoutee-work:eac11b0685f9799953a40dd4",
+    "name": "Noah Lane",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.1434
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:7313a9379f60200cba7b9f71",
+    "userId": "group:myscoutee-work:7313a9379f60200cba7b9f71",
+    "name": "Olivia Rivera",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4835,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:f6f22ba0a6f14cfcf4585d47",
+    "userId": "group:myscoutee-work:f6f22ba0a6f14cfcf4585d47",
+    "name": "Ethan Rivera",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4847,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:0c3ab5da9af33d4e688e809c",
+    "userId": "group:myscoutee-work:0c3ab5da9af33d4e688e809c",
+    "name": "Mia Grant",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4859,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:76da95a9109da485555c0d25",
+    "userId": "group:myscoutee-work:76da95a9109da485555c0d25",
+    "name": "Mason Grant",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5123,
+      "longitude": 19.0246
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:0b8e5df4ec85d858c304a350",
+    "userId": "group:myscoutee-work:0b8e5df4ec85d858c304a350",
+    "name": "Lina Stone",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5356,
+      "longitude": 13.3894
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:4da20eb049179e73d4757808",
+    "userId": "group:myscoutee-work:4da20eb049179e73d4757808",
+    "name": "Lucas Stone",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.3894
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:9184901a15076d32ea8b626f",
+    "userId": "group:myscoutee-work:9184901a15076d32ea8b626f",
+    "name": "Nora Hale",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5032,
+      "longitude": 13.3906
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:e1dccfc3443239865c6ac69a",
+    "userId": "group:myscoutee-work:e1dccfc3443239865c6ac69a",
+    "name": "Owen Hale",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5044,
+      "longitude": 13.3906
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-work:e76d63199eff33a6945cb797",
+    "userId": "group:myscoutee-work:e76d63199eff33a6945cb797",
+    "name": "Ivy Stone",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.5002,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:f01086c19a00a6f46b6d41a7",
+    "userId": "group:myscoutee-work:f01086c19a00a6f46b6d41a7",
+    "name": "Leo Stone",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.5014,
+      "longitude": -0.1398
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-work:admin-demo-ava",
+    "userId": "group:myscoutee-work:admin-demo-ava",
+    "name": "Ava Moderation",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-work:admin-demo-noel",
+    "userId": "group:myscoutee-work:admin-demo-noel",
+    "name": "Noel Safety",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-community:af0436815ab38f4864dd1e24",
+    "userId": "group:myscoutee-community:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:myscoutee-community:bf057de7c586eede7e84bdc7",
+    "userId": "group:myscoutee-community:bf057de7c586eede7e84bdc7",
+    "name": "Farkas Anna",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5075,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-community:b29df68956f3fe15e04558de",
+    "userId": "group:myscoutee-community:b29df68956f3fe15e04558de",
+    "name": "Kiss Balázs",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5087,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-community:9f3b3f085e23af6c89dbc432",
+    "userId": "group:myscoutee-community:9f3b3f085e23af6c89dbc432",
+    "name": "Nagy Eszter",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5099,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+    "userId": "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5111,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-community:178e8d0cbe164fa3fede5884",
+    "userId": "group:myscoutee-community:178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5344,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-community:cdd937e0adcbd1a5e38f3ceb",
+    "userId": "group:myscoutee-community:cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+    "userId": "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+    "name": "Evan Reed",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5032,
+      "longitude": 13.4014
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:myscoutee-community:7822c5f99eff99d63abe8933",
+    "userId": "group:myscoutee-community:7822c5f99eff99d63abe8933",
+    "name": "Kai Morgan",
+    "city": "Madrid",
+    "locationCoordinates": {
+      "latitude": 40.4012,
+      "longitude": -3.7074
+    },
+    "partitionKey": "country:es"
+  },
+  {
+    "_id": "group:myscoutee-community:admin-demo-ava",
+    "userId": "group:myscoutee-community:admin-demo-ava",
+    "name": "Ava Moderation",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5027,
+      "longitude": 19.0378
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:myscoutee-community:admin-demo-noel",
+    "userId": "group:myscoutee-community:admin-demo-noel",
+    "name": "Noel Safety",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.4907,
+      "longitude": 19.045
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:community-riverside:af0436815ab38f4864dd1e24",
+    "userId": "group:community-riverside:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:community-riverside:1b1c70be2349b3359a8f6f94",
+    "userId": "group:community-riverside:1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5111,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:community-riverside:178e8d0cbe164fa3fede5884",
+    "userId": "group:community-riverside:178e8d0cbe164fa3fede5884",
+    "name": "Lina Park",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5344,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:community-riverside:cdd937e0adcbd1a5e38f3ceb",
+    "userId": "group:community-riverside:cdd937e0adcbd1a5e38f3ceb",
+    "name": "Noah Hart",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5368,
+      "longitude": 13.4002
+    },
+    "partitionKey": "country:de"
+  },
+  {
+    "_id": "group:community-park-court:af0436815ab38f4864dd1e24",
+    "userId": "group:community-park-court:af0436815ab38f4864dd1e24",
+    "name": "Alex Turner",
+    "city": "London",
+    "locationCoordinates": {
+      "latitude": 51.4918,
+      "longitude": -0.141
+    },
+    "partitionKey": "country:gb"
+  },
+  {
+    "_id": "group:community-park-court:1b1c70be2349b3359a8f6f94",
+    "userId": "group:community-park-court:1b1c70be2349b3359a8f6f94",
+    "name": "Maya Stone",
+    "city": "Budapest",
+    "locationCoordinates": {
+      "latitude": 47.5111,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu"
+  },
+  {
+    "_id": "group:community-park-court:1d7d3545ba5e0f1d63918589",
+    "userId": "group:community-park-court:1d7d3545ba5e0f1d63918589",
+    "name": "Evan Reed",
+    "city": "Berlin",
+    "locationCoordinates": {
+      "latitude": 52.5032,
+      "longitude": 13.4014
+    },
+    "partitionKey": "country:de"
+  }
+]

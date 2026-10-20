@@ -19,7 +19,7 @@ checksums, container references and signed metadata available from
 
 See the [installation guide](packaging/README.md),
 [1.4.1 installer release notes](guides/releases/v1.4.1.md) and
-[1.3.3 application update notes](guides/releases/v1.3.3.md).
+[1.4.3 application update notes](guides/releases/v1.4.3.md).
 
 ### Documentation PDFs
 

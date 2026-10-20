@@ -37,7 +37,7 @@ for(const schema of [3,4,5]){
   d.deploymentConfigurations.insertOne({_id:'deployment-configuration',schemaVersion:schema,version:7,payment:{credentialEnvelope:'retain'},...(schema===5?{integration:{publicBaseUrl:'custom'}}:{})});
   run(d);check(d.schemaMigrations.countDocuments({})===Object.keys(sources).length,'missing migration receipts');
   check(d.deploymentConfigurations.findOne().schemaVersion===5,'schema not migrated');
-  check(d.helpCenterRevisions.countDocuments({documentType:'help',version:5,active:true})===6,'current HU/EN v5 help missing after upgrade');
+  check(d.helpCenterRevisions.countDocuments({documentType:'help',version:5,active:true,lang:{$in:['en','hu']}})===6,'current HU/EN v5 help missing after upgrade');
   check(d.helpCenterRevisions.countDocuments({documentType:'help',version:{$lt:5},active:true})===0,'obsolete help still active after upgrade');
   check(process.env.MYSCOUTEE_MIGRATION_SEED_DIRECTORY===root+'/seeds','release seed directory not restored');
   check(d.schemaMigrations.findOne({_id:'008-default-help-v3'}).seedSha256.length===64,'pinned input checksum missing');
@@ -66,7 +66,7 @@ try{
  }
  const receiptsBefore=EJSON.stringify(retainedDb.schemaMigrations.find().sort({_id:1}).toArray());
  run(retainedDb);
- check(retainedDb.helpCenterRevisions.countDocuments({documentType:'help',version:5,active:true})===6,'recorded old chain did not advance help to v5');
+ check(retainedDb.helpCenterRevisions.countDocuments({documentType:'help',version:5,active:true,lang:{$in:['en','hu']}})===6,'recorded old chain did not advance help to v5');
  check(retainedDb.helpCenterRevisions.countDocuments({documentType:'help',version:3,active:true})===0,'recorded old chain left v3 active');
  check(EJSON.stringify(retainedDb.schemaMigrations.find({_id:{$ne:'013-default-help-v5'}}).sort({_id:1}).toArray())===receiptsBefore,'old receipts changed during v5 upgrade');
  print('PASS already-recorded migrations remain unchanged; missing v5 step runs');
