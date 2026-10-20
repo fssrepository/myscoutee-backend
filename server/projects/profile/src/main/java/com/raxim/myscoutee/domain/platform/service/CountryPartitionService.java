@@ -91,6 +91,39 @@ public class CountryPartitionService implements com.raxim.myscoutee.domain.platf
         return partition == null ? null : partition.getPartitionKey();
     }
 
+    @Override
+    public List<String> resolvePartitionKeys(List<LocationCoordinatesDto> coordinates) {
+        if (coordinates == null || coordinates.size() > MAX_PARTITION_BATCH_SIZE) {
+            throw new IllegalArgumentException("Invalid country partition batch size.");
+        }
+        List<String> result = new ArrayList<>(java.util.Collections.nCopies(coordinates.size(), null));
+        List<Document> pipeline = new ArrayList<>();
+        for (int index = 0; index < coordinates.size(); index++) {
+            LocationCoordinatesDto point = coordinates.get(index);
+            if (point == null || point.latitude() == null || point.longitude() == null
+                    || !Double.isFinite(point.latitude()) || !Double.isFinite(point.longitude())
+                    || Math.abs(point.latitude()) > 90 || Math.abs(point.longitude()) > 180) continue;
+            // Each branch keeps the existing indexed spatial lookup and specificity
+            // ordering. Only the round trips and repeated result mapping are removed.
+            List<Document> lookup = List.of(
+                    new Document("$match", new Document("geometry", new Document("$geoIntersects",
+                            new Document("$geometry", new Document("type", "Point")
+                                    .append("coordinates", List.of(point.longitude(), point.latitude())))))),
+                    new Document("$sort", new Document("specificity", -1)),
+                    new Document("$limit", 1),
+                    new Document("$project", new Document("_id", 0).append("partitionKey", 1)
+                            .append("pointIndex", new Document("$literal", index))));
+            if (pipeline.isEmpty()) pipeline.addAll(lookup);
+            else pipeline.add(new Document("$unionWith", new Document("coll", "countryPartitions").append("pipeline", lookup)));
+        }
+        if (!pipeline.isEmpty()) {
+            for (Document match : mongoTemplate.getCollection("countryPartitions").aggregate(pipeline)) {
+                result.set(match.getInteger("pointIndex"), match.getString("partitionKey"));
+            }
+        }
+        return result;
+    }
+
     public List<CountryPartition> supportedCountries() {
         Query query = Query.query(Criteria.where("geometry").ne(null)
                 .and("partitionKey").nin(null, ""));

@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from urllib.parse import quote
 
 
 SPEC = importlib.util.spec_from_file_location('access_log', Path(__file__).with_name('analyze-access-log.py'))
@@ -50,9 +51,104 @@ class JourneyTests(unittest.TestCase):
         self.assertIn('page=1', item['evidence'])
         self.assertNotIn('secret', json.dumps(sessions))
 
+    def test_debug_packets_preserve_15_second_checkpoints_and_redact_unrecognized_data(self):
+        data = {'v': 1, 'id': '0123456789abcdef', 'seq': 1, 'ms': 15000,
+                'visibleMs': 15000, 'interactionMs': 5, 'reason': 'tick',
+                'counts': {'pointer': 1, 'key': 0, 'click': 1}, 'errorCount': 1,
+                'dropped': 0, 'marks': [[6, 'login.click'], [7, 'SECRET']],
+                'errors': [{'name': 'TypeError', 'code': '1234abcd', 'file': 'chunk-ABC.js',
+                            'line': 1, 'column': 2, 'ms': 10, 'message': 'SECRET'}], 'token': 'SECRET'}
+        first = request('/__landing-debug?d=' + quote(json.dumps(data)), second=15, method='POST', status=204)
+        data.update(seq=2, ms=30000, visibleMs=30000)
+        last = request('/__landing-debug?d=' + quote(json.dumps(data)), second=30, method='POST', status=204)
+        events = MODULE.analyze([first, last], self.catalog)[0]['events']
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[0]['debug']['marks'], [[6, 'login.click']])
+        self.assertEqual(events[1]['debug']['ms'], 30000)
+        self.assertNotIn('SECRET', json.dumps(events))
+
+    def test_invalid_and_disabled_debug_packets_are_not_accepted_as_client_evidence(self):
+        for payload in ('null', '[]', '{"v":1}', '{"id":[]}'):
+            row = request('/__landing-debug?d=' + quote(payload), method='POST', status=204)
+            self.assertNotIn('landing_debug', kinds(MODULE.analyze([row], self.catalog)))
+
+    def test_error_details_are_bounded_redacted_and_rendered_without_raw_stack_or_urls(self):
+        data = {'v': 1, 'id': '0123456789abcdef', 'seq': 1, 'ms': 15000,
+                'visibleMs': 15000, 'interactionMs': None, 'reason': 'tick',
+                'counts': {}, 'errorCount': 1, 'dropped': 0, 'marks': [],
+                'errors': [{'name': 'TypeError', 'code': '1234abcd', 'file': 'chunk-ABC.js',
+                            'line': 1, 'column': 2, 'ms': 10,
+                            'detail': {'source': 'window',
+                                       'message': 'Failed https://test/private?token=PRIVATE_TOKEN for private@example.com token=PRIVATE_SECRET',
+                                       'stack': ['render chunk-ABC.js:1:2', 'https://test/PRIVATE_PATH.js:3:4',
+                                                 'main-XYZ.js:5:6', 'ignored.js:7:8']}}]}
+        row = request('/__landing-debug?d=' + quote(json.dumps(data)), method='POST', status=204)
+        sessions = MODULE.analyze([row], self.catalog)
+        detail = sessions[0]['events'][0]['debug']['errors'][0]['detail']
+        self.assertEqual(detail['message'], 'Failed [url] for [email] [credential]')
+        self.assertEqual(detail['stack'], ['render chunk-ABC.js:1:2', 'main-XYZ.js:5:6'])
+        report = {'assetBuildId': None, 'parsedRequests': 1, 'automatedRequests': 0,
+                  'warnings': [], 'sessions': sessions, 'coverage': [], 'limits': []}
+        rendered = MODULE.render(report, 'Europe/Prague')
+        self.assertIn('window: Failed [url]', rendered)
+        self.assertIn('render chunk-ABC.js:1:2', rendered)
+        self.assertNotIn('PRIVATE', rendered)
+        self.assertNotIn('example.com', rendered)
+
+    def test_diagnostic_message_redaction_covers_quoted_values_credentials_and_identifiers(self):
+        value = ('Cannot read "PRIVATE_VALUE" password=PRIVATE_PASS Bearer PRIVATE_BEARER '
+                 '123e4567-e89b-12d3-a456-426614174000 47.123456\n\x1b[31m')
+        cleaned = MODULE.clean_debug_message(value)
+        self.assertIn('Cannot read [value]', cleaned)
+        self.assertNotIn('PRIVATE', cleaned)
+        self.assertNotIn('123e4567', cleaned)
+        self.assertNotIn('47.123456', cleaned)
+        self.assertNotIn('\x1b', cleaned)
+        self.assertLessEqual(len(MODULE.clean_debug_message('Á' * 1000)), 160)
+
     def test_landing_and_firebase_configuration_are_background_signals(self):
         sessions = MODULE.analyze([request('/api/landing/content'), request('/api/deployment/configuration/firebase-config')], self.catalog)
         self.assertEqual(kinds(sessions), ['background', 'background'])
+
+    def test_lifecycle_report_preserves_hidden_duration_original_headers_and_rendering_evidence(self):
+        data = {'v': 1, 'id': '0123456789abcdef', 'seq': 2, 'ms': 31000, 'visibleMs': 1000,
+                'interactionMs': None, 'reason': 'pagehide', 'counts': {}, 'errorCount': 0,
+                'dropped': 0, 'marks': [], 'errors': [],
+                'page': {'initial': 387, 'state': 480, 'offsetMs': 200, 'hiddenForMs': 30000,
+                         'context': [2, 0], 'navigation': 'navigate', 'delivery': 'navigational-prefetch',
+                         'timing': {'responseEnd': 250, 'activationStart': 0, 'PRIVATE': 10},
+                         'events': [[0, 'init', 387], [1000, 'hidden', 384], [31000, 'pagehide', 480],
+                                    [1001, 'PRIVATE', 0]], 'url': 'PRIVATE'}}
+        row = request('/__landing-debug?d=' + quote(json.dumps(data)), method='POST', status=204)
+        sessions = MODULE.analyze([row], self.catalog)
+        page = sessions[0]['events'][0]['debug']['page']
+        self.assertEqual(page['hiddenForMs'], 30000)
+        self.assertEqual(page['context'], [2, 0])
+        self.assertEqual(len(page['events']), 3)
+        report = {'assetBuildId': None, 'parsedRequests': 1, 'automatedRequests': 0,
+                  'warnings': [], 'sessions': sessions, 'coverage': [], 'limits': []}
+        output = MODULE.render(report, 'Europe/Prague')
+        self.assertIn('purpose=prerender', output)
+        self.assertIn('hidden óta 30000 ms', output)
+        self.assertIn('lifecycle pagehide', output)
+        self.assertIn('ready=complete', output)
+        self.assertNotIn('PRIVATE', output)
+
+    def test_invalid_optional_lifecycle_does_not_discard_the_original_error_or_interaction_report(self):
+        for page in [None, [], {'initial': 'PRIVATE'}, {'initial': 999999}]:
+            self.assertIsNone(MODULE.safe_page(page, 10))
+        self.assertIn('prerender=ismeretlen', MODULE.page_state_label(1))
+        self.assertIn('userActivated=ismeretlen', MODULE.page_state_label(1))
+
+    def test_lifecycle_fields_and_samples_remain_bounded(self):
+        page = {'initial': 1, 'state': 64, 'offsetMs': 100, 'hiddenForMs': 0, 'context': [0, 1],
+                'navigation': 'reload', 'delivery': '', 'timing': {'responseEnd': 250, 'workerStart': -1},
+                'events': [[i, 'focus', 3] for i in range(50)]}
+        parsed = MODULE.safe_page(page, 31000)
+        self.assertEqual(len(parsed['events']), 12)
+        self.assertEqual(parsed['timing'], {'responseEnd': 250})
+        for key, value in [('context', [3, 0]), ('navigation', 'PRIVATE'), ('hiddenForMs', 60001)]:
+            self.assertIsNone(MODULE.safe_page({**page, key: value}, 31000))
 
     def test_bulk_precache_never_becomes_thirty_page_or_popup_clicks(self):
         self.catalog.labels.update({f'/chunk-{n}.js': 'Popup' for n in range(30)})

@@ -128,6 +128,9 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
         HelpCenterRevision active = DOCUMENT_EXPLANATION.equals(kind)
                 ? revisionsRepository.findFirstByBaseGroupIdAndDocumentTypeAndLangAndContextKeyAndActiveTrueOrderByVersionDesc(
                         contentScope(kind, JobGroupContext.groupId()), kind, language, context).orElse(null)
+                : DOCUMENT_PRIVACY.equals(kind) || DOCUMENT_TERMS.equals(kind)
+                ? revisionsRepository.findFirstByBaseGroupIdAndDocumentTypeAndLangAndActiveTrueOrderByVersionDesc(
+                        contentScope(kind, JobGroupContext.groupId()), kind, language).orElse(null)
                 : revisionsForKind(
                     revisionsRepository.findByBaseGroupIdOrderByVersionDesc(contentScope(kind, JobGroupContext.groupId())),
                     kind,

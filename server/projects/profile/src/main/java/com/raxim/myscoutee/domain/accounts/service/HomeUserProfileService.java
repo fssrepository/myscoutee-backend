@@ -1020,8 +1020,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
-        Map<LocationCoordinatesDto, Boolean> locationChecks = new java.util.HashMap<>();
-        var allUsers = usersRepository.findAllByOrderByNameAscUserIdAsc();
+        var allUsers = usersRepository.findDemoSelectorProfiles();
         var baseIds = com.raxim.myscoutee.domain.groups.api.BaseGroups.BASE_IDS;
         var baseTypes = new java.util.HashMap<String, String>();
         communityGroupsRepository.findByIdIn(baseIds).stream()
@@ -1035,10 +1034,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                     && profileKeys.contains(member.getOwnerId() + ":" + member.getUserId()))
                 .forEach(member -> memberships.computeIfAbsent(member.getUserId(), ignored -> new java.util.ArrayList<>(List.of("dating")))
                     .add(baseTypes.get(member.getOwnerId())));
-        return allUsers.stream()
+        var selectableUsers = allUsers.stream()
                 .filter(user -> user.getWorkspaceGroupId() == null)
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
                 .limit(resolveDemoUserListLimit(limit))
+                .toList();
+        Map<LocationCoordinatesDto, Boolean> locationChecks = "member".equals(selectorRole)
+                ? locations.demoLocationRequirements(selectableUsers.stream()
+                        .map(user -> toLocationCoordinatesDto(user.getLocationCoordinates())).toList())
+                : Map.of();
+        return selectableUsers.stream()
                 .map(user -> toDemoUserListItemDto(user, "member".equals(selectorRole)
                         && demoLocationRequired(user, locationChecks), memberships.getOrDefault(user.getUserId(), List.of("dating"))))
                 .filter(Objects::nonNull)
@@ -1187,9 +1192,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         if (point == null || point.latitude() == null || point.longitude() == null
                 || !Double.isFinite(point.latitude()) || !Double.isFinite(point.longitude())
                 || Math.abs(point.latitude()) > 90 || Math.abs(point.longitude()) > 180) return true;
-        // The existing cached selector checks shared seed coordinates once, not once per profile.
-        return checks.computeIfAbsent(point, coordinates ->
-                !queryLocationEligibility(coordinates.latitude(), coordinates.longitude()).eligible());
+        return checks.getOrDefault(point, true);
     }
 
     private DemoUserListItemDto toDemoUserListItemDto(Users user, boolean locationRequired, List<String> baseGroupTypes) {

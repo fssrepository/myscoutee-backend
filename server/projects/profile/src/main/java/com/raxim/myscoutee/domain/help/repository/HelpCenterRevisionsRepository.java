@@ -11,6 +11,9 @@ public interface HelpCenterRevisionsRepository extends MongoRepository<HelpCente
     Optional<HelpCenterRevision> findFirstByBaseGroupIdAndDocumentTypeAndLangAndContextKeyAndActiveTrueOrderByVersionDesc(
             String baseGroupId, String documentType, String lang, String contextKey);
 
+    Optional<HelpCenterRevision> findFirstByBaseGroupIdAndDocumentTypeAndLangAndActiveTrueOrderByVersionDesc(
+            String baseGroupId, String documentType, String lang);
+
     boolean existsByDocumentTypeAndContextKeyAndIsSystemTrue(String documentType, String contextKey);
 
     Optional<HelpCenterRevision> findFirstByActiveTrueOrderByVersionDesc();

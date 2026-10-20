@@ -38,6 +38,8 @@ PROD_HTTPS_POLICY="${NGINX_ROOT}/conf/nginx/conf/http/https-response-policy.prod
 DEV_HTTP_POLICY="${NGINX_ROOT}/conf/nginx/conf/http/http-transport-policy.conf"
 DEV_HTTPS_POLICY="${NGINX_ROOT}/conf/nginx/conf/http/https-response-policy.conf"
 ROUTING="${NGINX_ROOT}/conf/nginx/conf/http/routing.conf"
+GLOBAL_CONFIG="${TEST_ROOT}/nginx.conf"
+cp "${NGINX_ROOT}/conf/nginx/nginx.conf" "${GLOBAL_CONFIG}"
 
 grep -Fq 'COPY --chmod=0755 images/nginx/prod/nginx-entrypoint.sh' "${DOCKERFILE}" \
   || fail "production image does not install its TLS-aware entrypoint"
@@ -69,7 +71,7 @@ cp "${TEST_ROOT}/keys/custom.key" \
   "${TEST_ROOT}/letsencrypt/live/transport.test/privkey.pem"
 printf 'console.log("transport-policy");\n' > "${TEST_ROOT}/html/app-TRANSPORT.js"
 printf '<!doctype html><html><head>\n' > "${TEST_ROOT}/html/index.html"
-sed -n '/<script id="myscoutee-runtime-status"/p' "${REPO_ROOT}/frontend/src/index.html" >> "${TEST_ROOT}/html/index.html"
+sed -n '/<script id="myscoutee-\(runtime-status\|landing-debug\|landing-debug-context\|consent-auto\)"/p' "${REPO_ROOT}/frontend/src/index.html" >> "${TEST_ROOT}/html/index.html"
 printf '</head><body>transport-policy</body></html>\n' >> "${TEST_ROOT}/html/index.html"
 printf 'console.log("service-worker");\n' > "${TEST_ROOT}/html/app-sw.js"
 printf '%s\n' '{"version":"1.0.0","buildId":"transport-policy"}' \
@@ -91,7 +93,7 @@ docker_args() {
     --add-host mongodb:127.0.0.1 \
     -e DOMAIN=transport.test \
     -e MYSCOUTEE_RUNTIME_STATUS_TOKEN=0123456789abcdef0123456789abcdef \
-    -v "${NGINX_ROOT}/conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \
+    -v "${GLOBAL_CONFIG}:/etc/nginx/nginx.conf:ro" \
     -v "${SPRING_TEMPLATE}:/etc/nginx/myscoutee-templates/spring.conf:ro" \
     -v "${ENTRYPOINT}:/scripts/nginx-production-entrypoint.sh:ro" \
     -v "${NGINX_ROOT}/images/nginx/runtime-status.sh:/scripts/runtime-status.sh:ro" \
@@ -201,7 +203,8 @@ assert_header "${runtime_status_headers}" '^X-Content-Type-Options: nosniff'
 python3 - "${TEST_ROOT}/runtime-status.json" <<'PY'
 import json, sys, time
 status = json.load(open(sys.argv[1]))
-assert set(status) == {'ready', 'checkedAt'}
+assert set(status) == {'ready', 'known', 'checkedAt'}
+assert status['known'] is True
 assert status['ready'] is False
 assert abs(time.time() - status['checkedAt']) < 10
 PY
@@ -243,6 +246,8 @@ curl -skS -o "${TEST_ROOT}/index-response.html" -D "${prod_root_headers}" \
   "https://127.0.0.1:${prod_https_port}/"
 assert_header "${prod_root_headers}" '^Strict-Transport-Security: max-age=31536000'
 assert_header "${prod_root_headers}" '^Cache-Control: no-cache, no-store, must-revalidate'
+assert_header "${prod_root_headers}" '^X-MyScoutee-Consent-Auto: 0'
+grep -Eq 'id="myscoutee-consent-auto"[^>]*>0</script>' "${TEST_ROOT}/index-response.html" || fail "default disabled consent flag missing"
 python3 - "${TEST_ROOT}/index-response.html" <<'PY'
 import json, re, sys, time
 html = open(sys.argv[1]).read()
@@ -252,6 +257,43 @@ assert '<!--#' not in snapshot[1], 'nginx did not process the canonical SSI dire
 status = json.loads(snapshot[1])
 assert status['ready'] is False and abs(time.time() - status['checkedAt']) < 10
 PY
+
+# The same nginx variable gates both early HTML activation and the nginx-only sink.
+[[ "$(curl -skS -o /dev/null -w '%{http_code}' -X POST "https://127.0.0.1:${prod_https_port}/__landing-debug?d=off")" == 404 ]] || fail "debug endpoint is enabled by default"
+grep -Eq 'id="myscoutee-landing-debug"[^>]*>0</script>' "${TEST_ROOT}/index-response.html" || fail "disabled probe flag not embedded"
+python3 - "${GLOBAL_CONFIG}" <<'PYDEBUG'
+from pathlib import Path
+import sys
+p=Path(sys.argv[1]);s=p.read_text();p.write_text(s.replace('map $host $myscoutee_landing_debug { default 0; }', 'map $host $myscoutee_landing_debug { default 1; }').replace('map $host $myscoutee_consent_auto { default 0; }', 'map $host $myscoutee_consent_auto { default 1; }'))
+PYDEBUG
+docker exec "${prod_container}" nginx -t >/dev/null
+docker exec "${prod_container}" nginx -s reload
+for attempt in {1..30}; do
+  debug_code="$(curl -skS -o /dev/null -w '%{http_code}' -X POST "https://127.0.0.1:${prod_https_port}/__landing-debug?d=nginx-test")"
+  [[ "${debug_code}" == 204 ]] && break
+  sleep 0.1
+done
+[[ "${debug_code}" == 204 ]] || fail "enabled debug POST did not terminate at nginx"
+for consent_path in / /game; do
+  curl -skS -D "${TEST_ROOT}/consent.headers" -o "${TEST_ROOT}/consent.html" \
+    -H 'X-MyScoutee-Consent-Auto: 0' "https://127.0.0.1:${prod_https_port}${consent_path}"
+  assert_header "${TEST_ROOT}/consent.headers" '^X-MyScoutee-Consent-Auto: 1'
+  grep -Eq 'id="myscoutee-consent-auto"[^>]*>1</script>' "${TEST_ROOT}/consent.html" || fail "enabled consent flag missing on ${consent_path}"
+done
+
+[[ "$(curl -skS -o /dev/null -w '%{http_code}' "https://127.0.0.1:${prod_https_port}/__landing-debug?d=nginx-test")" == 405 ]] || fail "debug endpoint accepted GET"
+curl -skS "https://127.0.0.1:${prod_https_port}/" | grep -Eq 'id="myscoutee-landing-debug"[^>]*>1</script>' || fail "enabled flag not embedded"
+curl -skS -H 'Sec-Purpose: prefetch;prerender' -H 'Sec-Fetch-User: ?1' "https://127.0.0.1:${prod_https_port}/" | grep -Fq 'id="myscoutee-landing-debug-context" type="application/json">[2,1]</script>' || fail "original HTML prerender/user hints not embedded"
+curl -skS -H 'X-Purpose: preview' "https://127.0.0.1:${prod_https_port}/" | grep -Fq 'id="myscoutee-landing-debug-context" type="application/json">[1,0]</script>' || fail "original HTML preview hint not embedded"
+curl -skS -H 'X-Purpose: <script>private</script>' "https://127.0.0.1:${prod_https_port}/" | grep -Fq 'id="myscoutee-landing-debug-context" type="application/json">[0,0]</script>' || fail "arbitrary request header escaped the numeric allowlist"
+docker exec "${prod_container}" cat /var/log/nginx/landing-debug.log | grep -Fq '/__landing-debug?d=nginx-test' || fail "dedicated debug file is empty"
+if docker logs "${prod_container}" 2>&1 | grep -Fq '/__landing-debug?'; then fail "debug traffic leaked into the ordinary access log"; fi
+python3 - "${GLOBAL_CONFIG}" <<'PYDEBUG'
+from pathlib import Path
+import sys
+p=Path(sys.argv[1]);s=p.read_text();p.write_text(s.replace('map $host $myscoutee_landing_debug { default 1; }', 'map $host $myscoutee_landing_debug { default 0; }'))
+PYDEBUG
+docker exec "${prod_container}" nginx -s reload
 
 prod_deep_link_headers="${TEST_ROOT}/prod-deep-link.headers"
 curl -skS -o /dev/null -D "${prod_deep_link_headers}" \

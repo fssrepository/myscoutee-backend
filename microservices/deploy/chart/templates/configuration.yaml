@@ -28,4 +28,4 @@ data:
   response-policy.conf: |
     {{- .Values.shared.responsePolicy | nindent 4 }}
   runtime-status.conf: |
-    {{- .Values.shared.runtimeStatusLocation | replace "/etc/nginx/conf.d/https-response-policy.conf" "/etc/myscoutee/response-policy.conf" | nindent 4 }}
+    {{- .Values.shared.runtimeStatusLocation | replace "/etc/nginx/conf.d/https-response-policy.conf" "/etc/myscoutee/response-policy.conf" | replace "/var/log/nginx/landing-debug.log" "/tmp/landing-debug.log" | nindent 4 }}

@@ -108,6 +108,29 @@ public class AccountLocationService implements LocationEligibility {
                 false);
     }
 
+    java.util.Map<LocationCoordinatesDto, Boolean> demoLocationRequirements(java.util.List<LocationCoordinatesDto> coordinates) {
+        var points = coordinates.stream().filter(point -> point != null
+                && point.latitude() != null && point.longitude() != null
+                && Double.isFinite(point.latitude()) && Double.isFinite(point.longitude())
+                && Math.abs(point.latitude()) <= 90 && Math.abs(point.longitude()) <= 180).distinct().toList();
+        var required = new java.util.HashMap<LocationCoordinatesDto, Boolean>();
+        if (!regionSecurityProperties.isEnabled()) {
+            points.forEach(point -> required.put(point, false));
+            return required;
+        }
+        for (int start = 0; start < points.size(); start += CountryDirectory.MAX_PARTITION_BATCH_SIZE) {
+            var batch = points.subList(start, Math.min(points.size(), start + CountryDirectory.MAX_PARTITION_BATCH_SIZE));
+            var partitions = countryPartitionService.resolvePartitionKeys(batch);
+            if (partitions == null || partitions.size() != batch.size()) {
+                throw new IllegalStateException("Incomplete country partition batch response.");
+            }
+            for (int index = 0; index < batch.size(); index++) {
+                required.put(batch.get(index), !StringUtils.hasText(partitions.get(index)));
+            }
+        }
+        return required;
+    }
+
     String resolveStoredPartitionKey(
             LocationCoordinatesDto coordinates,
             String currentPartitionKey,

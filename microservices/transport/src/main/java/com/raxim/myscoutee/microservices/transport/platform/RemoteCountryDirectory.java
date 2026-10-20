@@ -29,4 +29,14 @@ public final class RemoteCountryDirectory extends RemoteReadTransport implements
         return exchange(CountryDirectoryProtocol.PARTITION, bytes, new TypeReference<CountryDirectoryProtocol.Partition>() {},
                 "platform.country-partition", 16384, value -> Boolean.TRUE.equals(value.resolved())).partitionKey();
     }
+    @Override public List<String> resolvePartitionKeys(List<LocationCoordinatesDto> coordinates) {
+        var query = new CountryDirectoryProtocol.BatchQuery(coordinates);
+        if (!CountryDirectoryProtocol.valid(query)) throw new IllegalArgumentException("Invalid country batch query");
+        byte[] bytes = mapper.writeValueAsBytes(query);
+        if (bytes.length > CountryDirectoryProtocol.MAX_REQUEST_BYTES) throw new IllegalArgumentException("Country query exceeds limit");
+        return exchange(CountryDirectoryProtocol.PARTITIONS, bytes, new TypeReference<CountryDirectoryProtocol.Partitions>() {},
+                "platform.country-partitions", 1048576, value -> Boolean.TRUE.equals(value.resolved())
+                        && value.partitionKeys() != null && value.partitionKeys().size() == coordinates.size()
+                        && value.partitionKeys().stream().allMatch(key -> key == null || key.length() <= 512)).partitionKeys();
+    }
 }

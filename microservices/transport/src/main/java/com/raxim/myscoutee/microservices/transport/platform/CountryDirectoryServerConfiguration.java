@@ -29,7 +29,7 @@ public class CountryDirectoryServerConfiguration {
                 .authorizeHttpRequests(rules -> rules
                         .requestMatchers(org.springframework.http.HttpMethod.GET, CountryDirectoryProtocol.COUNTRIES)
                         .hasAuthority("platform:countries:read")
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, CountryDirectoryProtocol.PARTITION)
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, CountryDirectoryProtocol.PARTITION, CountryDirectoryProtocol.PARTITIONS)
                         .hasAuthority("platform:countries:read").anyRequest().denyAll())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(errors -> errors.accessDeniedHandler((request, response, error) ->

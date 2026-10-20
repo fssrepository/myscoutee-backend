@@ -165,7 +165,7 @@ export function buildChecks(ctx) {
         } else {
           expectContentType(result, ['javascript', 'ecmascript'], reference.basename);
         }
-        assertImmutableAsset(result, reference.basename);
+        assertJavascriptOrCssCache(result, reference.url, reference.basename);
         return result;
       }));
       assert(assets.length === references.length, 'every referenced build asset should be checked');
@@ -351,7 +351,7 @@ export function buildChecks(ctx) {
           reference.build
           && /\.(?:js|css)$/i.test(reference.url.pathname)
         ) {
-          assertImmutableAsset(result, `precache ${label}`);
+          assertJavascriptOrCssCache(result, reference.url, `precache ${label}`);
         }
       }, {
         maxMs: Math.max(5000, Math.min(15000, ctx.timeoutMs * 2)),
@@ -669,6 +669,16 @@ function assertPrecacheContentType(result, url, label) {
     `precache ${label} should not be an HTML fallback`,
     responseDetails(result)
   );
+}
+
+function assertJavascriptOrCssCache(result, url, label) {
+  if (/^\/.+-[A-Za-z0-9_-]+\.(?:js|css)$/i.test(url.pathname)) {
+    assertImmutableAsset(result, label);
+    return;
+  }
+  const cacheControl = `${result.headers['cache-control'] ?? ''}`.toLowerCase();
+  assert(cacheControl.includes('no-cache') && !cacheControl.includes('immutable'),
+    `${label} has no content hash and should revalidate instead of using immutable caching`, { cacheControl });
 }
 
 function assertImmutableAsset(result, label) {

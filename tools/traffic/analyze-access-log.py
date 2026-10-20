@@ -65,6 +65,8 @@ LIMITS = [
     'A Firebase/Google saját hosztjaira menő kérések nem szerepelnek ebben az nginx-naplóban.',
 ]
 COVERAGE = [
+    {'action': 'Ideiglenes landing-debug', 'signal': 'POST /__landing-debug, külön nginx-fájlból',
+     'limit': 'Kliensjelzés, nem emberazonosítás. 15 másodperces csomagok az első percben; korai távozáskor best-effort küldés.'},
     {'action': 'More article / további cikkek', 'signal': 'GET /api/landing/articles',
      'limit': 'A cikklista megnyitása vagy lapozása valószínű; konkrét cikk elolvasása nem bizonyított.'},
     {'action': 'Konkrét cikk megnyitása', 'signal': 'Nincs egyedi, megbízható kérés',
@@ -82,6 +84,123 @@ COVERAGE = [
     {'action': 'Külső böngésző megnyitása', 'signal': 'Azonos IP-n új, nem WebView böngésző + dokumentumkérés',
      'limit': 'Csak lehetséges átadás; közös IP-n más látogató is lehet. A gombnyomás nem látható.'},
 ]
+
+DEBUG_MARKS = set(('bootstrap.ready bootstrap.failed route.ready landing.rendered landing.content.failed '
+    'login.click about.open partners.open countries.open bug.open article.open '
+    'privacy.open privacy.close privacy.accepted privacy.rejected terms.open terms.close '
+    'auth.open auth.close auth.success auth.failed auth.cancelled auth.blocked auth.network '
+    'auth.google auth.facebook auth.email auth.popup.request auth.email.verification '
+    'setup.open setup.close setup.save setup.failed location.request location.granted location.denied '
+    'location.prompt location.unavailable location.timeout location.cancelled location.unsupported '
+    'notifications.request notifications.granted notifications.denied notifications.default '
+    'browser.request browser.unsupported install.request install.accepted install.dismissed '
+    'network.offline network.online visible hidden').split())
+
+
+def clean_debug_message(value):
+    """Apply the recorder's bounded redaction again to untrusted log input."""
+    value = value[:1024]
+    value = re.sub(r'''(?:https?|wss?|file|blob|data|chrome-extension):[^\s"'<>)]*|www\.[^\s"'<>)]*''', '[url]', value, flags=re.I)
+    value = re.sub(r'\b(?:Bearer|Basic)\s+\S+', '[credential]', value, flags=re.I)
+    value = re.sub(r'\b[\w.+%-]+@[\w.-]+\.[A-Za-z]{2,}\b', '[email]', value)
+    value = re.sub(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', '[ip]', value)
+    value = re.sub(r'''\b(?:password|passwd|token|secret|authorization|cookie|email|userId|uid)\s*[:=]\s*(?:"[^"]*"|'[^']*'|[^\s,;]+)''', '[credential]', value, flags=re.I)
+    value = re.sub(r'''"[^"\r\n]*"|'[^'\r\n]*'|`[^`\r\n]*`''', '[value]', value)
+    value = re.sub(r'\b[A-Za-z0-9_+/.=-]{24,}\b', '[id]', value)
+    value = re.sub(r'\b\d{5,}\b|\b\d+\.\d{3,}\b', '[number]', value)
+    return re.sub(r'[\x00-\x20\x7f-\x9f]+', ' ', value).strip()[:160]
+
+
+PAGE_EVENTS = {'init', 'ready', 'dom', 'load', 'focus', 'blur', 'hidden', 'visible',
+               'activated', 'freeze', 'resume', 'pageshow', 'pageshow.cached', 'pagehide', 'pagehide.cached'}
+PAGE_TIMINGS = {'responseStart', 'responseEnd', 'domInteractive', 'domContentLoadedEventStart',
+                'loadEventStart', 'activationStart', 'workerStart', 'first-paint', 'first-contentful-paint'}
+
+
+def safe_page(value, elapsed):
+    """Optional lifecycle diagnostics contain only bounded enums, flags and timings."""
+    try:
+        if not isinstance(value, dict):
+            return None
+        for key, maximum in [('initial', 2047), ('state', 2047), ('offsetMs', 10000000), ('hiddenForMs', 60000)]:
+            if type(value.get(key)) is not int or not 0 <= value[key] <= maximum:
+                return None
+        context = value.get('context')
+        if (not isinstance(context, list) or len(context) != 2 or any(type(v) is not int for v in context)
+                or context[0] not in (0, 1, 2) or context[1] not in (0, 1)
+                or value.get('navigation') not in {'unknown', 'navigate', 'reload', 'back_forward'}
+                or value.get('delivery') not in {'', 'cache', 'navigational-prefetch'}):
+            return None
+        timing = value.get('timing', {})
+        events = value.get('events', [])
+        if not isinstance(timing, dict) or not isinstance(events, list):
+            return None
+        result = {k: value[k] for k in ('initial', 'state', 'offsetMs', 'hiddenForMs', 'context', 'navigation', 'delivery')}
+        result['timing'] = {k: v for k, v in timing.items() if k in PAGE_TIMINGS and type(v) is int and 0 <= v <= 10000000}
+        result['events'] = [e for e in events[:12] if isinstance(e, list) and len(e) == 3
+                            and type(e[0]) is int and 0 <= e[0] <= elapsed and e[1] in PAGE_EVENTS
+                            and type(e[2]) is int and 0 <= e[2] <= 2047]
+        return result
+    except (TypeError, ValueError):
+        return None
+
+
+def safe_debug(value):
+    """Read only the bounded v1 schema; never echo arbitrary query values."""
+    try:
+        if len(value) > 3500:
+            return None
+        data = json.loads(value)
+        if (not isinstance(data, dict) or data.get('v') != 1
+                or not re.fullmatch(r'[a-f0-9]{16}', data.get('id', ''))
+                or data.get('reason') not in {'tick', 'end', 'hidden', 'freeze', 'pagehide', 'route'}):
+            return None
+        def integer(key, maximum):
+            v = data.get(key)
+            if type(v) is not int or not 0 <= v <= maximum:
+                raise ValueError(key)
+            return v
+        result = {key: integer(key, maximum) for key, maximum in
+                  [('seq', 8), ('ms', 60000), ('visibleMs', 60000), ('errorCount', 100), ('dropped', 1000000)]}
+        if result['seq'] < 1 or result['visibleMs'] > result['ms']:
+            return None
+        result.update(v=1, id=data['id'], reason=data['reason'])
+        interaction = data.get('interactionMs')
+        if interaction is not None and (type(interaction) is not int or not 0 <= interaction <= result['ms']):
+            return None
+        result['interactionMs'] = interaction
+        counts = data.get('counts', {})
+        result['counts'] = {k: counts.get(k, 0) for k in ('pointer', 'key', 'click')}
+        if any(type(v) is not int or not 0 <= v <= 65535 for v in result['counts'].values()):
+            return None
+        result['marks'] = []
+        for item in data.get('marks', [])[:24]:
+            if (isinstance(item, list) and len(item) == 2 and type(item[0]) is int
+                    and 0 <= item[0] <= result['ms'] and item[1] in DEBUG_MARKS):
+                result['marks'].append(item)
+        result['errors'] = []
+        for error in data.get('errors', [])[:4]:
+            if not isinstance(error, dict):
+                continue
+            if (re.fullmatch(r'(?:[A-Za-z]{1,24}Error|Error|DOMException)', error.get('name', ''))
+                    and re.fullmatch(r'[a-f0-9]{1,8}', error.get('code', ''))
+                    and re.fullmatch(r'(?:(?:main|chunk|polyfills)-[A-Za-z0-9_-]+\.js)?', error.get('file', ''))
+                    and all(type(error.get(k)) is int and 0 <= error[k] <= n
+                            for k, n in [('line', 10000000), ('column', 10000000), ('ms', result['ms'])])):
+                item = {k: error[k] for k in ('name', 'code', 'file', 'line', 'column', 'ms')}
+                detail = error.get('detail')
+                if (isinstance(detail, dict) and detail.get('source') in {'angular', 'window', 'promise', 'resource'}
+                        and isinstance(detail.get('message'), str) and isinstance(detail.get('stack'), list)):
+                    item['detail'] = {'source': detail['source'], 'message': clean_debug_message(detail['message']),
+                                      'stack': [frame for frame in detail['stack'][:3] if isinstance(frame, str)
+                                                and re.fullmatch(r'(?:[A-Za-z_$][A-Za-z0-9_.$<>]{0,63} )?(?:[A-Za-z0-9_-]{1,64}\.m?js|<anonymous>):\d{1,8}:\d{1,8}', frame)]}
+                result['errors'].append(item)
+        page = safe_page(data.get('page'), result['ms'])
+        if page is not None:
+            result['page'] = page
+        return result
+    except (ValueError, TypeError, AttributeError, KeyError):
+        return None
 
 
 @dataclass
@@ -118,6 +237,10 @@ def parse_line(line):
         # Whitelist non-identifying controls. Do not retain tokens, coordinates,
         # search text, article/profile IDs or marketing query values.
         safe_params = {}
+        if target.path == '/__landing-debug':
+            debug = safe_debug(params.get('d', [''])[0])
+            if debug:
+                safe_params['debug'] = debug
         for key in ('page', 'pageSize'):
             item = params.get(key, [''])[0]
             if re.fullmatch(r'\d{1,4}', item):
@@ -201,6 +324,16 @@ def event(request, kind, confidence, description, evidence=None):
 
 
 def api_event(request):
+    debug = request.params.get('debug')
+    if request.path == '/__landing-debug' and request.method == 'POST' and request.status == 204 and debug:
+        interaction = ('nincs megfigyelt interakció' if debug['interactionMs'] is None
+                       else f"első interakció +{debug['interactionMs']} ms")
+        item = event(request, 'landing_debug', 'kliensjelzés',
+                     f"Landing +{debug['ms']} ms; látható {debug['visibleMs']} ms; {interaction}; "
+                     f"JS-hibajelzés {debug['errorCount']}; ok: {debug['reason']}.",
+                     f"POST /__landing-debug → 204; {debug['id']}/{debug['seq']}")
+        item['debug'] = debug
+        return item
     key = (request.method, request.path)
     rules = {
         ('GET', '/api/landing/content'): ('background', 'megfigyelt', 'Nyitóoldali tartalom lekérése; nem cikknyitási jel.'),
@@ -354,21 +487,43 @@ def netcup_lines(config_path, since, tail):
         client.connect(config['SSH_HOST'], port=int(config['SSH_PORT']),
                        username=config['SSH_USER'], password=config['SSH_PASSWORD'],
                        allow_agent=False, look_for_keys=False, timeout=15, auth_timeout=15, banner_timeout=15)
-        command = shlex.join(['docker', 'logs', '--timestamps', '--since', since,
-                              '--tail', str(tail), 'nginx'])
-        channel = client.get_transport().open_session(timeout=30)
-        channel.settimeout(60)
-        channel.set_combine_stderr(True)
-        channel.exec_command(command)
-        with channel.makefile('r') as stream:
-            for line in stream:
-                yield line
-        if channel.recv_exit_status() != 0:
-            raise ValueError('A Netcup nginx-napló olvasása sikertelen.')
+        interval = re.fullmatch(r'(\d+)([smhd])', since)
+        cutoff = (datetime.now(timezone.utc) - timedelta(seconds=int(interval[1]) *
+                  {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}[interval[2]]) if interval
+                  else datetime.fromisoformat(since.replace('Z', '+00:00')))
+        if cutoff.tzinfo is None:
+            cutoff = cutoff.replace(tzinfo=timezone.utc)
+        commands = [shlex.join(['docker', 'logs', '--timestamps', '--since', since,
+                               '--tail', str(tail), 'nginx']),
+                    shlex.join(['docker', 'exec', 'nginx', 'sh', '-c',
+                                'if test -f /var/log/nginx/landing-debug.log; then tail -n ' + str(tail) +
+                                ' /var/log/nginx/landing-debug.log; fi'])]
+        for index, command in enumerate(commands):
+            channel = client.get_transport().open_session(timeout=30)
+            channel.settimeout(60)
+            channel.set_combine_stderr(True)
+            channel.exec_command(command)
+            with channel.makefile('r') as stream:
+                for line in stream:
+                    row = parse_line(line) if index else None
+                    if not index or (row and row.time >= cutoff):
+                        yield line
+            if channel.recv_exit_status() != 0:
+                raise ValueError('A Netcup nginx-napló olvasása sikertelen.')
     except (paramiko.SSHException, TimeoutError):
         raise OSError('A csak olvasható Netcup-kapcsolat sikertelen.') from None
     finally:
         client.close()
+
+
+def page_state_label(flags):
+    ready = 'complete' if flags & 64 else 'interactive' if flags & 32 else 'loading'
+    prerender = str(bool(flags & 4)) if flags & 128 else 'ismeretlen'
+    activation = str(bool(flags & 8)) if flags & 256 else 'ismeretlen'
+    return (f"visible={bool(flags & 1)}, focus={bool(flags & 2)}, ready={ready}, "
+            f"prerender={prerender}, userActivated={activation}, "
+            f"transientActivation={bool(flags & 16) if flags & 256 else 'ismeretlen'}, "
+            f"wasDiscarded={bool(flags & 512)}, iframe={bool(flags & 1024)}")
 
 
 def render(report, local_timezone):
@@ -385,6 +540,26 @@ def render(report, local_timezone):
             count = f" ({item['count']}×)" if item.get('count', 1) > 1 else ''
             lines += [f"  {stamp(item['time'])} [{item['confidence']}] {item['description']}{count}",
                       f"    Jel: {item['evidence']}"]
+            if item.get('debug'):
+                page = item['debug'].get('page')
+                if page:
+                    purpose = ('nincs jelzés', 'prefetch/preview', 'prerender')[page['context'][0]]
+                    lines.append(f"    HTML-kérés: purpose={purpose}, Sec-Fetch-User={bool(page['context'][1])}; "
+                                 f"navigation={page['navigation']}, delivery={page['delivery'] or 'nincs jelzés'}")
+                    lines.append(f"    Kezdőállapot: {page_state_label(page['initial'])}")
+                    lines.append(f"    Most: {page_state_label(page['state'])}; hidden óta {page['hiddenForMs']} ms")
+                    lines.append(f"    Navigációs időpontok (ms): {json.dumps(page['timing'])}; mérő indulása +{page['offsetMs']} ms")
+                    for elapsed, name, flags in page['events']:
+                        lines.append(f"    +{elapsed} ms lifecycle {name}: {page_state_label(flags)}")
+                for elapsed, name in item['debug']['marks']:
+                    lines.append(f'    +{elapsed} ms: {name}')
+                for error in item['debug']['errors']:
+                    lines.append(f"    +{error['ms']} ms: {error['name']} #{error['code']} "
+                                 f"{error['file']}:{error['line']}:{error['column']}")
+                    if error.get('detail'):
+                        detail = error['detail']
+                        lines.append(f"      {detail['source']}: {detail['message']}")
+                        lines.extend('      ' + frame for frame in detail['stack'])
         if not session['events']:
             lines.append('  Nincs azonosítható műveleti jel; ebből nem következik, hogy nem kattintott.')
         if session['unknownJsRequests']:

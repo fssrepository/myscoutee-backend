@@ -37,6 +37,12 @@ public interface UsersRepository extends MongoRepository<Users, String> {
     @Query(value = "{}", sort = "{ 'name': 1, 'userId': 1 }", collation = "{ 'locale': 'en', 'strength': 2 }")
     List<Users> findAllByOrderByNameAscUserIdAsc();
 
+    @Query(value = "{}", fields = "{ 'userId': 1, 'workspaceGroupId': 1, 'accountUserId': 1, 'name': 1, 'age': 1, "
+            + "'city': 1, 'initials': 1, 'images': 1, 'gender': 1, 'statusText': 1, 'completion': 1, 'profileFormVersion': 1, "
+            + "'status': 1, 'profileStatus': 1, 'deletedAtIso': 1, 'hostTier': 1, 'operator': 1, 'locationCoordinates': 1 }",
+            sort = "{ 'name': 1, 'userId': 1 }", collation = "{ 'locale': 'en', 'strength': 2 }")
+    List<Users> findDemoSelectorProfiles();
+
     Optional<Users> findByUserId(String userId);
 
     Optional<Users> findFirstByEmail(String email);

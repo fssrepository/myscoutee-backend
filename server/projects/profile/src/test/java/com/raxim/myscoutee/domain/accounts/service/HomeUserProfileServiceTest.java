@@ -700,12 +700,12 @@ class HomeUserProfileServiceTest {
         Users ava = user("ava", 10d);
         Users mia = user("mia", 20d);
         Users zoe = user("zoe", 30d);
-        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(setup, ava, mia, zoe));
+        when(usersRepository.findDemoSelectorProfiles()).thenReturn(List.of(setup, ava, mia, zoe));
 
         assertThat(service.queryDemoUserListItems(2))
                 .extracting(item -> item.id())
                 .containsExactly("u-onboarding", "ava");
-        verify(usersRepository, times(1)).findAllByOrderByNameAscUserIdAsc();
+        verify(usersRepository, times(1)).findDemoSelectorProfiles();
         verify(usersRepository, never()).findAll();
     }
 
@@ -719,7 +719,7 @@ class HomeUserProfileServiceTest {
         operator.setHostTier("Operator");
         Users presentationOnly = user("presentation-only", 5d);
         presentationOnly.setHostTier("Operator");
-        when(usersRepository.findAllByOrderByNameAscUserIdAsc())
+        when(usersRepository.findDemoSelectorProfiles())
                 .thenReturn(List.of(admin, member, presentationOnly, operator));
 
         assertThat(service.queryDemoUserListItems(null, "member"))
@@ -744,16 +744,16 @@ class HomeUserProfileServiceTest {
         valid.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979, 19.0402));
         Users duplicate = user("duplicate", 0d);
         duplicate.setLocationCoordinates(valid.getLocationCoordinates());
-        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(missing, unsupported, valid, duplicate));
+        when(usersRepository.findDemoSelectorProfiles()).thenReturn(List.of(missing, unsupported, valid, duplicate));
         when(regionSecurityProperties.isEnabled()).thenReturn(true);
-        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431))).thenReturn(null);
-        when(countryPartitionService.resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402))).thenReturn("country:hu");
+        var points = List.of(new LocationCoordinatesDto(30.2672, -97.7431), new LocationCoordinatesDto(47.4979, 19.0402));
+        when(countryPartitionService.resolvePartitionKeys(points)).thenReturn(java.util.Arrays.asList(null, "country:hu"));
 
         assertThat(service.queryDemoUserListItems())
                 .extracting(item -> item.id(), item -> item.locationRequired())
                 .containsExactly(tuple("missing", true), tuple("unsupported", true), tuple("valid", false), tuple("duplicate", false));
-        verify(countryPartitionService, times(1)).resolvePartitionKey(new LocationCoordinatesDto(47.4979, 19.0402));
-        verify(countryPartitionService, times(1)).resolvePartitionKey(new LocationCoordinatesDto(30.2672, -97.7431));
+        verify(countryPartitionService, times(1)).resolvePartitionKeys(points);
+        verify(countryPartitionService, never()).resolvePartitionKey(any(LocationCoordinatesDto.class));
     }
 
     @Test
@@ -784,7 +784,7 @@ class HomeUserProfileServiceTest {
         deleted.setDeletedAtIso("2026-01-02T03:04:05Z");
         Users onboarding = user("onboarding", 40d);
         onboarding.setProfileStatus("onboarding");
-        when(usersRepository.findAllByOrderByNameAscUserIdAsc())
+        when(usersRepository.findDemoSelectorProfiles())
                 .thenReturn(List.of(active, blocked, deleted, inactive, onboarding));
 
         assertThat(service.queryDemoUserListItems())

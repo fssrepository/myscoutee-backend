@@ -70,4 +70,54 @@ class CountryPartitionServiceTest {
         assertThat(service.resolvePartitionKey(new LocationCoordinatesDto(91d, 19d), "country:hu")).isNull();
         verifyNoInteractions(mongo);
     }
+    @Test
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    void batchPreservesPositionsAndSpecificityWithoutTransferringGeometry() {
+        var collection = mock(com.mongodb.client.MongoCollection.class);
+        var matches = mock(com.mongodb.client.AggregateIterable.class);
+        var cursor = mock(com.mongodb.client.MongoCursor.class);
+        when(mongo.getCollection("countryPartitions")).thenReturn(collection);
+        when(collection.aggregate(any(java.util.List.class))).thenReturn(matches);
+        when(matches.iterator()).thenReturn(cursor);
+        when(cursor.hasNext()).thenReturn(true, true, false);
+        when(cursor.next()).thenReturn(
+                new org.bson.Document("pointIndex", 3).append("partitionKey", "country:de"),
+                new org.bson.Document("pointIndex", 0).append("partitionKey", "country:hu"));
+
+        assertThat(service.resolvePartitionKeys(java.util.Arrays.asList(point, null,
+                new LocationCoordinatesDto(91d, 19d), new LocationCoordinatesDto(52.5, 13.4))))
+                .containsExactly("country:hu", null, null, "country:de");
+        var pipeline = ArgumentCaptor.forClass(java.util.List.class);
+        verify(collection, times(1)).aggregate(pipeline.capture());
+        var stages = (java.util.List<org.bson.Document>) pipeline.getValue();
+        assertThat(stages).hasSize(5);
+        assertLookup(stages.subList(0, 4), 0, 19.0402, 47.4979);
+        var union = stages.get(4).get("$unionWith", org.bson.Document.class);
+        assertThat(union.getString("coll")).isEqualTo("countryPartitions");
+        assertLookup((java.util.List<org.bson.Document>) union.get("pipeline"), 3, 13.4, 52.5);
+    }
+
+    @Test
+    void emptyAndMalformedBatchesDoNotQueryAndOversizedBatchesAreRejected() {
+        assertThat(service.resolvePartitionKeys(java.util.List.of())).isEmpty();
+        assertThat(service.resolvePartitionKeys(java.util.Arrays.asList(null, new LocationCoordinatesDto(Double.NaN, 0d))))
+                .containsExactly(null, null);
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.resolvePartitionKeys(null))
+                .isInstanceOf(IllegalArgumentException.class);
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.resolvePartitionKeys(java.util.Collections.nCopies(129, point)))
+                .isInstanceOf(IllegalArgumentException.class);
+        verifyNoInteractions(mongo);
+    }
+
+    private void assertLookup(java.util.List<org.bson.Document> stages, int index, double longitude, double latitude) {
+        var geometry = stages.get(0).get("$match", org.bson.Document.class).get("geometry", org.bson.Document.class)
+                .get("$geoIntersects", org.bson.Document.class).get("$geometry", org.bson.Document.class);
+        assertThat(geometry.get("coordinates")).isEqualTo(java.util.List.of(longitude, latitude));
+        assertThat(stages.get(1)).isEqualTo(new org.bson.Document("$sort", new org.bson.Document("specificity", -1)));
+        assertThat(stages.get(2)).isEqualTo(new org.bson.Document("$limit", 1));
+        assertThat(stages.get(3).get("$project", org.bson.Document.class))
+                .containsEntry("partitionKey", 1).containsEntry("pointIndex", new org.bson.Document("$literal", index))
+                .doesNotContainKey("geometry");
+    }
+
 }

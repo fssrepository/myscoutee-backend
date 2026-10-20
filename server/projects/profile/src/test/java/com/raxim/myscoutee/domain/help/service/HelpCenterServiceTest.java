@@ -96,6 +96,44 @@ class HelpCenterServiceTest {
     }
 
     @Test
+    void publicPoliciesReadOnlyTheirActiveLanguageRevisionAndPreserveGroupScope() {
+        for (String kind : List.of("privacy", "terms")) {
+            for (String lang : List.of("en", "hu", "de", "es")) {
+                for (String group : List.of("myscoutee-work", "myscoutee-community")) {
+                    String scope = "privacy".equals(kind) ? null : group;
+                    var active = revision(kind + "-" + lang + "-" + group, 3);
+                    active.setDocumentType(kind);
+                    active.setLang(lang);
+                    active.setBaseGroupId(scope);
+                    active.setActive(true);
+                    when(revisionsRepository.findFirstByBaseGroupIdAndDocumentTypeAndLangAndActiveTrueOrderByVersionDesc(
+                            scope, kind, lang)).thenReturn(Optional.of(active));
+
+                    var state = service.activeState(kind, null, lang + "-" + lang.toUpperCase(), null, group);
+
+                    assertThat(state.activeRevision()).isNotNull();
+                    assertThat(state.activeRevision().id()).isEqualTo(active.getId());
+                    assertThat(state.activeRevision().lang()).isEqualTo(lang);
+                    assertThat(state.activeRevision().contextKey()).isEmpty();
+                    assertThat(state.revisions()).containsExactly(state.activeRevision());
+                    assertThat(JobGroupContext.isActive()).isFalse();
+                }
+            }
+        }
+        verify(revisionsRepository, never()).findByBaseGroupIdOrderByVersionDesc(any());
+    }
+
+    @Test
+    void publicPolicyWithoutAnActiveRevisionStaysEmptyWithoutReadingHistoryOrOtherLanguages() {
+        var state = service.activeState("privacy", "es", "en", null, "myscoutee-work");
+        assertThat(state.activeRevision()).isNull();
+        assertThat(state.revisions()).isEmpty();
+        verify(revisionsRepository).findFirstByBaseGroupIdAndDocumentTypeAndLangAndActiveTrueOrderByVersionDesc(
+                null, "privacy", "es");
+        verify(revisionsRepository, never()).findByBaseGroupIdOrderByVersionDesc(any());
+    }
+
+    @Test
     void workAdminCannotActivateOrDeleteADatingRevision() {
         var moderation = org.mockito.Mockito.mock(AdministrativeActors.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", moderation);

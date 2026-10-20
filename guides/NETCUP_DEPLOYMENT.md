@@ -1,6 +1,29 @@
 # Netcup deployment
 
-## Current partial release: 1.3.3 (2026-10-01)
+## Current partial release: 1.4.4 (2026-10-20)
+
+[MSC-125 / release 1.4.4](releases/v1.4.4.md) replaces only nginx with the
+digest-pinned landing-debug image, including global automatic-consent control,
+the four-step setup popup, continuous guide background and session-scoped notification cleanup. Public frontend build: `1.4.4-cd4ecaa0b`. All nine containers are healthy; the other
+eight retain their IDs, images and start times. Public HTTPS checks pass 13/13.
+The installed DEB remains 1.4.1 and the API image remains 1.4.2. The shared DEB migration/seed chain is retained: all 19 migration receipts
+and canonical translations match in both live databases; no data write was needed. Compose and secrets checksums are unchanged.
+
+The temporary probe is enabled for new landing documents, reports the first
+minute at 15-second checkpoints and flushes early on hiding/departure. It uses
+only browser memory and the separate nginx file `/var/log/nginx/landing-debug.log`.
+[Switching and interpretation](../tools/traffic/README.md#temporary-landing-probe-msc-125-default-off).
+The image defaults off; in-container activation is cleared on recreation.
+
+Fresh-browser verification of the deployed guide: 449 sampled frames, no uncovered/doubled background and one position from the first visible guide frame.
+
+Automatic consent prompts are off globally (`X-MyScoutee-Consent-Auto: 0`); manual privacy actions remain available.
+
+Backup: `/var/backups/myscoutee/myscoutee-backup-20261020-153840.tar.gz`.
+Receipts and previous nginx logs: `/root/myscoutee-partial-1.4.4-20261020-guide-final`.
+[Release evidence](qualification/evidence/RELEASE_1.4.4_20261020.json).
+
+## Previous partial release: 1.3.3 (2026-10-01)
 
 [MSC-113 release](releases/v1.3.3.md) updates only the nginx and backend images,
 pinned by digest. Installed DEB remains 1.3.0; no DEB was built. All eight
