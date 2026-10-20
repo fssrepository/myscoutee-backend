@@ -35,6 +35,10 @@ in this directory:
   login sessions for one day.
 - `work-day/work-hours-summary.sh` calculates daily, weekly, monthly, and
   four-month totals from the same login history, including zero-hour days.
+- `traffic/analyze-access-log.py` infers possible visitor journeys from existing
+  nginx logs and stamped frontend assets, separating lazy loads from probable
+  service-worker precache. It supports read-only Netcup input; see
+  [usage and inference limits](traffic/README.md).
 
 Release-packaged client tools live with the Debian packaging source:
 
