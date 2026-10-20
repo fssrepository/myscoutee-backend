@@ -1,0 +1,31 @@
+Website domain on a diagonal corner ribbon — 2026-10-20
+
+Tool: built-in image_gen, edit mode.
+Original source: myscoutee-promo-feed-browser-notice-v2.png
+Final output: myscoutee-promo-feed-browser-notice-domain-v3.png
+
+Final requested design:
+- Keep the original logo and MyScoutee name at the top, without .com.
+- Lower-right diagonal navy/violet ribbon, plain white lowercase myscoutee.com.
+- No pictorial logo in the ribbon. Preserve the existing image and captions.
+- Original browser-notice source remains unchanged.
+
+Exact prompt set used for the selected result:
+Edit 1:
+Use case: text-localization, minimal precise text edit.
+Edit target: the supplied PORTRAIT MyScoutee Facebook feed marketing image, 1122 by 1402 pixels.
+Make ONLY ONE change: append the exact lowercase text ".com" immediately after "yScoutee" in the TOP brand wordmark. The existing official colorful M-shaped logo is the first letter of MyScoutee; preserve it exactly. The complete displayed wordmark must read [existing official M-shaped logo]yScoutee.com. Do not add a second M. Keep the ".com" on the same line and baseline, in the same deep navy bold typeface. Fit the complete logo plus wordmark centered in the existing top title area with safe spacing from portrait cards; modestly reduce the entire wordmark width if required. Do not make ".com" tiny.
+Preserve EVERYTHING ELSE: exact original portrait aspect ratio and full composition, entire frame, existing logo shape/star/heart/colors, all six portrait cards with the same faces and icons, all six people and table at bottom, all connecting lines and shapes, background, lighting, colors, slider labeled "Interest 1–10" and "8", all typography and text outside the top brand wordmark. Retain the exact browser notice "OPEN IN EXTERNAL BROWSER" / "Facebook / Instagram may" / "block location access."; retain "6 people · 6 priority lists → 1 team", "Standard · Tournament · Speed meeting", "Mutual interest.", "Group chat. Real plans.", "Meet through events.", "FREE TO JOIN". No cropping, no stretching, no redesigned scene, no added text anywhere else. Output a finished opaque portrait image at the source dimensions if supported.
+
+Edit 2:
+Edit target: supplied portrait MyScoutee.com Facebook advertisement, the version WITHOUT any lower-right ribbon yet.
+Add a clean diagonal navy ribbon with fine violet edges across ONLY the LOWER RIGHT CORNER, rising about 45 degrees from bottom edge to right edge. On the ribbon write exactly "myscoutee.com" in ALL LOWERCASE, normal bold white sans-serif type. Every character must be lowercase; no logo or pictorial initial.
+Keep the ribbon farther into the corner and compact: on this 1122x1402 image, let its centerline connect approximately (x=905,y=1402) to (x=1122,y=1185), with about 58px width. The entire lowercase domain must fit inside the frame with clear margins, centered diagonally on the ribbon. A 29-33px bold font is suitable. Do not enlarge or move the ribbon into the central text area.
+CRITICAL: leave all existing text fully visible and unobstructed, especially the COMPLETE caption "Group chat. Real plans." including "plans." and its period, "Meet through events.", and "FREE TO JOIN". The ribbon must stay to their right. Cover only the lower-right blurred foliage/background/shirt corner, no face.
+Preserve absolutely everything else: existing TOP logo and MyScoutee.com wordmark, all six people, all six portrait cards, faces, icons, lines, slider, exact browser warning, lighting, colors, composition, full framing, exact portrait aspect ratio, resolution 1122x1402 if supported. No crop, no redesign, no extra text outside the ribbon.
+
+Edit 3:
+Precise typography edit of the supplied PORTRAIT MyScoutee marketing image.
+Make ONLY ONE change, in the TOP brand wordmark: REMOVE the suffix ".com" from the existing logo + "yScoutee.com". The upper brand must now read [the existing official colorful M-shaped logo] immediately followed by "yScoutee", so the full brand is MyScoutee, WITHOUT .com at the top. Preserve the exact M-shaped pictorial logo, its star, heart, colors and proportions, and the remaining navy wordmark typography. Center the shortened upper logo+wordmark group naturally in the same top area; fill the small removed suffix area with matching existing sky/background.
+CRITICAL: KEEP the LOWER RIGHT DIAGONAL CORNER RIBBON EXACTLY AS IT IS, including its lowercase text "myscoutee.com", white lettering, navy band, violet edges, diagonal placement and compact size. Do NOT remove .com from the ribbon; only remove it from the top wordmark. Keep the complete "Group chat. Real plans." caption unobstructed.
+Preserve absolutely EVERYTHING ELSE: entire original portrait composition and framing, all people and faces, all cards, icons, connecting lines, slider, browser warning and all other text/captions, colors and lighting. No redesign, crop, additional text, or ribbon change. Output the same opaque portrait dimensions, 1122x1402 if supported.
