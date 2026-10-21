@@ -106,3 +106,4 @@ Thumbs.db
 # Python command modules used by source-only seed/release tools.
 /tools/seeds/__pycache__/
 /packaging/release/__pycache__/
+/tools/traffic/__pycache__/

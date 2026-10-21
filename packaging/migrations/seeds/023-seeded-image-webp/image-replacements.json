@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "frontend": [
+    {
+      "previousPath": "assets/articles/business-idea.png",
+      "path": "/media/public?key=images/system/idea-posts/business-idea/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/articles/community-decisions.png",
+      "path": "/media/public?key=images/system/idea-posts/community-decisions/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/articles/community-fault.png",
+      "path": "/media/public?key=images/system/idea-posts/community-fault/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/articles/community-local-help.png",
+      "path": "/media/public?key=images/system/idea-posts/community-local-help/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/articles/community-meter.png",
+      "path": "/media/public?key=images/system/idea-posts/community-meter/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/articles/professional-network.png",
+      "path": "/media/public?key=images/system/idea-posts/professional-network/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/articles/team-building.png",
+      "path": "/media/public?key=images/system/idea-posts/team-building/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/articles/work-opportunity.png",
+      "path": "/media/public?key=images/system/idea-posts/work-opportunity/v1/large.webp"
+    },
+    {
+      "previousPath": "assets/logo/cards_no_edges.png",
+      "path": "assets/logo/cards_no_edges.webp"
+    },
+    {
+      "previousPath": "assets/logo/work_cards_no_edges.png",
+      "path": "assets/logo/work_cards_no_edges.webp"
+    },
+    {
+      "previousPath": "assets/logo/community_cards_no_edges.png",
+      "path": "assets/logo/community_cards_no_edges.webp"
+    }
+  ],
+  "minio": [
+    {
+      "previousKey": "images/system/random-room-default.png",
+      "key": "images/system/random-room-default.webp",
+      "previousSha256": "aaa194564a097a9afa13d21aae3cdab4adead1363a850c3b9d544a647e979001",
+      "sha256": "540d1fe2df5aaef1c9a2f0259f2318b3e4b3987fce6ae32bd7fad639e09e4236"
+    },
+    {
+      "key": "images/system/idea-posts/business-idea/v1/small.webp",
+      "sha256": "83b58f0336a4589e2b10b879438680a57969a0d3f625fac1ba1547d43649f72b"
+    },
+    {
+      "key": "images/system/idea-posts/business-idea/v1/medium.webp",
+      "sha256": "e9caadd7e1ca39100eb4a53bcb8fe41f6fce84bfdc7505d6dada01aa5d9176ae"
+    },
+    {
+      "key": "images/system/idea-posts/business-idea/v1/large.webp",
+      "sha256": "9ad8f176b759079aab4da08b837e3dc948f0270dbd77f2d385b1f08bceb30177"
+    },
+    {
+      "key": "images/system/idea-posts/community-decisions/v1/small.webp",
+      "sha256": "a2b20d56a891a8ef0a157aa9745e27e407386a2dc40e99e66ecabf589e0cbc01"
+    },
+    {
+      "key": "images/system/idea-posts/community-decisions/v1/medium.webp",
+      "sha256": "c5b42450e6e5cdfdc76a1738dc93cc5f01ea99bdb0eddf7e5c4131054eb8c67c"
+    },
+    {
+      "key": "images/system/idea-posts/community-decisions/v1/large.webp",
+      "sha256": "8928602ceebca32e77c4d03bc965ab963cde4813ff8cdee75bd807e6d343911c"
+    },
+    {
+      "key": "images/system/idea-posts/community-fault/v1/small.webp",
+      "sha256": "70d03581d39b71712d31a1865af435bfcf49124b99c2ec6e1dc1c80dffef92d9"
+    },
+    {
+      "key": "images/system/idea-posts/community-fault/v1/medium.webp",
+      "sha256": "55e0734399651937df5b3d7a7d76efe61d7f25969df6c10bfd2b5c685163db85"
+    },
+    {
+      "key": "images/system/idea-posts/community-fault/v1/large.webp",
+      "sha256": "35a5fb5b86900d939fd9fd47777461d3a73a3fbf54aa0f7dda392586a210a6fc"
+    },
+    {
+      "key": "images/system/idea-posts/community-local-help/v1/small.webp",
+      "sha256": "4e5e053568509f5297a74662002a5d0be8d3db26ef5f04eb2b605d4fce43d451"
+    },
+    {
+      "key": "images/system/idea-posts/community-local-help/v1/medium.webp",
+      "sha256": "8d8c0832fea23cfc0feaa6d4e7942aec42177e421f0657f5214dd31ad98444b2"
+    },
+    {
+      "key": "images/system/idea-posts/community-local-help/v1/large.webp",
+      "sha256": "71f3e2212a6ed188b287a6c3af01a058e6c753026df334954136d44e5cb05606"
+    },
+    {
+      "key": "images/system/idea-posts/community-meter/v1/small.webp",
+      "sha256": "d1f2cd78a4b984ac80f905b574bd0e0014b3baebe60921effaec19248b9a12ea"
+    },
+    {
+      "key": "images/system/idea-posts/community-meter/v1/medium.webp",
+      "sha256": "1dd21146cae538ecb056d25f40300d1eb7d09ed34493928781d45e79a0ef087c"
+    },
+    {
+      "key": "images/system/idea-posts/community-meter/v1/large.webp",
+      "sha256": "8461ea55804b83f9e2e424afae72e9b9eab12b53afe974f156c217a868c576f3"
+    },
+    {
+      "key": "images/system/idea-posts/professional-network/v1/small.webp",
+      "sha256": "555a5d3c6593964cbba29124a2623e4d965898a7951309d8cf7dba75f5bb4c93"
+    },
+    {
+      "key": "images/system/idea-posts/professional-network/v1/medium.webp",
+      "sha256": "2f51f8825da78607a96623aed5d6b21d5868ed503b64e082301753350776f6fd"
+    },
+    {
+      "key": "images/system/idea-posts/professional-network/v1/large.webp",
+      "sha256": "75666ac3bb2ac8ea4386656c8cfa448c60c0a35d38909b0d2310c04f239642ad"
+    },
+    {
+      "key": "images/system/idea-posts/team-building/v1/small.webp",
+      "sha256": "cdae700a3364fd488b70b3f95f266903fb9bae5a4d87167c1cb858b777272d28"
+    },
+    {
+      "key": "images/system/idea-posts/team-building/v1/medium.webp",
+      "sha256": "5b9e73a4bbd89b93b5c40a95291cf85cbe5b86b1c92548b4b9ba7368c9b3767f"
+    },
+    {
+      "key": "images/system/idea-posts/team-building/v1/large.webp",
+      "sha256": "922fc6a9a6b51a5e849663ea9c0df1845dab44cee1116bab73e77dd003d0bb1b"
+    },
+    {
+      "key": "images/system/idea-posts/work-opportunity/v1/small.webp",
+      "sha256": "e07938fca00773fd2c4dcb27b9a397f214e11f6e5ed799e71a0d06edaa9acb57"
+    },
+    {
+      "key": "images/system/idea-posts/work-opportunity/v1/medium.webp",
+      "sha256": "7d6f515e540ed5805cc4e97555646de4a26a58dae9f9ecc52f507cb39fd6bad5"
+    },
+    {
+      "key": "images/system/idea-posts/work-opportunity/v1/large.webp",
+      "sha256": "03a83a7453ebf4a60faa12205afa6b70ca33ec3c3bdad129e8ab71b8bba89caf"
+    }
+  ]
+}

@@ -208,6 +208,14 @@ while IFS= read -r runtime_script_path; do
 done < <(find "${REPO_ROOT}/packaging/scripts" -maxdepth 1 -type f \
   \( -name '*.sh' -o -name '*.py' -o -name '*.js' -o -name '*.jq' -o -name '*.json' \) | sort)
 cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/"
+# The host migration must have its replacement bytes before Mongo references
+# change, including upgrades from an older MinIO image.
+media_manifest="${REPO_ROOT}/packaging/migrations/seeds/023-seeded-image-webp/image-replacements.json"
+media_source="${SERVER_DIR}/docker/conf/minio/media"
+python3 "${REPO_ROOT}/packaging/scripts/migrate-seeded-media.py" check-inputs "$media_manifest" "$media_source"
+while IFS= read -r key; do
+  install -D -m 0644 "$media_source/$key" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/conf/minio/media/$key"
+done < <(jq -r '.minio[].key' "$media_manifest")
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update.path" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update.path"

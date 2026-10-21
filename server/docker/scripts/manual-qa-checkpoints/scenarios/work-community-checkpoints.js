@@ -113,7 +113,7 @@
       title: `MSC115 service ${String(index + 1).padStart(2, "0")} — ${index < 8 ? "Meter care" : "Electrical care"}`,
       description: `Service-owned description ${index + 1}; prepared discovery baseline.`,
       category: index < 8 || index >= 12 ? "plumbing" : "electrical",
-      imageUrls: [index < 8 || index >= 12 ? "/assets/articles/community-meter.png" : "/assets/articles/community-fault.png"],
+      imageUrls: [index < 8 || index >= 12 ? "/media/public?key=images/system/idea-posts/community-meter/v1/large.webp" : "/media/public?key=images/system/idea-posts/community-fault/v1/large.webp"],
       maxDistanceKm: null, languages: [], staffAccountIds: [index < 8 || index >= 12 ? actors[0].id : actors[2].id],
       status: index === 12 ? "draft" : index === 13 ? "trash" : "published",
       createdAtIso: now, updatedAtIso: now, version: NumberLong("0") })));

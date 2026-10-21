@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { isDeepStrictEqual } from 'node:util';
+import vm from 'node:vm';
 const root = new URL('../../', import.meta.url);
 const inputDirectory = process.argv.find(value=>value.startsWith('--input-directory='))?.slice('--input-directory='.length);
 if (process.argv.includes('--print-script')) assert.match(inputDirectory ?? '', /^\/tmp\/qa-release-catalogs-[0-9a-f]{32}$/, 'Stage the pinned JSON inputs separately and supply their owned --input-directory');
@@ -46,6 +47,7 @@ const revisionScope = row => JSON.stringify([row.baseGroupId??null,row.documentT
 const currentScopes = new Set(currentRevisions.map(revisionScope));
 assert.ok(isDeepStrictEqual(refresh.retiredRevisions,refresh.previousRevisions.filter(row=>!currentScopes.has(revisionScope(row)))), 'Only obsolete packaged guide scopes may be retired');
 for (const row of currentRevisions) assert.ok(isDeepStrictEqual(upgradedRevisions.get(row._id),row), `Missing current revision refresh: ${row._id}`);
+const upgradedCatalogs = {};
 for (const row of JSON.parse(files['catalog-defaults'])) {
   const key = row => JSON.stringify(row._id);
   const upgraded = new Map(row.rows.map(value=>[key(value),value]));
@@ -55,11 +57,33 @@ for (const row of JSON.parse(files['catalog-defaults'])) {
   }
   for (const update of languageRefresh.catalogUpdates.filter(value=>value.collection===row.collection)) upgraded.set(key(update.target),update.target);
   for (const added of languageRefresh.addedCatalogs.filter(value=>value.collection===row.collection)) for (const value of added.rows) upgraded.set(key(value),value);
-  assert.ok(isDeepStrictEqual(sorted(upgraded.values()),sorted(JSON.parse(fs.readFileSync(new URL('server/docker/conf/mongodb/myscoutee_db/'+row.collection+'.json',root),'utf8')))),
-    `Pinned upgrade catalog differs from the current production seed: ${row.collection}`);
+  upgradedCatalogs[row.collection] = [...upgraded.values()];
 }
+// Apply the actual new URL migration before comparing historical catalogs with
+// today's seeds. Historical pinned inputs stay immutable.
+const imageManifest = fs.readFileSync(new URL('packaging/migrations/seeds/023-seeded-image-webp/image-replacements.json',root),'utf8');
+vm.runInNewContext(fs.readFileSync(new URL('packaging/migrations/023-seeded-image-webp.js',root),'utf8'), {
+  require: () => ({readFileSync: () => imageManifest}),
+  process: {env: {MYSCOUTEE_MIGRATION_SEED_DIRECTORY: '/pinned'}},
+  EJSON: {stringify: JSON.stringify}, print: () => {},
+  db: {getCollection: name => ({
+    find: () => ({forEach: visit => (upgradedCatalogs[name] ?? []).forEach(visit)}),
+    bulkWrite: operations => {
+      for (const {updateOne: operation} of operations) {
+        const row = upgradedCatalogs[name].find(value => value._id === operation.filter._id);
+        for (const [field, previous] of Object.entries(operation.filter))
+          assert.ok(isDeepStrictEqual(row[field],previous), 'Migration023 previous field differs');
+        Object.assign(row,JSON.parse(JSON.stringify(operation.update.$set)));
+      }
+      return {matchedCount: operations.length, modifiedCount: operations.length};
+    }
+  })}
+});
+for (const [name, rows] of Object.entries(upgradedCatalogs))
+  assert.ok(isDeepStrictEqual(sorted(rows),sorted(JSON.parse(fs.readFileSync(new URL('server/docker/conf/mongodb/myscoutee_db/'+name+'.json',root),'utf8')))),
+    `Pinned upgrade catalog differs after migration023: ${name}`);
 if (!process.argv.includes('--print-script')) {
-  console.log('PASS: immutable migrations016/017/020 and the scoped migration021 match the current production catalogs.');
+  console.log('PASS: immutable migrations016/017/020, scoped migration021 and image migration023 match the current production catalogs.');
 } else console.log(`
 const inputDirectory=${JSON.stringify(inputDirectory)};
 const inputFs=require('fs');

@@ -573,7 +573,7 @@ class EventSchedulerTest {
             assertThat(room1.getEventType()).isEqualTo("random-room");
             assertThat(room1.getCreatorUserId()).isNull();
             assertThat(room1.getCreatorName()).isEqualTo("MyScoutee System");
-            assertThat(room1.getImageUrl()).isEqualTo("/media/public?key=images/system/random-room-default.png");
+            assertThat(room1.getImageUrl()).isEqualTo("/media/public?key=images/system/random-room-default.webp");
         }, room2 -> {
             assertThat(room2.getSourceId()).isEqualTo(room2Id);
             assertThat(room2.getTitle()).isEqualTo("Random Room R2");

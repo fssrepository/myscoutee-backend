@@ -118,7 +118,11 @@ assert_admin_job_seed_defaults() {
       "integration-webhooks",
       "promotional-email-planning",
       "promotional-email-delivery",
-      "admin-telemetry"
+      "admin-telemetry",
+      "affinity-admin-signals",
+      "events-admin-signals",
+      "notifications-admin-signals",
+      "media-deletion"
     ] as $expected
     | ($expected - ["event-random-groups"]) as $groupExpected
     | type == "array"
@@ -134,7 +138,7 @@ assert_admin_job_seed_defaults() {
       .enabled == true
       and .triggerKind == "scheduled_process"
       and (
-        if .ruleKey == "event-random-groups" or .ruleKey == "payment-exchange-rates"
+        if .ruleKey == "event-random-groups" or .ruleKey == "payment-exchange-rates" or .ruleKey == "media-deletion"
         then .manualRunEnabled == true
         else .manualRunEnabled == false
         end
@@ -311,6 +315,9 @@ EXTRACTED="${TEST_ROOT}/extracted"
 CONTROL_EXTRACTED="${TEST_ROOT}/control"
 dpkg-deb -x "${DEB_PATH}" "${EXTRACTED}"
 dpkg-deb -e "${DEB_PATH}" "${CONTROL_EXTRACTED}"
+python3 "${EXTRACTED}/opt/myscoutee/packaging/scripts/migrate-seeded-media.py" check-inputs \
+  "${EXTRACTED}/opt/myscoutee/packaging/migrations/seeds/023-seeded-image-webp/image-replacements.json" \
+  "${EXTRACTED}/opt/myscoutee/server/docker/conf/minio/media"
 
 for migration_input in \
   008-default-help-v3.js \
@@ -424,8 +431,8 @@ jq -e '
   [
     .[]
     | select(.documentType == "privacy" and .active == true)
-  ] as $documents
-  | ($documents | length == 2)
+      ] as $documents
+  | ($documents | map(.lang) | sort) == ["de", "en", "es", "hu"]
   and all($documents[];
     ([.sections[] | select(.id == "contact-details")] | length == 1)
     and (

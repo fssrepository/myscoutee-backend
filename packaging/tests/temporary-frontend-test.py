@@ -14,7 +14,7 @@ p=Path(os.environ['MOCK_DOCKER_STATE']);c=json.loads(p.read_text());a=sys.argv[1
 with open(os.environ['MOCK_DOCKER_LOG'],'a') as f:f.write(json.dumps(a)+'\n')
 old='sha256:'+'1'*64;new='sha256:'+'2'*64
 if a[:2]==['compose','version']:print('Docker Compose v2.39.0')
-elif a[0]=='inspect':print(json.dumps([{'Image':c['current'],'State':{'Health':{'Status':'healthy'}},'Config':{'Labels':{'com.docker.compose.project':'server','com.docker.compose.service':os.environ.get('MOCK_COMPOSE_SERVICE','nginx'),'com.docker.compose.project.working_dir':os.environ['MYSCOUTEE_SERVER_DIR'],'com.docker.compose.project.config_files':os.environ['MYSCOUTEE_SERVER_DIR']+'/docker-compose-prod.yml'+os.environ.get('MOCK_OVERLAY','')}}}]))
+elif a[0]=='inspect':print(json.dumps([{'Image':c['current'],'State':{'Status':c.get('status','running'),'ExitCode':c.get('exitCode',0),'OOMKilled':c.get('oomKilled',False),'Health':{'Status':c.get('health','healthy')}},'Config':{'Labels':{'com.docker.compose.project':'server','com.docker.compose.service':os.environ.get('MOCK_COMPOSE_SERVICE','nginx'),'com.docker.compose.project.working_dir':os.environ['MYSCOUTEE_SERVER_DIR'],'com.docker.compose.project.config_files':os.environ['MYSCOUTEE_SERVER_DIR']+'/docker-compose-prod.yml'+os.environ.get('MOCK_OVERLAY','')}}}]))
 elif a[:2]==['image','inspect']:
  image=old if a[2]==old else new
  print(json.dumps([{'Id':image,'Os':'linux','Architecture':'amd64','Config':{'Labels':{'io.myscoutee.service':os.environ.get('MOCK_SERVICE','nginx'),'io.myscoutee.package-version':os.environ.get('MOCK_VERSION','1.0.0'),'io.myscoutee.compatible-package-versions':os.environ.get('MOCK_COMPATIBLE',''),'io.myscoutee.upstream-reference':(os.environ.get('MOCK_UPSTREAM','mongo:8.0.4') if image==new else 'mongo:8.0.4')}}}]))
@@ -29,6 +29,7 @@ elif a[0]=='compose' and 'config' in a:print(json.dumps({'services':{os.environ.
 elif a[0]=='compose' and 'up' in a:
  key=os.environ.get('MOCK_IMAGE_VAR','NGINX_PRODUCTION_IMAGE')
  configured=next((line.split('=',1)[1] for line in (Path(os.environ['MYSCOUTEE_SERVER_DIR'])/'.env').read_text().splitlines() if line.startswith(key+'=')),'myscoutee-nginx:1.0.0-prod')
+ c.update(status='running',health='healthy',exitCode=0,oomKilled=False)
  image=os.environ.get(key,configured);c['current']=old if image in (old,'myscoutee-nginx:1.0.0-prod') else new;p.write_text(json.dumps(c))
  if c['current']==new and os.environ.get('MOCK_FAIL')=='1':sys.exit(1)
 else:raise SystemExit('Unexpected docker invocation '+repr(a))
@@ -79,6 +80,25 @@ class TemporaryFrontendTest(unittest.TestCase):
   self.run_helper('install',REF,ok=False,MOCK_VERSION='2.0.0')
   self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
   self.assertFalse((self.root/'state/state.json').exists())
+ def test_completed_old_package_history_uses_current_package_as_rollback_baseline(self):
+  state=self.root/'state';state.mkdir()
+  (state/'state.json').write_text(json.dumps({'phase':'applied','version':'0.9.0','project':'server','reference':REF,'previousId':'sha256:'+'4'*64,'targetId':'sha256:'+'5'*64}))
+  self.run_helper('install',REF)
+  current=json.loads((state/'state.json').read_text())
+  self.assertEqual(current['version'],'1.0.0');self.assertEqual(current['previousId'],OLD)
+  self.assertEqual(json.loads((state/'previous-operation.json').read_text())['version'],'0.9.0')
+  self.run_helper('rollback');self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
+  self.assertEqual((self.server/'.env').read_text(),'unchanged\n')
+ def test_stale_history_cannot_adopt_newer_other_or_interrupted_deployments(self):
+  state=self.root/'state';state.mkdir()
+  for overrides in [{'version':'2.0.0'},{'version':'0.9.0','project':'other'},
+                    {'version':'0.9.0','phase':'applying'},{'version':'1.0.0'}]:
+   with self.subTest(overrides=overrides):
+    record={'phase':'applied','version':'0.9.0','project':'server','previousId':OLD,'targetId':'sha256:'+'5'*64,**overrides}
+    original=json.dumps(record);(state/'state.json').write_text(original)
+    self.run_helper('install',REF,ok=False)
+    self.assertEqual((state/'state.json').read_text(),original)
+    self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)
  def test_explicit_cross_version_compatibility_keeps_host_package_and_supports_rollback(self):
   self.run_helper('install',REF,MOCK_VERSION='1.0.2',MOCK_COMPATIBLE='1.0.0,1.0.1')
   self.assertEqual(json.loads(self.mock.read_text())['current'],NEW)
@@ -112,6 +132,18 @@ class TemporaryFrontendTest(unittest.TestCase):
     self.assertEqual(r.returncode,0,r.stderr)
     op=next(json.loads(l) for l in reversed(self.log.read_text().splitlines()) if '"up"' in l)
     self.assertEqual(op[-1],service);self.assertIn(str(overlay),op);self.assertIn('--no-deps',op);self.assertIn('--no-build',op)
+ def test_explicit_stopped_api_requires_clean_exit_and_opt_in(self):
+  generic=HELPER.with_name('install-temporary-image.sh')
+  env={**self.env,'MOCK_COMPOSE_SERVICE':'profilemanagement','MOCK_SERVICE':'profilemanagement','MOCK_IMAGE_VAR':'MYSCOUTEE_PRODUCTION_IMAGE','MYSCOUTEE_TEMP_IMAGE_STATE_DIR':str(self.root/'api-state')}
+  for overrides,allowed,opt_in in [({},False,False),({'exitCode':1},False,True),({'oomKilled':True},False,True),({'status':'running'},False,True),({},True,True)]:
+   with self.subTest(overrides=overrides,opt_in=opt_in):
+    self.mock.write_text(json.dumps({'current':OLD,'status':'exited','health':'unhealthy','exitCode':143,'oomKilled':False,**overrides}))
+    r=subprocess.run(['bash',str(generic),'install-local','profilemanagement',NEW],env={**env,'MYSCOUTEE_TEMP_IMAGE_STOPPED_API':str(opt_in).lower()},capture_output=True,text=True)
+    self.assertEqual(r.returncode==0,allowed,r.stdout+r.stderr)
+  self.assertEqual(json.loads(self.mock.read_text())['current'],NEW)
+ def test_stopped_opt_in_does_not_allow_other_services(self):
+  self.mock.write_text(json.dumps({'current':OLD,'status':'exited','health':'unhealthy','exitCode':0}))
+  self.run_helper('install-local',NEW,ok=False,MYSCOUTEE_TEMP_IMAGE_STOPPED_API='true')
  def test_wrong_service_image_is_rejected(self):
   self.run_helper('install',REF,ok=False,MOCK_SERVICE='registry-demo')
   self.assertEqual(json.loads(self.mock.read_text())['current'],OLD)

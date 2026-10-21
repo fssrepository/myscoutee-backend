@@ -16,6 +16,8 @@ Use a trusted, compatible image published for the installed package version.
 nginx-base is a build dependency, not a running service; it is not restartable.
 GHCR login for private images must be configured separately with docker login.
 install-local selects an already-loaded image from a trusted local source build.
+For an API stopped for data migration, explicitly set
+MYSCOUTEE_TEMP_IMAGE_STOPPED_API=true; only clean exits (0/143) are accepted.
 Persists the selected image in the deployment environment, including same-version
 patches. Restarts/reboots retain it. Rollback restores the prior image setting.
 Does not rebuild/install a DEB, modify package files, or reset demo data.
@@ -180,17 +182,34 @@ if [[ "$action" == rollback ]]; then
   rollback_saved
   exit
 fi
-[[ "$(inspect '.[0].State.Health.Status')" == healthy ]] || fail 'Existing service must be healthy before applying a temporary image.'
+current_healthy=false
+if [[ "$(inspect '.[0].State.Health.Status')" == healthy ]]; then
+  current_healthy=true
+elif [[ "${MYSCOUTEE_TEMP_IMAGE_STOPPED_API:-false}" == true && "$service" == profilemanagement ]] \
+  && inspect '.[0].State | .Status == "exited" and (.ExitCode == 0 or .ExitCode == 143) and .OOMKilled == false' >/dev/null; then
+  printf 'Replacing the explicitly stopped API after data migration.\n'
+else
+  fail 'Existing service must be healthy before applying a temporary image.'
+fi
 previous_id="$current_id"
 previous_setting="$current_setting"
 if [[ -f "$state" ]]; then
   old_phase="$(jq -er '.phase' "$state")"
   [[ "$old_phase" == applied || "$old_phase" == rolled-back ]] || fail 'An interrupted operation is recorded; inspect status and roll it back first.'
-  if [[ "$old_phase" == applied ]]; then
+  old_version="$(jq -er '.version' "$state")"
+  if [[ "$old_version" != "$version" ]]; then
+    # A normal DEB upgrade replaces images/settings but retains these operational
+    # receipts. Keep its completed history in previous-operation.json below;
+    # this install must roll back to the current package, not the old patch.
+    [[ "$old_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(~qa\.[0-9]+)?$ \
+      && "$(jq -er '.project' "$state")" == "$project" ]] || fail 'Previous partial update belongs to another deployment.'
+    dpkg --compare-versions "$old_version" lt "$version" || fail 'Previous partial update belongs to a newer package.'
+    printf 'Completed partial update belongs to an older package; retaining history and using the current healthy image as rollback baseline.\n'
+  elif [[ "$old_phase" == applied ]]; then
     [[ "$(jq -r '.version' "$state")" == "$version" && "$(jq -r '.project' "$state")" == "$project" && "$(jq -r '.targetId' "$state")" == "$current_id" ]] || fail 'Deployment changed since the last partial update.'
     if jq -e 'has("targetSetting")' "$state" >/dev/null; then
       [[ "$(jq -c '.targetSetting' "$state")" == "$current_setting" ]] || fail 'Persistent image selection was changed by another deployment.'
-      if [[ "$(jq -r '.reference' "$state")" == "$reference" ]]; then
+      if [[ "$(jq -r '.reference' "$state")" == "$reference" && "$current_healthy" == true ]]; then
         printf 'Selected image is already healthy and persistent.\n'
         exit 0
       fi

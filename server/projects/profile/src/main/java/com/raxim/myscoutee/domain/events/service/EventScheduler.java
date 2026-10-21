@@ -86,7 +86,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private static final String RANDOM_ROOM_SYSTEM_NAME = "MyScoutee System";
     private static final String PUBLIC_PROFILE_STATUS = "public";
     private static final String RANDOM_ROOM_IMAGE_URL =
-            "/media/public?key=images/system/random-room-default.png";
+            "/media/public?key=images/system/random-room-default.webp";
     private static final String TOURNAMENT_ROOM_IMAGE_URL =
             "/media/public?key=images/system/tournament-room/v1/large.webp";
     private static final String RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER =

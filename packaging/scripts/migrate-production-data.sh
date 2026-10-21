@@ -9,6 +9,17 @@ database="${MYSCOUTEE_MIGRATION_DATABASE:-production_db}"
 case "$database" in production_db|demo_db) ;; *) echo 'Unsupported migration database.' >&2; exit 1;; esac
 exec 9>/run/lock/${RELEASE_PROJECT_NAME}-data-migrations.lock
 flock -n 9 || { echo 'Another data migration is running.' >&2; exit 1; }
+media_manifest="${SCRIPT_DIR}/../migrations/seeds/023-seeded-image-webp/image-replacements.json"
+media_directory="${MYSCOUTEE_MIGRATION_MEDIA_DIRECTORY:-${SCRIPT_DIR}/../../server/docker/conf/minio/media}"
+if [[ -f "$media_manifest" ]]; then
+ python3 "$SCRIPT_DIR/migrate-seeded-media.py" check-inputs "$media_manifest" "$media_directory"
+ # On a cold start Mongo is prepared before this runner; MinIO is needed too.
+ # Partial releases use their already-running, matched MinIO image.
+ if [[ "${MYSCOUTEE_MIGRATION_PREPARE_MINIO:-true}" == true ]]; then
+  "${MYSCOUTEE_COMPOSE_SCRIPT:-${SCRIPT_DIR}/myscoutee-compose.sh}" up -d --wait --wait-timeout 180 minio
+ fi
+ python3 "$SCRIPT_DIR/migrate-seeded-media.py" prepare "$media_manifest" "$media_directory"
+fi
 directory="/tmp/${RELEASE_PROJECT_NAME}-migrations-$$"
 trap 'docker exec mongodb rm -rf "$directory" >/dev/null' EXIT
 docker cp "${SCRIPT_DIR}/../migrations" "mongodb:$directory"
@@ -20,3 +31,6 @@ for script in run-data-migrations.js sync-release-system-seeds.js; do
     --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin "$1" --file /dev/stdin' qa "$database" \
   < "${SCRIPT_DIR}/$script"
 done
+if [[ -f "$media_manifest" && "${MYSCOUTEE_MIGRATION_MEDIA_RETIRE:-true}" == true ]]; then
+ python3 "$SCRIPT_DIR/migrate-seeded-media.py" retire "$media_manifest" "$media_directory"
+fi

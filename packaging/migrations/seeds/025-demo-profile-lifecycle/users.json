@@ -1,0 +1,22 @@
+[
+  {
+    "_id": {
+      "$oid": "f7bcd28c65ea349b4ee7aed2"
+    },
+    "userId": "f7bcd28c65ea349b4ee7aed2",
+    "name": "Ava Hale",
+    "status": "B",
+    "from": "public",
+    "to": "blocked"
+  },
+  {
+    "_id": {
+      "$oid": "b5e2db6882d989d8532af12c"
+    },
+    "userId": "b5e2db6882d989d8532af12c",
+    "name": "Ryan Hale",
+    "status": "D",
+    "from": "friends only",
+    "to": "deleted"
+  }
+]

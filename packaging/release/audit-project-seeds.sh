@@ -2,6 +2,7 @@
 # Product-specific seed contents; package identity and credential checks are shared.
 audit_project_seeds() {
   local production_seed="$1"
+  local content_languages="$(dirname -- "${BASH_SOURCE[0]}")/../../frontend/src/app/shared/core/common/content-languages.json"
   if ! jq -e 'type == "array" and length == 2
       and (map(._id) | sort) == ["myscoutee-community", "myscoutee-work"]
       and all(.[]; .ownerUserId == "system" and .visibility == "public"
@@ -25,12 +26,13 @@ audit_project_seeds() {
     echo "Production community providers must contain only unconfigured built-in catalog definitions." >&2
     exit 1
   fi
-  if ! jq -e '
+  if ! jq -e --slurpfile languages "$content_languages" '
       [
         .[]
         | select(.documentType == "privacy" and .active == true)
       ] as $documents
-      | ($documents | length == 2)
+      | ($languages[0] | map(.lang) | sort) as $expectedLanguages
+      | (($documents | map(.lang) | sort) == $expectedLanguages)
       and all($documents[];
         ([.sections[] | select(.id == "contact-details")] | length == 1)
         and (

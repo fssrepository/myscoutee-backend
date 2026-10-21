@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import tempfile
 import unittest
 
@@ -27,10 +28,12 @@ class PartialReleaseInputs(unittest.TestCase):
         (self.release / 'scripts/release-system-seeds.json').write_text(selection)
         self.selected = [row['collection'] for row in json.loads(selection)]
         names = set(self.selected) | {'deploymentConfigurations', 'helpCenterRevisions',
-            'helpCenterGuideFields', 'ideaPosts', 'emailTemplates', 'notificationTemplates'}
+            'helpCenterGuideFields', 'ideaPosts', 'landingSlides', 'emailTemplates', 'notificationTemplates'}
         for database in ['production_db', 'demo_db']:
             for name in names:
                 (self.release / 'seeds' / database / (name + '.json')).write_text('[]')
+        for name in ['campaigns', 'serviceOfferings', 'users']:
+            (self.release / 'seeds/demo_db' / (name + '.json')).write_text('[]')
         self.script = self.root / 'apply.sh'
         self.script.write_text((ROOT / 'release/apply-partial-release-data.sh').read_text()
             .replace('server=/opt/myscoutee/server', 'server=' + str(server)))
@@ -38,7 +41,7 @@ class PartialReleaseInputs(unittest.TestCase):
         binaries.mkdir()
         # tar is the first mutation boundary. Never let the harness reach Docker.
         for name, body in [('id', 'echo 0'), ('tar', 'touch "$BOUNDARY"; exit 86'),
-                           ('docker', 'exit 87')]:
+                           ('docker', 'if [ "$1" = inspect ]; then printf "%s" "${API_RUNNING:-true}"; exit 0; fi\ntouch "$BOUNDARY"; exit 87')]:
             path = binaries / name
             path.write_text('#!/bin/sh\n' + body + '\n')
             path.chmod(0o755)
@@ -68,6 +71,57 @@ class PartialReleaseInputs(unittest.TestCase):
         path.unlink()
         path.symlink_to(self.release / 'seeds/production_db/communityGroups.json')
         self.assertEqual(self.run_inputs(), 1)
+        self.assertFalse(self.marker.exists())
+
+    def test_missing_demo_user_seed_is_rejected_before_mutation(self):
+        (self.release / 'seeds/demo_db/users.json').unlink()
+        self.assertEqual(self.run_inputs(), 1)
+        self.assertFalse(self.marker.exists())
+
+    def add_media_inputs(self):
+        relative = Path('seeds/023-seeded-image-webp/image-replacements.json')
+        manifest = self.release / 'migrations' / relative
+        manifest.parent.mkdir(parents=True)
+        shutil.copyfile(ROOT / 'migrations' / relative, manifest)
+        shutil.copyfile(ROOT / 'scripts/migrate-seeded-media.py', self.release / 'scripts/migrate-seeded-media.py')
+        rows = json.loads(manifest.read_text())['minio']
+        for row in rows:
+            source = ROOT.parent / 'server/docker/conf/minio/media' / row['key']
+            target = self.release / 'media' / row['key']
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+        return self.release / 'media' / rows[0]['key']
+
+    def test_complete_media_payload_reaches_backup(self):
+        self.add_media_inputs()
+        self.assertEqual(self.run_inputs(), 86)
+
+    def test_media_update_requires_stopped_api_before_database_work(self):
+        self.add_media_inputs()
+        (self.release / 'previous-package-data.tar').touch()
+        self.assertEqual(self.run_inputs(), 1)
+        self.assertFalse(self.marker.exists())
+        self.env['API_RUNNING'] = 'false'
+        self.assertEqual(self.run_inputs(), 87)
+        self.assertTrue(self.marker.exists())
+
+    def test_missing_or_changed_webp_is_rejected_before_backup(self):
+        source = self.add_media_inputs()
+        source.write_bytes(b'wrong image')
+        self.assertNotEqual(self.run_inputs(), 86)
+        self.assertFalse(self.marker.exists())
+        source.unlink()
+        self.assertNotEqual(self.run_inputs(), 86)
+        self.assertFalse(self.marker.exists())
+
+    def test_symbolic_media_source_is_rejected_before_backup(self):
+        source = self.add_media_inputs()
+        original = source.read_bytes()
+        source.unlink()
+        external = self.root / 'external.webp'
+        external.write_bytes(original)
+        source.symlink_to(external)
+        self.assertNotEqual(self.run_inputs(), 86)
         self.assertFalse(self.marker.exists())
 
 

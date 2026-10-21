@@ -342,7 +342,7 @@ class BackendAlgorithmsE2ETest {
             assertThat(room.getCreatorName()).isEqualTo("MyScoutee System");
             assertThat(room.getParentEventId()).isNull();
             assertThat(room.getImageUrl())
-                    .isEqualTo("/media/public?key=images/system/random-room-default.png");
+                    .isEqualTo("/media/public?key=images/system/random-room-default.webp");
         }
 
         List<ActivityMainEventRuntime> roomRuntimes = fromDemo(() -> mongoTemplate.find(

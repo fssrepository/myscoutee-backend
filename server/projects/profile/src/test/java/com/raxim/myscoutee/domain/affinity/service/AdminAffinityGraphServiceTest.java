@@ -74,17 +74,19 @@ class AdminAffinityGraphServiceTest {
     }
 
     @Test
-    void fullGraphIncludesIsolatedMembersAndFiltersLinksByWeight() {
+    void fullGraphIncludesActiveIsolatedMembersAndExcludesBlockedAndDeletedProfiles() {
         when(usersRepository.findAll()).thenReturn(List.of(
                 user("u1", "Ava", "woman", "public"),
-                user("u2", "Ben", "man", "public"),
-                user("u3", "Chloe", "woman", "public"),
+                user("u2", "Ben", "man", "friends only"),
+                user("u3", "Chloe", "woman", "host only"),
+                user("u-blocked", "Blocked", "man", "blocked"),
                 user("u-deleted", "Deleted", "man", "deleted"),
                 user("u-onboarding", "Onboarding", "woman", "onboarding")));
         when(userAffinityEdgesRepository.findAll()).thenReturn(List.of(
                 edge("u1", "u2", 0.82d),
                 edge("u2", "u3", 0.12d),
-                edge("u1", "u-deleted", 0.99d)));
+                edge("u1", "u-deleted", 0.99d),
+                edge("u1", "u-blocked", 0.99d)));
 
         AdminAffinityGraphDto graph = service.full("admin-1", 0.2d, 1d);
         AdminAffinityGraphMetaDto meta = service.meta("admin-1", 0.2d, 1d);

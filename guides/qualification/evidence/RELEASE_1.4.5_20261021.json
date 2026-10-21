@@ -1,0 +1,585 @@
+{
+  "task": "MSC-126",
+  "issue": "https://github.com/fssrepository/myscoutee-roadmap/issues/164",
+  "release": "1.4.5",
+  "kind": "Compatible container/data release",
+  "installedDebianVersion": "1.4.1",
+  "runtimeSourceRevisions": {
+    "backend": "76520779579c1a7f127a1259c06aa8b85a370ebb",
+    "frontend": "d9e2a1c84934d25d922331e7aea73ceb8c120fc4",
+    "components": "e34d0f8abb008d5ce5a1a3621ae8a9aaf00c4f33",
+    "template": "f0322ed0a416d557c1850c60f50672b89fb77834",
+    "template-frontend": "4246fafa92ff3f2d9f66faf76dfa4a3e135849ce"
+  },
+  "images": [
+    {
+      "service": "profilemanagement",
+      "localReference": "myscoutee-api:1.4.5-prod",
+      "imageId": "sha256:db15dfd901d9efe94625fa127a97ae0d04e1bf7977d237da272e601ffad8c76f",
+      "reference": "ghcr.io/fssrepository/myscoutee-api:1.4.5-prod",
+      "alias": "ghcr.io/fssrepository/myscoutee-api:1.4.5",
+      "digest": "ghcr.io/fssrepository/myscoutee-api@sha256:5ef9aab4f8eb5448ef41570fd3953f56379c661b688297633b1965b66eac5331"
+    },
+    {
+      "service": "minio",
+      "localReference": "myscoutee-minio:1.4.5-prod",
+      "imageId": "sha256:26927d2a778a485cb85619e3ae65bb673fe13bf0be920e83f613ac9e84411c8e",
+      "reference": "ghcr.io/fssrepository/myscoutee-minio:1.4.5-prod",
+      "alias": "ghcr.io/fssrepository/myscoutee-minio:1.4.5",
+      "digest": "ghcr.io/fssrepository/myscoutee-minio@sha256:d2d2055f62e51b6d22443185daf52fb0db3c39555ac490b8d510cad5bac36b03"
+    },
+    {
+      "service": "nginx",
+      "localReference": "myscoutee-nginx:1.4.5-prod",
+      "imageId": "sha256:22bdc2923539c4d0082c6da19a03c00362c41e15acec444c50da36b9039a00ae",
+      "reference": "ghcr.io/fssrepository/myscoutee-nginx:1.4.5-prod",
+      "alias": "ghcr.io/fssrepository/myscoutee-nginx:1.4.5",
+      "digest": "ghcr.io/fssrepository/myscoutee-nginx@sha256:079c17b9fd24ad6b3885c6eecf6ee01157aab72ee582057de04f6f835c10d0bf"
+    }
+  ],
+  "templateImages": [
+    {
+      "service": "profilemanagement",
+      "localReference": "myscoutee-template-api:1.4.5-prod",
+      "imageId": "sha256:51c6a9d559ad0b5e5825ade25cdb9020b5da633e12d212f199df95dd5db08b08",
+      "reference": "ghcr.io/fssrepository/myscoutee-template-api:1.4.5-prod",
+      "alias": "ghcr.io/fssrepository/myscoutee-template-api:1.4.5",
+      "digest": "ghcr.io/fssrepository/myscoutee-template-api@sha256:68a0fc5bb6dd291a7817e6a00ded36b61ab957bc58aaef6719ed890a5d06d1d5"
+    },
+    {
+      "service": "nginx",
+      "localReference": "myscoutee-template-nginx:1.4.5-prod",
+      "imageId": "sha256:857d0488984cb1beafec78abe3010fcaa3f3d439ab940bc03a9ebdfc8da6b354",
+      "reference": "ghcr.io/fssrepository/myscoutee-template-nginx:1.4.5-prod",
+      "alias": "ghcr.io/fssrepository/myscoutee-template-nginx:1.4.5",
+      "digest": "ghcr.io/fssrepository/myscoutee-template-nginx@sha256:77e8734b91605fa5620b2c10b99f965ecf48fbe44a0be81c17cec5707c495ccf"
+    }
+  ],
+  "componentsPackage": {
+    "name": "@fssrepository/myscoutee-components",
+    "version": "1.4.5",
+    "integrity": "sha512-cEmaDxdxMKlAi9vWOg36MHBuh/218cn8JHfh2Y82X91zNVTGafWhWoXC8dEbgjZTd7329iqqBOcKJEWO7j0m/w==",
+    "verified": true
+  },
+  "netcup": {
+    "mongo": {
+      "production_db": {
+        "users": 7,
+        "articles": 32,
+        "migrationReceipts": 22,
+        "bundles": [
+          {
+            "lang": "en",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "hu",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "de",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "es",
+            "version": "2026.10.21.2"
+          }
+        ],
+        "demoLifecycle": []
+      },
+      "demo_db": {
+        "users": 125,
+        "articles": 32,
+        "migrationReceipts": 22,
+        "bundles": [
+          {
+            "lang": "en",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "hu",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "de",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "es",
+            "version": "2026.10.21.2"
+          }
+        ],
+        "demoLifecycle": [
+          {
+            "profileStatus": "deleted",
+            "status": "D"
+          },
+          {
+            "profileStatus": "blocked",
+            "status": "B"
+          }
+        ]
+      }
+    },
+    "productionUsersUnchanged": true,
+    "indexesChanged": [],
+    "collectionChanges": {
+      "adminStats": {
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "modifiedFields": [
+          "generatedAtIso"
+        ]
+      },
+      "affinityAdminSignalOutbox": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modifiedFields": [
+          "derivedRevision",
+          "queuesRevision"
+        ]
+      },
+      "eventAdminSignalOutbox": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modifiedFields": [
+          "derivedRevision"
+        ]
+      },
+      "i18n_bundles": {
+        "added": 0,
+        "removed": 0,
+        "modified": 4,
+        "modifiedFields": [
+          "updatedAt",
+          "version"
+        ]
+      },
+      "i18n_messages": {
+        "added": 2804,
+        "removed": 1080,
+        "modified": 32,
+        "modifiedFields": [
+          "value"
+        ]
+      },
+      "ideaPosts": {
+        "added": 0,
+        "removed": 0,
+        "modified": 32,
+        "modifiedFields": [
+          "contentHtml",
+          "imageUrl",
+          "imageUrls"
+        ]
+      },
+      "landingSlides": {
+        "added": 0,
+        "removed": 0,
+        "modified": 12,
+        "modifiedFields": [
+          "imageUrl"
+        ]
+      },
+      "notificationAdminSignalOutbox": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modifiedFields": [
+          "queuesRevision"
+        ]
+      },
+      "notificationRuleConfigs": {
+        "added": 0,
+        "removed": 0,
+        "modified": 12,
+        "modifiedFields": [
+          "runHistory",
+          "runState",
+          "updatedDate"
+        ]
+      },
+      "schemaMigrations": {
+        "added": 3,
+        "removed": 0,
+        "modified": 0,
+        "modifiedFields": []
+      }
+    },
+    "media": {
+      "before": 947,
+      "after": 971,
+      "added": 25,
+      "removed": 1,
+      "modified": 0,
+      "retainedOriginals": 17
+    },
+    "unchangedOtherContainers": [
+      "server-stun-1",
+      "redis",
+      "payment-simulator",
+      "mcp",
+      "registry-demo",
+      "mongodb"
+    ],
+    "containers": {
+      "nginx": {
+        "id": "9f13e38258b0c4e4bb7f83090c13496cf1295e40834e12e40b3c274465ec3eb8",
+        "image": "sha256:e357deaa4dfbbe331e9547d67432179aaf3ad21c02e0024299a0811ce370699d",
+        "healthy": true
+      },
+      "myscoutee": {
+        "id": "d1acc254b62c9dec9873be451b746fa8edd378db0ad82c6cc6c1b7dbc8c44a18",
+        "image": "sha256:164690319907c838ce6d18cd13393ad25b1a7bc255def3c69032da27feec938f",
+        "healthy": true
+      },
+      "minio": {
+        "id": "bf66bf5d126dc64fb089d0be522dd663dbc4472960ab696dc2e1b15c575afc2a",
+        "image": "sha256:c62dc5488d7ee23e10e287047fe7d2201826d7bb033b694e342b58e0ff2262a4",
+        "healthy": true
+      },
+      "server-stun-1": {
+        "id": "00622d49c92ebcdc82cc282cb012af8df5e49cce9e7e113f57e046fa9bb356d3",
+        "image": "sha256:c29135c08565810d37053f384584392b7c24b69570fc81a721b878d6fe63e04e",
+        "healthy": true
+      },
+      "redis": {
+        "id": "4a6b88dcad42d0272dc6f0b87e30bdc600b099645146a97b26c89d7ecb026937",
+        "image": "sha256:08839d0c80a5532f673b53a6950aada7a49bda65266c32a4cd9767ad312a96b4",
+        "healthy": true
+      },
+      "payment-simulator": {
+        "id": "be8131327916161e49551bbef3f85de5fcd5939cb32e669c685a25a345b83ab3",
+        "image": "sha256:adf45a25f358bcc1ad1c778f1dd70f6fc341d820f8b76d459399b5b30da0edb5",
+        "healthy": true
+      },
+      "mcp": {
+        "id": "88a5ac8f7a9559d6cf9a532ee1d5e37631a9a289dc25c6707f189dc5f99cdd63",
+        "image": "sha256:9a5ca7c99167567b536582ad0855206b7a3b2eb13e76c64e41d1e52386b1de17",
+        "healthy": true
+      },
+      "registry-demo": {
+        "id": "7c6b7ca35dfcf7a570b85e567ce6dcfff3c2b9c734ba461ed46fbd218e08e5c4",
+        "image": "sha256:656112647c3fc58ed2ea9b4f28f4ed88dba3a9d68e5998dcaad9e34956420dcd",
+        "healthy": true
+      },
+      "mongodb": {
+        "id": "894f12b88425cac6bdfcfc2fa3844d794e25408213eb89e265ca45e530eae8f6",
+        "image": "sha256:7bd21963a0880d298e4cf1642a0d108002aef8f94843a398ad48163f3ee1fe6c",
+        "healthy": true
+      }
+    },
+    "publishedImageContentVerified": true
+  },
+  "vmware": {
+    "mongo": {
+      "production_db": {
+        "users": 5,
+        "articles": 32,
+        "migrationReceipts": 22,
+        "bundles": [
+          {
+            "lang": "en",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "hu",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "de",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "es",
+            "version": "2026.10.21.2"
+          }
+        ],
+        "demoLifecycle": []
+      },
+      "demo_db": {
+        "users": 125,
+        "articles": 32,
+        "migrationReceipts": 22,
+        "bundles": [
+          {
+            "lang": "en",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "hu",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "de",
+            "version": "2026.10.21.2"
+          },
+          {
+            "lang": "es",
+            "version": "2026.10.21.2"
+          }
+        ],
+        "demoLifecycle": [
+          {
+            "profileStatus": "deleted",
+            "status": "D"
+          },
+          {
+            "profileStatus": "blocked",
+            "status": "B"
+          }
+        ]
+      }
+    },
+    "productionUsersUnchanged": true,
+    "indexesChanged": [],
+    "collectionChanges": {
+      "adminStats": {
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "modifiedFields": [
+          "generatedAtIso"
+        ]
+      },
+      "affinityAdminSignalOutbox": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modifiedFields": [
+          "derivedRevision",
+          "queuesRevision"
+        ]
+      },
+      "eventAdminSignalOutbox": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modifiedFields": [
+          "derivedRevision"
+        ]
+      },
+      "notificationAdminSignalOutbox": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modifiedFields": [
+          "queuesRevision"
+        ]
+      },
+      "notificationRuleConfigs": {
+        "added": 0,
+        "removed": 0,
+        "modified": 9,
+        "modifiedFields": [
+          "runHistory",
+          "runState",
+          "updatedDate"
+        ]
+      }
+    },
+    "media": {
+      "before": 1055,
+      "after": 1055,
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "retainedOriginals": 38
+    },
+    "unchangedOtherContainers": [
+      "server-stun-1",
+      "payment-simulator",
+      "registry-demo",
+      "redis",
+      "mcp",
+      "mongodb"
+    ],
+    "containers": {
+      "nginx": {
+        "id": "aaca3cc4de2ad0f702472c9adf3b46f679fcf531fcf13f96e70886386c2b6cb9",
+        "image": "sha256:e357deaa4dfbbe331e9547d67432179aaf3ad21c02e0024299a0811ce370699d",
+        "healthy": true
+      },
+      "myscoutee": {
+        "id": "3b686cd61fd2b9ca4c7957c03649661259f6e4df288bcb4a7db14947bedff17b",
+        "image": "sha256:164690319907c838ce6d18cd13393ad25b1a7bc255def3c69032da27feec938f",
+        "healthy": true
+      },
+      "minio": {
+        "id": "c20cc89cde7df7a5bc024aac8f2eeac5a08c664617e400b3dc3bf0201a83ef8a",
+        "image": "sha256:c62dc5488d7ee23e10e287047fe7d2201826d7bb033b694e342b58e0ff2262a4",
+        "healthy": true
+      },
+      "server-stun-1": {
+        "id": "c7045c5f9bdcce04ccfd802a8b98527ab98086fcb912bdefdf83bd2756abb42c",
+        "image": "sha256:c29135c08565810d37053f384584392b7c24b69570fc81a721b878d6fe63e04e",
+        "healthy": true
+      },
+      "payment-simulator": {
+        "id": "1dba2214cdc1f1b2bcf958a4e6b0fd1aefdf0fba303e0d07ff194667ca0992be",
+        "image": "sha256:adf45a25f358bcc1ad1c778f1dd70f6fc341d820f8b76d459399b5b30da0edb5",
+        "healthy": true
+      },
+      "registry-demo": {
+        "id": "ef9a68f9090d3e94c7fd70f4df1891becc263018d46ea874e56886ce09cb2971",
+        "image": "sha256:656112647c3fc58ed2ea9b4f28f4ed88dba3a9d68e5998dcaad9e34956420dcd",
+        "healthy": true
+      },
+      "redis": {
+        "id": "c1eadbc30e82485023709bc5401526654d0ed08835aa071a924a355e77b39d4b",
+        "image": "sha256:08839d0c80a5532f673b53a6950aada7a49bda65266c32a4cd9767ad312a96b4",
+        "healthy": true
+      },
+      "mcp": {
+        "id": "3e91ddebc64f6dd1b5d1bca983432629a39a90d378a18060b8f0654b3e76ca78",
+        "image": "sha256:9a5ca7c99167567b536582ad0855206b7a3b2eb13e76c64e41d1e52386b1de17",
+        "healthy": true
+      },
+      "mongodb": {
+        "id": "2073ee3e79a9eb3fa5d9d5b23c1b01ae8f214ce93a2771f2c435daafeaf7d6a7",
+        "image": "sha256:7bd21963a0880d298e4cf1642a0d108002aef8f94843a398ad48163f3ee1fe6c",
+        "healthy": true
+      }
+    },
+    "publishedImageContentVerified": true
+  },
+  "verification": {
+    "netcupPublic": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    },
+    "vmwarePublic": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 3,
+      "reason": "HTTP listener not inferred through custom8443 HTTPS tunnel"
+    },
+    "servedJavaScriptFilesVerifiedEachHost": 82,
+    "catalogMessagesPerLanguage": 9174,
+    "catalogVersion": "2026.10.21.2",
+    "catalogLanguages": [
+      "en",
+      "hu",
+      "de",
+      "es"
+    ],
+    "realAndDemoCatalogValuesVerified": true,
+    "fullVersionEqualityVerified": true,
+    "webpMimeObjectsVerified": 25,
+    "retiredRoomPngHttpStatus": 404,
+    "mainBackendJUnitPassed": 15,
+    "templateBackendJUnitPassed": 7,
+    "mainFocusedFrontendBatchesPassed": [
+      21,
+      20,
+      21,
+      10,
+      6
+    ],
+    "templateFocusedFrontendBatchesPassed": [
+      92,
+      30
+    ],
+    "bundleGroupingTestsPassed": {
+      "main": 9,
+      "template": 8
+    },
+    "partialReleaseInputTestsPassed": 8,
+    "fullFrontendSuiteRerun": false,
+    "matchedLighthouseRun": false,
+    "templateNewRuntimeDeployment": false,
+    "productionBackupVerified": true
+  },
+  "mobile": {
+    "cold": {
+      "navigationCount": 1,
+      "localLanguageAssetRequests": 0,
+      "requestedCatalogLanguages": [
+        "hu"
+      ],
+      "errors": [],
+      "firstHeading": "Az emberek régen társas közegben ismerkedtek.",
+      "articleActions": [
+        "auto_storiesTovább olvasom",
+        "auto_storiesTovább olvasom",
+        "auto_storiesTovább olvasom",
+        "auto_storiesTovább olvasom"
+      ]
+    },
+    "warm": {
+      "navigationCount": 1,
+      "localLanguageAssetRequests": 0,
+      "requestedCatalogLanguages": [
+        "hu"
+      ],
+      "errors": [],
+      "firstHeading": "Az emberek régen társas közegben ismerkedtek.",
+      "articleActions": [
+        "auto_storiesTovább olvasom",
+        "auto_storiesTovább olvasom",
+        "auto_storiesTovább olvasom",
+        "auto_storiesTovább olvasom"
+      ]
+    }
+  },
+  "builds": {
+    "main-http": {
+      "build": {
+        "version": "1.4.5",
+        "buildId": "d9e2a1c84934-20261021232116",
+        "builtAt": "2026-10-21T23:21:16.471Z",
+        "gitSha": "d9e2a1c84934"
+      },
+      "application_chunks": 82,
+      "root_js_files": 83,
+      "startup_raw": 3364043,
+      "startup_gzip": 772449
+    },
+    "main-standalone": {
+      "build": {
+        "version": "1.4.5",
+        "buildId": "1.4.5",
+        "builtAt": "2026-10-21T23:21:15.074Z",
+        "gitSha": null
+      },
+      "application_chunks": 81,
+      "root_js_files": 82,
+      "startup_raw": 4061631,
+      "startup_gzip": 989635
+    },
+    "template-http": {
+      "build": {
+        "version": "1.4.5",
+        "buildId": "4246fafa92ff-20261021232155",
+        "builtAt": "2026-10-21T23:21:55.912Z",
+        "gitSha": "4246fafa92ff"
+      },
+      "application_chunks": 31,
+      "root_js_files": 32,
+      "startup_raw": 2262298,
+      "startup_gzip": 506940
+    },
+    "template-standalone": {
+      "build": {
+        "version": "1.4.5",
+        "buildId": "1.4.5",
+        "builtAt": "2026-10-21T23:20:48.934Z",
+        "gitSha": null
+      },
+      "application_chunks": 27,
+      "root_js_files": 28,
+      "startup_raw": 2574207,
+      "startup_gzip": 627305
+    }
+  },
+  "limits": [
+    "No numerical Lighthouse improvement claim",
+    "No full new DEB qualification or power-loss/rollback drill",
+    "Template1.4.5 source/build/images verified; no new template host installation",
+    "Roboto400/500 retained at owner request"
+  ]
+}

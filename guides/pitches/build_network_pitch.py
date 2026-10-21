@@ -504,7 +504,7 @@ def slide_2() -> Image.Image:
         status="BUILT",
     )
 
-    visual = ROOT / "frontend/src/assets/logo/cards_no_edges.png"
+    visual = ROOT / "frontend/src/assets/logo/cards_no_edges.webp"
     paste_cover(image, visual, (88, 230, 1190, 718), radius=28, outline="#465894")
 
     differentiators = [

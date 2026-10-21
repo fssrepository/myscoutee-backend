@@ -7,7 +7,7 @@
     "category": "technology",
     "status": "published",
     "imageUrls": [
-      "assets/articles/business-idea.png"
+      "/media/public?key=images/system/idea-posts/business-idea/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
@@ -24,7 +24,7 @@
     "category": "technology",
     "status": "published",
     "imageUrls": [
-      "assets/articles/work-opportunity.png"
+      "/media/public?key=images/system/idea-posts/work-opportunity/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
@@ -41,7 +41,7 @@
     "category": "education",
     "status": "draft",
     "imageUrls": [
-      "assets/articles/professional-network.png"
+      "/media/public?key=images/system/idea-posts/professional-network/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",
@@ -58,7 +58,7 @@
     "category": "creative",
     "status": "published",
     "imageUrls": [
-      "assets/articles/business-idea.png"
+      "/media/public?key=images/system/idea-posts/business-idea/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:bf057de7c586eede7e84bdc7",
@@ -75,7 +75,7 @@
     "category": "services",
     "status": "published",
     "imageUrls": [
-      "assets/articles/work-opportunity.png"
+      "/media/public?key=images/system/idea-posts/work-opportunity/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:b29df68956f3fe15e04558de",
@@ -92,7 +92,7 @@
     "category": "education",
     "status": "published",
     "imageUrls": [
-      "assets/articles/professional-network.png"
+      "/media/public?key=images/system/idea-posts/professional-network/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:9f3b3f085e23af6c89dbc432",
@@ -109,7 +109,7 @@
     "category": "creative",
     "status": "published",
     "imageUrls": [
-      "assets/articles/team-building.png"
+      "/media/public?key=images/system/idea-posts/team-building/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:1b1c70be2349b3359a8f6f94",
@@ -126,7 +126,7 @@
     "category": "community",
     "status": "published",
     "imageUrls": [
-      "assets/articles/team-building.png"
+      "/media/public?key=images/system/idea-posts/team-building/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:178e8d0cbe164fa3fede5884",
@@ -143,7 +143,7 @@
     "category": "other",
     "status": "trash",
     "imageUrls": [
-      "assets/articles/business-idea.png"
+      "/media/public?key=images/system/idea-posts/business-idea/v1/large.webp"
     ],
     "workspaceGroupId": "myscoutee-work",
     "ownerUserId": "group:myscoutee-work:af0436815ab38f4864dd1e24",

@@ -10,7 +10,7 @@
     "tone": "blue",
     "sliceX": "0%",
     "sliceY": "0%",
-    "imageUrl": "assets/logo/cards_no_edges.png",
+    "imageUrl": "assets/logo/cards_no_edges.webp",
     "workspaceGroupId": null
   },
   {
@@ -24,7 +24,7 @@
     "tone": "purple",
     "sliceX": "100%",
     "sliceY": "0%",
-    "imageUrl": "assets/logo/cards_no_edges.png",
+    "imageUrl": "assets/logo/cards_no_edges.webp",
     "workspaceGroupId": null
   },
   {
@@ -38,7 +38,7 @@
     "tone": "pink",
     "sliceX": "0%",
     "sliceY": "100%",
-    "imageUrl": "assets/logo/cards_no_edges.png",
+    "imageUrl": "assets/logo/cards_no_edges.webp",
     "workspaceGroupId": null
   },
   {
@@ -52,7 +52,7 @@
     "tone": "orange",
     "sliceX": "100%",
     "sliceY": "100%",
-    "imageUrl": "assets/logo/cards_no_edges.png",
+    "imageUrl": "assets/logo/cards_no_edges.webp",
     "workspaceGroupId": null
   },
   {
@@ -66,7 +66,7 @@
     "tone": "blue",
     "sliceX": "0%",
     "sliceY": "0%",
-    "imageUrl": "assets/logo/work_cards_no_edges.png",
+    "imageUrl": "assets/logo/work_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-work"
   },
   {
@@ -80,7 +80,7 @@
     "tone": "purple",
     "sliceX": "100%",
     "sliceY": "0%",
-    "imageUrl": "assets/logo/work_cards_no_edges.png",
+    "imageUrl": "assets/logo/work_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-work"
   },
   {
@@ -94,7 +94,7 @@
     "tone": "pink",
     "sliceX": "0%",
     "sliceY": "100%",
-    "imageUrl": "assets/logo/work_cards_no_edges.png",
+    "imageUrl": "assets/logo/work_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-work"
   },
   {
@@ -108,7 +108,7 @@
     "tone": "orange",
     "sliceX": "100%",
     "sliceY": "100%",
-    "imageUrl": "assets/logo/work_cards_no_edges.png",
+    "imageUrl": "assets/logo/work_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-work"
   },
   {
@@ -122,7 +122,7 @@
     "tone": "blue",
     "sliceX": "0%",
     "sliceY": "0%",
-    "imageUrl": "assets/logo/community_cards_no_edges.png",
+    "imageUrl": "assets/logo/community_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-community"
   },
   {
@@ -136,7 +136,7 @@
     "tone": "purple",
     "sliceX": "100%",
     "sliceY": "0%",
-    "imageUrl": "assets/logo/community_cards_no_edges.png",
+    "imageUrl": "assets/logo/community_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-community"
   },
   {
@@ -150,7 +150,7 @@
     "tone": "pink",
     "sliceX": "0%",
     "sliceY": "100%",
-    "imageUrl": "assets/logo/community_cards_no_edges.png",
+    "imageUrl": "assets/logo/community_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-community"
   },
   {
@@ -164,7 +164,7 @@
     "tone": "orange",
     "sliceX": "100%",
     "sliceY": "100%",
-    "imageUrl": "assets/logo/community_cards_no_edges.png",
+    "imageUrl": "assets/logo/community_cards_no_edges.webp",
     "workspaceGroupId": "myscoutee-community"
   }
 ]
