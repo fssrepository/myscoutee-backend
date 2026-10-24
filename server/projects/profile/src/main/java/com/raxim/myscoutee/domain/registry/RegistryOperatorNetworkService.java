@@ -2091,24 +2091,10 @@ public final class RegistryOperatorNetworkService {
             String expectedChannel,
             boolean expectedIncludeExpired,
             AnnouncementSnapshot snapshot) {
-        String cursor = safeText(value);
-        if (cursor.isEmpty()) {
-            return null;
-        }
-        if (cursor.length() > MAX_CURSOR_LENGTH) {
-            throw new IllegalArgumentException("Announcement cursor is too long.");
-        }
-        int separator = cursor.indexOf('.');
-        if (separator <= 0 || separator != cursor.lastIndexOf('.')
-                || separator == cursor.length() - 1) {
-            throw new IllegalArgumentException("Announcement cursor is malformed.");
-        }
-        byte[] payload = decodeCanonicalUrlBase64(
-                cursor.substring(0, separator),
-                "announcement cursor payload");
-        byte[] signature = decodeCanonicalUrlBase64(
-                cursor.substring(separator + 1),
-                "announcement cursor signature");
+        var envelope = decodeCursor(value, "Announcement");
+        if (envelope == null) return null;
+        byte[] payload = envelope.payload();
+        byte[] signature = envelope.signature();
         if (signature.length != 64 || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verify(
                 trusted.registryPublicKey(),
                 RegistryProtocol.announcementCursor(payload),
@@ -2212,24 +2198,10 @@ public final class RegistryOperatorNetworkService {
             String expectedView,
             String expectedGroupId,
             LeaderboardSnapshot snapshot) {
-        String cursor = safeText(value);
-        if (cursor.isEmpty()) {
-            return null;
-        }
-        if (cursor.length() > MAX_CURSOR_LENGTH) {
-            throw new IllegalArgumentException("Leaderboard cursor is too long.");
-        }
-        int separator = cursor.indexOf('.');
-        if (separator <= 0 || separator != cursor.lastIndexOf('.')
-                || separator == cursor.length() - 1) {
-            throw new IllegalArgumentException("Leaderboard cursor is malformed.");
-        }
-        byte[] payload = decodeCanonicalUrlBase64(
-                cursor.substring(0, separator),
-                "leaderboard cursor payload");
-        byte[] signature = decodeCanonicalUrlBase64(
-                cursor.substring(separator + 1),
-                "leaderboard cursor signature");
+        var envelope = decodeCursor(value, "Leaderboard");
+        if (envelope == null) return null;
+        byte[] payload = envelope.payload();
+        byte[] signature = envelope.signature();
         JsonNode node;
         try {
             node = objectMapper.readTree(payload);
@@ -2680,4 +2652,37 @@ public final class RegistryOperatorNetworkService {
             String createdAt,
             long afterSequence) {
     }
+
+    private static final class CursorEnvelope {
+        private final byte[] payload;
+        private final byte[] signature;
+        private CursorEnvelope(byte[] payload, byte[] signature) {
+            this.payload = payload;
+            this.signature = signature;
+        }
+        private byte[] payload() { return payload; }
+        private byte[] signature() { return signature; }
+    }
+    private CursorEnvelope decodeCursor(String value, String label) {
+        String cursor = safeText(value);
+        if (cursor.isEmpty()) {
+            return null;
+        }
+        if (cursor.length() > MAX_CURSOR_LENGTH) {
+            throw new IllegalArgumentException(label + " cursor is too long.");
+        }
+        int separator = cursor.indexOf('.');
+        if (separator <= 0 || separator != cursor.lastIndexOf('.')
+                || separator == cursor.length() - 1) {
+            throw new IllegalArgumentException(label + " cursor is malformed.");
+        }
+        byte[] payload = decodeCanonicalUrlBase64(
+                cursor.substring(0, separator),
+                label.toLowerCase(java.util.Locale.ROOT) + " cursor payload");
+        byte[] signature = decodeCanonicalUrlBase64(
+                cursor.substring(separator + 1),
+                label.toLowerCase(java.util.Locale.ROOT) + " cursor signature");
+        return new CursorEnvelope(payload, signature);
+    }
+
 }

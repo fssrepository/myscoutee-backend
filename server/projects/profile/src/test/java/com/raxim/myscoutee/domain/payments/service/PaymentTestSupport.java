@@ -8,7 +8,7 @@ public final class PaymentTestSupport {
   return new PaymentJobQueries(mongo, new AccountJobScopeService(mongo), audience).find(query, com.raxim.myscoutee.domain.payments.document.Payment.class, com.raxim.myscoutee.domain.payments.document.Payment::getUserId);
  }
  public static <T> T wire(T service, MongoTemplate mongo) {
-  var profiles = new ProfileDirectoryService(null);
+  var profiles = new ProfileDirectoryService(null, null);
   ReflectionTestUtils.setField(profiles,"mongo",mongo);
   ReflectionTestUtils.setField(service,"profiles",profiles);
   ReflectionTestUtils.setField(service,"accountPaymentTotals",new AccountPaymentTotalsService(mongo));

@@ -323,7 +323,7 @@ public class AssetAvailabilityMapper {
         AssetRequestBookingRecord booking = request == null ? null : request.booking();
         LocalDateTime value = parseDateTime(booking == null
                 ? request == null ? null : request.requestedAtIso()
-                : firstNonBlank(booking.startAtIso(), request == null ? null : request.requestedAtIso()));
+                : firstNonBlank(booking.startAtIso(), request.requestedAtIso()));
         if (value != null) {
             return value.toInstant(ZoneOffset.UTC).toEpochMilli();
         }
@@ -341,7 +341,7 @@ public class AssetAvailabilityMapper {
         AssetRequestBookingRecord booking = request == null ? null : request.booking();
         LocalDateTime start = parseDateTime(booking == null
                 ? request == null ? null : request.requestedAtIso()
-                : firstNonBlank(booking.startAtIso(), request == null ? null : request.requestedAtIso()));
+                : firstNonBlank(booking.startAtIso(), request.requestedAtIso()));
         if (start == null) {
             return null;
         }

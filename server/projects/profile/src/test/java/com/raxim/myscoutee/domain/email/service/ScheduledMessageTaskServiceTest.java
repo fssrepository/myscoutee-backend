@@ -107,7 +107,7 @@ class ScheduledMessageTaskServiceTest {
         service = new ScheduledMessageTaskService(
                 mongoTemplate,
                 scheduledMessageTasksRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles, null),
                 new com.raxim.myscoutee.domain.accounts.service.AccountInactivityService(profiles, userSessionActionsRepository,
                         new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(profiles, mongoTemplate, java.util.List.of(affinityRecomputeTaskService::enqueueAdminStatusChanged), null)),
                 scheduledMessageAuditService,
@@ -119,7 +119,7 @@ class ScheduledMessageTaskServiceTest {
                 emailTemplateRendererProvider,
                 emailProviderGatewayProvider,
                 emailPropertiesProvider,
-                configPropertiesProvider);
+                configPropertiesProvider, null, null);
 
         notificationTemplate = new NotificationTemplate();
         notificationTemplate.setTemplateKey("notification-template");

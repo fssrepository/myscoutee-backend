@@ -13,5 +13,5 @@ this directory and requires a pre-provisioned pair under
 
 Do not commit private keys or real certificates in this directory. Install
 deployment-specific files on the target host and keep the private key
-root-readable only. See `packaging/README.md` for the exact first-certificate
+root-readable only. See the pinned packaging dependency’s `docs/production.md` for the exact first-certificate
 and renewal procedure.

@@ -35,8 +35,8 @@ class CampaignsServiceTest {
     @BeforeEach void setup() {
         service = new CampaignsService(new com.raxim.myscoutee.domain.affinity.service.CampaignRatingEvidenceService(rates),
                 new com.raxim.myscoutee.domain.chat.service.CampaignConversationService(chats), repository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
-                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null),
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class), null),
                 mock(CommunityGroupProfilesService.class), mock(SelectedProfile.class), counterWork);
         when(counterOwner.apply(any())).thenAnswer(call -> {
             com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change change = call.getArgument(0);

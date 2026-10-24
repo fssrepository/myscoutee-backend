@@ -7,16 +7,20 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 @Service
 public class CommunityMembershipService implements CommunityMemberships {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates counters;
-    @org.springframework.beans.factory.annotation.Autowired private org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates counters;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
     @Override public java.util.Set<String> acceptedAccounts(String groupId, java.util.Collection<String> accounts, int limit) {
         return members.findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn("community", groupId, "accepted", accounts,
                 org.springframework.data.domain.PageRequest.of(0, limit)).getContent().stream()
                 .map(ActivityMember::getUserId).collect(java.util.stream.Collectors.toSet());
     }
     private final ActivityMembersRepository members;
-    public CommunityMembershipService(ActivityMembersRepository members) { this.members = members; }
+    public CommunityMembershipService(ActivityMembersRepository members,
+            com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates counters,
+            org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        this.counters = counters;
+        this.mongo = mongo;
+ this.members = members; }
     @Override public List<CommunityMember> forAccount(String id) { return members.findByOwnerTypeAndUserId("community", id).stream().map(this::view).toList(); }
     @Override public List<CommunityMember> forGroup(String id) { return members.findByOwnerTypeAndOwnerId("community", id).stream().map(this::view).toList(); }
     @Override public List<CommunityMember> forGroups(Collection<String> ids) { return members.findByOwnerTypeAndOwnerIdIn("community", ids).stream().map(this::view).toList(); }
@@ -74,6 +78,8 @@ public class CommunityMembershipService implements CommunityMemberships {
         if (bucket != null) deltas.merge("groups_" + bucket, 1, Integer::sum);
         // Every response/poll can carry explicit zeroes for all five buckets.
         for (String key : List.of("hosting", "participation", "pending", "invitations", "trash")) deltas.putIfAbsent("groups_" + key, 0);
+        // Stable persisted receipt/counter identity; never a password, signature or integrity proof.
+        @SuppressWarnings("java:S4790")
         String source = "group-member-" + org.springframework.util.DigestUtils.md5DigestAsHex(next.getId().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         var change = new com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.Change(next.getUserId(), null, source, revision, Map.copyOf(deltas));
         return new ActivityMember.GroupCounterState(revision, bucket, change);
@@ -114,50 +120,12 @@ public class CommunityMembershipService implements CommunityMemberships {
     private CommunityMember view(ActivityMember source) {
         if (source == null) return null;
         var result = new CommunityMember();
-        result.setId(source.getId());
-        result.setOwnerType(source.getOwnerType());
-        result.setOwnerId(source.getOwnerId());
-        result.setUserId(source.getUserId());
-        result.setRole(source.getRole());
-        result.setStatus(source.getStatus());
-        result.setRequestKind(source.getRequestKind());
-        result.setPendingSource(source.getPendingSource());
-        result.setInvitedByUserId(source.getInvitedByUserId());
-        result.setMetWhere(source.getMetWhere());
-        result.setMetAtIso(source.getMetAtIso());
-        result.setActionAtIso(source.getActionAtIso());
-        result.setUpdatedDate(source.getUpdatedDate());
-        result.setCreatedDate(source.getCreatedDate());
-        result.setCommunityAction(source.getCommunityAction());
-        result.setCommunityActor(source.getCommunityActor());
-        result.setOrganizerOnly(source.getOrganizerOnly());
-        result.setManagerGrantedByUserId(source.getManagerGrantedByUserId());
-        result.setVotingEligible(source.getVotingEligible());
-        result.setCommunityUpdates(source.getCommunityUpdates());
+        com.raxim.myscoutee.domain.events.api.CommunityMemberState.copy(source, result);
         return result;
     }
     private ActivityMember registration(CommunityMember source) {
         var result = new ActivityMember();
-        result.setId(source.getId());
-        result.setOwnerType(source.getOwnerType());
-        result.setOwnerId(source.getOwnerId());
-        result.setUserId(source.getUserId());
-        result.setRole(source.getRole());
-        result.setStatus(source.getStatus());
-        result.setRequestKind(source.getRequestKind());
-        result.setPendingSource(source.getPendingSource());
-        result.setInvitedByUserId(source.getInvitedByUserId());
-        result.setMetWhere(source.getMetWhere());
-        result.setMetAtIso(source.getMetAtIso());
-        result.setActionAtIso(source.getActionAtIso());
-        result.setUpdatedDate(source.getUpdatedDate());
-        result.setCreatedDate(source.getCreatedDate());
-        result.setCommunityAction(source.getCommunityAction());
-        result.setCommunityActor(source.getCommunityActor());
-        result.setOrganizerOnly(source.getOrganizerOnly());
-        result.setManagerGrantedByUserId(source.getManagerGrantedByUserId());
-        result.setVotingEligible(source.getVotingEligible());
-        result.setCommunityUpdates(source.getCommunityUpdates());
+        com.raxim.myscoutee.domain.events.api.CommunityMemberState.copy(source, result);
         if (!"community".equals(result.getOwnerType())) throw new IllegalArgumentException("Community membership requires community ownership.");
         return result;
     }

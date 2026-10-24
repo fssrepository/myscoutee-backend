@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.events.service;
+import static com.raxim.myscoutee.common.measurement.MongoEvidenceCursor.*;
 import java.time.Instant;
 import java.util.*;
 import org.bson.Document;
@@ -34,7 +35,10 @@ public class EventMeasurementService implements EventMeasurement {
             "verified-attendance";
 
     private final MongoTemplate mongo;
-    public EventMeasurementService(MongoTemplate mongo) { this.mongo = mongo; }
+    public EventMeasurementService(MongoTemplate mongo,
+            com.raxim.myscoutee.domain.feedback.api.FeedbackMeasurement feedback) {
+        this.feedback = feedback;
+ this.mongo = mongo; }
     public EvidenceCursor joins(Instant startInclusive, Instant endExclusive) {
         String start = startInclusive.toString(), end = endExclusive.toString();
         List<Document> pipeline = new ArrayList<>();
@@ -75,42 +79,18 @@ public class EventMeasurementService implements EventMeasurement {
         pipeline.add(new Document("$sort", new Document("userId", 1).append("occurredAt", 1).append("actionType", 1).append("sourceId", 1)));
         return new MongoEvidenceCursor(mongo.getCollection("events").aggregate(pipeline).allowDiskUse(true).batchSize(1_000).iterator());
     }
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.feedback.api.FeedbackMeasurement feedback;
+    private final com.raxim.myscoutee.domain.feedback.api.FeedbackMeasurement feedback;
     public EvidenceCursor attendance(Instant startInclusive, Instant endExclusive) {
         return feedback.attendance(startInclusive, endExclusive);
     }
-    private static Document range(String start, String end) {
-        return new Document("$gte", start).append("$lt", end);
-    }
 
-    private static Document rangeClause(
-            String field,
-            String start,
-            String end) {
-        return new Document(field, range(start, end));
-    }
 
-    private static Document match(Document criteria) {
-        return new Document("$match", criteria);
-    }
 
-    private static Document project(
-            Object userId,
-            String actionType,
-            Object occurredAt,
-            Object sourceId) {
-        return new Document(
-                "$project",
-                new Document("_id", 0)
-                        .append("userId", userId)
-                        .append("actionType", actionType)
-                        .append("occurredAt", occurredAt)
-                        .append("sourceId", sourceId));
-    }
 
-    private static Document source(Object... parts) {
-        return new Document("$concat", List.of(parts));
-    }
+
+
+
+
+
 
 }

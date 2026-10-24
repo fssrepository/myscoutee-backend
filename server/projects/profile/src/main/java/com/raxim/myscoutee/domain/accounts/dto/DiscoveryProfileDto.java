@@ -19,7 +19,7 @@ public record DiscoveryProfileDto(
         String city,
         String initials,
         String gender,
-        java.util.List<String> images, Coordinates locationCoordinates, java.util.List<String> languages, Double affinity) implements DiscoveryProfile {
+        java.util.List<String> images, Coordinates locationCoordinates, java.util.List<String> languages, Double affinity) implements DiscoveryProfile, com.raxim.myscoutee.domain.accounts.api.ProfileSummary.RecordFields {
     @Override public Double getAffinity() { return affinity; }
     public record Coordinates(Double latitude, Double longitude) implements com.raxim.myscoutee.domain.accounts.api.ScoringProfile.Coordinates {}
     @Override public Coordinates getLocationCoordinates() { return locationCoordinates; }
@@ -48,21 +48,4 @@ public record DiscoveryProfileDto(
                 value.getImages(), value.getLocationCoordinates() == null ? null : new Coordinates(
                         value.getLocationCoordinates().latitude(), value.getLocationCoordinates().longitude()), value.getLanguages(), value.getAffinity());
     }
-    @Override public String getUserId() { return userId; }
-    @Override public String getAccountUserId() { return accountUserId; }
-    @Override public String getWorkspaceGroupId() { return workspaceGroupId; }
-    @Override public String getDeletedAtIso() { return deletedAtIso; }
-    @Override public String getProfileStatus() { return profileStatus; }
-    @Override public String getStatus() { return status; }
-    @Override public String getHostTier() { return hostTier; }
-    @Override public String getStatusText() { return statusText; }
-    @Override public Integer getAge() { return age; }
-    @Override public String getCity() { return city; }
-    @Override public String getAbout() { return about; }
-    @Override public String getHeadline() { return headline; }
-    @Override public String getTraitLabel() { return traitLabel; }
-    @Override public String getName() { return name; }
-    @Override public String getInitials() { return initials; }
-    @Override public String getGender() { return gender; }
-    @Override public java.util.List<String> getImages() { return images; }
 }

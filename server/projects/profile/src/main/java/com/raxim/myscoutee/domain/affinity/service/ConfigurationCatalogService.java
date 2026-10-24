@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConfigurationCatalogService implements ConfigurationCatalog {
     private final AffinityConfigsRepository configs;
-    @org.springframework.beans.factory.annotation.Autowired private MongoTemplate mongo;
-    public ConfigurationCatalogService(AffinityConfigsRepository configs) { this.configs = configs; }
+    private final MongoTemplate mongo;
+    public ConfigurationCatalogService(AffinityConfigsRepository configs,
+            MongoTemplate mongo) {
+        this.mongo = mongo;
+ this.configs = configs; }
     public Settings active(String key) {
         return configs.findFirstByKeyAndActiveTrueOrderByVersionDesc(key)
             .or(() -> configs.findFirstByKeyOrderByVersionDesc(key)).orElseGet(AffinityConfig::defaults);

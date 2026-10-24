@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.access.api;
 import org.springframework.security.core.Authentication;
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceStateDto;
 
-public interface AccessPermissions extends ConsentAuthorization {
+public interface AccessPermissions extends ConsentAuthorization, com.raxim.myscoutee.domain.access.api.AccessPolicyFacts {
     boolean can(String policyKey, String actorUserId, String subjectUserId, String resourceId);
     String resolveChatActorUserId(String chatId, String profileId);
     default boolean canSubmitEventResourceAssignment(Authentication authentication, ActivitySubEventResourceStateDto request) {
@@ -70,16 +70,6 @@ public interface AccessPermissions extends ConsentAuthorization {
     }
     boolean canCurrentActorManageEventResourceScope(String eventId);
     boolean canCleanupEventResourceAssignments(String eventId, String actorUserId);
-    boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId);
-    boolean hasMemberStatus(String ownerType, String ownerId, String userId, String status);
-    boolean canManageMembers(String ownerType, String ownerId, String actorUserId);
-    boolean isProtectedMember(String ownerType, String ownerId, String userId);
-    boolean canManageEvent(String eventId, String actorUserId);
-    boolean canTakeOverEvent(String eventId, String actorUserId);
-    boolean canManageAsset(String assetId, String actorUserId);
-    boolean canTakeOverAsset(String assetId, String actorUserId);
-    boolean canAccessChat(String chatId, String actorUserId);
-    boolean canManageSupportChat(String chatId, String actorUserId);
     default String resolveActorUserId(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) return null;
         Object principal = authentication.getPrincipal();

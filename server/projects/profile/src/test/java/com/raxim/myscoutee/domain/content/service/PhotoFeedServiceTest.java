@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class PhotoFeedServiceTest {
     private final PhotoFeedRepository repository = mock(PhotoFeedRepository.class);
     private final com.raxim.myscoutee.domain.accounts.api.FeedCounts counts = mock(com.raxim.myscoutee.domain.accounts.api.FeedCounts.class);
-    private final PhotoFeedService service = new PhotoFeedService(repository);
+    private final PhotoFeedService service = new PhotoFeedService(repository, null, null, null);
     private final ActivitiesEventsService events = mock(ActivitiesEventsService.class);
     private final ImageEventReference event = new ImageEventReference("event", "Event", "organizer", "Organizer", "Budapest");
     @BeforeEach void setUp() {

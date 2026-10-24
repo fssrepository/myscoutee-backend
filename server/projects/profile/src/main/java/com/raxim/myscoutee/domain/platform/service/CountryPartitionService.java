@@ -511,7 +511,7 @@ public class CountryPartitionService implements com.raxim.myscoutee.domain.platf
         Point first = points.get(0);
         Point last = points.get(points.size() - 1);
         if (!samePoint(first, last)) {
-            points.add(new Point(first.getX(), first.getY()));
+            points.add(first);
         }
         return points;
     }

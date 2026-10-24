@@ -32,7 +32,7 @@ class IntegrationEventQueryServiceTest {
     @Mock IntegrationExternalIdsRepository mappings;
     IntegrationEventQueryService service;
 
-    @BeforeEach void setup() { service = new IntegrationEventQueryService(new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events), new com.raxim.myscoutee.domain.events.service.MingleEncounterService(sessions, rounds, null, null), mappings); }
+    @BeforeEach void setup() { service = new IntegrationEventQueryService(new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events, null), new com.raxim.myscoutee.domain.events.service.MingleEncounterService(sessions, rounds, null, null), mappings); }
 
     @Test void exportsUniqueCompletedTablePairsWithPartnerIdentifiersWithoutReadingRatings() {
         ActivityEvent event = ownedEvent();

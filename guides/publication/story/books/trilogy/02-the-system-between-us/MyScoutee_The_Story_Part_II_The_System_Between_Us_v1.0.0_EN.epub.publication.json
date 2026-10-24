@@ -1,0 +1,45 @@
+{
+  "file": "MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.epub",
+  "sha256": "97b3e2e201f5d3f6df4336bd96e46305c0020dc368d835f3cd069b7fe3ef0f9b",
+  "format": "EPUB 3 reflowable",
+  "drm_embedded": false,
+  "part": 2,
+  "part_roman": "II",
+  "edition_version": "1.0.0",
+  "published": "2026-08-20",
+  "source": {
+    "file": "guides/story/trilogy/02-the-system-between-us/book/THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md",
+    "sha256": "7bb9103ee477dd4f304236f7831b460eab32f9147183ebd63561a9f1c83f6eab"
+  },
+  "cover_source": {
+    "file": "guides/story/trilogy/02-the-system-between-us/book/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf",
+    "sha256": "260139c091a616816fc2cc1c3f2b88db073804ca1f01b862778c3e63ea9f240d"
+  },
+  "asset_count": 21,
+  "toc_entries": 55,
+  "archive_entries": 29,
+  "validation": [
+    "EPUB mimetype and container",
+    "well-formed package, navigation, NCX and XHTML",
+    "manifest, spine, cover and image targets",
+    "navigation anchors",
+    "reflowable text without split drop-cap words",
+    "readable source-link labels instead of visible raw URLs"
+  ],
+  "metadata": {
+    "title": "MyScoutee - The Story - Part II - The System Between Us",
+    "author": "MyScoutee",
+    "subject": "A founder's memoir of rules, laughter, and the price of becoming legible",
+    "keywords": [
+      "MyScoutee",
+      "memoir",
+      "systems",
+      "rule of law",
+      "human context",
+      "Hungary"
+    ],
+    "creator": "MyScoutee book builder",
+    "language": "en",
+    "copyright": "Copyright 2026 MyScoutee. All rights reserved."
+  }
+}

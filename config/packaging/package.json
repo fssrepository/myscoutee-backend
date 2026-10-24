@@ -1,0 +1,33 @@
+{
+  "name": "myscoutee-backend-packaging",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "client": "myscoutee-packaging client",
+    "client-tools": "myscoutee-packaging client-tools",
+    "release": "myscoutee-packaging release",
+    "prepare-runtime": "myscoutee-packaging prepare-runtime",
+    "runtime": "myscoutee-packaging runtime",
+    "test": "myscoutee-packaging test",
+    "verify": "myscoutee-packaging verify",
+    "verify-browser": "myscoutee-packaging verify-browser",
+    "seed-parity": "myscoutee-packaging seed-parity",
+    "development": "myscoutee-packaging development",
+    "qualification": "myscoutee-packaging qualification",
+    "qa-release": "myscoutee-packaging qa-release",
+    "seed-image-variants": "myscoutee-packaging seed-image-variants",
+    "assign-seed-user-emails": "myscoutee-packaging seeds assign-seed-user-emails",
+    "backfill-seed-distances": "myscoutee-packaging seeds backfill-seed-distances",
+    "generate-help-center-illustrations": "node seeds/scripts/generate-help-center-illustrations.mjs",
+    "normalize-chat-seed": "node seeds/scripts/normalize-chat-seed.mjs",
+    "reconcile-group-menu-counters": "node seeds/scripts/reconcile-group-menu-counters.mjs",
+    "synchronize-demo-image-pools": "node seeds/scripts/synchronize-demo-image-pools.mjs",
+    "synchronize-seed-profile-details": "myscoutee-packaging seeds synchronize-seed-profile-details"
+  },
+  "devDependencies": {
+    "@fssrepository/myscoutee-packaging": "1.5.0"
+  }
+}

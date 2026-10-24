@@ -12,8 +12,11 @@ import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 public class AccountAffinityProjectionService implements AccountAffinityProjections {
     private final MongoTemplate mongo;
     private final UsersRepository users;
-    @org.springframework.beans.factory.annotation.Autowired private JobAudience audience;
-    public AccountAffinityProjectionService(MongoTemplate mongo, UsersRepository users) { this.mongo = mongo; this.users = users; }
+    private final JobAudience audience;
+    public AccountAffinityProjectionService(MongoTemplate mongo, UsersRepository users,
+            JobAudience audience) {
+        this.audience = audience;
+ this.mongo = mongo; this.users = users; }
     @Override public boolean updateAffinity(String userId, double affinity) {
         if (userId == null || userId.trim().isEmpty()) return false;
         var result = mongo.updateFirst(Query.query(Criteria.where("userId").is(userId.trim())), new Update().set("affinity", affinity), Users.class);
@@ -36,7 +39,6 @@ public class AccountAffinityProjectionService implements AccountAffinityProjecti
     @Override public List<String> staleRatingProfileIds() {
         var query = Query.query(Criteria.where("homeGameRateProjectionVersion").ne(RATING_VERSION)); query.fields().include("userId");
         var profiles = mongo.find(query, Users.class);
-        if (profiles == null) return List.of();
         return profiles.stream().map(profile -> profile == null || profile.getId() == null ? "" : profile.getId().trim())
                 .filter(id -> !id.isBlank()).distinct().toList();
     }

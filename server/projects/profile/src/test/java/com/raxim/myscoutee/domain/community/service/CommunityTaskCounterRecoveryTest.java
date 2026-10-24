@@ -48,11 +48,11 @@ class CommunityTaskCounterRecoveryTest {
                     accounts.apply(changes.getFirst());
                     throw new IllegalStateException("lost reply");
                 });
-                var broken = new CommunityCaseCounterWork(cases, interrupted, memberships, mongo, groups);
+                var broken = new CommunityCaseCounterWork(cases, interrupted, memberships, mongo, groups, null);
                 ReflectionTestUtils.setField(broken, "tasks", tasks);
                 assertThatThrownBy(() -> broken.saveTask(task(true, false, null), null)).hasMessage("lost reply");
                 var stored = tasks.findById("task").orElseThrow();
-                var writer = new CommunityCaseCounterWork(cases, accounts, memberships, mongo, groups);
+                var writer = new CommunityCaseCounterWork(cases, accounts, memberships, mongo, groups, null);
                 ReflectionTestUtils.setField(writer, "tasks", tasks);
                 writer.saveTask(stored, stored);
                 writer.saveTask(tasks.findById("task").orElseThrow(), tasks.findById("task").orElseThrow());

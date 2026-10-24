@@ -21,7 +21,7 @@ public record MemberDirectoryEntryDto(
         String updatedUser,
         String userId,
         String role,
-        String status) implements MemberDirectory.Member {
+        String status) implements MemberDirectory.Member, com.raxim.myscoutee.common.dto.AuditFields.RecordFields {
     public static MemberDirectoryEntryDto from(MemberDirectory.Member member) {
         return new MemberDirectoryEntryDto(
                 member.getSuppressionRootOwnerId(),
@@ -54,10 +54,6 @@ public record MemberDirectoryEntryDto(
     @Override public String getInvitedByUserId() { return invitedByUserId; }
     @Override public String getMetAtIso() { return metAtIso; }
     @Override public String getActionAtIso() { return actionAtIso; }
-    @Override public String getCreatedDate() { return createdDate; }
-    @Override public String getCreatedUser() { return createdUser; }
-    @Override public String getUpdatedDate() { return updatedDate; }
-    @Override public String getUpdatedUser() { return updatedUser; }
     @Override public String getUserId() { return userId; }
     @Override public String getRole() { return role; }
     @Override public String getStatus() { return status; }

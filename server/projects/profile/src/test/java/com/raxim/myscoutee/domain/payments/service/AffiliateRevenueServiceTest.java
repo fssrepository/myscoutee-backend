@@ -45,7 +45,7 @@ class AffiliateRevenueServiceTest {
     @Test void newCashPaymentDoesNotAcquireAffiliateRevenueAttribution() {
         MongoTemplate mongo = mock(MongoTemplate.class);
         AffiliateRevenueRepository repository = mock(AffiliateRevenueRepository.class);
-        var service = new AffiliateRevenueService(mongo, repository, null);
+        var service = new AffiliateRevenueService(mongo, repository, null, null, null, null, null);
         Payment payment = payment("approved");
         payment.setAuditKind("payment");
         payment.setProvider("cash");
@@ -58,7 +58,7 @@ class AffiliateRevenueServiceTest {
     @Test void previouslyAttributedCashPaymentQueuesAZeroContribution() {
         MongoTemplate mongo = mock(MongoTemplate.class);
         AffiliateRevenueRepository repository = mock(AffiliateRevenueRepository.class);
-        var service = new AffiliateRevenueService(mongo, repository, null);
+        var service = new AffiliateRevenueService(mongo, repository, null, null, null, null, null);
         Payment payment = payment("captured");
         payment.setAuditKind("payment");
         payment.setProvider("cash");
@@ -74,7 +74,7 @@ class AffiliateRevenueServiceTest {
     @Test void failedCounterWriteKeepsPaymentPendingAndSuccessUsesVersionFence() {
         MongoTemplate mongo = mock(MongoTemplate.class);
         AffiliateRevenueRepository repository = mock(AffiliateRevenueRepository.class);
-        var service = new AffiliateRevenueService(mongo, repository, null);
+        var service = new AffiliateRevenueService(mongo, repository, null, null, null, null, null);
         Payment payment = payment("captured"); payment.setId("payment"); payment.setVersion(3L);
         payment.setAffiliateRevenuePending(true); payment.setAffiliateOwnerUserId("owner"); payment.setCurrency("EUR");
         doThrow(new IllegalStateException("interrupted")).doNothing().when(repository)

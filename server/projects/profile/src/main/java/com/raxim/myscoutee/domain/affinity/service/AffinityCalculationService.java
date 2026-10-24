@@ -135,7 +135,7 @@ public class AffinityCalculationService {
             return;
         }
 
-        double ratingSignal;
+        Double ratingSignal;
         double multiplier;
         if (MODE_PAIR.equals(mode)) {
             ratingSignal = normalizeScoreSignal(scoreGiven);

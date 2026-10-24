@@ -56,7 +56,7 @@ class AdminStatsTelemetryWorkerServiceTest {
         when(jobs.beginScheduledRun(eq("admin-telemetry"), anyString(), anyString(), any()))
                 .thenAnswer(call -> admitted.get() ? mock(NotificationJobs.Configuration.class) : null);
         worker = new AdminStatsTelemetryWorkerService(redis, new ObjectMapper(), stats, monitoring,
-                counters, new AdminStatsProperties(), mock(RedisStreamRetentionService.class));
+                counters, new AdminStatsProperties(), mock(RedisStreamRetentionService.class), null, null);
         ReflectionTestUtils.setField(worker, "groupRules", jobs);
         ReflectionTestUtils.setField(worker, "groupDatabases", new ScheduledMongoSessionRunner("same", "same"));
         ReflectionTestUtils.setField(worker, "clock", Clock.fixed(Instant.parse("2026-10-09T12:00:00Z"), ZoneOffset.UTC));

@@ -1,5 +1,11 @@
 package com.raxim.myscoutee.domain.events.service;
 
+import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper.SubEventDefinitionTimelineEntry;
+import static com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper.safeText;
+import static com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper.normalizeId;
+import static com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper.safeDouble;
+import static com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper.nullableCount;
+import static com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper.normalizeCount;
 import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
@@ -148,8 +154,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.EventCheckout, com.raxim.myscoutee.domain.events.api.FeedEvents, com.raxim.myscoutee.domain.events.api.EventOperations {
-    @org.springframework.beans.factory.annotation.Autowired private EventLifecycleWork lifecycleWork;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.chat.api.ChatDirectory lifecycleChats;
+    private final EventLifecycleWork lifecycleWork;
+    private final com.raxim.myscoutee.domain.chat.api.ChatDirectory lifecycleChats;
     private record LifecyclePlan(boolean available, String attachmentReason, String notificationReason, List<String> audience) {}
 
     private LifecyclePlan lifecyclePlan(String sourceId, String actor, boolean available, String attachmentReason,
@@ -167,9 +173,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return new LifecyclePlan(available, attachmentReason, notificationReason, List.copyOf(audience));
     }
 
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.FollowingEvents followingEvents;
-    @org.springframework.beans.factory.annotation.Autowired
-    private GroupDirectory groupDirectory;
+    private final com.raxim.myscoutee.domain.accounts.api.FollowingEvents followingEvents;
+    private final GroupDirectory groupDirectory;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
@@ -200,9 +205,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
     private static final ThreadLocal<EventQueryContext> ACTIVE_CONTEXT = new ThreadLocal<>();
 
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private ContentRegistration contentModeration;
+    private final ContentRegistration contentModeration;
 
     private final Campaigns campaigns;
     private final ActivityEventsRepository activityEventsRepository;
@@ -279,7 +282,20 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             ActivityEventMapper activityEventMapper,
             ActivityEventSubEventsMapper activityEventSubEventsMapper,
             ActivitySubEventResourceMapper activitySubEventResourceMapper,
-            ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper) {
+            ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper,
+            EventLifecycleWork lifecycleWork,
+            com.raxim.myscoutee.domain.chat.api.ChatDirectory lifecycleChats,
+            com.raxim.myscoutee.domain.accounts.api.FollowingEvents followingEvents,
+            GroupDirectory groupDirectory,
+            @org.springframework.context.annotation.Lazy ContentRegistration contentModeration,
+            EventCancellationService eventCancellationService) {
+        this.lifecycleWork = lifecycleWork;
+        this.lifecycleChats = lifecycleChats;
+        this.followingEvents = followingEvents;
+        this.groupDirectory = groupDirectory;
+        this.contentModeration = contentModeration;
+        this.eventCancellationService = eventCancellationService;
+
         this.campaigns = campaigns;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventGroupsRepository = activitySubEventGroupsRepository;
@@ -331,7 +347,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         List<ActivityEvent> directOwnerRecords = queryDirectOwnerRecords(viewer.userId());
         Set<String> directSourceIds = directOwnerRecords.stream()
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
@@ -444,7 +460,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         List<ActivityEvent> directOwnerRecords = queryDirectOwnerListCardRecords(viewer.userId());
         Set<String> directSourceIds = directOwnerRecords.stream()
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
@@ -548,7 +564,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             trackedSourceIds.addAll(trackedStatusesBySourceId.keySet());
             queryDirectOwnerRecords(viewer.userId()).stream()
                     .map(ActivityEvent::getSourceId)
-                    .map(this::normalizeId)
+                    .map(ActivityEventMapper::normalizeId)
                     .filter(StringUtils::hasText)
                     .forEach(trackedSourceIds::add);
         }
@@ -600,7 +616,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 .filter(Objects::nonNull)
                 .filter(record -> Boolean.TRUE.equals(record.getTicketing()))
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
@@ -657,7 +673,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         List<String> normalizedUserIds = userIds == null
                 ? List.of()
                 : userIds.stream()
-                        .map(this::normalizeId)
+                        .map(ActivityEventMapper::normalizeId)
                         .filter(StringUtils::hasText)
                         .distinct()
                         .toList();
@@ -665,41 +681,12 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return Map.of();
         }
 
-        Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
-        for (EdgeView edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
-            String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
-            String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
-            if (!StringUtils.hasText(leftUserId)
-                    || !StringUtils.hasText(rightUserId)
-                    || leftUserId.equals(rightUserId)) {
-                continue;
-            }
-            double edgeWeight = resolveAffinityEdgeWeight(edge);
-            if (edgeWeight <= 0d) {
-                continue;
-            }
-            String key = pairKey(leftUserId, rightUserId);
-            Double existingWeight = weightsByPairKey.get(key);
-            if (existingWeight == null || edgeWeight > existingWeight.doubleValue()) {
-                weightsByPairKey.put(key, edgeWeight);
-            }
-        }
+        Map<String, Double> weightsByPairKey = com.raxim.myscoutee.domain.affinity.api.EdgeDirectory.weightsByPairKey(
+                userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds));
         return weightsByPairKey;
     }
 
-    private double resolveAffinityEdgeWeight(EdgeView edge) {
-        if (edge == null) {
-            return 0d;
-        }
-        Double edgeWeight = edge.getEdgeWeight();
-        if (edgeWeight == null || !Double.isFinite(edgeWeight) || edgeWeight <= 0d) {
-            edgeWeight = edge.getAffinityScore();
-        }
-        if (edgeWeight == null || !Double.isFinite(edgeWeight)) {
-            return 0d;
-        }
-        return Math.max(0d, Math.min(1d, edgeWeight));
-    }
+
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> buildMemberSnapshotMap(List<ActivityEvent> records) {
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
@@ -1146,7 +1133,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private EventCheckoutSlotDto checkoutSlotDtoFromBasketItem(ActivityEvent parent, EventCheckoutBasketItemDto item) {
         String slotSourceId = normalizeId(item == null ? null : item.slotSourceId());
-        if (!StringUtils.hasText(slotSourceId)) {
+        if (item == null || !StringUtils.hasText(slotSourceId)) {
             return null;
         }
         String selectedDateKey = safeText(item.selectedDateKey());
@@ -1164,7 +1151,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 0,
                 0,
                 quantity,
-                isSucceededCheckoutResult(item == null ? null : item.resultState()),
+                isSucceededCheckoutResult(item.resultState()),
                 Math.max(0d, item.amount() == null ? 0d : item.amount()),
                 firstNonBlank(item.currency(), parent == null ? null : checkoutPricingCurrency(parent.getPricing()), "USD"),
                 item.pricingSummaryRows() == null ? List.of() : item.pricingSummaryRows());
@@ -1267,7 +1254,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                     .map(override -> override == null ? null : override.price())
                     .filter(Objects::nonNull)
                     .findFirst()
-                    .map(this::safeDouble)
+                    .map(ActivityEventMapper::safeDouble)
                     .orElse(previewBase);
         }
         List<EventCheckoutPricingSummaryRowDto> rows = new ArrayList<>();
@@ -1534,7 +1521,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     public EventSubEventsResultDto loadSubEventsById(EventSubEventsQueryDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = normalizeId(request == null ? null : request.eventId());
-        if (viewer == null || !StringUtils.hasText(sourceId)) {
+        if (request == null || viewer == null || !StringUtils.hasText(sourceId)) {
             return null;
         }
         ActivityEvent selected = preferredSubEventsDefinitionRecord(loadEventDocumentsBySourceIds(List.of(sourceId)), viewer.userId());
@@ -1594,13 +1581,13 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         Set<String> ownerIds = lookups.stream()
                 .filter(Objects::nonNull)
                 .map(SubEventResourceLookup::ownerId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Set<String> assetOwnerUserIds = lookups.stream()
                 .filter(Objects::nonNull)
                 .map(SubEventResourceLookup::assetOwnerUserId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Set<String> requestedKeys = lookups.stream()
@@ -1939,7 +1926,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         Map<String, ActivitySubEventStageRuntime> runtimeByKey = subEventStageRuntimeDocumentsByKey(runtimeRefs);
         Set<String> runtimeOwnerIds = runtimeByKey.values().stream()
                 .map(ActivitySubEventStageRuntime::getId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         if (runtimeOwnerIds.isEmpty()) {
@@ -1984,7 +1971,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         Set<String> ownerIds = refs.stream()
                 .map(SubEventStageRuntimeLookup::ownerId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Set<String> requestedKeys = refs.stream()
@@ -2015,7 +2002,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         Set<String> normalizedOwnerIds = ownerIds == null
                 ? Set.of()
                 : ownerIds.stream()
-                        .map(this::normalizeId)
+                        .map(ActivityEventMapper::normalizeId)
                         .filter(StringUtils::hasText)
                         .collect(LinkedHashSet::new, Set::add, Set::addAll);
         String normalizedUserId = normalizeId(userId);
@@ -2026,7 +2013,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 .findAcceptedByOwnerTypeOwnerIdInAndUserId(ownerType, normalizedOwnerIds, normalizedUserId, MEMBER_STATUS_ACCEPTED)
                 .stream()
                 .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
     }
@@ -2176,9 +2163,11 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         int runtimeItemCount = record.getSubEvents() == null ? 0 : record.getSubEvents().size();
         int score = 0;
         score += isGeneratedSlotRecord(record) ? -10_000 : 0;
-        score += normalizedViewerUserId.equals(normalizeId(record.getOwnerUserId())) ? 2_000 : 0;
-        score += normalizedViewerUserId.equals(normalizeId(record.getCreatorUserId())) ? 1_000 : 0;
-        score += normalizeIds(record.getAdmins()).contains(normalizedViewerUserId) ? 400 : 0;
+        if (normalizedViewerUserId != null) {
+            score += normalizedViewerUserId.equals(normalizeId(record.getOwnerUserId())) ? 2_000 : 0;
+            score += normalizedViewerUserId.equals(normalizeId(record.getCreatorUserId())) ? 1_000 : 0;
+            score += normalizeIds(record.getAdmins()).contains(normalizedViewerUserId) ? 400 : 0;
+        }
         score += Boolean.FALSE.equals(record.getSubEventsEnabled()) ? -500 : 100;
         score += Boolean.TRUE.equals(record.getSlotsEnabled()) ? 500 : 0;
         score += slotTemplateCount * 100;
@@ -2196,7 +2185,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         Set<String> ownerIds = refs.stream()
                 .map(SubEventStageRuntimeLookup::ownerId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Set<String> requestedKeys = refs.stream()
@@ -2325,8 +2314,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         });
     }
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private EventCancellationService eventCancellationService;
+    private final EventCancellationService eventCancellationService;
 
     public EventParticipationActionResultDto cancel(EventActionRequestDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
@@ -2369,7 +2357,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         ActivitiesMembersService.OwnerMembersSnapshot beforeSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
         UserEventActivityState beforeState = eventActivityState(preferred, beforeSnapshot, userId);
-        if (organizerLifecycleRequest && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
+        if (!accessControlService.canCurrentActorDeleteEvent(sourceId)) {
             return withCounterDelta(
                     toLifecycleActionResult(sourceId, "trash", preferred, false, "forbidden"),
                     null);
@@ -2390,11 +2378,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             }
             current.setStatus(ActivityEvent.STATUS_TRASHED);
             current.setTrashedAtIso(Instant.now().toString());
-        }, true, organizerLifecycleRequest ? lifecyclePlan(sourceId, request.userId(), false, "trashed", "deleted", false, beforeSnapshot) : null);
-        if (organizerLifecycleRequest) {
-            syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-            updated.forEach(lifecycleWork::deliver);
-        }
+        }, true, lifecyclePlan(sourceId, request.userId(), false, "trashed", "deleted", false, beforeSnapshot));
+        syncStageReminderTasksForSavedEvents(updated, request.userId());
+        updated.forEach(lifecycleWork::deliver);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
         return withCounterDelta(
                 toLifecycleActionResult(sourceId, "trash", findPreferredEventRecord(sourceId), changed, null),
@@ -2425,7 +2411,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String normalizedSourceId = normalizeId(sourceId);
         String slotSourceId = normalizeId(request == null ? null : request.slotSourceId());
-        if (viewer == null || !StringUtils.hasText(normalizedSourceId)) {
+        if (request == null || viewer == null || !StringUtils.hasText(normalizedSourceId)) {
             return null;
         }
 
@@ -2440,7 +2426,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 && !sourceSnapshot.hasParticipation(viewer.userId())
                 && !sourceSnapshot.hasInvitation(viewer.userId());
         if (membershipChanged || alreadyApplied) {
-            String checkoutState = safeText(request == null ? null : request.checkoutState());
+            String checkoutState = safeText(request.checkoutState());
             if (StringUtils.hasText(checkoutState)) {
                 String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
                 eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
@@ -2631,7 +2617,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             current.setStatusBeforeSuppression(null);
             current.setTrashedAtIso(null);
         }, false, lifecyclePlan(sourceId, viewer.userId(), true, null, null, false, null));
-        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        syncStageReminderTasksForSavedEvents(updated, request.userId());
         updated.forEach(lifecycleWork::deliver);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
@@ -2698,7 +2684,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return;
         }
         updated = activityEventsRepository.saveAll(updated);
-        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        syncStageReminderTasksForSavedEvents(updated, request.userId());
         updated.forEach(lifecycleWork::deliver);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
@@ -2875,7 +2861,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             int stageIndex,
             StageActionTarget actionTarget,
             String actorUserId) {
-        if (slotStages == null || stageIndex < 0 || stageIndex >= slotStages.size()) {
+        String normalizedParentEventId = normalizeId(parentEventId);
+        if (normalizedParentEventId == null || slotStages == null || stageIndex < 0 || stageIndex >= slotStages.size()) {
             return null;
         }
         String nowIso = Instant.now().toString();
@@ -2897,7 +2884,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             for (ActivityEvent document : savedParentDocuments) {
                 ActivityEvent next = cloneDocument(document);
                 next.setAutoInviter(false);
-                if (stageIndex == 0 && normalizeId(parentEventId).equals(normalizeId(slotSourceId))) {
+                if (stageIndex == 0 && normalizedParentEventId.equals(normalizeId(slotSourceId))) {
                     next.setVisibility("Invitation only");
                 }
                 next.setUpdatedDate(nowIso);
@@ -3003,7 +2990,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         List<SubEventItem> updated = new ArrayList<>();
         for (SubEventItem stage : stages) {
-            String subEventId = normalizeId(stage == null ? null : stage.id());
+            if (stage == null) { updated.add(stage); continue; }
+            String subEventId = normalizeId(stage.id());
             if (!StringUtils.hasText(subEventId)) {
                 updated.add(stage);
                 continue;
@@ -3028,9 +3016,11 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private String generatedSlotDateFromSourceId(String parentEventId, String slotSourceId) {
-        String prefix = normalizeId(parentEventId) + ":slot:";
+        String normalizedParentEventId = normalizeId(parentEventId);
+        if (normalizedParentEventId == null) return null;
+        String prefix = normalizedParentEventId + ":slot:";
         String normalizedSlotSourceId = normalizeId(slotSourceId);
-        if (!StringUtils.hasText(prefix) || !normalizedSlotSourceId.startsWith(prefix)) {
+        if (normalizedSlotSourceId == null || !normalizedSlotSourceId.startsWith(prefix)) {
             return null;
         }
         String tail = normalizedSlotSourceId.substring(prefix.length());
@@ -3048,7 +3038,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private void saveSubEventStageRuntime(String ownerId, ActivityEvent event, SubEventItem stage, String actorUserId) {
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(stage == null ? null : stage.id());
-        if (!StringUtils.hasText(normalizedOwnerId) || !StringUtils.hasText(normalizedSubEventId)) {
+        if (stage == null || !StringUtils.hasText(normalizedOwnerId) || !StringUtils.hasText(normalizedSubEventId)) {
             return;
         }
         ActivitySubEventStageRuntime existing = activitySubEventStageRuntimeRepository
@@ -3497,7 +3487,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private void syncCheckoutBasketForJoin(EventActionRequestDto request) {
         String checkoutState = safeText(request == null ? null : request.checkoutState());
-        if (!StringUtils.hasText(checkoutState)) {
+        if (request == null || !StringUtils.hasText(checkoutState)) {
             return;
         }
         String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
@@ -3547,7 +3537,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         if (request == null || !StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
             return false;
         }
-        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        String checkoutState = safeText(request.checkoutState());
         if (!"waiting".equals(checkoutState) && !"approval-pending".equals(checkoutState)) {
             return false;
         }
@@ -4481,7 +4471,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                     .findByOwnerPatternAndStatus(OWNER_TYPE_GROUP, ownerPattern, MEMBER_STATUS_ACCEPTED)
                     .stream()
                     .map(ActivityMember::getUserId)
-                    .map(this::normalizeId)
+                    .map(ActivityEventMapper::normalizeId)
                     .filter(StringUtils::hasText)
                     .forEach(recipientUserIds::add);
         }
@@ -4601,7 +4591,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             }
             if (group.advancingMemberIds() != null && !group.advancingMemberIds().isEmpty()) {
                 group.advancingMemberIds().stream()
-                        .map(this::normalizeId)
+                        .map(ActivityEventMapper::normalizeId)
                         .filter(StringUtils::hasText)
                         .forEach(advancingMemberIds::add);
                 continue;
@@ -4613,7 +4603,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                         .filter(row -> "A".equals(row.participantState()))
                         .limit(winnerCount)
                         .map(EventLeaderboardFifaStandingRowDto::memberId)
-                        .map(this::normalizeId)
+                        .map(ActivityEventMapper::normalizeId)
                         .filter(StringUtils::hasText)
                         .forEach(advancingMemberIds::add);
             } else if (group.scoreRows() != null && !group.scoreRows().isEmpty()) {
@@ -4622,7 +4612,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                         .filter(row -> "A".equals(row.participantState()))
                         .limit(winnerCount)
                         .map(EventLeaderboardScoreStandingRowDto::memberId)
-                        .map(this::normalizeId)
+                        .map(ActivityEventMapper::normalizeId)
                         .filter(StringUtils::hasText)
                         .forEach(advancingMemberIds::add);
             }
@@ -4926,18 +4916,11 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private boolean slotParentFull(List<EventSlotOccurrenceDto> slots) {
-        if (slots == null || slots.isEmpty()) {
-            return true;
-        }
-        return slots.stream().allMatch(this::slotOccurrenceFull);
+        return EventSlotReadModelService.slotParentFull(slots);
     }
 
     private boolean slotOccurrenceFull(EventSlotOccurrenceDto slot) {
-        if (slot == null) {
-            return false;
-        }
-        int capacityTotal = normalizeCount(slot.capacityTotal());
-        return capacityTotal > 0 && normalizeCount(slot.acceptedMembers()) >= capacityTotal;
+        return EventSlotReadModelService.slotOccurrenceFull(slot);
     }
 
     private boolean directRecordFull(ActivityEvent record) {
@@ -4988,7 +4971,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return;
         }
 
-        String fallbackStartAtIso = resolveRequestedBookingStartAtIso(preferred, request == null ? null : request.slotSourceId());
+        String fallbackStartAtIso = resolveRequestedBookingStartAtIso(preferred, request.slotSourceId());
         paymentService.cancelEventBooking(
                 viewer.userId(),
                 sourceId,
@@ -5096,7 +5079,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         if (request.topics() != null) {
             request.topics().stream()
-                    .map(this::safeText)
+                    .map(ActivityEventMapper::safeText)
                     .filter(StringUtils::hasText)
                     .findFirst()
                     .ifPresent(topic -> telemetryTags.put("topic", topic));
@@ -5302,8 +5285,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         String updatedBy = StringUtils.hasText(normalizeId(actorUserId)) ? normalizeId(actorUserId) : "event-definition-sync";
         List<ActivitySubEventStageRuntime> changed = new ArrayList<>();
         for (ActivitySubEventStageRuntime record : stageRuntimeRecords) {
-            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
-            String subEventId = normalizeId(record == null ? null : record.getSubEventId());
+            if (record == null) { continue; }
+            String ownerId = normalizeId(record.getOwnerId());
+            String subEventId = normalizeId(record.getSubEventId());
             if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId)) {
                 continue;
             }
@@ -5313,7 +5297,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             if (stage == null) {
                 continue;
             }
-            String runtimeId = normalizeId(record == null ? null : record.getId());
+            String runtimeId = normalizeId(record.getId());
             int groupsCount = tournamentGroupCount(
                     definitionEvent,
                     stage,
@@ -5340,7 +5324,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         LinkedHashSet<String> normalizedSubEventIds = removedSubEventIds == null
                 ? new LinkedHashSet<>()
                 : removedSubEventIds.stream()
-                        .map(this::normalizeId)
+                        .map(ActivityEventMapper::normalizeId)
                         .filter(StringUtils::hasText)
                         .collect(LinkedHashSet::new, Set::add, Set::addAll);
         if (!StringUtils.hasText(normalizedParentEventId) || normalizedSubEventIds.isEmpty()) {
@@ -5353,43 +5337,41 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 .addCriteria(Criteria.where("subEventId").in(normalizedSubEventIds));
         List<ActivitySubEventResource> resourceRecords = mongoTemplate.find(resourceQuery, ActivitySubEventResource.class);
         LinkedHashSet<String> audienceUserIds = new LinkedHashSet<>();
-        for (ActivitySubEventResource record : resourceRecords == null ? List.<ActivitySubEventResource>of() : resourceRecords) {
+        for (ActivitySubEventResource record : resourceRecords) {
             collectSubEventResourceAudienceUserIds(audienceUserIds, record);
             record.setStatus(RUNTIME_STATUS_DELETED);
             record.setUpdatedDate(nowIso);
             record.setUpdatedUser(updatedBy);
         }
-        if (resourceRecords != null && !resourceRecords.isEmpty()) {
+        if (!resourceRecords.isEmpty()) {
             activitySubEventResourcesRepository.saveAll(resourceRecords);
         }
 
         Query stageRuntimeQuery = runtimeOwnerQuery(normalizedParentEventId)
                 .addCriteria(Criteria.where("subEventId").in(normalizedSubEventIds));
         List<ActivitySubEventStageRuntime> stageRuntimeRecords = mongoTemplate.find(stageRuntimeQuery, ActivitySubEventStageRuntime.class);
-        for (ActivitySubEventStageRuntime record : stageRuntimeRecords == null ? List.<ActivitySubEventStageRuntime>of() : stageRuntimeRecords) {
+        for (ActivitySubEventStageRuntime record : stageRuntimeRecords) {
             record.setStatus(RUNTIME_STATUS_DELETED);
             record.setUpdatedDate(nowIso);
             record.setUpdatedUser(updatedBy);
         }
-        if (stageRuntimeRecords != null && !stageRuntimeRecords.isEmpty()) {
+        if (!stageRuntimeRecords.isEmpty()) {
             activitySubEventStageRuntimeRepository.saveAll(stageRuntimeRecords);
         }
 
-        Set<String> groupOwnerIds = stageRuntimeRecords == null
-                ? Set.of()
-                : stageRuntimeRecords.stream()
+        Set<String> groupOwnerIds = stageRuntimeRecords.stream()
                         .map(record -> normalizeId(record == null ? null : record.getId()))
                         .filter(StringUtils::hasText)
                         .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Query groupQuery = Query.query(Criteria.where("ownerId").in(groupOwnerIds)
                 .and("status").ne(RUNTIME_STATUS_DELETED));
         List<ActivitySubEventGroup> groupRecords = mongoTemplate.find(groupQuery, ActivitySubEventGroup.class);
-        for (ActivitySubEventGroup record : groupRecords == null ? List.<ActivitySubEventGroup>of() : groupRecords) {
+        for (ActivitySubEventGroup record : groupRecords) {
             record.setStatus(RUNTIME_STATUS_DELETED);
             record.setUpdatedDate(nowIso);
             record.setUpdatedUser(updatedBy);
         }
-        if (groupRecords != null && !groupRecords.isEmpty()) {
+        if (!groupRecords.isEmpty()) {
             activitySubEventGroupsRepository.saveAll(groupRecords);
         }
         return audienceUserIds;
@@ -5635,7 +5617,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 .toList();
         Set<String> directSourceIds = directRecords.stream()
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
@@ -5769,7 +5751,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         List<String> creatorUserIds = (records == null ? List.<ActivityEvent>of() : records).stream()
                 .filter(Objects::nonNull)
                 .map(record -> firstNonBlank(record.getOrganizerUserId(), record.getCreatorUserId()))
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
@@ -5792,7 +5774,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return "";
         }
         return user.getImages().stream()
-                .map(this::safeText)
+                .map(ActivityEventMapper::safeText)
                 .filter(StringUtils::hasText)
                 .findFirst()
                 .orElse("");
@@ -5807,7 +5789,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         List<String> sourceIds = records.stream()
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
@@ -5832,7 +5814,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         List<String> sourceIds = projectedRecords.stream()
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
@@ -6080,12 +6062,13 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         Set<String> scopedTrashSourceIds = (directOwnerRecords == null ? List.<ActivityEvent>of() : directOwnerRecords).stream()
                 .filter(this::isTrashStatus)
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         LinkedHashMap<String, ActivityEvent> invitationRecordsBySourceId = new LinkedHashMap<>();
         for (ActivityEvent record : activityEventsRepository.findActiveInvitationEvents(viewer.userId())) {
-            String sourceId = normalizeId(record == null ? null : record.getSourceId());
+            if (record == null) { continue; }
+            String sourceId = normalizeId(record.getSourceId());
             if (!StringUtils.hasText(sourceId)
                     || scopedTrashSourceIds.contains(sourceId)
                     || !ActivityEvent.STATUS_ACTIVE.equals(safeText(record.getStatus()))
@@ -6171,7 +6154,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private boolean isCanonicalOwnerRecord(ActivityEvent record) {
         String ownerUserId = normalizeId(record == null ? null : record.getOwnerUserId());
-        return StringUtils.hasText(ownerUserId)
+        return record != null && StringUtils.hasText(ownerUserId)
                 && ownerUserId.equals(normalizeId(record.getCreatorUserId()));
     }
 
@@ -6223,7 +6206,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedSourceId, normalizedUserId)
                 .map(ActivityMember::getStatus)
-                .map(this::safeText)
+                .map(ActivityEventMapper::safeText)
                 .orElse("");
     }
 
@@ -6457,7 +6440,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         Set<String> sourceIds = (records == null ? List.<ActivityEvent>of() : records).stream()
                 .filter(Objects::nonNull)
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         if (!StringUtils.hasText(normalizedViewerUserId) || sourceIds.isEmpty()) {
@@ -6493,6 +6476,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private String runtimeParentEventId(String runtimeOwnerId) {
         String normalizedOwnerId = normalizeId(runtimeOwnerId);
+        if (normalizedOwnerId == null) return null;
         int slotMarker = normalizedOwnerId.indexOf(":slot:");
         return slotMarker > 0 ? normalizedOwnerId.substring(0, slotMarker) : normalizedOwnerId;
     }
@@ -6598,7 +6582,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         if (item != null && StringUtils.hasText(item.id())) {
             return item.id();
         }
-        return normalizeId(projection.record() == null ? null : projection.record().getSourceId());
+        return safeText(projection.record() == null ? null : projection.record().getSourceId());
     }
 
     private List<Long> buildExploreSortTuple(EventProjection projection, String order, String view) {
@@ -6764,7 +6748,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 : documents.stream().filter(Objects::nonNull).toList();
         LinkedHashSet<String> sourceIds = normalizedDocuments.stream()
                 .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
+                .map(ActivityEventMapper::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         for (String sourceId : sourceIds) {
@@ -7832,29 +7816,15 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return Math.min(100, normalizeLimit(value, fallback));
     }
 
-    private int normalizeCount(Number value) {
-        if (value == null) {
-            return 0;
-        }
-        return Math.max(0, (int) Math.floor(value.doubleValue()));
-    }
 
-    private Integer nullableCount(Number value) {
-        return value == null ? null : Math.max(0, (int) Math.floor(value.doubleValue()));
-    }
 
-    private double safeDouble(Number value) {
-        return value == null ? 0d : value.doubleValue();
-    }
 
-    private String normalizeId(String value) {
-        String normalized = safeText(value);
-        return StringUtils.hasText(normalized) ? normalized : null;
-    }
 
-    private String safeText(String value) {
-        return value == null ? "" : value.trim();
-    }
+
+
+
+
+
 
     private String firstNonBlank(String... values) {
         for (String value : values == null ? new String[0] : values) {
@@ -7928,6 +7898,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private String pairKey(String leftUserId, String rightUserId) {
         String normalizedLeft = normalizeId(leftUserId);
         String normalizedRight = normalizeId(rightUserId);
+        if (normalizedLeft == null || normalizedRight == null) {
+            return null;
+        }
         if (normalizedLeft.compareTo(normalizedRight) <= 0) {
             return normalizedLeft + ":" + normalizedRight;
         }
@@ -7953,33 +7926,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private List<SubEventDefinitionDto> cloneSubEventDefinitions(List<SubEventDefinitionDto> items) {
-        if (items == null) {
-            return new ArrayList<>();
-        }
-        List<SubEventDefinitionDto> cloned = new ArrayList<>();
-        for (SubEventDefinitionDto item : items) {
-            if (item == null) {
-                continue;
-            }
-            cloned.add(new SubEventDefinitionDto(
-                    item.id(),
-                    item.name(),
-                    item.description(),
-                    item.timing(),
-                    item.offsetMinutes(),
-                    item.durationMinutes(),
-                    item.location(),
-                    item.tournamentGroupCapacityMin(),
-                    item.tournamentGroupCapacityMax(),
-                    item.tournamentLeaderboardType(),
-                    item.tournamentAdvancePerGroup(),
-                    item.optional(),
-                    clonePricing(item.pricing()),
-                    item.capacityMin(),
-                    item.capacityMax(),
-                    item.icon()));
-        }
-        return cloned;
+        return com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper.cloneSubEventDefinitions(items);
     }
 
     private List<SubEventItem> ensureTournamentStartReviewStage(List<SubEventItem> items, String nowIso) {
@@ -8035,28 +7982,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private int autoTournamentGroupCount(ActivityEvent event, SubEventItem targetStage) {
-        if (targetStage == null) {
-            return 0;
-        }
-        List<SubEventItem> stages = runtimeStageSequence(event);
-        if (stages.isEmpty()) {
-            stages = List.of(targetStage);
-        }
-        int incomingCapacityMax = safeCount(event == null ? null : event.getCapacityMax());
-        for (SubEventItem stage : stages == null ? List.<SubEventItem>of() : stages) {
-            if (stage == null) {
-                continue;
-            }
-            int groupCount = autoTournamentGroupCountForIncoming(stage, incomingCapacityMax);
-            if (sameStage(stage, targetStage)) {
-                return groupCount;
-            }
-            if (hasTournamentStageConfig(stage) && groupCount > 0) {
-                int advancePerGroup = safeCount(stage.tournamentAdvancePerGroup());
-                incomingCapacityMax = advancePerGroup > 0 ? groupCount * advancePerGroup : 0;
-            }
-        }
-        return autoTournamentGroupCountForIncoming(targetStage, incomingCapacityMax);
+        return targetStage == null ? 0 : TournamentGroupCountPolicy.countForStage(
+                event, targetStage, runtimeStageSequence(event));
     }
 
     private int autoTournamentGroupCountForIncoming(SubEventItem item, int incomingCapacityMax) {
@@ -8124,31 +8051,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private List<SubEventDefinitionTimelineEntry> subEventDefinitionTimeline(List<SubEventDefinitionDto> items) {
-        if (items == null || items.isEmpty()) {
-            return List.of();
-        }
-        List<SubEventDefinitionTimelineEntry> timeline = new ArrayList<>();
-        int previousStartOffsetMinutes = 0;
-        int previousEndOffsetMinutes = 0;
-        boolean hasPrevious = false;
-        for (SubEventDefinitionDto item : items) {
-            if (item == null) {
-                continue;
-            }
-            int durationMinutes = Math.max(0, item.durationMinutes() == null ? 0 : item.durationMinutes());
-            int offsetMinutes = Math.max(0, item.offsetMinutes() == null ? 0 : item.offsetMinutes());
-            String timing = normalizeSubEventDefinitionTiming(item.timing());
-            int startOffsetMinutes = !hasPrevious
-                    ? offsetMinutes
-                    : "During".equals(timing)
-                            ? previousStartOffsetMinutes + offsetMinutes
-                            : previousEndOffsetMinutes + offsetMinutes;
-            previousStartOffsetMinutes = startOffsetMinutes;
-            previousEndOffsetMinutes = startOffsetMinutes + durationMinutes;
-            hasPrevious = true;
-            timeline.add(new SubEventDefinitionTimelineEntry(item, startOffsetMinutes, durationMinutes));
-        }
-        return timeline;
+        return items == null || items.isEmpty() ? List.of()
+                : ActivityEventSubEventsMapper.subEventDefinitionTimeline(items);
     }
 
     private long subEventDefinitionsDurationMinutes(List<SubEventDefinitionDto> items) {
@@ -8169,29 +8073,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 : overrideDefinitions;
     }
 
-    private record SubEventDefinitionTimelineEntry(
-            SubEventDefinitionDto item,
-            int startOffsetMinutes,
-            int durationMinutes) {
-    }
+
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
-        if (items == null) {
-            return new ArrayList<>();
-        }
-        List<EventSlotTemplateDto> cloned = new ArrayList<>();
-        for (EventSlotTemplateDto item : items) {
-            if (item == null) {
-                continue;
-            }
-            cloned.add(new EventSlotTemplateDto(
-                    item.id(),
-                    item.startAt(),
-                    item.overrideDate(),
-                    item.closed(),
-                    cloneSubEventDefinitions(item.subEventDefinitions())));
-        }
-        return cloned;
+        return com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper.cloneSlotTemplates(items);
     }
 
     private List<EventSlotOccurrenceDto> cloneSlotOccurrences(List<EventSlotOccurrenceDto> items) {
@@ -8285,7 +8170,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         if (occurrenceStart == null || templateStart == null || parentStart == null) {
             return null;
         }
-        long templateOffsetMinutes = ChronoUnit.MINUTES.between(parentStart, templateStart);
+        long templateOffsetMinutes = ChronoUnit.MINUTES.between(parentStart.toInstant(ZoneOffset.UTC), templateStart.toInstant(ZoneOffset.UTC));
         return occurrenceStart.minusMinutes(templateOffsetMinutes).toLocalDate();
     }
 
@@ -8335,48 +8220,16 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private Integer resolveDistanceMetersExact(LocationCoordinatesDto viewerCoordinates, ActivityEvent record) {
-        LocationCoordinatesDto eventCoordinates = record == null ? null : cloneLocation(record.getLocationCoordinates());
-        if (viewerCoordinates == null || eventCoordinates == null) {
-            Double fallbackDistanceKm = record == null ? null : record.getDistanceKm();
-            if (fallbackDistanceKm == null || !Double.isFinite(fallbackDistanceKm)) {
-                return null;
-            }
-            return Math.max(0, (int) Math.round(fallbackDistanceKm * 1000d));
-        }
-        return haversineDistanceMeters(viewerCoordinates, eventCoordinates);
+        return ActivityEventMapper.resolveDistanceMetersExact(viewerCoordinates, record);
     }
 
     private int haversineDistanceMeters(LocationCoordinatesDto from, LocationCoordinatesDto to) {
-        double earthRadiusMeters = 6_371_000d;
-        double latitudeDelta = Math.toRadians(to.latitude() - from.latitude());
-        double longitudeDelta = Math.toRadians(to.longitude() - from.longitude());
-        double fromLatitude = Math.toRadians(from.latitude());
-        double toLatitude = Math.toRadians(to.latitude());
-        double sinLatitude = Math.sin(latitudeDelta / 2d);
-        double sinLongitude = Math.sin(longitudeDelta / 2d);
-        double a = (sinLatitude * sinLatitude)
-                + (Math.cos(fromLatitude) * Math.cos(toLatitude) * sinLongitude * sinLongitude);
-        double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1d - a));
-        return Math.max(0, (int) Math.round(earthRadiusMeters * c));
+        return com.raxim.myscoutee.common.util.DistanceUtil.haversineMeters(
+                from.latitude(), from.longitude(), to.latitude(), to.longitude());
     }
 
     private long toSortableDate(String value) {
-        if (!StringUtils.hasText(value)) {
-            return 0L;
-        }
-        try {
-            return Instant.parse(value.trim()).toEpochMilli();
-        } catch (DateTimeParseException ignored) {
-            try {
-                return LocalDateTime.parse(value.trim()).toInstant(ZoneOffset.UTC).toEpochMilli();
-            } catch (DateTimeParseException secondIgnored) {
-                try {
-                    return LocalDate.parse(value.trim()).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
-                } catch (DateTimeParseException thirdIgnored) {
-                    return 0L;
-                }
-            }
-        }
+        return com.raxim.myscoutee.common.util.TimeValues.sortableDate(value);
     }
 
     private long dateOnly(long timestamp) {

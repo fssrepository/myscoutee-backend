@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MyScoutee Microservices Guide — architecture and deployment">
+  <title>MyScoutee Microservices Guide · MSC-MS-001</title>
+  <link rel="stylesheet" href="manuals.css">
+</head>
+<body>
+<article class="manual">
+  <section class="cover" aria-labelledby="document-title">
+    <div class="cover-brand">
+      <div class="cover-brand-name" aria-label="MyScoutee">
+        <img src="../../frontend/src/assets/logo/heart.png" alt="" aria-hidden="true">
+        <span>yScoutee</span>
+      </div>
+      <div class="cover-brand-subtitle">Official Product Documentation</div>
+    </div>
+    <div class="cover-title-block">
+      <div class="cover-kicker">Architecture &amp; Deployment</div>
+      <h1 id="document-title">MyScoutee Microservices Guide</h1>
+      <p class="cover-lead">One codebase, configurable service assemblies, production-style images, and an explicitly controlled KVM laboratory.</p>
+    </div>
+    <div class="cover-meta" aria-label="Document metadata">
+      <div><strong>Document ID</strong><span>MSC-MS-001</span></div>
+      <div><strong>Document version</strong><span>1.4.1</span></div>
+      <div><strong>Applicable software version</strong><span>Canonical backend and eight-service assembly configuration</span></div>
+      <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Implementation preview</span></div>
+      <div><strong>Released</strong><time datetime="2026-10-17">2026-10-17</time></div>
+      <div><strong>Language</strong><span>EN</span></div>
+    </div>
+  </section>
+
+  <section class="document-control" id="document-control">
+    <h2>Document Control</h2>
+    <table><caption>Scope and authority</caption><tbody>
+      <tr><th scope="row">Document version</th><td>1.4.1</td></tr>
+      <tr><th scope="row">Documentation release</th><td>2026-10-17</td></tr>
+      <tr><th>Document owner</th><td>MyScoutee — backend architecture and deployment</td></tr>
+      <tr><th>Audience</th><td>Contributors and operators, including readers new to virtualization, Kubernetes and metrics</td></tr>
+      <tr><th>Source of truth</th><td><code>microservices/assemblies.json</code>, versioned lifecycle scripts, canonical domain sources and recorded verification</td></tr>
+      <tr><th>Review triggers</th><td>Domain regrouping, new dependencies, transport/security changes, runtime versions, resource budgets or qualification results</td></tr>
+    </tbody></table>
+    <p>The signed MyScoutee 1.4.1 installer is the separate Compose/monolith product.
+      Its VMware/device and Netcup evidence does not qualify this Kubernetes laboratory.
+      This guide retains the assembly and lab boundaries described below; package releases
+      do not change the number or placement of laboratory services automatically.</p>
+
+    <h3>Version History</h3>
+    <table><thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead><tbody>
+        <tr><td>1.4.1</td><td>2026-10-17</td><td>Align manual release metadata and document the separate signed monolith 1.4.1 deployment boundary.</td></tr>
+      <tr><td>0.1.2</td><td>2026-10-15</td><td>Central Feedback ownership, 22-domain composition, combined page contract and domain transport boundaries.</td></tr>
+      <tr><td>0.1.1</td><td>2026-10-10</td><td>Eight-service separation, platform deployment capabilities, retained minimal-template models, KVM deployment and local release simulator.</td></tr>
+      <tr><td>0.1.0</td><td>2026-10-09</td><td>Service assemblies, native recovery journals, replica-write checks, bounded read-load tooling, canonical data imports and observability. Includes the KVM/Kubernetes/Helm layer map, operation and cleanup procedures.</td></tr>
+    </tbody></table>
+    <aside class="callout warning"><strong>Deployment scope</strong>
+      This guide describes the development laboratory and its operating procedures. Production adoption requires qualification against the intended workload, infrastructure and recovery requirements. Startup, schema compilation and a successful metrics scrape do not establish complete business-flow correctness.
+    </aside>
+  </section>
+
+  <nav class="toc" aria-labelledby="contents-title">
+    <h2 id="contents-title">Contents</h2>
+    <ol>
+      <li><a href="#architecture">Architecture and ownership</a></li>
+      <li><a href="#build">Build and artifact boundaries</a></li>
+      <li><a href="#transport">Communication and execution context</a></li>
+      <li><a href="#host">Developer-host installation and VM lifecycle</a></li>
+      <li><a href="#kubernetes">Kubernetes and live runtime inspection</a></li>
+      <li><a href="#observability">Prometheus, Grafana and localhost access</a></li>
+      <li><a href="#stress">Application and stress-test completion gates</a></li>
+      <li><a href="#cleanup">Stop, destroy and host cleanup</a></li>
+      <li><a href="#contributing">Rules for future changes</a></li>
+      <li><a href="#evidence">Verification and known limits</a></li>
+    </ol>
+  </nav>
+
+  <section id="architecture">
+    <h2>1. Architecture and Ownership</h2>
+    <p>Business source remains in <code>server/projects/profile/src/main/java/com/raxim/myscoutee/domain</code>. The legacy <code>projects/profile</code> name is intentional. The monolith and service builds compile the same source. The <code>microservices/</code> shell owns composition, entry points, transport and deployment. It can later move into a separate repository mounted as a submodule.</p>
+    <p>Canonical domains own business behavior and configuration; the microservices shell owns assembly, transport and deployment. The monolith remains buildable without the shell. One shared <code>CoreApplication</code> source is compiled into each selected artifact.</p>
+    <h3>1.1 Read the system in layers</h3>
+    <p>A source domain, a service image, a container and a virtual machine are different things. A domain groups Java responsibilities. An assembly selects domains and produces one executable image. A running image becomes a container. Kubernetes places containers in pods inside the Ubuntu guest. KVM runs that guest on the developer's physical computer. Several independent application processes therefore share one guest, instead of requiring one VM per service.</p>
+    <table><caption>The tools used here and the question each answers</caption><thead><tr><th>Layer / tool</th><th>Responsibility in this repository</th></tr></thead><tbody>
+      <tr><td>Gradle + Docker image build</td><td>Which canonical source and runtime dependencies go into each immutable application package?</td></tr>
+      <tr><td>KVM + QEMU</td><td>How does the headless Ubuntu guest execute with virtual CPU, memory, disks and a network interface? KVM supplies Linux hardware virtualization; QEMU supplies the machine and devices.</td></tr>
+      <tr><td>libvirt + virsh</td><td>Which guest, storage pool and virtual network exist, and are they running? libvirt manages QEMU; virsh is its command-line client.</td></tr>
+      <tr><td>Terraform</td><td>Which of those infrastructure resources should exist, and which existing resource does each declaration own?</td></tr>
+      <tr><td>cloud-init + systemd</td><td>How is a fresh guest configured, and how does its k3s service start when that guest boots?</td></tr>
+      <tr><td>k3s / Kubernetes + containerd</td><td>Which pods should run inside the guest? Kubernetes reconciles workloads; containerd actually runs their containers.</td></tr>
+      <tr><td>Helm</td><td>Which versioned templates and values describe the application Deployments, Services, configuration, credentials and volume claims?</td></tr>
+      <tr><td>Prometheus</td><td>What numerical measurements have the configured targets exposed over time?</td></tr>
+      <tr><td>Grafana</td><td>How can an operator query and compare those measurements in dashboards?</td></tr>
+    </tbody></table>
+    <p>Follow one change through these layers: changing a Java domain needs a new assembly image; changing which domains share a process changes <code>assemblies.json</code>; changing VM memory changes infrastructure. A Grafana panel changes presentation of measurements. Diagnose and edit the layer that owns the problem before restarting surrounding layers.</p>
+    <h3>1.2 Current physical placement</h3>
+    <svg viewBox="0 0 650 370" role="img" aria-label="The developer host runs Terraform and libvirt, a KVM Ubuntu guest with k3s, Helm-managed workloads and containerd, and a separate Docker Compose monitoring stack." style="width:100%;height:auto;break-inside:avoid">
+      <g font-family="DejaVu Sans,Arial,sans-serif" font-size="12">
+        <rect x="2" y="2" width="646" height="365" rx="9" fill="#f3f6f8" stroke="#17324d"/>
+        <text x="18" y="26" font-weight="bold" fill="#17324d">DEVELOPER HOST · Ubuntu · approximately 16 GiB RAM</text>
+        <rect x="16" y="44" width="618" height="40" rx="5" fill="#17324d"/>
+        <text x="30" y="69" fill="white">Versioned scripts → Terraform → libvirt → QEMU / KVM</text>
+        <path d="M210 84V107" stroke="#176b87" stroke-width="2"/>
+        <rect x="16" y="107" width="392" height="234" rx="6" fill="white" stroke="#176b87"/>
+        <text x="30" y="130" font-weight="bold">HEADLESS UBUNTU VM · 8 GiB · 4 vCPU</text>
+        <text x="30" y="150">192.168.173.10 · owned NAT network</text>
+        <rect x="30" y="166" width="364" height="69" rx="5" fill="#e8f4f1"/>
+        <text x="42" y="186">k3s: control plane + worker on one node</text>
+        <text x="42" y="205">containerd · CoreDNS · local-path storage</text>
+        <text x="42" y="224">kubectl: objects / events · crictl: runtime stats</text>
+        <rect x="30" y="250" width="364" height="75" rx="5" fill="#e8f4f1" stroke="#0f766e"/>
+        <text x="42" y="271" font-size="10.5">Helm workloads · 8 backends + 8 supporting Deployments</text>
+        <text x="42" y="292">frontend / routing · 8 service assemblies</text>
+        <text x="42" y="313">MongoDB + Redis + MinIO · persistent data volumes</text>
+        <rect x="425" y="107" width="209" height="234" rx="6" fill="white" stroke="#0f766e"/>
+        <text x="437" y="130" font-weight="bold">HOST DOCKER COMPOSE</text>
+        <text x="437" y="154">Prometheus · 256 MiB cap</text>
+        <text x="437" y="174">localhost:19090</text>
+        <text x="437" y="203">Grafana · 256 MiB cap</text>
+        <text x="437" y="223">localhost:13000</text>
+        <text x="437" y="257">Grafana queries Prometheus</text>
+        <text x="437" y="278">Application scrape route:</text>
+        <text x="437" y="298" fill="#0f766e">private guest port 30081</text>
+        <text x="437" y="319">No host-boot autostart</text>
+      </g>
+    </svg>
+    <p>The workload box contains all eight backends and eight supporting Deployments. Host Docker builds images and runs monitoring; the guest uses containerd, so host <code>docker ps</code> does not list guest pods. Monitoring lives beside the VM, outside Kubernetes. Its application scrape targets need an explicit private network connection; simply installing Kubernetes does not provide that connection.</p>
+    <h3>1.3 Application composition</h3>
+    <table><caption>Current source grouping from assemblies.json</caption><thead><tr><th>Service</th><th>Domains</th><th>Heap / limit</th></tr></thead><tbody>
+      <tr><td>identity</td><td>accounts, access, administration, platform, integrations</td><td>512 / 1024 MiB</td></tr>
+      <tr><td>community</td><td>groups, community, events, feedback, campaigns, content</td><td>512 / 1024 MiB</td></tr>
+      <tr><td>communication</td><td>chat, notifications, email, localization</td><td>384 / 768 MiB</td></tr>
+      <tr><td>assets</td><td>assets, media</td><td>384 / 768 MiB</td></tr>
+      <tr><td>payments</td><td>payments</td><td>384 / 768 MiB</td></tr>
+      <tr><td>affinity</td><td>affinity</td><td>384 / 768 MiB</td></tr>
+      <tr><td>help</td><td>help</td><td>256 / 512 MiB</td></tr>
+      <tr><td>network</td><td>operator, registry</td><td>384 / 768 MiB</td></tr>
+    </tbody></table>
+    <aside class="callout warning"><strong>Platform and product boundaries</strong>
+      Generic bootstrap, configuration, TLS and updates belong to platform. Help remains a separate service; the existing content domain remains in community. Operator/Registry form the MyScoutee-specific network assembly and are excluded from the minimal template. Development and KVM must run serially. The template retains the required canonical models unchanged, including identity/session, profile, group/workspace, chat, content/consent, localization and geographic location foundations; screens may be omitted. The platform owner alone receives its persistent configuration key. The lab reuses Compose's release simulator and receives only its public TLS CA, with no GitHub fallback. An empty local catalog proves discovery only.
+    </aside>
+    <p>The current source defines eight backend deployments for 22 domains. The mapping is configuration: splitting a group adds an assembly and reassigns its domains. Build project creation, precise Spring scans, Dockerfiles, Helm workloads and monitoring targets follow that map. For implemented boundaries, <code>transport/bindings.json</code> drives generated imports and Helm endpoint addresses from domain ownership, so a regrouped domain receives the matching network destination. A new network boundary still requires a reviewed transport adapter. Helm applies the listed memory limits. The frontend has one replica; the requested scaling experiment must use a working backend service.</p>
+    <svg viewBox="0 0 650 235" role="img" aria-label="Canonical source feeds the monolith and eight independent service assemblies, with one shared MongoDB replica set in the VM." style="width:100%;height:auto">
+      <g font-family="DejaVu Sans,Arial,sans-serif" font-size="13" text-anchor="middle">
+        <rect x="110" y="8" width="430" height="42" rx="6" fill="#17324d"/><text x="325" y="34" fill="white">Canonical domain source · projects/profile</text>
+        <path d="M210 50V72H90V88M390 50V72H415V88" fill="none" stroke="#176b87" stroke-width="2"/>
+        <rect x="10" y="88" width="160" height="45" rx="6" fill="#f3f6f8" stroke="#176b87"/><text x="90" y="116">Monolith build</text>
+        <rect x="210" y="88" width="430" height="45" rx="6" fill="#f3f6f8" stroke="#176b87"/><text x="425" y="108">microservices/assemblies.json</text><text x="425" y="126" font-size="11">Selected source + shared bootstrap + explicit adapters</text>
+        <path d="M425 133V153" stroke="#176b87" stroke-width="2"/>
+        <rect x="210" y="153" width="430" height="32" rx="6" fill="#e8f4f1" stroke="#0f766e"/><text x="425" y="174">8 independent JARs and runtime images</text>
+        <path d="M425 185V201" stroke="#176b87" stroke-width="2"/>
+        <rect x="210" y="201" width="430" height="30" rx="6" fill="#f3f6f8" stroke="#176b87"/><text x="425" y="221" font-size="12">Target: k3s VM · shared Mongo · REAL / DEMO</text>
+      </g>
+    </svg>
+    <p>The laboratory uses one shared MongoDB replica set, with two members and distinct REAL and DEMO databases. Collection and workspace ownership remain domain concerns. Sharing Mongo does not make cross-process calls atomic. Bounded connection pools are part of deployment, not a reason to create another Mongo per service.</p>
+  </section>
+
+  <section id="build">
+    <h2>2. Build and Artifact Boundaries</h2>
+    <p>Commands below run from the backend repository root. Check the current host first. If a dev watcher already owns compilation, follow the repository runtime rule; never run a competing build.</p>
+    <pre><code>microservices/tools/lab.sh preflight
+microservices/tools/lab.sh jars
+microservices/tools/lab.sh images</code></pre>
+    <p><code>build</code> combines the last two steps. The wrapper uses serial Gradle execution and the backend's existing wrapper, dependency catalog and security overrides. It does not reuse the monolith's compiled output.</p>
+    <table><thead><tr><th>Output</th><th>Purpose</th></tr></thead><tbody>
+      <tr><td><code>build/&lt;service&gt;/libs/</code></td><td>Independent executable JAR</td></tr>
+      <tr><td><code>build/&lt;service&gt;/generated/</code></td><td>Precise component/repository configuration and production resources</td></tr>
+      <tr><td><code>build/deployment/</code></td><td>Per-service Dockerfile and monitoring targets</td></tr>
+      <tr><td><code>build/reports/assemblies.json</code></td><td>JAR hashes, sizes, dependency and package ownership evidence</td></tr>
+    </tbody></table>
+    <p>The audit rejects foreign implementation packages, duplicate application classes, the monolith entry point and development resources. API/DTO contracts are compiled once into a shared library. Existing Java projections are not automatically safe wire schemas.</p>
+    <p>Images use the canonical production YAML and Java 25 JRE, separate dependency/application layers, user 10001, bounded heaps and fail-fast OOM handling. Only the assets runtime carries ImageMagick/WebP tools. No source mounts, sync containers, watchers, DevTools or build tools belong in the measured runtime.</p>
+    <p>To build from a future separate shell checkout, set <code>MYSCOUTEE_BACKEND_SOURCE</code> to the compatible backend source checkout. Preserve the canonical source path; copying domain code creates another owner and is unnecessary.</p>
+    <h3>2.1 Image versions and reuse</h3>
+    <pre><code># Explicit release actions, only after relevant source changes:
+microservices/tools/lab.sh frontend-image
+python3 microservices/tools/workloads.py lock-images
+
+# Ordinary deployment: import missing versions; never build implicitly.
+python3 microservices/tools/workloads.py up</code></pre>
+    <p><code>deploy/images.lock.json</code> records full Docker image configuration IDs, content fingerprints and version references. A reference such as <code>myscoutee-service-assets:0.1.0-&lt;hash&gt;</code> is checked against its full ID before reuse. The host and guest have different image stores. <code>import-images</code> streams only missing locked images from host Docker to guest containerd over the existing pinned SSH connection. Repeated deployment reuses the locked guest cache without rebuilding. The inventory now contains eight backend and nine supporting images.</p>
+    <p>Kubernetes uses <code>IfNotPresent</code>. This single-node lab does not need an additional registry container. Custom tags are local artifacts, not published Docker Hub images: a new machine must receive the matching artifact or build it explicitly. A future registry can distribute published versions; cache presence and exact identity must still be verified.</p>
+  </section>
+
+  <section id="transport">
+    <h2>3. Communication and Execution Context</h2>
+    <p>The first implemented boundary retains <code>localization.api.TranslationBundles</code>. The canonical <code>I18nService</code> owns bundle selection, language fallback, mode-specific caches and version semantics. The shell supplies a typed HTTP adapter and a thin endpoint.</p>
+    <pre><code>GET /_internal/v1/localization/bundle
+Authorization: Bearer &lt;dedicated localization-read secret&gt;
+X-MyScoutee-Session-Mode: REAL | DEMO</code></pre>
+    <p>The checked-in contract is <code>microservices/transport/contracts/localization/localization-v1.openapi.json</code>. Optional query parameters are <code>lang</code>, <code>acceptLanguage</code> and <code>version</code>. The response reuses <code>I18nBundleResponseDto</code>; a current version returns <code>data: null</code>, preserving the canonical distinction from an empty map.</p>
+    <table><thead><tr><th>Boundary</th><th>Behavior</th></tr></thead><tbody>
+      <tr><td>Authority</td><td>Dedicated read credential; no access to arbitrary domain routes or management endpoints</td></tr>
+      <tr><td>Execution scope</td><td>Mandatory REAL/DEMO header after authentication; context restored after success and failure</td></tr>
+      <tr><td>Limits</td><td>1-second connect / 3-second total request defaults; 2 MiB response maximum; eight concurrent reads, no queue</td></tr>
+      <tr><td>Failure</td><td>No redirects, automatic retries or local fallback; bounded error codes without persistence details</td></tr>
+      <tr><td>Metrics</td><td>Receiver HTTP metrics and client <code>myscoutee.remote.requests</code> with fixed operation/outcome labels</td></tr>
+    </tbody></table>
+    <p>The generated assembly imports the server configuration in the localization owner. An assembly importing <code>TranslationBundles</code> without owning localization receives the client configuration. With the current grouping, identity is a remote consumer; email remains local within communication.</p>
+    <pre><code>myscoutee.remote.localization.url=https://communication.internal
+myscoutee.remote.localization.read-token=&lt;private generated secret&gt;
+myscoutee.remote.localization.allow-insecure-http=false</code></pre>
+    <p>Supply the read secret privately to the owner and intended consumers; generate at least 256 random bits. Plain HTTP requires explicit isolated-lab opt-in. Production requires a trusted TLS path and credential custody/rotation. A read credential for global translations is not proof of delegated account or workspace authority.</p>
+    <h3>3.1 Focused media-policy contracts</h3>
+    <p>The identity assembly also consumes the existing <code>GroupMediaVisibility</code> and <code>CommunityMediaVisibility</code> APIs from the community assembly, plus <code>AssetMediaVisibility</code> from the assets assembly. Event, feed and chat media reads use the same shared bounded transport and retain their canonical owners. Each operation returns only the metadata that the canonical media policy reads. The APIs remain in domain <code>api</code> packages; concrete transfer records belong to domain <code>dto</code> packages. The shell owns HTTP adapters and composition.</p>
+    <table><thead><tr><th>Operation</th><th>Response</th><th>Contract</th></tr></thead><tbody>
+      <tr><td><code>GET /_internal/v1/groups/media-visibility?id=…</code></td><td><code>GroupMediaVisibilityDto</code>: lifecycle status</td><td><code>groups-media-v1.openapi.json</code></td></tr>
+      <tr><td><code>POST /_internal/v1/community/media/announcement</code></td><td><code>AnnouncementMediaVisibilityDto</code>: community ID and status</td><td><code>community-media-v1.openapi.json</code></td></tr>
+      <tr><td><code>POST /_internal/v1/community/media/offering</code></td><td><code>OfferingMediaVisibilityDto</code>: base-group ID and status</td><td>Same contract, separate operation</td></tr>
+      <tr><td><code>POST /_internal/v1/assets/media-visibility</code></td><td><code>AssetMediaVisibilityDto</code>: owner ID, visibility, lifecycle and moderation status</td><td><code>assets-media-v1.openapi.json</code></td></tr>
+      <tr><td><code>POST /_internal/v1/events/media-visibility</code></td><td><code>EventMediaVisibilityDto</code>: visibility and member projection</td><td><code>events-media-v1.openapi.json</code></td></tr>
+      <tr><td><code>GET /_internal/v1/events/media-membership</code></td><td><code>CommunityMediaMembershipDto</code>: accepted community member role</td><td>Same contract, separate operation</td></tr>
+      <tr><td><code>POST /_internal/v1/content/media-visibility</code></td><td><code>FeedPostMediaVisibilityDto</code>: moderation status</td><td><code>content-media-v1.openapi.json</code></td></tr>
+      <tr><td><code>POST /_internal/v1/chat/media-visibility</code></td><td>List of <code>ChatMessageMediaVisibilityDto</code>: chat ID and deletion timestamp</td><td><code>chat-media-v1.openapi.json</code></td></tr>
+    </tbody></table>
+    <p>The POST operations are read queries containing <code>{"urls":["…"]}</code>. Existing media checks use URL variants that can exceed request-line limits; one bounded JSON request preserves that batching. Limits are 32 URLs, a 1-MiB body including chunked transfers and a 4-KiB response for small projections. Event member projections and chat-reference lists allow up to 2 MiB. Chat absence is <code>200 []</code>; all matching references remain available to the existing forwarded-attachment access policy. Each boundary has its own private read credential. A verified <code>404 NOT_FOUND</code> retains canonical absence; a proxy 404, timeout or owner failure stays an error. These service capabilities supply facts to media authorization; they do not authenticate a user or grant access to a file.</p>
+    <p>The existing localization transport supplies the shared timeout, concurrency, credential and mode-context implementation. The assembly audit also verifies actual client/server imports in the compiled configuration, including consumers that use fully qualified Java names.</p>
+    <h3>3.2 Focused profile identity reads</h3>
+    <p><code>accounts.api.ProfileIdentities</code> returns <code>ProfileIdentityDto</code> containing only user ID, account ID and workspace ID. Separate operations preserve the canonical first-profile lookup, non-deleted existence check and workspace user-ID list. The canonical <code>ProfileDirectoryService</code> owns these queries; the shell transports them through <code>profile-identities-v1.openapi.json</code>. Payment administration, affiliate validation and refund notification reuse this port. Their existing authorization and notification rules remain in their canonical owners.</p>
+    <p>This is a use-case contract, not a serialized profile document. Other profile consumers still need reviewed contracts for the facts they use. A service read credential does not delegate the caller's administrative role or workspace authority.</p>
+    <p>The binding inventory associates each port with its owning domain, explicit Spring configurations, configuration prefix and private credential name. The build selects local owner or remote client; the workload renderer resolves the owner's Kubernetes Service name. Credential migration adds missing secrets atomically without replacing existing values.</p>
+    <h3>3.3 Chat directory reads</h3>
+    <p><code>chat-directory-v1.openapi.json</code> transports the existing owner/chat lookup, all directory views for a chat, unread version and support counts. <code>ChatDirectoryEntryDto</code> carries only the existing directory interface fields, including member IDs and support status. Chat messages, persistence IDs and other document fields are excluded. Tests wrap the canonical directory service with repository/Mongo fixtures, preserving null versus empty values, REAL/DEMO scope and aggregate-count semantics.</p>
+    <h3>3.4 Additional focused reads</h3>
+    <p><code>NotificationCatalog</code> exposes the existing template and unread, failed-job and outbox counts through <code>notification-catalog-v1.openapi.json</code>. <code>RecomputeQueue</code> exposes the canonical affinity queue count through <code>recompute-queue-v1.openapi.json</code>. Neither read capability grants write access.</p>
+    <p><code>CaseParticipants</code> preserves case conversation views, active participant account IDs and visible-case counts through <code>case-participants-v1.openapi.json</code>. Its bounded POST count query contains workspace, account and managed-group IDs; canonical membership filtering remains in the owner. <code>CampaignMediaVisibility</code> narrows the campaign catalog's existing media lookup to a DTO containing only workspace and status, documented by <code>campaigns-media-v1.openapi.json</code>.</p>
+    <h3>Central Feedback ownership</h3>
+    <p>As of 15 October 2026, Feedback is a separate domain inside the community deployment. It owns <code>feedbackStates</code>, <code>feedbackAnswers</code> and <code>feedbackEvaluations</code>, including evaluation submission, persisted counter transitions and combined pagination. Events and Community call its API; sharing a Java process does not permit access to its repositories or documents.</p>
+    <p>The Feedback screen loads one complete page through one service operation. Its response includes event and completed-case entries, display metadata, totals and bucket counts. HTTP uses one page request; frontend local mode uses the same contract and one simulated request delay. Local evaluation records are stored separately from Community cases. Displayed answers remain labelled choices; their internal numeric encoding is not a card score.</p>
+    <p>The domain exposes <code>FeedbackDirectory</code>, <code>FeedbackPreparation</code>, <code>FeedbackEligibility</code>, <code>FeedbackMeasurement</code> and <code>FeedbackPrivacy</code> transport boundaries. Consumers use these owner-defined contracts in both the monolith and service assemblies; sharing a process or database does not grant access to Feedback persistence.</p>
+
+    <h3>3.5 Membership reads and policy facts</h3>
+    <p><code>member-directory-v1.openapi.json</code> transports the existing membership lookup/list, batch, page and VIP-pricing operations. The detached member DTO excludes attendance, counters and invitation audit. Queries are bounded to 4096 owner IDs and 1 MiB; pages accept 1–1000 entries and responses at most 2 MiB. Canonical VIP eligibility remains owner-side. Errors never turn into absent membership or free pricing.</p>
+    <p><code>EventMembershipFacts</code> and <code>AssetMembershipFacts</code> narrow their existing ownership APIs to the fields read by <code>MemberPolicyFacts</code>. Their DTOs contain five event fields and four asset fields. Local services retain the original queries through API inheritance; the shell adds explicit HTTP transport. Workspace filtering, lifecycle and role policy remain unchanged. Existing canonical access-control/resource tests cover those rules; HTTP fixtures cover the detached projections and session-mode boundary.</p>
+    <p><code>GroupDirectory</code> retains its nine existing directory operations, including owner-computed lifecycle and moderation facts. Its DTO implements the existing read view; group policy derivation is not repeated in the HTTP client. <code>CommunityMembershipReads</code> narrows <code>CommunityMemberships</code> to the two reads used by account workspace selection. Membership registration and transitions stay owner-local.</p>
+    <p><code>EdgeDirectory</code> exposes the two existing affinity directory reads. <code>AffinityEdgeDto</code> contains exactly the seven interface fields; private matching evidence is excluded. The batch accepts at most 4096 identifiers and 1 MiB, and responses are bounded to 2 MiB. Owner failure is reported as an error, never an empty network.</p>
+    <p><code>RatingDirectory</code> retains four canonical reads and the existing 23-field rating view. Supplemental actor snapshots are excluded. Home-game exclusion projections remain sparse, and positive campaign ratings use the original owner query; HTTP tests cover those semantics, decimal scores, null fields and owner failures.</p>
+    <p><code>ChatReview</code> transports reported-message and report-evidence reads while retaining canonical membership/author checks and message order. <code>EventHomeReads</code> narrows the home activity/report queries to thirteen consumed event fields; <code>FeedbackDirectory</code> preserves the existing target-user query and answer view. The unused asset ownership dependency was removed from the home consumer.</p>
+    <aside class="callout warning"><strong>Remaining communication work</strong>
+      Actor/workspace validation, other domain adapters and public authentication remain open. The nginx routing table exists, but routing cannot supply absent application bindings. SDK handles, servlet objects and callback interfaces cannot be serialized into generic RPC. Payment finalization must reconcile an unknown remote outcome before compensation; a timeout alone does not justify a refund. Reuse the existing payment coordinator and integration outbox owners.
+    </aside>
+    <h3>3.6 Discovery, gateway and failure recovery</h3>
+    <p>A Kubernetes Service supplies a stable address; CoreDNS resolves its service name to that address. This is service discovery. The typed adapter still serializes a request, carries REAL/DEMO and workspace context, checks authority, imposes limits and validates the reply. OpenAPI describes this wire contract. DNS does not implement Java calls, and a service mesh would not make a multi-owner mutation atomic. No mesh is installed in this lab.</p>
+    <p>The frontend Nginx also routes public API paths to their owning assembly. This is the current gateway layer. Signed short-lived actor delegation carries the existing authenticated identity across internal calls; private capability credentials restrict which producer can invoke each owner. Keep business policies in their existing domains. An empty-body health response is neither an authorization decision nor a completed business operation.</p>
+    <p>Recovery belongs to the business owner that accepted the command. Contact access now records an immutable accounts-owned command before the chat write, retains its receipt, applies version-guarded account effects and uses the existing notification outbox with a stable operation key. Profile status propagation retains its pending marker with the profile save and uses the existing affinity queue. Integration image retries use deterministic keys for the same owner/entity/content; uncertain resource creation must not delete a possibly referenced image. A successful payment fulfillment followed by a failed receipt save remains pending for gateway redelivery, never an automatic refund.</p>
+    <p>The accumulated standard, embedded recovery and adapter checks pass for these additions. Notification queue counts are a write-side projection refreshed by its existing worker, so they converge after a crash and may briefly lag concurrent writes. Provider push delivery retains its existing at-least-once behavior; an external provider without an idempotent receipt cannot promise exactly-once delivery. This does not require deploying a new broker or a general saga engine.</p>
+  </section>
+
+  <section id="host">
+    <h2>4. Developer-Host Installation and VM Lifecycle</h2>
+    <h3>4.1 What the host owns and what the guest owns</h3>
+    <p>Headless means there is no desktop installed in the guest. Its Linux services are inspected over authenticated SSH. The physical host keeps the virtualization packages; guest packages, Kubernetes data and eventual application volumes live on the VM disk. Destroying the VM removes that guest data, while host package removal is a separate tracked operation.</p>
+    <p>The inspected host is Ubuntu 22.04 on x86-64 with KVM support and approximately 16 GiB physical memory. The host installer intentionally supports this inspected platform. Capacity and route checks run again before startup; historical free memory is not a startup guarantee.</p>
+    <pre><code>bash microservices/tools/setup-host.sh
+python3 microservices/tools/vm.py preflight
+python3 microservices/tools/vm.py start
+python3 microservices/tools/vm.py status
+python3 microservices/tools/vm.py observe</code></pre>
+    <p>Run setup in your terminal. <code>sudo</code> handles password entry; no script stores or reads the password. Host setup records package versions, existing packages, service ownership and added group membership before changing them. It installs headless QEMU/libvirt dependencies and starts the host services for the current session only.</p>
+    <h3>4.2 Desired state, recorded identity and first boot</h3>
+    <p>Terraform configuration describes the desired resources. Its provider translates that configuration into libvirt operations. <code>plan</code> compares declarations, recorded identities and live resources; <code>apply</code> performs the proposed changes. Here <code>vm.py start</code> runs both with additional ownership and safety checks. Re-running an unchanged start should report <em>No changes</em>; it must not create a second VM.</p>
+    <p>The seven managed objects are the VM, NAT network, directory storage pool, base Ubuntu volume, writable system volume, cloud-init disk generation and its uploaded volume. The system disk stores changes over the verified base image. Its 40 GiB capacity is sparse: this is a growth limit, not 40 GiB allocated immediately.</p>
+    <p>The cloud-init ISO supplies the initial user, SSH public key, packages and k3s configuration to a fresh guest. Cloud-init is initial provisioning, not a continuous configuration reconciler. The guest installer can reconcile its pinned k3s files, but changing cloud-init input on an existing VM is not automatically a safe live upgrade. The startup wrapper rejects a plan that would replace persistent resources; review such changes explicitly.</p>
+    <p>Terraform is the declarative owner of the VM, storage pool, volumes and NAT network. Its private state records resource identities so later runs can reconcile the same resources and remove only those resources. Cloud-init installs the guest dependencies and versioned k3s service. Terraform does not itself uninstall host packages.</p>
+    <h3>4.3 Resource and access boundaries</h3>
+    <table><thead><tr><th>Item</th><th>Default</th></tr></thead><tbody>
+      <tr><td>Guest</td><td>Headless Ubuntu, 4 vCPU, 8192 MiB RAM, 40 GiB sparse system disk</td></tr>
+      <tr><td>Network</td><td>Owned NAT <code>192.168.173.0/24</code>; guest <code>192.168.173.10</code></td></tr>
+      <tr><td>Host reserve</td><td>At least 2 GiB available beyond the stopped VM's requested memory</td></tr>
+      <tr><td>Tool/artifact pins</td><td>Version/date and SHA-256 in <code>infra/versions.json</code>; provider lock file in Git</td></tr>
+      <tr><td>Secrets and state</td><td><code>~/.local/state/myscoutee-microservices/msc121/</code>; mode 0700</td></tr>
+      <tr><td>Root inventory</td><td><code>/var/lib/myscoutee-msc121-host/</code>; root-owned, mode 0700</td></tr>
+    </tbody></table>
+    <p>The default host reserve remains 2048 MiB. An explicit <code>vm.py start --host-reserve-mib 1536</code> applies a smaller reserve to that invocation only, as authorized for this host. It does not shrink the 8192-MiB guest or persist a weaker default. The monolith E2E stack and KVM lab must run serially; stop the VM completely before <code>bash microservices/tools/check-current-monolith.sh</code>. That script builds the current backend, reuses the canonical disposable E2E stack and scenarios, records private evidence, and stops its stack on exit.</p>
+    <p>The VM, lab network, pool and newly installed host daemons must not autostart after a host reboot. Guest k3s may start when the VM is explicitly started. The checks include libvirt sockets and guest save/resume, not only the VM autostart flag. No VMware or desktop guest is involved.</p>
+    <p>Startup rejects conflicting subnets, lost resource identity, insufficient memory and a plan that would replace persistent disks. Failed provisioning retains state for diagnosis. Ubuntu AppArmor remains enforcing: explicit disk and backing-image paths belong in the domain definition.</p>
+    <p>Guest SSH identity is obtained through the authenticated libvirt guest-agent channel and stored in the private known-hosts file. Guest access does not alter normal SSH configuration. Kubeconfig is copied to private lab state, never to the user's default Kubernetes configuration.</p>
+    <p>A kubeconfig contains the API address and credentials used by Kubernetes clients. Treat it as private access material, just like the guest SSH key. Terraform state is also private operational state; it is not a disposable cache. Losing it breaks the safe association between declarations and existing resources.</p>
+    <p>The eight source-defined application memory caps total 6400 MiB; their Java heaps total 3200 MiB. These are per-container upper bounds, not committed RAM. The 8192 MiB guest also needs room for native JVM memory within each cap, guest OS, k3s, data services and frontend/routing. Available memory is checked before replica/load runs. Host monitoring adds up to 512 MiB outside the guest, plus virtualization overhead. These budgets need measurement under load; a successful VM preflight does not prove that the completed application fits.</p>
+    <h3>4.4 A normal session</h3>
+    <ol>
+      <li>Install once with <code>setup-host.sh</code>, entering sudo credentials in your terminal. Builds and VM startup must respect the existing dev-owner rule.</li>
+      <li>After a host reboot, explicitly run <code>sudo python3 microservices/tools/host.py start</code>. This starts the installed host services for this session.</li>
+      <li>Run <code>vm.py start</code>. Expect a longer first run for verified downloads and guest setup; later starts retain guest identity and disks.</li>
+      <li>Wait for cloud-init completion and the k3s API readiness message. Then inspect the node and workloads as described next; API readiness alone is not application readiness.</li>
+      <li>Start monitoring separately with <code>lab.sh monitoring-up</code>. End the session with <code>vm.py stop</code> and <code>lab.sh monitoring-stop</code> to retain data.</li>
+    </ol>
+  </section>
+
+  <section id="kubernetes">
+    <h2>5. Kubernetes and Live Runtime Inspection</h2>
+    <h3>5.1 The Kubernetes objects used in this lab</h3>
+    <p>k3s is the Kubernetes distribution installed inside the guest. One server node runs both the control plane, which stores desired state and coordinates work, and the worker components, which execute containers. The default embedded SQLite database stores Kubernetes state; it is separate from the application's MongoDB. This one-VM topology provides a realistic process/network boundary, but no protection against losing that VM or physical host.</p>
+    <table><thead><tr><th>Term</th><th>Meaning here</th></tr></thead><tbody>
+      <tr><td>Node</td><td>The Ubuntu VM registered as <code>myscoutee-msc121</code>. Its Ready condition describes the worker's ability to accept work.</td></tr>
+      <tr><td>Pod / container</td><td>A pod is Kubernetes' scheduling unit. A container is the running image inside it. For the planned application, each assembly starts its own JVM container; pod identities may change when replaced.</td></tr>
+      <tr><td>Deployment</td><td>A desired set of replaceable pod replicas and their image/configuration. Each of the eight backend Deployments normally has one replica. The bounded scale experiment temporarily gives assets two replicas and restores one afterwards.</td></tr>
+      <tr><td>Service / CoreDNS</td><td>A Service gives selected pods a stable cluster address. CoreDNS resolves service names inside the cluster. A Service does not automatically expose its pods at the host's localhost.</td></tr>
+      <tr><td>Namespace</td><td>A grouping of cluster objects. <code>kube-system</code> contains system components. This is not a MyScoutee tenant, workspace or REAL/DEMO database boundary.</td></tr>
+      <tr><td>Local-path storage</td><td>The bundled provisioner can create persistent storage on the guest disk. A volume can outlive a pod, but destroying this VM destroys its local backing data.</td></tr>
+    </tbody></table>
+    <p>Traefik, ServiceLB and metrics-server are deliberately disabled in this configuration. There is currently no automatic application ingress or load balancer, and <code>kubectl top</code> is unavailable. Use containerd statistics through <code>k3s crictl stats</code> for the requested docker-stats-like view. No additional dashboard server is needed for that view.</p>
+    <h3>Supporting services and production parity</h3>
+    <table><thead><tr><th>Component</th><th>Current state and purpose</th></tr></thead><tbody>
+      <tr><td>MongoDB</td><td>Two members, separate 4-GiB persistent volumes, shared REAL/DEMO databases. Primary reads; majority writes require both members.</td></tr>
+      <tr><td>Redis</td><td>One running pod with bounded ephemeral cache; existing cache and realtime coordination.</td></tr>
+      <tr><td>MinIO</td><td>One running S3-compatible object-store pod with a 1-GiB persistent volume and 384-MiB memory limit. Holds packaged media and uploads.</td></tr>
+      <tr><td>nginx / frontend</td><td>One production frontend pod with API routing; backend readiness is separate.</td></tr>
+      <tr><td>Prometheus / Grafana</td><td>Host containers with a verified private metrics gateway into the guest; application samples require ready backends. See the monitoring chapter for URLs and login.</td></tr>
+      <tr><td>STUN</td><td>Running with a 64-MiB limit. Canonical STUN-only coturn; VM NodePort 30478 supports UDP and TCP. No TURN relay.</td></tr>
+      <tr><td>MCP server</td><td>Running with a 128-MiB limit. Canonical prod image uses the service gateway; public and private MCP routes preserve streaming/authentication.</td></tr>
+      <tr><td>DEMO registry / payment simulator</td><td>Both running with 128-MiB limits and separate 1-GiB PVCs. Canonical start-demo registry and DEMO payment provider; browser and callback routes are configured. Only sampled business flows are qualified; REAL outbound registry stays disabled.</td></tr>
+      <tr><td>Firebase / FCM, SendGrid</td><td>Disabled external providers; these are not local container services.</td></tr>
+    </tbody></table>
+    <p>All listed supporting production containers are deployed. Healthchecks alone do not prove end-to-end business integration. No extra Kafka, RabbitMQ or SQL database is required by the configuration being packaged.</p>
+    <p>MinIO uses the canonical production Dockerfile and seed/start scripts, with no duplicated storage implementation. Its private Service exposes S3 at <code>http://minio:9000</code> and the console at <code>http://minio:9001</code> inside the cluster. The existing backend prod configuration receives that endpoint, region <code>eu-central-1</code> and bucket <code>myscoutee-media</code>. There is no automatic host console port.</p>
+    <pre><code>bash microservices/tools/lab.sh minio-image
+python3 microservices/tools/workloads.py lock-images
+python3 microservices/tools/workloads.py frontend-up
+python3 microservices/tools/check-minio.py --seed --restart</code></pre>
+    <p>The explicit image build is cached; workload startup only imports missing immutable images. <code>frontend-up</code> is the explicit frontend-only diagnostic mode; normal <code>up</code> starts the complete locked workload set. MinIO readiness waits for seed completion. It runs as user 10001 with a read-only root filesystem, persistent <code>/data</code> and ephemeral <code>/tmp</code>. Workload stop retains the volume; destroying the owned VM removes its local backing data.</p>
+    <p>The generated private password stays in the existing protected workload state and Kubernetes Secrets. Access ID <code>lab-media</code> and that password configure both bootstrap and the canonical S3 client, matching the current prod credential pattern. Restricted separate service credentials remain a production concern. Do not copy the password into this guide or Git.</p>
+    <p>The object-storage check exercises write/read, pod replacement, persistence through canonical reseeding and probe-object cleanup. Existing media keys remain untouched. This storage check does not establish correctness of the full backend media flow.</p>
+    <pre><code>bash microservices/tools/lab.sh support-images
+python3 microservices/tools/workloads.py lock-images
+python3 microservices/tools/workloads.py frontend-up
+python3 microservices/tools/check-support.py</code></pre>
+    <p>The support image build reuses the canonical sibling Dockerfiles serially and never runs on workload startup. The versioned support check covers healthchecks, host-to-VM STUN UDP/TCP Binding Responses, the MCP OAuth challenge, simulator browser assets and denial of public access to internal/management routes. MCP is available at <code>http://localhost:18080/mcp</code>; its private endpoint requires OAuth. Simulator browser surfaces use the same localhost origin and retain their normal access checks.</p>
+    <p>The gateway uses full Kubernetes DNS names because nginx's dynamic resolver does not apply pod search suffixes. Simulator provider/control APIs stay private; public browser paths match the prod allowlist. Generated test API/webhook/POS credentials are shared privately with payments. DEMO registry server keys/data and client identity have separate retained PVCs. Client storage first binds when the owning backend starts.</p>
+    <p>This host-accessible lab advertises <code>stun:192.168.173.10:30478</code>; public deployment requires an address reachable by its clients. The coturn binary is invoked directly in both Helm and the shared Compose definition because the image wrapper discards the <code>-n</code> option. Observed idle memory was about 3 MiB each for MCP and simulator, 11 MiB for registry, and 5 MiB for STUN. These are not stress measurements.</p>
+    <h3>Canonical data initialization</h3>
+    <pre class="keep-together"><code>python3 microservices/tools/workloads.py frontend-up
+python3 microservices/tools/seed-mongo.py
+python3 microservices/tools/seed-mongo.py --restart
+python3 microservices/tools/check-minio.py --seed
+python3 microservices/tools/check-support.py --data --restart-data-services</code></pre>
+    <h3>Shared two-member Mongo replica set</h3>
+    <p><code>deploy/runtime.json</code> enables <code>mongoReplicaSet</code>. Both members reuse the locked Mongo image, with a 768-MiB memory limit and 256-MiB WiredTiger cache per member. The configured Mongo CPU ceiling is three cores; it shares the existing four guest CPUs with the other pods. Primary reads preserve consistency and do not distribute read load to the secondary automatically.</p>
+    <pre><code>python3 microservices/tools/mongo_replica.py configure
+python3 microservices/tools/mongo_replica.py status</code></pre>
+    <p>The conversion script stops backend writers, creates and validates a private authenticated archive, retains the original PVC, deploys the second member, initializes only the expected replica set, compares collection counts, and verifies a majority write by reading the secondary before deleting the probe. It then restores the backends. The repeat run verifies the receipt and configuration without another conversion or shutdown. Keys, backups and credentials stay outside Git. Normal stop includes both members; destroying the owned VM also deletes its backups and volumes.</p>
+    <p>Each Mongo member has a headless Service (<code>clusterIP: None</code>) with <code>publishNotReadyAddresses: true</code>. CoreDNS therefore publishes its pod address before readiness. The existing init container waits until that member name resolves to its own pod IP before starting Mongo. This avoids a simultaneous-restart bootstrap cycle where Mongo cannot identify itself through an unready Service. The workload reconciler migrates only the two owned member Services while backend writers are stopped; volumes are retained.</p>
+    <p><strong>Two voting members need both for majority writes.</strong> This demonstrates replication, not continued writes after a member or host fails. No arbiter or secondary-read policy is added. Never disable the replica-set flag as an implicit data rollback.</p>
+    <p>Mongo uses the existing production importer and its collection allowlist from <code>server/.env</code>. The canonical <code>myscoutee_db</code> and <code>demo_db</code> sources map to the isolated <code>msc121_real</code> and <code>msc121_demo</code> databases. Bootstrap requires empty databases and stopped backends. Its durable content fingerprint permits identical interrupted work to resume and makes repeated completed bootstrap a no-op. A changed seed or namespace is rejected; this command does not update an existing application's data.</p>
+    <p><code>seed-mongo.py --verify</code> checks the completed bootstrap without importing. <code>--restart</code> additionally replaces only the Mongo pod and compares every collection hash/count, index definition and bootstrap marker. Both verification modes require stopped backends.</p>
+    <p>The canonical bootstrap separates REAL and DEMO identities and imports articles, translation messages and policy definitions through their existing seed owners. The MinIO audit compares source keys and SHA-256 hashes with packaged files and actual S3 objects. Application uploads are preserved.</p>
+    <p>The registry's native DEMO seed and rolling QMAU refresh run through <code>start-demo</code>. The payment simulator initializes its SQLite state and built-in DEMO cards with the same code used by prod. Lab keys and persistent state are isolated. The restart check verifies retained registry seed/signing identity and simulator configuration/credential. Kubernetes volume ownership uses <code>OnRootMismatch</code>; a non-root init container restores owner-only <code>0600</code> permissions on the existing registry signing key and VOPRF keyring. It neither reads nor regenerates those keys. Redis is cache, and MCP/STUN need no separate business-data import. The frontend remains the canonical packaged bundle. Backend cache loaders and index initializers stay in their owning domains.</p>
+    <h3>5.2 Open a live view or the guest shell</h3>
+    <pre><code># On the host, from the repository root:
+python3 microservices/tools/vm.py observe
+python3 microservices/tools/vm.py observe --once
+python3 microservices/tools/vm.py console</code></pre>
+    <p><code>open-terminals.sh runtime</code> opens the versioned monitor and guest shell; repeated calls do not duplicate an open view. The monitor separates host/VM state, Kubernetes workload readiness and host Docker monitoring. It rewrites one terminal screen with a one-second target interval; slow reads never overlap. Rows are clipped to terminal size, input echo is disabled while observing, and the original terminal mode is restored on exit. Ctrl+C closes only this view. <code>console</code> opens the existing pinned SSH connection; type <code>exit</code> to leave the VM running.</p>
+    <pre><code># Inside the guest console; read-only inspection:
+sudo k3s kubectl get nodes -o wide
+sudo k3s kubectl get deployments,pods,services -A
+sudo k3s kubectl get events -A --sort-by=.lastTimestamp
+sudo k3s crictl stats
+free -m
+sudo systemctl status k3s --no-pager
+sudo cloud-init status --long</code></pre>
+    <p>Read the output in order: a Ready node confirms the worker; desired/ready Deployment counts show reconciliation; each pod's Ready column counts ready containers. A Running pod can still be unready. Repeated restarts require events and previous container logs. If a future split introduces a missing binding, use the standalone context probe before rebuilding images. MongoDB, Redis, MinIO and frontend readiness do not make those backend services healthy.</p>
+    <p>For a failing pod, use the actual namespace and pod name from the listing with <code>kubectl describe pod</code> and <code>kubectl logs</code>; add <code>--previous</code> for the last crashed instance. Do not paste credentials or user payloads into reports. Container statistics, guest memory and JVM heap have different scopes: they should not be expected to show the same number.</p>
+    <h3>5.3 From an image to a reachable application</h3>
+    <pre><code>python3 microservices/tools/workloads.py up
+python3 microservices/tools/workloads.py status
+python3 microservices/tools/workloads.py forward
+# Open http://localhost:18080
+python3 microservices/tools/workloads.py tunnel-stop</code></pre>
+    <p>The forward binds only <code>127.0.0.1:18080</code> and reaches the guest's frontend NodePort 30080. The canonical optimized frontend is packaged with the existing production Dockerfile. Its nginx configuration routes API prefixes to the appropriate private Kubernetes Service and refuses internal/management paths. There is no second Java gateway JVM. The gateway layer performs HTTP routing; service authentication and business authorization remain separate responsibilities.</p>
+    <h3>5.4 Helm: application packaging inside Kubernetes</h3>
+    <p>A chart is a directory of reusable Kubernetes templates plus values. A release is an installed chart instance with a revision history. Here, <code>deploy/chart</code> is the chart and <code>myscoutee-msc121</code> is its release and namespace. Terraform owns the virtual machine, network and disks; Helm owns the application resources inside the cluster. Neither compiles Java or builds images during startup.</p>
+    <p><code>workloads.py</code> supplies the assembly map, locked images, runtime values and private generated credentials to Helm through standard input. It reuses the canonical Mongo initialization and nginx response policy. It verifies namespace identity and ownership before adopting this task's earlier manifests; it refuses foreign releases. Helm client-side patching avoids conflicts with the earlier lab apply manager. An unsuccessful readiness wait returns a failure and leaves resources available for diagnosis.</p>
+    <pre><code>python3 microservices/tools/workloads.py chart-check
+microservices/tools/helm.sh list -n myscoutee-msc121
+microservices/tools/helm.sh status myscoutee-msc121 -n myscoutee-msc121
+microservices/tools/helm.sh history myscoutee-msc121 -n myscoutee-msc121</code></pre>
+    <p><code>helm.sh</code> downloads the pinned, checksum-verified tool into private lab state. It keeps its configuration/cache and kubeconfig out of the user's default directories. Helm values and release Secrets contain credentials; do not publish <code>helm get values</code> or manifest output. Mongo's volume claim is retained during release removal; destroying the VM still deletes the lab disk.</p>
+    <p>The completed <code>helm-install-gateway-api-crd</code> system Job belongs to k3s. It installs Kubernetes Gateway API resource definitions, not a running API gateway. Our actual HTTP entry layer is nginx. CoreDNS resolves Service names such as <code>mongodb</code> inside the cluster; <code>local-path-provisioner</code> allocates a directory on the guest disk for Mongo's claim. Neither is one of the eight Java business services.</p>
+  </section>
+
+  <section id="observability">
+    <h2>6. Prometheus, Grafana and Localhost Access</h2>
+    <h3>6.1 Collection, storage and display</h3>
+    <p>The measurement path is <strong>Spring/Micrometer → private HTTP metrics endpoint → Prometheus → Grafana → browser</strong>. Micrometer exposes measurements from each JVM. Prometheus periodically reads those endpoints, records time series and evaluates queries. Grafana's provisioned datasource points to Prometheus and its panels display query results. Grafana does not collect JVM measurements itself.</p>
+    <p>In this implementation, <code>render-deployment.py</code> generates Prometheus targets from <code>assemblies.json</code>. Scrapes run every 30 seconds with a five-second timeout. The Grafana dashboard also refreshes every 30 seconds. Its datasource uses <code>http://127.0.0.1:19090</code>. Both monitoring containers use host networking with explicit loopback-only listeners; this lets Prometheus reach the libvirt guest without Docker bridge forwarding or changes to host firewall rules.</p>
+    <h3>6.2 Start and open the monitoring tools</h3>
+    <pre><code>microservices/tools/lab.sh monitoring-up
+microservices/tools/lab.sh monitoring-stop
+microservices/tools/lab.sh monitoring-destroy</code></pre>
+    <p>The separately testable monitoring stack binds Prometheus to <code>127.0.0.1:19090</code> and Grafana to <code>127.0.0.1:13000</code>. Grafana uses account <code>lab</code>; the loopback-only lab default password is <code>msc121-local-only</code>. The private <code>monitoring.env</code> file retains the configured credential. Provisioned dashboards cover availability, JVM heap, request rate, latency, CPU and errors.</p>
+    <table><thead><tr><th>Browser address</th><th>What to inspect</th></tr></thead><tbody>
+      <tr><td><a href="http://localhost:19090/targets">localhost:19090/targets</a></td><td>Configured scrape targets, their last scrape and errors</td></tr>
+      <tr><td><a href="http://localhost:19090/query">localhost:19090/query</a></td><td>PromQL expressions such as <code>up</code></td></tr>
+      <tr><td><a href="http://localhost:13000/d/myscoutee-services">localhost:13000/d/myscoutee-services</a></td><td>Sign in and view the provisioned MyScoutee service dashboard</td></tr>
+    </tbody></table>
+    <p>The default above is a public convenience credential for this local lab. An existing custom password is preserved; read that value locally from the private state file. Repeated startup preserves the credential and existing monitoring volumes. The startup helper waits for Prometheus readiness before requesting a configuration reload. Monitoring containers have no restart-at-boot policy.</p>
+    <p>Prometheus and Grafana each have a 256 MiB container limit. Metrics retention is bounded to 24 hours / 256 MB. Plugin installation and runtime updates are disabled. Services publish health and metrics on private port 8081, separated from business port 8080. Public ingress must not expose that management port.</p>
+    <h3>6.3 Interpret the provisioned dashboard</h3>
+    <table><thead><tr><th>Panel</th><th>Interpretation and limit</th></tr></thead><tbody>
+      <tr><td>Scrape availability</td><td><code>up=1</code> means the metrics scrape succeeded. <code>up=0</code> means it failed; inspect the target error. This does not test login, Mongo writes or an entire user flow.</td></tr>
+      <tr><td>JVM heap used</td><td>Managed Java heap in bytes, grouped by service. Native buffers, threads, metaspace and other processes require separate memory observations.</td></tr>
+      <tr><td>HTTP requests per second</td><td>A five-minute rate of the request counter. A quiet system can have a valid near-zero rate. Missing samples are different from zero traffic.</td></tr>
+      <tr><td>HTTP p95 latency</td><td>A histogram estimate of the duration below which approximately 95% of observed requests fall. It needs request samples and histogram buckets; a blank panel before traffic is not a latency result.</td></tr>
+      <tr><td>JVM process CPU</td><td>Reported process CPU usage. Compare with guest/runtime statistics and the configured CPU constraints before drawing capacity conclusions.</td></tr>
+      <tr><td>HTTP server errors per second</td><td>The rate of 5xx responses. It omits 4xx outcomes and application-level failures returned with successful HTTP status, which the flow/stress assertions must catch.</td></tr>
+    </tbody></table>
+    <p>Start with <code>up{job="prometheus"}</code> in Prometheus: it checks the collector's own scrape. Then inspect <code>up{job="myscoutee"}</code> by service. Check private gateway connectivity from the Prometheus container when application targets cannot be scraped. A stopped or unreachable backend makes its target DOWN; missing JVM series and missing HTTP traffic are distinct from scrape failure. Use the per-service labels and the VM/container statistics alongside JVM panels.</p>
+    <aside class="callout warning"><strong>Two different DNS and network scopes</strong>
+      Kubernetes Service DNS is internal to the guest cluster. Prometheus therefore scrapes <code>192.168.173.10:30081/metrics/&lt;service&gt;</code>; a separate nginx listener maps only the generated service names to their private <code>8081/metrics</code> endpoint. Its resolver uses fully qualified Kubernetes names. Other paths return 404, and the public frontend listener does not expose this route. Targets and service labels are generated from the same assembly manifest.
+    </aside>
+    <p>The checked-in dashboard and datasource provisioning are the durable configuration. Record intended edits in those files, then restart/reconcile the owned monitoring stack; browser-only changes are not a reproducible setup. <code>monitoring-stop</code> preserves samples and Grafana data; <code>monitoring-destroy</code> deletes the owned volumes and credential so the next startup is a fresh monitoring installation.</p>
+    <h3>6.4 Application access and diagnosis sequence</h3>
+    <aside class="callout note"><strong>Application browser entry point — completion requirement</strong>
+      The production-built frontend is available at <a href="http://localhost:18080">localhost:18080</a> through the versioned, loopback-only SSH forward. nginx routes API paths to the owning Kubernetes Services. Grafana availability is not application availability.
+    </aside>
+    <table><caption>Find the first failing layer</caption><thead><tr><th>Observation</th><th>Next check</th></tr></thead><tbody>
+      <tr><td>VM absent or stopped</td><td><code>vm.py status</code>, host service state, then explicit lifecycle startup. Do not delete state to bypass an ownership failure.</td></tr>
+      <tr><td>VM running, Kubernetes unavailable</td><td><code>vm.py ssh</code> reports cloud-init and k3s status; use the guest console for systemd diagnostics.</td></tr>
+      <tr><td>Node Ready, pod missing or restarting</td><td>Deployment counts, pod events, image availability and container logs. A built JAR does not supply missing remote beans.</td></tr>
+      <tr><td>Grafana unavailable, Prometheus ready</td><td>Owned Grafana container health and datasource connection. Recreating the VM cannot fix a host Grafana problem.</td></tr>
+      <tr><td>Grafana opens, application metrics absent</td><td>Prometheus target status, private endpoint and network/DNS path, then time range and actual traffic.</td></tr>
+      <tr><td>Metrics healthy, browser/API flow fails</td><td>Public routing, authentication, remote adapters and data behavior for the exact failing request. Collector availability is insufficient.</td></tr>
+    </tbody></table>
+    <p>Tracing and durable-operation metrics remain to be added alongside the corresponding boundaries. Keep user, workspace, session and payment identifiers out of metric labels. An application target correctly remains DOWN while its deployment is absent.</p>
+  </section>
+
+  <section id="stress">
+    <h2>7. Bounded Stress and Further Qualification</h2>
+    <p>The bounded load harness uses <code>microservices/tools/check-load.py</code> against six actual authenticated application routes, plus the separate two-pod contact-write harness. These reuse the lab’s native session and deployment helpers. For broader business stress campaigns, use the existing <code>tests/e2e/stress/backend</code> runner and scenarios with the microservices localhost ingress; do not start its monolith Compose example alongside the lab.</p>
+    <p>The following sequence also applies when extending the measured flow set:</p>
+    <ol>
+      <li>Complete the remote bindings and authenticated execution context required by the selected full-application flows.</li>
+      <li>Deploy production-style application images, one shared Mongo replica set, required Redis/object storage and bounded monitoring into the owned lab.</li>
+      <li>Prepare isolated canonical fixtures once, exit the preparation process, then verify REAL/DEMO and workspace behavior through the public API.</li>
+      <li>Open the localhost application for the user. Preserve the repository's manual-QA/browser-control boundary unless full-flow browser testing is explicitly delegated.</li>
+      <li>Run a recorded contract/flow smoke test, then the applicable stress scenarios and bounded load ramp. Do not interpret failed business assertions as acceptable performance.</li>
+      <li>Record exact image identities, fixture identity, concurrency, resource limits, error rate, throughput, p50/p95/p99 latency, CPU, memory and database behavior.</li>
+      <li>Compare against an equivalent monolith baseline serially on this machine. Keep build time and fixture preparation outside timed results.</li>
+    </ol>
+    <p>The read-load harness can temporarily add a second assets replica. It records request failures, route latency and resource samples, then revokes its session and restores the replica count. Keep reports with the associated QA evidence; a bounded read run does not establish write saturation or production exhaustion limits.</p>
+    <pre><code>python3 microservices/tools/check-load.py --two-assets --seconds 60 --concurrency 8</code></pre>
+    <h3>Same-scenario monolith comparison</h3>
+    <p>Compare deployments serially with the same source revisions, workload, data, concurrency, warmup and resource limits. Record increases as well as decreases in latency, throughput and resource use. A historical result with different host load, cache state or fixtures cannot isolate an architecture regression.</p>
+    <p>The existing <code>server-events-read</code> and <code>server-read-sweep</code> profiles reuse the same assertions behind either architecture. Native DEMO sessions and canonical lab data differ from an isolated monolith E2E seed; record that difference when comparing deployed systems. Functional success alone does not establish performance parity.</p>
+  </section>
+
+  <section id="cleanup">
+    <h2>8. Stop, Destroy and Host Cleanup</h2>
+    <table><thead><tr><th>Operation</th><th>Meaning</th></tr></thead><tbody>
+      <tr><td><code>vm.py stop</code></td><td>Gracefully shut down the lab and deactivate its network/pool; retain disks and identity. No forced power loss on timeout.</td></tr>
+      <tr><td><code>vm.py destroy</code></td><td>Explicitly delete Terraform-owned VM/network/pool/disks, then remove guest credentials, image staging and state after confirmed removal.</td></tr>
+      <tr><td><code>host.py stop</code></td><td>Stop owned host services after the guest is off. Preserve foreign resources and pre-existing services.</td></tr>
+      <tr><td><code>host.py purge</code></td><td>Remove tracked added host packages and membership only after all lab resources are destroyed.</td></tr>
+    </tbody></table>
+    <pre><code># Full owned cleanup, including host additions (deletes lab data):
+bash microservices/tools/cleanup-lab.sh --purge-host
+
+# Or select operations individually:
+python3 microservices/tools/vm.py stop
+# Retain the lab for the next explicit start, or remove it:
+python3 microservices/tools/vm.py destroy
+sudo python3 microservices/tools/host.py purge
+microservices/tools/terraform.sh clean-tools
+
+microservices/tools/lab.sh monitoring-destroy
+microservices/tools/lab.sh clean-images
+microservices/tools/lab.sh clean-build</code></pre>
+    <p>Destroy is intentionally different from stop: it deletes lab data. Host purge refuses changed package versions, foreign libvirt resources and package-removal plans affecting unowned packages. There is no global package autoremove, Docker prune, firewall flush or broad process kill. Tiny lifecycle lock files may remain to keep concurrent command locking safe.</p>
+    <p>Image cleanup uses recorded tags and exact IDs; changed tags are preserved. Build cleanup refuses to remove configuration mounted by active monitoring. Keep the state required for recovery after interrupted operations; never delete Terraform state as a shortcut to a fresh start.</p>
+  </section>
+
+  <section id="contributing" class="keep-together">
+    <h2>9. Rules for Future Changes</h2>
+    <p>The trust kernel routes backend domain/dependency/configuration/worker/transport/deployment changes to <code>.agents/trust/reviews/microservices-compatibility.md</code>. New agents must preserve both deployment forms.</p>
+    <ul>
+      <li>Keep cross-domain dependencies on API/DTO contracts, with one implementation owner. Avoid foreign services, repositories and documents.</li>
+      <li>Make domain Spring configuration usable in the monolith and selected assemblies; keep shell-only imports out of canonical code.</li>
+      <li>Review network cost when an interface moves across processes. Batch hot reads and avoid remote calls inside per-item loops.</li>
+      <li>Keep schedulers, indexes and durable side effects under explicit ownership. Replica count must not create duplicate work.</li>
+      <li>Propagate validated identity and scope, restore contexts on errors, and treat remote timeout as an unknown outcome for mutations.</li>
+      <li>Extend the actual owner of compensation, retry or outbox behavior. Introduce saga infrastructure only for a proven missing capability.</li>
+      <li>Keep every installation and cleanup step versioned and idempotent. Secrets, state and VM disks stay outside Git.</li>
+    </ul>
+  </section>
+
+  <section id="evidence">
+    <h2>10. Verification and Known Limits</h2>
+    <table><thead><tr><th>Verification layer</th><th>Boundary</th></tr></thead><tbody>
+      <tr><td>Assembly audit</td><td>Domain coverage and exclusion of foreign owner implementations</td></tr>
+      <tr><td>Canonical and adapter tests</td><td>Business semantics, detached contracts, execution context and failure handling</td></tr>
+      <tr><td>Infrastructure checks</td><td>Deployment ownership, upgrade guards and cleanup behavior</td></tr>
+      <tr><td>Runtime readiness</td><td>Wiring and startup; does not prove complete business-flow correctness</td></tr>
+      <tr><td>Public API and browser checks</td><td>Authentication, routing and the selected user flows</td></tr>
+      <tr><td>Replica and recovery checks</td><td>Selected write, replay and worker-failure behavior</td></tr>
+      <tr><td>Bounded load and metrics</td><td>Measured workload behavior; does not establish production capacity</td></tr>
+    </tbody></table>
+    <p>Keep execution results, source and image identities, fixture details and outstanding checks in the relevant QA records. This guide describes the verification tools and their limits.</p>
+    <pre><code>microservices/tools/lab.sh jars
+node microservices/tools/verify-transport-contracts.mjs
+python3 microservices/tools/test_infra.py
+microservices/tools/terraform.sh validate
+node guides/manuals/build-manuals.mjs MSC-MS-001</code></pre>
+    <h3>10.1 Mutation recovery and sampled replica writes</h3>
+    <p>The domain owners retain contact commands, profile status/support work, event membership and feedback counter receipts, and asset/event lifecycle delivery. These reuse the native notification outbox, scheduled-message tasks and affinity queue. Stable lifecycle occurrence IDs prevent a repeated request from restarting a completed email task; revision-guarded attachment projections prevent a late trash update from undoing a restore. Embedded tests cover lost replies, replay, restart, leases and stale writes.</p>
+    <pre><code>python3 microservices/tools/check-business.py --two-identity</code></pre>
+    <p>The contact-write harness uses two disposable DEMO actors for contact request, reject, approve, concurrent requests and repeated approvals. It checks durable command and notification cardinalities and per-pod successful write counters. Only identity gains a second replica, subject to the memory gate. Cleanup revokes its sessions, restores one replica and removes only receipt-owned data. If interrupted, use the printed <code>--cleanup RUN_ID</code> command. It does not reset canonical users, mutate REAL or qualify payments.</p>
+    <p>The <code>check-business.py --worker-recovery --write-cycles 20</code> mode temporarily rejects contact delivery through an owned proxy, terminates the identity worker after journal acceptance, and checks completion after routing restoration without API replay. Cleanup restores temporary routing and removes owned sessions and fixtures.</p>
+    <h3>Managed browser qualification</h3>
+    <p>The versioned browser-session launcher and <code>microservices/tools/check-browser.mjs</code> verify the production HTTP path: landing consent and carousel controls, native DEMO login, game route, event/explore popups, Work/Dating workspace switches and native logout. The check rejects a local-adapter fallback. Screenshots and a credential-free response/status report are retained under <code>microservices/build/reports/browser</code>. This automated flow requires explicit user delegation; ordinary manual-QA control remains with the user.</p>
+    <h3>10.2 Coordinated writer upgrade</h3>
+    <p>The <code>assets</code>, <code>events</code> and <code>feedbackStates</code> owners initialize missing document versions before accepting writes. All old backend writers must be stopped before running new contexts or deploying new images. The lab deployment guard refuses a changed backend image while an old backend pod remains. Supporting services and volumes stay available.</p>
+    <pre><code>python3 microservices/tools/workloads.py backends-stop
+python3 microservices/tools/check-contexts.py
+# Build and lock images explicitly before deployment; up never builds.
+python3 microservices/tools/workloads.py up</code></pre>
+    <p>A monolith upgrade needs the same stop-old/start-new boundary. Rollback to a pre-version writer requires a matched database backup, not merely an old image. Integration image imports retain deterministic partial objects after an unknown result; automatic orphan garbage collection is not included. Provider delivery remains at least once. Publication's existing invitation, reminder, chat and tournament flows still require full-flow qualification; the lifecycle receipt alone does not prove those adjacent effects.</p>
+    <h3>10.3 Background CPU and repeated owner calls</h3>
+    <p>Inspect private request metrics together with per-thread and container CPU samples to distinguish incoming owner calls from local polling. Include startup, JIT and periodic jobs when interpreting short samples.</p>
+    <p>The shared scheduled-group orchestration calls the existing atomic scheduled claim, which checks enabled state, due time and ownership. Affinity layout likewise uses one owner call for the claim instead of separate find, due and claim calls. Preserve missing, disabled and not-due rejection, acknowledged-claim execution and exclusion of another run when changing these paths.</p>
+    <p>Batch owner reads and reuse atomic owner operations where their existing semantics fit. Fewer remote requests can reduce work, but a sustained CPU or latency improvement requires a matched measurement.</p>
+    <h3>10.4 References for the tools actually used</h3>
+
+    <p>These upstream references explain the concepts behind this guide. The repository's pinned versions and scripts remain the authority for this lab's exact behavior; upstream defaults may differ.</p>
+    <ul>
+      <li><a href="https://libvirt.org/drvqemu.html">libvirt QEMU/KVM driver</a> — hypervisor access and the system connection.</li>
+      <li><a href="https://developer.hashicorp.com/terraform/language/state">Terraform state</a> — the binding between declarations and real resource identities.</li>
+      <li><a href="https://docs.k3s.io/architecture">k3s architecture</a> and <a href="https://docs.k3s.io/cli">bundled CLI tools</a> — server/worker placement and inspection.</li>
+      <li><a href="https://kubernetes.io/docs/concepts/workloads/pods/">Kubernetes Pods</a> and <a href="https://kubernetes.io/docs/concepts/services-networking/service/">Services</a> — workload and network identities.</li>
+      <li><a href="https://prometheus.io/docs/introduction/overview/">Prometheus overview</a> — collection and time-series queries.</li>
+      <li><a href="https://grafana.com/docs/grafana/latest/introduction/">Grafana introduction</a> — querying and visualizing datasource results.</li>
+    </ul>
+    <p>Before production adoption, qualify the required browser and business flows, worker and shared Mongo failure recovery, fresh installation, host cleanup and representative write load. Record results and limitations in QA documentation. The architecture plan is <code>guides/plans/MICROSERVICES_ARCHITECTURE.md</code>; operational instructions are maintained in <code>microservices/README.md</code>.</p>
+  </section>
+</article>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "indexManifests": [
+    {
+      "path": "config/packaging/migrations/seeds/015-runtime-index-parity/runtime-indexes.json"
+    },
+    {
+      "path": "config/packaging/migrations/seeds/018-feedback-and-worker-indexes/runtime-indexes.json",
+      "replaceCollections": [
+        "eventFeedbackStates",
+        "eventFeedbackAnswers"
+      ]
+    }
+  ],
+  "preflightTests": [
+    "runtime-index-parity-test.mjs",
+    "release-catalog-parity-test.mjs",
+    "feedback-access-migration-test.mjs"
+  ]
+}

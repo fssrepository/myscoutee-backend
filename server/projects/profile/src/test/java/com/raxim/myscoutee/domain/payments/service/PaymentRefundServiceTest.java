@@ -147,7 +147,7 @@ class PaymentRefundServiceTest {
                 paymentService,
                 history,
                 outbox,
-                mongo);
+                mongo, null, null);
 
         private Fixture() { PaymentTestSupport.wire(service, mongo); }
 
@@ -189,4 +189,13 @@ class PaymentRefundServiceTest {
             return request;
         }
     }
+
+    @Test
+    void absentPaymentCannotProduceRefundEvenWithAnAmountOverride() {
+        var preview = PaymentRefundCalculator.storedOrCurrentPreview(null, Instant.now().toString(), 100D);
+        assertThat(preview.paidAmount()).isZero();
+        assertThat(preview.refundableAmount()).isZero();
+        assertThat(preview.status()).isEqualTo("none");
+    }
+
 }

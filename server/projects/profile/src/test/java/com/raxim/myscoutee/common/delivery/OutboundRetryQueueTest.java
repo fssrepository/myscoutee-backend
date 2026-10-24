@@ -123,7 +123,7 @@ class OutboundRetryQueueTest {
     }
     @Test void lostHttpResponseReplaysTheSameAdminRevisionWithoutDuplicateEffects() {
         var admin = new com.raxim.myscoutee.domain.administration.service.AdminTelemetryService(null, null,
-                new com.raxim.myscoutee.domain.administration.config.AdminStatsProperties(), null);
+                new com.raxim.myscoutee.domain.administration.config.AdminStatsProperties(), null, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(admin, "mongo", mongo);
         var signal = new com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.ProjectionSignal("affinity",
                 Map.of(com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.ProjectionInput.DERIVED, 5L));

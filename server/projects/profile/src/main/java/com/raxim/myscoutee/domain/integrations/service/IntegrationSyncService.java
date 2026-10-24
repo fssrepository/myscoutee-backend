@@ -50,11 +50,10 @@ import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
 
 @Service
 public class IntegrationSyncService {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
+    private final com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
+    private final com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
+    private final com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     private static final String RESOURCE_ASSET = "asset";
     private static final String RESOURCE_EVENT = "event";
     private static final String RESOURCE_CAMPAIGN = "campaign";
@@ -72,7 +71,14 @@ public class IntegrationSyncService {
             MongoTemplate mongoTemplate,
             Assets assetsService,
             EventOperations eventsService,
-            ImageUploads mediaStorageService, MediaCleanup mediaCleanup, Campaigns campaignsService) {
+            ImageUploads mediaStorageService, MediaCleanup mediaCleanup, Campaigns campaignsService,
+            com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership,
+            com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership,
+            com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog) {
+        this.eventOwnership = eventOwnership;
+        this.assetOwnership = assetOwnership;
+        this.campaignCatalog = campaignCatalog;
+
         this.externalIdsRepository = externalIdsRepository;
         this.mongoTemplate = mongoTemplate;
         this.assetsService = assetsService;

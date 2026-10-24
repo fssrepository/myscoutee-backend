@@ -42,10 +42,8 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class AdminStatsTelemetryWorkerService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminStatsTelemetryWorkerService.class);
 
     private final StringRedisTemplate stringRedisTemplate;
@@ -105,7 +103,12 @@ public class AdminStatsTelemetryWorkerService {
             AdminMonitoringService adminMonitoringService,
             AdminCounterRefresh adminMenuCounterService,
             AdminStatsProperties properties,
-            RedisStreamRetentionService redisStreamRetentionService) {
+            RedisStreamRetentionService redisStreamRetentionService,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.groupRules = groupRules;
+        this.groupDatabases = groupDatabases;
+
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.adminStatsService = adminStatsService;

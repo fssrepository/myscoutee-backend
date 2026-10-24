@@ -224,7 +224,7 @@ class OperatorNetworkServiceTest {
         OperatorNetworkService service = new OperatorNetworkService(
                 settingsRepository,
                 claimSubmissionRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 properties,
                 new RegistryDemoConfiguration(),
                 operations,
@@ -366,7 +366,7 @@ class OperatorNetworkServiceTest {
         OperatorNetworkService service = new OperatorNetworkService(
                 settingsRepository,
                 claimSubmissionRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class), null),
                 properties,
                 new RegistryDemoConfiguration(),
                 operations,
@@ -573,7 +573,7 @@ class OperatorNetworkServiceTest {
         OperatorNetworkService service = new OperatorNetworkService(
                 settingsRepository,
                 claimSubmissionRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class), null),
                 properties,
                 new RegistryDemoConfiguration(),
                 operations,
@@ -601,7 +601,7 @@ class OperatorNetworkServiceTest {
         OperatorNetworkService service = new OperatorNetworkService(
                 settingsRepository,
                 claimSubmissionRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 new RegistryConfiguration(),
                 new RegistryDemoConfiguration(),
                 operations,
@@ -697,7 +697,7 @@ class OperatorNetworkServiceTest {
         return new OperatorNetworkService(
                 settingsRepository,
                 mock(OperatorClaimSubmissionSnapshotRepository.class),
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class), null),
                 properties,
                 new RegistryDemoConfiguration(),
                 operations,
@@ -715,7 +715,7 @@ class OperatorNetworkServiceTest {
         return new OperatorNetworkService(
                 settingsRepository,
                 mock(OperatorClaimSubmissionSnapshotRepository.class),
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class), null),
                 properties,
                 new RegistryDemoConfiguration(),
                 operations,

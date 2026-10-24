@@ -72,14 +72,12 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.email.api.ScheduledMessages, com.raxim.myscoutee.domain.email.api.UserActivityScheduling {
-    @org.springframework.beans.factory.annotation.Autowired
-    private JobAudience jobGroupScope;
+    private final JobAudience jobGroupScope;
 
     public static final String ACTION_INACTIVATE_PROFILE_AFTER_INACTIVITY = "user.profile.inactivate-after-inactivity";
     public static final String ACTION_EVENT_STAGE_REMINDER = "event.stage.reminder";
     public static final String ACTION_CASE_FEEDBACK_PREPARE = "case.feedback.prepare";
-    @org.springframework.beans.factory.annotation.Autowired
-    private FeedbackPreparation feedbackEvaluation;
+    private final FeedbackPreparation feedbackEvaluation;
 
     public static final String ACTION_EVENT_DEFINITION_CHANGED = "event.definition.changed";
 
@@ -145,7 +143,12 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
             ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider,
             ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider,
             ObjectProvider<EmailProperties> emailPropertiesProvider,
-            ObjectProvider<AuthenticationMode> configPropertiesProvider) {
+            ObjectProvider<AuthenticationMode> configPropertiesProvider,
+            JobAudience jobGroupScope,
+            FeedbackPreparation feedbackEvaluation) {
+        this.jobGroupScope = jobGroupScope;
+        this.feedbackEvaluation = feedbackEvaluation;
+
         this.mongoTemplate = mongoTemplate;
         this.scheduledMessageTasksRepository = scheduledMessageTasksRepository;
         this.profiles = profiles;
@@ -758,79 +761,8 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
             return new TaskResult(STATUS_COMPLETED, 0, "Stage reminder had no accepted members.");
         }
 
-        Template notificationTemplate = resolveNotificationTemplate(task);
-        EmailTemplate emailTemplate = resolveEmailTemplate(task);
-        ScheduledNotificationDeliveryService notificationDeliveryService =
-                scheduledNotificationDeliveryServiceProvider.getIfAvailable();
-        EmailTemplateRenderer emailTemplateRenderer = emailTemplateRendererProvider.getIfAvailable();
-        List<EmailOutboxItem> outboxItems = new ArrayList<>();
-        int notificationCount = 0;
-        int emailQueuedCount = 0;
-        int failedCount = 0;
-        int affectedCount = 0;
-        String nowIso = Instant.now().toString();
-        ResolvedDeploymentBranding branding = deploymentBranding();
-
-        for (EmailProfile user : profiles.findByUserIdIn(userIds)) {
-            if (user == null || isDeleted(user)) {
-                continue;
-            }
-            Map<String, String> variables = branding.enrich(
-                    stageReminderVariables(task, user));
-            boolean notificationAccepted = notificationTemplate != null
-                    && notificationDeliveryService != null
-                    && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()));
-            if (notificationAccepted) {
-                notificationCount += 1;
-                scheduledMessageAuditService.recordDelivery(
-                        runId,
-                        task,
-                        user,
-                        "notification",
-                        "sent",
-                        "Notification accepted.");
-            }
-            if (notificationAccepted && firebaseEnabled()) {
-                affectedCount += 1;
-                continue;
-            }
-            if (!emailEnabled() || emailTemplate == null || emailTemplateRenderer == null || !StringUtils.hasText(safeText(user.getEmail()))) {
-                if (notificationAccepted) {
-                    affectedCount += 1;
-                    continue;
-                }
-                failedCount += 1;
-                scheduledMessageAuditService.recordDelivery(runId, task, user, "none", STATUS_SKIPPED, "No enabled delivery channel.");
-                continue;
-            }
-
-            EmailOutboxItem outboxItem = buildTemplateOutboxItem(task, user, emailTemplate, emailTemplateRenderer, variables, nowIso);
-            if (outboxItem == null) {
-                if (notificationAccepted) {
-                    affectedCount += 1;
-                }
-                failedCount += 1;
-                scheduledMessageAuditService.recordDelivery(runId, task, user, "email", STATUS_FAILED, "Email template rendered empty content.");
-                continue;
-            }
-            outboxItems.add(outboxItem);
-            emailQueuedCount += 1;
-            affectedCount += 1;
-            scheduledMessageAuditService.recordDelivery(runId, task, user, "email", "queued", "Email fallback queued.");
-        }
-        if (!outboxItems.isEmpty()) {
-            emailOutboxRepository.saveAll(outboxItems);
-        }
-
-        return new TaskResult(
-                STATUS_COMPLETED,
-                affectedCount,
-                notificationCount,
-                emailQueuedCount,
-                failedCount,
-                "Stage reminder delivered: notifications " + notificationCount
-                        + ", emails queued " + emailQueuedCount
-                        + ", skipped " + failedCount + ".");
+        return deliverToAudience(task, runId, userIds,
+                user -> stageReminderVariables(task, user), "Stage reminder delivered");
     }
 
     private TaskResult notifyEventDefinitionChanged(ScheduledMessageTask task, String runId) {
@@ -842,6 +774,12 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
             return new TaskResult(STATUS_COMPLETED, 0, "Event change notification had no audience.");
         }
 
+        return deliverToAudience(task, runId, userIds,
+                user -> eventDefinitionChangedVariables(task, user), "Event change delivered");
+    }
+
+    private TaskResult deliverToAudience(ScheduledMessageTask task, String runId, Set<String> userIds,
+            java.util.function.Function<EmailProfile, Map<String, String>> variablesForUser, String summary) {
         Template notificationTemplate = resolveNotificationTemplate(task);
         EmailTemplate emailTemplate = resolveEmailTemplate(task);
         ScheduledNotificationDeliveryService notificationDeliveryService =
@@ -860,7 +798,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
                 continue;
             }
             Map<String, String> variables = branding.enrich(
-                    eventDefinitionChangedVariables(task, user));
+                    variablesForUser.apply(user));
             boolean notificationAccepted = notificationTemplate != null
                     && notificationDeliveryService != null
                     && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()));
@@ -912,7 +850,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
                 notificationCount,
                 emailQueuedCount,
                 failedCount,
-                "Event change delivered: notifications " + notificationCount
+                summary + ": notifications " + notificationCount
                         + ", emails queued " + emailQueuedCount
                         + ", skipped " + failedCount + ".");
     }
@@ -1167,7 +1105,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         }
         String name = normalizeId(subEvent == null ? null : subEvent.name());
         if (StringUtils.hasText(name)) {
-            String slug = name.toLowerCase().replaceAll("[^a-z0-9_-]+", "-").replaceAll("^-+|-+$", "");
+            String slug = name.toLowerCase().replaceAll("[^a-z0-9_-]+", "-").transform(edgeText -> org.springframework.util.StringUtils.trimLeadingCharacter(org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '-'), '-'));
             if (StringUtils.hasText(slug)) {
                 return slug;
             }
@@ -1296,17 +1234,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         item.setRuleKey(safeText(task == null ? null : task.getTaskKey()));
         item.setCategory("event");
         item.setProvider(currentEmailProviderKey());
-        item.setStatus(EmailOutboxStatus.PENDING);
-        item.setSubject(subject);
-        item.setHtmlBody(htmlBody);
-        item.setTextBody(textBody);
-        item.setTemplateVariables(variables);
-        item.setScheduledAt(nowIso);
-        item.setAttemptCount(0);
-        item.setCreatedDate(nowIso);
-        item.setCreatedUser(UPDATED_BY);
-        item.setUpdatedDate(nowIso);
-        item.setUpdatedUser(UPDATED_BY);
+        EmailOutboxDraft.initialize(item, subject, htmlBody, textBody, variables, nowIso, UPDATED_BY);
         return item;
     }
 
@@ -1333,7 +1261,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
 
     private String baseUrl() {
         EmailProperties emailProperties = emailPropertiesProvider.getIfAvailable();
-        String baseUrl = safeText(emailProperties == null ? null : emailProperties.getBaseUrl()).replaceAll("/+$", "");
+        String baseUrl = safeText(emailProperties == null ? null : emailProperties.getBaseUrl()).transform(edgeText -> org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '/'));
         return StringUtils.hasText(baseUrl) ? baseUrl : "http://localhost:4200";
     }
 
@@ -1347,25 +1275,11 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     }
 
     private Instant max(Instant left, Instant right) {
-        if (left == null) {
-            return right;
-        }
-        if (right == null) {
-            return left;
-        }
-        return left.isAfter(right) ? left : right;
+        return com.raxim.myscoutee.common.util.TimeValues.max(left, right);
     }
 
     private Instant parseInstant(String value) {
-        String normalized = safeText(value);
-        if (!StringUtils.hasText(normalized)) {
-            return null;
-        }
-        try {
-            return Instant.parse(normalized);
-        } catch (DateTimeParseException exception) {
-            return null;
-        }
+        return com.raxim.myscoutee.common.util.TimeValues.parseInstant(value);
     }
 
     private String userInactivityTaskKey(String userId) {

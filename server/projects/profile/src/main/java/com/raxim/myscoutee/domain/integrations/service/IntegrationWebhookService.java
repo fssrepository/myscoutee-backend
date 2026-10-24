@@ -67,27 +67,27 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.EventChanges, com.raxim.myscoutee.domain.integrations.api.AssetChanges, com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
-    @org.springframework.beans.factory.annotation.Autowired
-    private org.springframework.beans.factory.ObjectProvider<IntegrationEncounterPublisher> encounterPublisher;
+    private final org.springframework.beans.factory.ObjectProvider<IntegrationEncounterPublisher> encounterPublisher;
 
     @Override
     public void publishPendingEncounters() {
         encounterPublisher.getObject().publishPendingForCurrentGroup();
     }
 
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountJobScopes accountJobScopes;
+    private final com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
+    private final com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
+    private final com.raxim.myscoutee.domain.accounts.api.AccountJobScopes accountJobScopes;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
-    @org.springframework.beans.factory.annotation.Autowired
     private McpEventsService mcpEvents;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setMcpEvents(McpEventsService mcpEvents) {
+        this.mcpEvents = mcpEvents;
+    }
 
     public static final String EVENT_CHANGED = "event.changed";
     public static final String EVENT_ENCOUNTERS = "event.encounters";
@@ -126,7 +126,22 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
             @Value("${integration.webhook.allow-http:false}") boolean allowHttp,
             @Value("${integration.webhook.allow-private-addresses:false}") boolean allowPrivateAddresses,
             @Value("${integration.webhook.max-worker-count:100}") int maxWorkerCount,
-            @Value("${integration.webhook.delivery-batch-size:100}") int deliveryBatchSize) {
+            @Value("${integration.webhook.delivery-batch-size:100}") int deliveryBatchSize,
+            org.springframework.beans.factory.ObjectProvider<IntegrationEncounterPublisher> encounterPublisher,
+            com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership,
+            com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership,
+            com.raxim.myscoutee.domain.accounts.api.AccountJobScopes accountJobScopes,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.encounterPublisher = encounterPublisher;
+        this.assetOwnership = assetOwnership;
+        this.eventOwnership = eventOwnership;
+        this.accountJobScopes = accountJobScopes;
+        this.groupRules = groupRules;
+        this.jobGroupScope = jobGroupScope;
+        this.groupDatabases = groupDatabases;
+
         this.subscriptionsRepository = subscriptionsRepository;
         this.deliveriesRepository = deliveriesRepository;
         this.externalIdsRepository = externalIdsRepository;
@@ -185,7 +200,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         }
 
         String callbackUrl = normalizeCallbackUrl(request == null ? null : request.callbackUrl());
-        List<String> eventTypes = normalizeEventTypes(request == null ? null : request.events());
+        List<String> eventTypes = normalizeEventTypes(request.events());
         if (subscription == null) {
             subscription = new IntegrationWebhookSubscription();
             subscription.setId(UUID.randomUUID().toString());
@@ -203,43 +218,11 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
     }
 
     public void enqueue(com.raxim.myscoutee.domain.events.api.EventChangeView event) {
-        if (event == null || !Boolean.TRUE.equals(event.getIsAdmin())) {
-            return;
-        }
-        String ownerUserId = normalize(event.getOwnerUserId());
-        String externalId = firstText(event.getSourceId(), event.getId());
-        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(externalId)) {
-            return;
-        }
-        LinkedHashMap<String, Object> resource = resourceIdentity(ownerUserId, "event", externalId);
-        resource.put("title", nullable(event.getTitle()));
-        resource.put("status", nullable(event.getStatus()));
-        resource.put("startAt", nullable(event.getStartAtIso()));
-        resource.put("endAt", nullable(event.getEndAtIso()));
-        resource.put("sourceLink", nullable(event.getSourceLink()));
-        resource.put("mode", event.getMode() == null ? "Casual" : event.getMode());
-        resource.put("mingleConfiguration", event.getMingleConfiguration());
-        resource.put("acceptedParticipants", safeNumber(event.getAcceptedMembers()));
-        resource.put("pendingParticipants", safeNumber(event.getPendingMembers()));
-        enqueue(ownerUserId, EVENT_CHANGED, "event", externalId, resource);
+        enqueue(event, null);
     }
 
     public void enqueue(com.raxim.myscoutee.domain.assets.api.AssetChangeView asset) {
-        if (asset == null) {
-            return;
-        }
-        String ownerUserId = normalize(asset.getOwnerUserId());
-        String externalId = firstText(asset.getAssetId(), asset.getId());
-        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(externalId)) {
-            return;
-        }
-        LinkedHashMap<String, Object> resource = resourceIdentity(ownerUserId, "asset", externalId);
-        resource.put("title", nullable(asset.getTitle()));
-        resource.put("type", nullable(asset.getType()));
-        resource.put("status", nullable(asset.getStatus()));
-        resource.put("capacityTotal", safeNumber(asset.getCapacityTotal()));
-        resource.put("quantity", safeNumber(asset.getQuantity()));
-        enqueue(ownerUserId, ASSET_CHANGED, "asset", externalId, resource);
+        enqueue(asset, null);
     }
 
     /**
@@ -271,7 +254,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         }
     }
 
-    private void enqueue(Event event, Map<String, Object> change) {
+    private void enqueue(com.raxim.myscoutee.domain.events.api.EventChangeView event, Map<String, Object> change) {
         if (event == null || !Boolean.TRUE.equals(event.getIsAdmin())) {
             return;
         }
@@ -296,7 +279,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         enqueue(ownerUserId, EVENT_CHANGED, "event", externalId, resource);
     }
 
-    private void enqueue(Asset asset, Map<String, Object> change) {
+    private void enqueue(com.raxim.myscoutee.domain.assets.api.AssetChangeView asset, Map<String, Object> change) {
         if (asset == null) {
             return;
         }

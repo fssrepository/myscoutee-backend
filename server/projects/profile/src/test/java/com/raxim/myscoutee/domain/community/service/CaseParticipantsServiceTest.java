@@ -21,7 +21,7 @@ class CaseParticipantsServiceTest {
                 List.of(offer("offer-a", "provider-a"), offer("offer-b", "provider-b")), null, null, "now", "now", 1L,
                 Map.of("invited", "invited", "removed", "removed"), List.of(), List.of("provider-b"));
         when(repository.findById("case")).thenReturn(Optional.of(record));
-        var conversation = new CaseParticipantsService(repository).conversation("case").orElseThrow();
+        var conversation = new CaseParticipantsService(repository, null, null).conversation("case").orElseThrow();
         assertThat(conversation.activeParticipantAccountIds()).containsExactly("owner", "resident", "provider-a", "provider-b");
         assertThat(conversation.chatParticipantAccountIds()).containsExactly("owner", "resident", "provider-b");
         assertThat(conversation.offerChatParticipantAccountIds("offer-a")).containsExactly("owner", "resident", "provider-a");
@@ -32,7 +32,7 @@ class CaseParticipantsServiceTest {
     @Test void administratorChangesUseTheExistingWriteOwner() {
         var repository = mock(ServiceCasesRepository.class);
         var writer = mock(CommunityCaseCounterWork.class);
-        var service = new CaseParticipantsService(repository);
+        var service = new CaseParticipantsService(repository, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", writer);
         var votes = mock(CommunityVoteCounterWork.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "votes", votes);

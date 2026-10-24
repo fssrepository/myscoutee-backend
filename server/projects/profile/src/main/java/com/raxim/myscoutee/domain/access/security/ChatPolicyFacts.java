@@ -80,6 +80,7 @@ public class ChatPolicyFacts {
             return false;
         }
         String normalizedActorUserId = normalizeId(actorUserId);
+        if (normalizedActorUserId == null) return false;
         for (var restriction : restrictions) {
             if (!restriction.allows(chat, normalizedActorUserId)) return false;
         }

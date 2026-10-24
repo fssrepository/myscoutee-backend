@@ -22,34 +22,11 @@ public class AffinityPrivacyService implements AffinityPrivacy {
         anonymizeUserFieldsByAnyField("affinityConfigs", List.of("changedUser"), userId);
     }
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {
-        if (!StringUtils.hasText(collectionName) || fields == null || fields.isEmpty() || !StringUtils.hasText(userId)) {
-            return;
-        }
-        List<Criteria> criteria = fields.stream()
-                .filter(StringUtils::hasText)
-                .map(field -> Criteria.where(field).is(userId))
-                .toList();
-        if (criteria.isEmpty()) {
-            return;
-        }
-        mongoTemplate.remove(Query.query(new Criteria().orOperator(criteria.toArray(Criteria[]::new))), collectionName);
+        com.raxim.myscoutee.common.config.mongo.MongoPrivacyOperations.deleteDocumentsByAnyField(mongoTemplate, collectionName, fields, userId);
     }
 
     private void anonymizeUserFieldsByAnyField(String collectionName, List<String> fields, String userId) {
-        if (!StringUtils.hasText(collectionName) || fields == null || fields.isEmpty() || !StringUtils.hasText(userId)) {
-            return;
-        }
-        List<String> fieldNames = fields.stream()
-                .filter(StringUtils::hasText)
-                .toList();
-        if (fieldNames.isEmpty()) {
-            return;
-        }
-        for (String field : fieldNames) {
-            Update update = new Update();
-            update.set(field, "deleted-user");
-            mongoTemplate.updateMulti(Query.query(Criteria.where(field).is(userId)), update, collectionName);
-        }
+        com.raxim.myscoutee.common.config.mongo.MongoPrivacyOperations.anonymizeUserFieldsByAnyField(mongoTemplate, collectionName, fields, userId);
     }
 
 }

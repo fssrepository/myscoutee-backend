@@ -36,7 +36,7 @@ public record AssetOwnershipDto(
         String status,
         String ownerUserId,
         String ownerReleasedAtIso,
-        List<com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord> requests) implements AssetOwnership.Asset {
+        List<com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord> requests) implements AssetOwnership.Asset, com.raxim.myscoutee.common.dto.AuditFields.RecordFields, com.raxim.myscoutee.domain.assets.api.AssetScoringFacts.RecordFields {
     public AssetOwnershipDto {
         if (routes != null) routes = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(routes));
         if (policies != null) policies = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(policies));
@@ -89,11 +89,6 @@ public record AssetOwnershipDto(
     @Override public String getId() { return id; }
     @Override public String getSyncKey() { return syncKey; }
     @Override public String getAssetId() { return assetId; }
-    @Override public String getType() { return type; }
-    @Override public String getTitle() { return title; }
-    @Override public String getSubtitle() { return subtitle; }
-    @Override public String getCity() { return city; }
-    @Override public String getCategory() { return category; }
     @Override public Integer getCapacityTotal() { return capacityTotal; }
     @Override public Integer getQuantity() { return quantity; }
     @Override public String getDetails() { return details; }
@@ -103,11 +98,11 @@ public record AssetOwnershipDto(
     @Override public Double getAffinity() { return affinity; }
     @Override public Double getBoost() { return boost; }
     @Override public String getCreatedDate() { return createdDate; }
-    @Override public String getCreatedUser() { return createdUser; }
     @Override public String getUpdatedDate() { return updatedDate; }
-    @Override public String getUpdatedUser() { return updatedUser; }
     @Override public String getStatus() { return status; }
     @Override public String getOwnerUserId() { return ownerUserId; }
     @Override public String getOwnerReleasedAtIso() { return ownerReleasedAtIso; }
     @Override public List<com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord> getRequests() { return requests; }
+    @Override public String getType() { return type; }
+    @Override public String getTitle() { return title; }
 }

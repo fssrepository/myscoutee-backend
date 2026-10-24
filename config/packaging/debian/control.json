@@ -1,0 +1,4 @@
+{
+  "schemaVersion": 1,
+  "Description": "MyScoutee production bundle\n Production packaging metadata for the MyScoutee Docker-based VPS deploy.\n The package is expected to install the application bundle, systemd unit,\n and operational helper scripts. Docker is a package dependency; optional\n server convenience tools remain recommendations."
+}

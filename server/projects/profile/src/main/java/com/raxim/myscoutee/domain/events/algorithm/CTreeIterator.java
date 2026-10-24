@@ -22,6 +22,7 @@ public class CTreeIterator implements Iterator<Edge> {
 
     private int currentIdx = 0;
     private Edge currEdge;
+    private boolean prepared;
 
     public CTreeIterator(final CTree cTree, List<String> types) {
         this.cTree = cTree;
@@ -37,96 +38,111 @@ public class CTreeIterator implements Iterator<Edge> {
 
     @Override
     public boolean hasNext() {
-        String type = cTree.getTypes().get(currentIdx);
-        if (cTree.isEmpty()
-                && nodesOrderedByType.get(type).isEmpty()) {
-            return false;
+        if (!prepared) {
+            prepared = prepareNext();
         }
+        return prepared;
+    }
 
-        while (!cTree.isEmpty()
-                && nodesOrderedByType.get(type).isEmpty()) {
+    private boolean prepareNext() {
+        while (true) {
+            String type = cTree.getTypes().get(currentIdx);
+            if (cTree.isEmpty()
+                    && nodesOrderedByType.get(type).isEmpty()) {
+                return false;
+            }
+
+            while (!cTree.isEmpty()
+                    && nodesOrderedByType.get(type).isEmpty()) {
+                CNode cNode;
+                Node node;
+                do {
+                    cNode = cTree.poll();
+                    node = cNode.getNode();
+                } while (!cTree.isEmpty() && cTree.isDisabledNode(node));
+
+                if ((node == null || cTree.isDisabledNode(node))
+                        && cTree.isEmpty()) {
+                    return false;
+                }
+                if (node == null) {
+                    return false;
+                }
+
+                if (node.getType() == null || nodesOrderedByType.containsKey(CTree.DEFAULT_TYPE)) {
+                    node = new Node(node.getId(), CTree.DEFAULT_TYPE);
+                }
+                if (type.equals(node.getType())) {
+                    String nodeFrom = node.getId();
+                    visited.add(nodeFrom);
+                }
+
+                nodesOrderedByType.get(node.getType()).add(cNode);
+            }
+
             CNode cNode;
-            Node node;
             do {
-                cNode = cTree.poll();
-                node = cNode.getNode();
-            } while (!cTree.isEmpty() && cTree.isDisabledNode(node));
+                if (nodesOrderedByType.get(type).isEmpty()) {
+                    break;
+                }
 
-            if ((node == null || cTree.isDisabledNode(node))
-                    && cTree.isEmpty()) {
-                return false;
-            }
-            if (node == null) {
-                return false;
+                cNode = nodesOrderedByType.get(type).peek();
+                currEdge = cNode.poll();
+                if (currEdge != null && cTree.isDisabledNode(currEdge.getFrom())) {
+                    break;
+                }
+
+                nodesOrderedByType.get(type).remove(cNode);
+                if (cNode.getDegree() > 0) {
+                    nodesOrderedByType.get(type).add(cNode);
+                }
+            } while (currEdge != null
+                    && (visited.contains(currEdge.getTo().getId())
+                            || cTree.isDisabledNode(currEdge.getTo()))
+                    && !nodesOrderedByType.get(type).isEmpty());
+
+            if ((currEdge == null || visited.contains(currEdge.getTo().getId()))
+                    && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty())) {
+                currentIdx = ++currentIdx % cTree.getTypes().size();
+                continue;
             }
 
-            if (node.getType() == null || nodesOrderedByType.containsKey(CTree.DEFAULT_TYPE)) {
-                node = new Node(node.getId(), CTree.DEFAULT_TYPE);
-            }
-            if (type.equals(node.getType())) {
-                String nodeFrom = node.getId();
-                visited.add(nodeFrom);
+            if (currEdge != null) {
+                if (cTree.isDisabledNode(currEdge.getTo()) || cTree.isDisabledNode(currEdge.getFrom())) {
+                    continue;
+                } else if (cTree.isIgnoredEdge(currEdge) && !visited.contains(currEdge.getTo().getId())
+                /* && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty()) */ ) {
+                    advanceCurrentEdge();
+                    continue;
+                }
             }
 
-            nodesOrderedByType.get(node.getType()).add(cNode);
+            return (currEdge != null
+                    && (!visited.contains(currEdge.getTo().getId())));
+            // && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty()));
         }
-
-        CNode cNode;
-        do {
-            if (nodesOrderedByType.get(type).isEmpty()) {
-                break;
-            }
-
-            cNode = nodesOrderedByType.get(type).peek();
-            currEdge = cNode.poll();
-            if (currEdge != null && cTree.isDisabledNode(currEdge.getFrom())) {
-                break;
-            }
-
-            nodesOrderedByType.get(type).remove(cNode);
-            if (cNode.getDegree() > 0) {
-                nodesOrderedByType.get(type).add(cNode);
-            }
-        } while (currEdge != null
-                && (visited.contains(currEdge.getTo().getId())
-                        || cTree.isDisabledNode(currEdge.getTo()))
-                && !nodesOrderedByType.get(type).isEmpty());
-
-        if ((currEdge == null || visited.contains(currEdge.getTo().getId()))
-                && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty())) {
-            currentIdx = ++currentIdx % cTree.getTypes().size();
-            hasNext();
-        }
-
-        if (currEdge != null) {
-            if (cTree.isDisabledNode(currEdge.getTo()) || cTree.isDisabledNode(currEdge.getFrom())) {
-                hasNext();
-            } else if (cTree.isIgnoredEdge(currEdge) && !visited.contains(currEdge.getTo().getId())
-            /* && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty()) */ ) {
-                next();
-                hasNext();
-            }
-        }
-
-        return (currEdge != null
-                && (!visited.contains(currEdge.getTo().getId())));
-        // && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty()));
     }
 
     @Override
     public Edge next() {
-        if (currEdge != null) {
-            if (!cTree.isIgnoredEdge(currEdge)) {
-                visited.add(currEdge.getFrom().getId());
-                visited.add(currEdge.getTo().getId());
-            } else {
-                visited.remove(currEdge.getFrom().getId());
-            }
-            currentIdx = ++currentIdx % cTree.getTypes().size();
+        if (!hasNext()) {
+            throw new java.util.NoSuchElementException();
         }
+        Edge result = currEdge;
+        advanceCurrentEdge();
+        prepared = false;
+        return result;
+    }
 
+    private void advanceCurrentEdge() {
+        if (!cTree.isIgnoredEdge(currEdge)) {
+            visited.add(currEdge.getFrom().getId());
+            visited.add(currEdge.getTo().getId());
+        } else {
+            visited.remove(currEdge.getFrom().getId());
+        }
+        currentIdx = (currentIdx + 1) % cTree.getTypes().size();
         loadNodeTo();
-        return currEdge;
     }
 
     private void loadNodeTo() {

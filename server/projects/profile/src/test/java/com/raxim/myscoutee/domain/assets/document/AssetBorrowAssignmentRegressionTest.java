@@ -54,7 +54,7 @@ class AssetBorrowAssignmentRegressionTest {
         when(access.hasAcceptedParticipation(anyString(), anyString(), anyString())).thenReturn(true);
         when(repository.save(any(ActivitySubEventResource.class))).thenAnswer(call -> call.getArgument(0));
         service = new ActivitiesResourcesService(repository, mock(ActivitySubEventStageRuntimeRepository.class),
-                mock(ActivityEventsRepository.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)), assets, members, access,
+                mock(ActivityEventsRepository.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class), null), assets, members, access,
                 new ActivitySubEventResourceMapper(), mock(EventSlotReadModelService.class),
                 mock(ActivityTournamentGroupCounterService.class), mock(ObjectProvider.class), mock(MongoTemplate.class));
     }

@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "build": {
+    "privateBuildServices": [
+      "profilemanagement",
+      "nginx",
+      "minio",
+      "payment-simulator",
+      "mcp"
+    ],
+    "privateReloadServices": [
+      "profilemanagement",
+      "nginx",
+      "minio",
+      "payment-simulator",
+      "mcp"
+    ],
+    "rebuildImageEnvironments": [
+      "NGINX_BASE_IMAGE",
+      "NGINX_PRODUCTION_IMAGE",
+      "MYSCOUTEE_PRODUCTION_IMAGE",
+      "MINIO_PRODUCTION_IMAGE",
+      "PAYMENT_SIMULATOR_IMAGE",
+      "MCP_IMAGE"
+    ],
+    "nginxNativeImage": "ghcr.io/fssrepository/myscoutee-nginx:1.5.0@sha256:7ec3ba085e30314d5536401ac22e14064d30a5461bfc1a9ccbe0e6340b6c6c24"
+  },
+  "partialData": {
+    "requiredMigration": "006-release-system-defaults.js",
+    "mediaManifest": "seeds/023-seeded-image-webp/image-replacements.json",
+    "catalogCollections": [
+      "deploymentConfigurations",
+      "helpCenterRevisions",
+      "helpCenterGuideFields",
+      "ideaPosts",
+      "landingSlides",
+      "emailTemplates",
+      "notificationTemplates"
+    ],
+    "demoCollections": [
+      "campaigns",
+      "serviceOfferings",
+      "users"
+    ],
+    "databases": [
+      {
+        "name": "production_db",
+        "source": "myscoutee_db"
+      },
+      {
+        "name": "demo_db",
+        "source": "demo_db"
+      }
+    ],
+    "scripts": [
+      "migrate-production-data.sh",
+      "migrate-seeded-media.py",
+      "run-data-migrations.js",
+      "sync-release-system-seeds.js",
+      "sync-i18n-seeds.sh",
+      "release-project.sh",
+      "release-system-seeds.json",
+      "migration-settings.json"
+    ],
+    "installedScripts": [
+      "migrate-production-data.sh",
+      "run-data-migrations.js",
+      "sync-release-system-seeds.js",
+      "sync-i18n-seeds.sh",
+      "migration-settings.json"
+    ],
+    "apiService": "profilemanagement",
+    "startupScript": "sync-i18n-seeds.sh",
+    "startupArguments": "--prepare-only",
+    "mongoContainer": "mongodb"
+  },
+  "qualification": {
+    "registryService": "registry-demo",
+    "registrySource": "../myscoutee-registry",
+    "platform": "linux",
+    "imageContracts": {
+      "registry-demo": {
+        "user": "65532:65532",
+        "entrypoint": [
+          "/registry"
+        ],
+        "ports": [
+          "8080/tcp"
+        ]
+      },
+      "payment-simulator": {
+        "user": "65532:65532",
+        "entrypoint": [
+          "/payment-simulator"
+        ],
+        "ports": [
+          "18082/tcp"
+        ],
+        "workingDirectory": "/data"
+      }
+    },
+    "internalComposeServices": [
+      {
+        "service": "registry",
+        "label": "Explore registry"
+      },
+      {
+        "service": "payment-simulator",
+        "label": "payment simulator"
+      }
+    ],
+    "archiveContractServices": [
+      "payment-simulator"
+    ]
+  }
+}

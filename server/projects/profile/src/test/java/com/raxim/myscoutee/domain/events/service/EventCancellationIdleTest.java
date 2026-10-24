@@ -22,7 +22,7 @@ class EventCancellationIdleTest {
         when(jobs.configuredGroupIds(any())).thenReturn(Arrays.asList((String) null));
         when(scopes.workspaceCriteria("workspaceGroupId")).thenReturn(Criteria.where("workspaceGroupId").is(null));
         var worker = new EventCancellationService(mongo, payments,
-                new ScheduledMongoSessionRunner("same", "same"), mock(NotificationDelivery.class), null);
+                new ScheduledMongoSessionRunner("same", "same"), mock(NotificationDelivery.class), null, null, null, null, null, null, null);
         ReflectionTestUtils.setField(worker, "groupRules", jobs);
         ReflectionTestUtils.setField(worker, "jobGroupScope", scopes);
         ReflectionTestUtils.setField(worker, "paymentCancellations", cancellations);

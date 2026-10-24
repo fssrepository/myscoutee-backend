@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "issue": "MSC-121",
+  "projectName": "myscoutee-microservices",
+  "version": "1.5.0",
+  "sharedJavaIncludes": [
+    "common/delivery/**",
+    "common/config/mongo/AdminProjectionSignalOutbox.java"
+  ],
+  "repositoryFactoryBean": "com.raxim.myscoutee.common.config.repository.MongoRepositoryFactoryBean",
+  "sharedConfigurationImports": [
+    "com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler",
+    "com.raxim.myscoutee.common.delivery.OutboundRetryWorker"
+  ],
+  "services": {
+    "identity": {
+      "domains": [
+        "accounts",
+        "access",
+        "administration",
+        "platform",
+        "integrations"
+      ],
+      "libraries": [
+        "firebase",
+        "bouncycastle"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "data-redis",
+        "cache",
+        "data-rest"
+      ],
+      "memoryMiB": 1024,
+      "heapMiB": 512,
+      "runtimeStage": "jre-runtime"
+    },
+    "community": {
+      "domains": [
+        "groups",
+        "community",
+        "events",
+        "campaigns",
+        "content",
+        "feedback"
+      ],
+      "libraries": [
+        "jsoup"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "data-redis",
+        "cache",
+        "data-rest"
+      ],
+      "memoryMiB": 1024,
+      "heapMiB": 512,
+      "runtimeStage": "jre-runtime"
+    },
+    "communication": {
+      "domains": [
+        "chat",
+        "notifications",
+        "email",
+        "localization"
+      ],
+      "libraries": [
+        "firebase"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "data-redis",
+        "cache",
+        "websocket"
+      ],
+      "memoryMiB": 768,
+      "heapMiB": 384,
+      "runtimeStage": "jre-runtime"
+    },
+    "assets": {
+      "domains": [
+        "assets",
+        "media"
+      ],
+      "libraries": [
+        "s3",
+        "s3.http"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "cache"
+      ],
+      "memoryMiB": 768,
+      "heapMiB": 384,
+      "runtimeStage": "media-runtime"
+    },
+    "payments": {
+      "domains": [
+        "payments"
+      ],
+      "libraries": [
+        "stripe"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "cache"
+      ],
+      "memoryMiB": 768,
+      "heapMiB": 384,
+      "runtimeStage": "jre-runtime"
+    },
+    "affinity": {
+      "domains": [
+        "affinity"
+      ],
+      "libraries": [],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "data-redis",
+        "cache"
+      ],
+      "memoryMiB": 768,
+      "heapMiB": 384,
+      "runtimeStage": "jre-runtime"
+    },
+    "help": {
+      "domains": [
+        "help"
+      ],
+      "libraries": [
+        "jsoup"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "cache"
+      ],
+      "memoryMiB": 512,
+      "heapMiB": 256,
+      "runtimeStage": "jre-runtime"
+    },
+    "network": {
+      "domains": [
+        "operator",
+        "registry"
+      ],
+      "libraries": [
+        "bouncycastle"
+      ],
+      "starters": [
+        "web",
+        "actuator",
+        "security",
+        "validation",
+        "data-mongodb",
+        "cache"
+      ],
+      "memoryMiB": 768,
+      "heapMiB": 384,
+      "runtimeStage": "jre-runtime"
+    }
+  }
+}

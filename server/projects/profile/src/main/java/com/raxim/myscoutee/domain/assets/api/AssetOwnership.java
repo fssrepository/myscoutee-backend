@@ -11,7 +11,7 @@ public interface AssetOwnership extends AssetJobScopes, AssetMembershipFacts, As
     java.util.List<? extends Asset> findByOwnerUserId(String id);
     java.util.List<? extends Asset> findAll();
     Optional<? extends Asset> findByAssetId(String assetId);
-    interface Asset extends AssetChangeView, AssetMembershipFacts.Asset, AssetScoringFacts {
+    interface Asset extends AssetChangeView, AssetMembershipFacts.Asset, AssetScoringFacts, com.raxim.myscoutee.common.dto.AuditFields {
         String getStatusBeforeSuppression(); String getModerationStatus();
         com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto getPricing();
         Boolean getPoliciesEnabled(); String getTrashedAtIso();
@@ -20,11 +20,6 @@ public interface AssetOwnership extends AssetJobScopes, AssetMembershipFacts, As
         String getId();
         String getSyncKey();
         String getAssetId();
-        String getType();
-        String getTitle();
-        String getSubtitle();
-        String getCity();
-        String getCategory();
         Integer getCapacityTotal();
         Integer getQuantity();
         String getDetails();
@@ -33,10 +28,10 @@ public interface AssetOwnership extends AssetJobScopes, AssetMembershipFacts, As
         String getVisibility();
         Double getAffinity();
         Double getBoost();
-        String getCreatedDate();
-        String getCreatedUser();
-        String getUpdatedDate();
-        String getUpdatedUser();
+
+        
+
+        
         String getStatus(); String getOwnerUserId(); String getOwnerReleasedAtIso(); List<com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord> getRequests();
     }
     interface Request extends AssetMembershipFacts.Request, AssetScoringFacts.Request { String userId(); String status(); }

@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 def = "{'baseUrl': 1, 'registryScope': 1}",
                 unique = true)
 })
+@lombok.Getter @lombok.Setter
 public class OperatorRegistryEndpoint {
     @Id
     private String id;
@@ -24,51 +25,4 @@ public class OperatorRegistryEndpoint {
     private Boolean enabled;
     private Integer sortOrder;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public String getRegistryScope() {
-        return registryScope;
-    }
-
-    public void setRegistryScope(String registryScope) {
-        this.registryScope = registryScope;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
-    }
 }

@@ -23,13 +23,10 @@ public class FileUtil {
 
     public static void save(InputStream inputStream, String fileName) throws IOException {
         File serverFile = new File(fileName);
-        BufferedOutputStream buffStream = new BufferedOutputStream(new FileOutputStream(serverFile));
-        int bytesRead;
-        byte[] buffer = new byte[inputStream.available()];
-        if ((bytesRead = inputStream.read(buffer)) != -1) {
-            buffStream.write(buffer, 0, bytesRead);
+        // The caller owns the input. available() does not describe its total length.
+        try (BufferedOutputStream buffStream = new BufferedOutputStream(new FileOutputStream(serverFile))) {
+            inputStream.transferTo(buffStream);
         }
-        buffStream.close();
     }
 
     public static void load(String name, HttpServletResponse response) throws IOException {
@@ -62,9 +59,9 @@ public class FileUtil {
         response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
         response.setContentLength((int) file.length());
 
-        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-        FileCopyUtils.copy(inputStream, response.getOutputStream());
+        try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+        }
     }
 
     public static Pair<String, String> uuidToPath(String fileName, boolean isWrite) {

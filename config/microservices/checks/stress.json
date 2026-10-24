@@ -1,0 +1,6 @@
+{
+  "scenarios": [
+    "server-events-read",
+    "server-read-sweep"
+  ]
+}

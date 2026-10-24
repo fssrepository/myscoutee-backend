@@ -29,45 +29,13 @@ public class ScheduledMessageAuditService {
     }
 
     public String beginRun(EmailCampaignRule rule) {
-        String nowIso = Instant.now().toString();
-        ScheduledMessageRun run = new ScheduledMessageRun();
-        run.setId(new ObjectId().toHexString());
-        run.setRunId(UUID.randomUUID().toString());
-        run.setRuleKey(safeText(rule == null ? null : rule.getRuleKey()));
-        run.setScheduleType(safeText(rule == null ? null : rule.getScheduleType()));
-        run.setStatus("running");
-        run.setStartedAtIso(nowIso);
-        run.setAffectedCount(0);
-        run.setNotificationCount(0);
-        run.setEmailQueuedCount(0);
-        run.setFailedCount(0);
-        run.setDetail("Scheduled run started.");
-        run.setCreatedDate(nowIso);
-        run.setCreatedUser(UPDATED_BY);
-        run.setUpdatedDate(nowIso);
-        run.setUpdatedUser(UPDATED_BY);
-        return runsRepository.save(run).getRunId();
+        return beginRun(safeText(rule == null ? null : rule.getRuleKey()),
+                safeText(rule == null ? null : rule.getScheduleType()), "Scheduled run started.");
     }
 
     public String beginRun(ScheduledMessageTask task) {
-        String nowIso = Instant.now().toString();
-        ScheduledMessageRun run = new ScheduledMessageRun();
-        run.setId(new ObjectId().toHexString());
-        run.setRunId(UUID.randomUUID().toString());
-        run.setRuleKey(safeText(task == null ? null : task.getTaskKey()));
-        run.setScheduleType(safeText(task == null ? null : task.getActionKey()));
-        run.setStatus("running");
-        run.setStartedAtIso(nowIso);
-        run.setAffectedCount(0);
-        run.setNotificationCount(0);
-        run.setEmailQueuedCount(0);
-        run.setFailedCount(0);
-        run.setDetail("Scheduled task started.");
-        run.setCreatedDate(nowIso);
-        run.setCreatedUser(UPDATED_BY);
-        run.setUpdatedDate(nowIso);
-        run.setUpdatedUser(UPDATED_BY);
-        return runsRepository.save(run).getRunId();
+        return beginRun(safeText(task == null ? null : task.getTaskKey()),
+                safeText(task == null ? null : task.getActionKey()), "Scheduled task started.");
     }
 
     public void recordDelivery(
@@ -145,5 +113,26 @@ public class ScheduledMessageAuditService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String beginRun(String ruleKey, String scheduleType, String detail) {
+        String nowIso = Instant.now().toString();
+        ScheduledMessageRun run = new ScheduledMessageRun();
+        run.setId(new ObjectId().toHexString());
+        run.setRunId(UUID.randomUUID().toString());
+        run.setRuleKey(ruleKey);
+        run.setScheduleType(scheduleType);
+        run.setStatus("running");
+        run.setStartedAtIso(nowIso);
+        run.setAffectedCount(0);
+        run.setNotificationCount(0);
+        run.setEmailQueuedCount(0);
+        run.setFailedCount(0);
+        run.setDetail(detail);
+        run.setCreatedDate(nowIso);
+        run.setCreatedUser(UPDATED_BY);
+        run.setUpdatedDate(nowIso);
+        run.setUpdatedUser(UPDATED_BY);
+        return runsRepository.save(run).getRunId();
     }
 }

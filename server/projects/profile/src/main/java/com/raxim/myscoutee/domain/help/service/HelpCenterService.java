@@ -50,8 +50,7 @@ import com.raxim.myscoutee.domain.access.api.ConsentAuthorization;
 
 @Service
 public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.HelpCenter {
-    @org.springframework.beans.factory.annotation.Autowired
-    private AdministrativeActors adminModerationService;
+    private final AdministrativeActors adminModerationService;
     private static final String DOCUMENT_HELP = "help";
     private static final String DOCUMENT_PRIVACY = "privacy";
     private static final String DOCUMENT_TERMS = "terms";
@@ -84,7 +83,10 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
             AccountConsents accountConsents,
             OperationalTelemetry adminTelemetryService,
             AdministratorSettings appSettingsService,
-            ConsentAuthorization accessControlService) {
+            ConsentAuthorization accessControlService,
+            AdministrativeActors adminModerationService) {
+        this.adminModerationService = adminModerationService;
+
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
@@ -259,14 +261,8 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     private HelpCenterStateDto activateRevisionInGroup(String revisionId, HelpCenterAdminActionRequestDto request, String documentType) {
         String kind = documentKind(documentType);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
+        HelpCenterRevision target = requireEditableRevision(revisionId, kind);
         String normalizedRevisionId = normalize(revisionId);
-        HelpCenterRevision target = revisionsRepository.findById(normalizedRevisionId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found."));
-        if (!kind.equals(revisionKind(target)) || !java.util.Objects.equals(target.getBaseGroupId(), JobGroupContext.groupId())) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found.");
-        }
-        ensureEditableRevision(target);
-        ensureEditableContext(kind, revisionContext(target));
         String language = revisionLang(target);
         String targetContext = revisionContext(target);
         List<HelpCenterRevision> revisions = revisionsForKind(
@@ -300,14 +296,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     private HelpCenterStateDto deleteRevisionInGroup(String revisionId, HelpCenterAdminActionRequestDto request, String documentType) {
         String kind = documentKind(documentType);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
-        String normalizedRevisionId = normalize(revisionId);
-        HelpCenterRevision target = revisionsRepository.findById(normalizedRevisionId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found."));
-        if (!kind.equals(revisionKind(target)) || !java.util.Objects.equals(target.getBaseGroupId(), JobGroupContext.groupId())) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found.");
-        }
-        ensureEditableRevision(target);
-        ensureEditableContext(kind, revisionContext(target));
+        HelpCenterRevision target = requireEditableRevision(revisionId, kind);
         String language = revisionLang(target);
         String targetContext = revisionContext(target);
         boolean wasActive = Boolean.TRUE.equals(target.getActive());
@@ -726,38 +715,16 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     }
 
     private String supportedContentLang(String value) {
-        String normalized = normalize(value).toLowerCase(Locale.ROOT);
-        int semicolonIndex = normalized.indexOf(';');
-        if (semicolonIndex > 0) {
-            normalized = normalized.substring(0, semicolonIndex);
-        }
-        int dashIndex = normalized.indexOf('-');
-        if (dashIndex > 0) {
-            normalized = normalized.substring(0, dashIndex);
-        }
-        return List.of("en", "hu", "de", "es").contains(normalized) ? normalized : "";
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.supported(value, java.util.Locale.ROOT);
     }
 
     private String requestContentLang(String explicitLang, String acceptLanguage) {
-        if (StringUtils.hasText(normalize(explicitLang))) {
-            return contentLang(explicitLang);
-        }
-        for (String candidate : normalize(acceptLanguage).split(",")) {
-            String supportedLang = supportedContentLang(candidate);
-            if (StringUtils.hasText(supportedLang)) {
-                return supportedLang;
-            }
-        }
-        return DEFAULT_LANG;
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.requested(
+                explicitLang, acceptLanguage, java.util.Locale.ROOT, DEFAULT_LANG);
     }
 
     private String languageLabel(String lang) {
-        return switch (contentLang(lang)) {
-            case "hu" -> "Magyar";
-            case "de" -> "Deutsch";
-            case "es" -> "Español";
-            default -> "English";
-        };
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.label(contentLang(lang));
     }
 
     private String headerColor(String value) {
@@ -798,28 +765,11 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     }
 
     private String ensureAdmin(String adminUserId) {
-        String normalized = normalize(adminUserId);
-        if (configProperties.isFirebaseEnabled()) {
-            String email = resolveFirebaseEmail();
-            if (!appSettingsService.isAdminEmail(email)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
-            }
-            return StringUtils.hasText(normalized) ? normalized : email;
-        }
-        if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin demo access is restricted to demo data.");
-        }
-        return StringUtils.hasText(normalized) ? normalized : "admin";
+        return com.raxim.myscoutee.common.security.policy.ContentAdministrator.require(
+                adminUserId, configProperties.isFirebaseEnabled(), appSettingsService);
     }
 
-    private String resolveFirebaseEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof AuthenticatedActor firebasePrincipal) {
-            return normalize(firebasePrincipal.getEmail());
-        }
-        return normalize(authentication == null ? null : authentication.getName());
-    }
+
 
     private String slug(String value) {
         String normalized = normalize(value).toLowerCase(Locale.ROOT);
@@ -828,7 +778,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
         }
         return normalized
                 .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("^-+|-+$", "");
+                .transform(edgeText -> org.springframework.util.StringUtils.trimLeadingCharacter(org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '-'), '-'));
     }
 
     private String text(String value, String fallback) {
@@ -843,4 +793,17 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     private String privacyConsentSource(String value) {
         return "entry".equals(normalize(value)) ? "entry" : "settings";
     }
+
+    private HelpCenterRevision requireEditableRevision(String revisionId, String kind) {
+        String normalizedRevisionId = normalize(revisionId);
+        HelpCenterRevision target = revisionsRepository.findById(normalizedRevisionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found."));
+        if (!kind.equals(revisionKind(target)) || !java.util.Objects.equals(target.getBaseGroupId(), JobGroupContext.groupId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found.");
+        }
+        ensureEditableRevision(target);
+        ensureEditableContext(kind, revisionContext(target));
+        return target;
+    }
+
 }

@@ -1,0 +1,4 @@
+{
+  "registryScope": "demo:myscoutee",
+  "prometheusContainer": "msc121-observability-prometheus-1"
+}

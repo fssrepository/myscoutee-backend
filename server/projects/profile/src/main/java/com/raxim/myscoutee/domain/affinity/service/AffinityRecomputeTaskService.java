@@ -49,13 +49,25 @@ public class AffinityRecomputeTaskService implements com.raxim.myscoutee.domain.
     public static final String STATUS_DONE = "done";
     public static final String STATUS_FAILED = "failed";
 
-    @Autowired
     private JobAudience jobGroupScope;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
     @Autowired
+    void setJobGroupScope(JobAudience jobGroupScope) {
+        this.jobGroupScope = jobGroupScope;
+    }
+
+    private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setAccountProjections(com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections) {
+        this.accountProjections = accountProjections;
+    }
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases;
+
+    @Autowired
+    void setDatabases(com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases) {
+        this.databases = databases;
+    }
 
     private final AffinityRecomputeTasksRepository tasksRepository;
     private final AffinityRecomputeProperties properties;

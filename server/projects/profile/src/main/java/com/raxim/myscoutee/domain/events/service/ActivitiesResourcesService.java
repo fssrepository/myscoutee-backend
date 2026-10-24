@@ -1289,23 +1289,7 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
                 continue;
             }
             ActivitySubEventResource next = cloneRecord(record);
-            Map<String, List<String>> assignmentIds = filterAssignmentIds(next.getAssetAssignmentIds(), null);
-            assignmentIds.replaceAll((type, ids) -> ids.stream()
-                    .filter(id -> !normalizedAssetId.equals(normalizeId(id)))
-                    .toList());
-            assignmentIds.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-            next.setAssetAssignmentIds(assignmentIds);
-
-            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> settingsByType =
-                    filterSettings(next.getAssetSettingsByType(), null);
-            settingsByType.values().forEach(settings -> settings.remove(normalizedAssetId));
-            settingsByType.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-            next.setAssetSettingsByType(settingsByType);
-
-            Map<String, List<SubEventSupplyContributionEntryRecord>> supplyEntries =
-                    filterSupplyEntries(next.getSupplyContributionEntriesByAssetId(), null);
-            supplyEntries.remove(normalizedAssetId);
-            next.setSupplyContributionEntriesByAssetId(supplyEntries);
+            removeAssetAssignments(next, normalizedAssetId);
 
             Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(next, normalizedActorUserId);
             next.setResourceMetricsByType(toResourceMetricRecords(resourceMetricsByType(next, referencedAssets)));
@@ -1497,23 +1481,7 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
             }
 
             ActivitySubEventResource next = cloneRecord(record);
-            Map<String, List<String>> assignmentIds = filterAssignmentIds(next.getAssetAssignmentIds(), null);
-            assignmentIds.replaceAll((type, ids) -> ids.stream()
-                    .filter(id -> !normalizedAssetId.equals(normalizeId(id)))
-                    .toList());
-            assignmentIds.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-            next.setAssetAssignmentIds(assignmentIds);
-
-            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> settingsByType =
-                    filterSettings(next.getAssetSettingsByType(), null);
-            settingsByType.values().forEach(settings -> settings.remove(normalizedAssetId));
-            settingsByType.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-            next.setAssetSettingsByType(settingsByType);
-
-            Map<String, List<SubEventSupplyContributionEntryRecord>> supplyEntries =
-                    filterSupplyEntries(next.getSupplyContributionEntriesByAssetId(), null);
-            supplyEntries.remove(normalizedAssetId);
-            next.setSupplyContributionEntriesByAssetId(supplyEntries);
+            removeAssetAssignments(next, normalizedAssetId);
 
             Map<String, AssetDetailDto> referencedAssets = resolveReferencedAssetDetails(next, normalizedActorUserId);
             Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(next, referencedAssets);
@@ -2270,6 +2238,9 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEventId);
         String bookingOwnerId = normalizeId(request.booking().eventId());
+        if (normalizedOwnerId == null || normalizedSubEventId == null || bookingOwnerId == null) {
+            return false;
+        }
         boolean groupScoped = normalizedOwnerId.contains(":" + normalizedSubEventId + ":")
                 || bookingOwnerId.contains(":" + normalizedSubEventId + ":");
         return Objects.equals(normalizedSubEventId, normalizeId(request.booking().subEventId()))
@@ -2541,33 +2512,11 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
     }
 
     private Document toDocument(Object raw) {
-        if (raw instanceof Document document) {
-            return document;
-        }
-        if (raw instanceof Map<?, ?> map) {
-            Document document = new Document();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                if (entry.getKey() instanceof String key) {
-                    document.put(key, entry.getValue());
-                }
-            }
-            return document;
-        }
-        return new Document();
+        return com.raxim.myscoutee.common.config.mongo.MongoDocumentValues.toDocument(raw);
     }
 
     private List<String> normalizeStrings(Object rawValues) {
-        if (!(rawValues instanceof Collection<?> values)) {
-            return List.of();
-        }
-        LinkedHashSet<String> next = new LinkedHashSet<>();
-        for (Object rawValue : values) {
-            String value = normalizeId(String.valueOf(rawValue));
-            if (StringUtils.hasText(value)) {
-                next.add(value);
-            }
-        }
-        return new ArrayList<>(next);
+        return com.raxim.myscoutee.common.config.mongo.MongoDocumentValues.normalizeStrings(rawValues);
     }
 
     private String normalizeId(String value) {
@@ -2655,6 +2604,7 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEventId);
         String runtimeOwnerId = normalizedOwnerId;
+        if (runtimeOwnerId == null) return null;
         if (StringUtils.hasText(normalizedSubEventId)) {
             int groupOwnerMarker = normalizedOwnerId.indexOf(":" + normalizedSubEventId + ":");
             if (groupOwnerMarker > 0) {
@@ -2705,4 +2655,25 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
             String assetId,
             String resourceType) {
     }
+
+    private void removeAssetAssignments(ActivitySubEventResource next, String normalizedAssetId) {
+        Map<String, List<String>> assignmentIds = filterAssignmentIds(next.getAssetAssignmentIds(), null);
+        assignmentIds.replaceAll((type, ids) -> ids.stream()
+                .filter(id -> !normalizedAssetId.equals(normalizeId(id)))
+                .toList());
+        assignmentIds.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        next.setAssetAssignmentIds(assignmentIds);
+
+        Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> settingsByType =
+                filterSettings(next.getAssetSettingsByType(), null);
+        settingsByType.values().forEach(settings -> settings.remove(normalizedAssetId));
+        settingsByType.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        next.setAssetSettingsByType(settingsByType);
+
+        Map<String, List<SubEventSupplyContributionEntryRecord>> supplyEntries =
+                filterSupplyEntries(next.getSupplyContributionEntriesByAssetId(), null);
+        supplyEntries.remove(normalizedAssetId);
+        next.setSupplyContributionEntriesByAssetId(supplyEntries);
+    }
+
 }

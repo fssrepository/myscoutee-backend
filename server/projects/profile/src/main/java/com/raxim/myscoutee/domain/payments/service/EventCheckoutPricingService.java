@@ -126,7 +126,7 @@ public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.p
             slotIds.add(slotId == null ? "" : slotId);
         }
         if (slotIds.isEmpty()) slotIds.add("");
-        Instant earliest = null;
+        Instant earliest = Instant.MAX;
         for (String slotId : slotIds) {
             var slot = resolveSlot(parent, slotId);
             String startAt = slot == null ? parent.getStartAtIso() : slot.startAtIso();
@@ -135,7 +135,7 @@ public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.p
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Checkout event start time is required.");
             }
             Instant start = Instant.ofEpochMilli(startMillis);
-            if (earliest == null || start.isBefore(earliest)) earliest = start;
+            if (start.isBefore(earliest)) earliest = start;
         }
         int leadHours = parent.getPricing() != null && !Boolean.FALSE.equals(parent.getPricing().enabled())
                 && !Boolean.FALSE.equals(parent.getPaymentDeadlineEnabled())
@@ -411,8 +411,9 @@ public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.p
 
     private int eventDefinitionPriority(Event event) {
         int priority = event != null && event.getPricing() != null ? 4 : 0;
-        if (event != null && normalizeId(event.getOwnerUserId()) != null
-                && normalizeId(event.getOwnerUserId()).equals(normalizeId(event.getCreatorUserId()))) {
+        String ownerId = normalizeId(event == null ? null : event.getOwnerUserId());
+        if (event != null && ownerId != null
+                && ownerId.equals(normalizeId(event.getCreatorUserId()))) {
             priority += 2;
         }
         if (event != null && "A".equals(event.getStatus())) {
@@ -751,7 +752,7 @@ public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.p
             EventCheckoutBasketItemDto incoming,
             String currency) {
         String id = normalizeId(incoming == null ? null : incoming.id());
-        if (!StringUtils.hasText(id)) {
+        if (incoming == null || !StringUtils.hasText(id)) {
             return null;
         }
         return new EventCheckoutBasketItemDto(
@@ -934,22 +935,7 @@ public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.p
     }
 
     private long sortableDate(String value) {
-        if (!StringUtils.hasText(value)) {
-            return 0L;
-        }
-        try {
-            return Instant.parse(value.trim()).toEpochMilli();
-        } catch (DateTimeParseException ignored) {
-            try {
-                return LocalDateTime.parse(value.trim()).toInstant(ZoneOffset.UTC).toEpochMilli();
-            } catch (DateTimeParseException secondIgnored) {
-                try {
-                    return LocalDate.parse(value.trim()).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
-                } catch (DateTimeParseException thirdIgnored) {
-                    return 0L;
-                }
-            }
-        }
+        return com.raxim.myscoutee.common.util.TimeValues.sortableDate(value);
     }
 
     private String slotDateKey(String startAtIso, String fallback) {

@@ -66,14 +66,14 @@ public class FeedbackService {
     private static final DateTimeFormatter FEEDBACK_LABEL_FORMATTER =
             DateTimeFormatter.ofPattern("EEE, MMM d HH:mm", Locale.US).withZone(ZoneOffset.UTC);
 
-    @org.springframework.beans.factory.annotation.Autowired private FeedbackEvaluationService evaluations;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.groups.api.CommunityAuthority authority;
+    private final FeedbackEvaluationService evaluations;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
+    private final com.raxim.myscoutee.domain.groups.api.CommunityAuthority authority;
     private final SelectedProfile homeUserProfileService;
     private final com.raxim.myscoutee.domain.accounts.api.FeedbackSession feedbackSession;
     private final EventOwnershipReads activityEventsRepository;
     private final MingleEncounters mingleRoundsRepository;
-    @org.springframework.beans.factory.annotation.Autowired private FeedbackCounterWork counterWork;
+    private final FeedbackCounterWork counterWork;
     private final FeedbackStatesRepository feedbackStatesRepository;
     private final FeedbackAnswersRepository feedbackAnswersRepository;
     private final ProfileSummaries usersRepository;
@@ -97,7 +97,16 @@ public class FeedbackService {
             AccessPermissions accessControlService,
             ActivityCounters userActivityCountersService,
             FeedbackStatMapper feedbackStatMapper,
-            NotificationDelivery notificationOutboxService) {
+            NotificationDelivery notificationOutboxService,
+            FeedbackEvaluationService evaluations,
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory groups,
+            com.raxim.myscoutee.domain.groups.api.CommunityAuthority authority,
+            FeedbackCounterWork counterWork) {
+        this.evaluations = evaluations;
+        this.groups = groups;
+        this.authority = authority;
+        this.counterWork = counterWork;
+
         this.homeUserProfileService = homeUserProfileService;
         this.feedbackSession = feedbackSession;
         this.activityEventsRepository = activityEventsRepository;
@@ -250,7 +259,7 @@ public class FeedbackService {
         String userId = homeUserProfileService.resolveSelectedUserId(request == null ? null : request.userId());
         FeedbackDetailDto feedback = request == null ? null : request.feedback();
         String eventId = normalizeId(feedback == null ? null : feedback.eventId());
-        if (!StringUtils.hasText(userId) || !StringUtils.hasText(eventId)) {
+        if (feedback == null || !StringUtils.hasText(userId) || !StringUtils.hasText(eventId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A feedback user and event are required.");
         }
         if (!accessControlService.canCurrentActorSubmitFeedback(userId, eventId)) {
@@ -665,7 +674,7 @@ public class FeedbackService {
 
     private boolean isCanonicalFeedbackEvent(Event record) {
         String creatorUserId = normalizeId(record == null ? null : record.getCreatorUserId());
-        return StringUtils.hasText(creatorUserId)
+        return record != null && StringUtils.hasText(creatorUserId)
                 && creatorUserId.equals(normalizeId(record.getOwnerUserId()));
     }
 
@@ -766,7 +775,7 @@ public class FeedbackService {
             ProfileSummary activeUser,
             Map<String, Set<String>> minglePeers) {
         String eventId = normalizeId(record == null ? null : record.getSourceId());
-        if (!StringUtils.hasText(eventId) || !isFeedbackUnlocked(record)) {
+        if (record == null || !StringUtils.hasText(eventId) || !isFeedbackUnlocked(record)) {
             return List.of();
         }
         String activeUserId = normalizeId(activeUser == null ? null : activeUser.getUserId());
@@ -885,7 +894,8 @@ public class FeedbackService {
             String activeUserId) {
         List<FeedbackDto> items = new ArrayList<>();
         for (Event record : records == null ? List.<Event>of() : records) {
-            String eventId = normalizeId(record == null ? null : record.getSourceId());
+            if (record == null) { continue; }
+            String eventId = normalizeId(record.getSourceId());
             if (!StringUtils.hasText(eventId)) {
                 continue;
             }
@@ -924,7 +934,8 @@ public class FeedbackService {
             Map<String, List<FeedbackReceivedEntryDto>> receivedByEventId) {
         List<FeedbackDto> items = new ArrayList<>();
         for (Event record : records == null ? List.<Event>of() : records) {
-            String eventId = normalizeId(record == null ? null : record.getSourceId());
+            if (record == null) { continue; }
+            String eventId = normalizeId(record.getSourceId());
             if (!StringUtils.hasText(eventId)) {
                 continue;
             }
@@ -1052,7 +1063,8 @@ public class FeedbackService {
         Map<String, String> removedEventDatesById = new LinkedHashMap<>();
         Map<String, String> organizerNotesByEventId = new LinkedHashMap<>();
         for (FeedbackStateDto state : states == null ? List.<FeedbackStateDto>of() : states) {
-            String eventId = normalizeId(state == null ? null : state.eventId());
+            if (state == null) { continue; }
+            String eventId = normalizeId(state.eventId());
             if (!StringUtils.hasText(eventId)) {
                 continue;
             }
@@ -1120,7 +1132,8 @@ public class FeedbackService {
             List<FeedbackReceivedEventDto> receivedEvents) {
         Map<String, List<FeedbackReceivedEntryDto>> entriesByEventId = new LinkedHashMap<>();
         for (FeedbackReceivedEventDto event : receivedEvents == null ? List.<FeedbackReceivedEventDto>of() : receivedEvents) {
-            String eventId = normalizeId(event == null ? null : event.eventId());
+            if (event == null) { continue; }
+            String eventId = normalizeId(event.eventId());
             if (StringUtils.hasText(eventId)) {
                 entriesByEventId.put(eventId, event.entries() == null ? List.of() : List.copyOf(event.entries()));
             }
@@ -1572,21 +1585,7 @@ public class FeedbackService {
     }
 
     private String initialsFromText(String value) {
-        String normalizedValue = safeText(value);
-        if (!StringUtils.hasText(normalizedValue)) {
-            return "";
-        }
-        String[] parts = normalizedValue.split("\\s+");
-        StringBuilder initials = new StringBuilder();
-        for (String part : parts) {
-            if (!part.isEmpty()) {
-                initials.append(Character.toUpperCase(part.charAt(0)));
-            }
-            if (initials.length() >= 2) {
-                break;
-            }
-        }
-        return initials.toString();
+        return com.raxim.myscoutee.common.util.TextValues.firstTwoInitials(value);
     }
 
     private static final class ReceivedFeedbackEntryAccumulator {

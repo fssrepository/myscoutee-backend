@@ -338,26 +338,11 @@ public class ChatMessageMapper {
     }
 
     private String resolveUserImageUrl(ProfileSummary user) {
-        if (user == null || user.getImages() == null) {
-            return "";
-        }
-        return user.getImages().stream()
-                .map(this::safeText)
-                .filter(StringUtils::hasText)
-                .findFirst()
-                .orElse("");
+        return com.raxim.myscoutee.domain.chat.service.ChatPagePresentation.resolveUserImageUrl(user);
     }
 
     private String buildInitials(String value) {
-        String normalized = safeText(value);
-        if (!StringUtils.hasText(normalized)) {
-            return "CH";
-        }
-        String[] parts = normalized.split("\\s+");
-        if (parts.length == 1) {
-            return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase(Locale.US);
-        }
-        return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase(Locale.US);
+        return com.raxim.myscoutee.domain.chat.service.ChatPagePresentation.buildInitials(value);
     }
 
     private String normalizeGender(String value) {

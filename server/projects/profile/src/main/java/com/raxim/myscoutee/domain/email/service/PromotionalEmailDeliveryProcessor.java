@@ -22,12 +22,9 @@ import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 
 @Service
 public class PromotionalEmailDeliveryProcessor {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PromotionalEmailDeliveryProcessor.class);
     private static final String UPDATED_BY = "email-delivery";
@@ -41,7 +38,14 @@ public class PromotionalEmailDeliveryProcessor {
             EmailProperties emailProperties,
             EmailOutboxRepository emailOutboxRepository,
             MongoTemplate mongoTemplate,
-            EmailProviderGateway emailProviderGateway) {
+            EmailProviderGateway emailProviderGateway,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.groupRules = groupRules;
+        this.jobGroupScope = jobGroupScope;
+        this.groupDatabases = groupDatabases;
+
         this.emailProperties = emailProperties;
         this.emailOutboxRepository = emailOutboxRepository;
         this.mongoTemplate = mongoTemplate;

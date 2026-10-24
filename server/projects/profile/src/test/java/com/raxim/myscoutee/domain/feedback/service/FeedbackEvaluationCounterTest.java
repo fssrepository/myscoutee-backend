@@ -39,7 +39,7 @@ class FeedbackEvaluationCounterTest {
                         && ((Collection<?>)call.getArgument(1)).contains(u.getAccountUserId())).toList())
                         .when(profiles).findByWorkspaceGroupIdAndAccountUserIdIn(anyString(),any());
                 var counters=spy(new AccountMenuCounterService(mongo));
-                var service=new FeedbackEvaluationService(mongo,profiles,mock(NotificationDelivery.class),counters);
+                var service=new FeedbackEvaluationService(mongo,profiles,mock(NotificationDelivery.class),counters, null, null);
                 var offerings=mock(com.raxim.myscoutee.domain.community.api.ServiceOfferings.class);
                 org.springframework.test.util.ReflectionTestUtils.setField(service,"serviceOfferings",offerings);
                 mongo.save(new FeedbackEvaluation("feedback",BaseGroups.COMMUNITY_BASE_ID,"case","Case",null,"provider","viewer",

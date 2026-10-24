@@ -39,7 +39,7 @@ class AdminPaymentSimulatorControllerTest {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 new FirebasePrincipal("work-admin", null, "DEMO", profile), null, List.of()));
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
-        var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users);
+        var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null);
         org.springframework.test.util.ReflectionTestUtils.setField(profiles, "mongo", mongo);
         new AdminPaymentSimulatorController(client, moderation, mongo, profiles).createAuthorizationAccess();
         var scope = ArgumentCaptor.forClass(PaymentSimulatorRegistrationClient.AuthorizationScope.class);

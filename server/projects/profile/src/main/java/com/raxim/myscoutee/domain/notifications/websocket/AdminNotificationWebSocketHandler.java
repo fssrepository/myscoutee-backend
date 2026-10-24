@@ -91,7 +91,8 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String resolveQueryValue(WebSocketSession session, String key) {
-        String query = session.getUri() == null ? "" : session.getUri().getRawQuery();
+        var uri = session.getUri();
+        String query = uri == null ? "" : uri.getRawQuery();
         if (!StringUtils.hasText(query)) {
             return "";
         }

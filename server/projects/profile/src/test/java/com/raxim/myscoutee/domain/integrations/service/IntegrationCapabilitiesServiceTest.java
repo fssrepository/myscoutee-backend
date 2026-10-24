@@ -39,7 +39,7 @@ class IntegrationCapabilitiesServiceTest {
     private final CommunityGroupsRepository repository = mock(CommunityGroupsRepository.class);
     private final AccessControlService access = mock(AccessControlService.class);
     private final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
-    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(Optional.of(new GroupIntegrationCapabilities(groups, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(repository), access)), roles);
+    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(Optional.of(new GroupIntegrationCapabilities(groups, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(repository, null), access)), roles);
 
     private UsernamePasswordAuthenticationToken authentication(Users profile) {
         var auth = new UsernamePasswordAuthenticationToken(new FirebasePrincipal(profile.getUserId(), null, "INTEGRATION", profile), null, List.of());
@@ -92,6 +92,9 @@ class IntegrationCapabilitiesServiceTest {
         var auth = authentication(profile);
         auth.setDetails(new AuthenticatedIntegrationClient("other", "key", "client"));
         assertThatThrownBy(() -> service.describe(auth)).isInstanceOf(ResponseStatusException.class);
+        auth.setDetails(null);
+        assertThatThrownBy(() -> service.describe(auth)).isInstanceOf(ResponseStatusException.class);
+        assertThatThrownBy(() -> service.requireClient(auth)).isInstanceOf(ResponseStatusException.class);
         verifyNoInteractions(groups, repository, access);
     }
     @Test void roleDiscoveryAndExecutionRequireReadAndCurrentRoleWithoutWrites() {

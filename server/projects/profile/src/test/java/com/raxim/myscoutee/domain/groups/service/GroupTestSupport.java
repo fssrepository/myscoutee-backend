@@ -18,7 +18,7 @@ public final class GroupTestSupport {
                             org.springframework.data.mongodb.core.query.Criteria.where("userId").in(call.getArgument(0, java.util.Collection.class))),
                             com.raxim.myscoutee.domain.accounts.document.Users.class)
                         : Answers.RETURNS_DEFAULTS.answer(call));
-        var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users);
+        var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null);
         ReflectionTestUtils.setField(profiles, "mongo", mongo);
         return new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(profiles,
                 Optional.of(directory(mongo)), java.util.List.of(
@@ -30,7 +30,7 @@ public final class GroupTestSupport {
                 "findById".equals(call.getMethod().getName())
                         ? Optional.ofNullable(mongo.findById(call.getArgument(0), CommunityGroup.class))
                         : Answers.RETURNS_DEFAULTS.answer(call));
-        var service = new GroupDirectoryService(repository);
+        var service = new GroupDirectoryService(repository, null);
         ReflectionTestUtils.setField(service, "mongo", mongo);
         return service;
     }

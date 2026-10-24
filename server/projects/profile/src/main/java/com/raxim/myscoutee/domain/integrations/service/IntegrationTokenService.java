@@ -179,7 +179,7 @@ public class IntegrationTokenService {
                         .set("lastUsedAtIso", now),
                 FindAndModifyOptions.options().returnNew(true),
                 IntegrationToken.class);
-        if (!isActive(token) || !matchesScope(token, scope)) {
+        if (token == null || !isActive(token) || !matchesScope(token, scope)) {
             return null;
         }
         if (!StringUtils.hasText(token.getClaimedAtIso())) {

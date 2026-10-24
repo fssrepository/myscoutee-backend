@@ -1,0 +1,28 @@
+{
+  "retryCatalogMigration": {
+    "newCollections": [
+      "adminWorkerSignals",
+      "affinityAdminSignalOutbox",
+      "affinityAdminSignalOutboxRetries",
+      "eventAdminSignalOutbox",
+      "eventAdminSignalOutboxRetries",
+      "integrationWebhookRetries",
+      "mediaDeletionRetries",
+      "mediaDeletions",
+      "notificationAdminSignalOutbox",
+      "notificationAdminSignalOutboxRetries"
+    ],
+    "ruleKeys": [
+      "affinity-admin-signals",
+      "events-admin-signals",
+      "notifications-admin-signals"
+    ],
+    "messageKeys": [
+      "admin.jobs.rule.admin-signals.description",
+      "admin.jobs.rule.affinity-admin-signals",
+      "admin.jobs.rule.events-admin-signals",
+      "admin.jobs.rule.notifications-admin-signals"
+    ]
+  },
+  "fixtureErrorStderr": true
+}

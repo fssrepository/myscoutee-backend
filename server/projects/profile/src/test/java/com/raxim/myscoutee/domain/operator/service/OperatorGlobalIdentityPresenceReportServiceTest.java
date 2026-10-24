@@ -160,4 +160,13 @@ class OperatorGlobalIdentityPresenceReportServiceTest {
                         legacyLastAttemptHash,
                         retryRequestHash);
     }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"-10,1", "0,1", "1,1", "2,2", "5,16", "12,1440", "2147483647,1440"})
+    void retryBackoffHasOneMinuteFloorAndOneDayCeiling(int attempts, long expectedMinutes) {
+        java.time.Duration delay = org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                OperatorGlobalIdentityPresenceReportService.class, "retryDelay", attempts);
+        assertThat(delay).isEqualTo(java.time.Duration.ofMinutes(expectedMinutes));
+    }
+
 }

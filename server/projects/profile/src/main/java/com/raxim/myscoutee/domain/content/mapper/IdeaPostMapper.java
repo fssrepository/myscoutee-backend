@@ -56,20 +56,11 @@ public class IdeaPostMapper {
     }
 
     private String languageLabel(String lang) {
-        return switch (contentLang(lang)) {
-            case "hu" -> "Magyar";
-            case "de" -> "Deutsch";
-            case "es" -> "Español";
-            default -> "English";
-        };
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.label(contentLang(lang));
     }
 
     private String contentKeyFromId(String id) {
-        String normalized = normalize(id);
-        if (!StringUtils.hasText(normalized)) {
-            return "";
-        }
-        return normalized.replaceFirst("-(hu|de|es)$", "");
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.contentKey(id);
     }
 
     private String text(String value, String fallback) {

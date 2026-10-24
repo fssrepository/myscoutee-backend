@@ -15,12 +15,9 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsReposi
 
 @Service
 public class ActivitiesMingleWorkerService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesMingleWorkerService.class);
     private static final List<String> TIMED_STATUSES = List.of(
@@ -32,7 +29,14 @@ public class ActivitiesMingleWorkerService {
 
     public ActivitiesMingleWorkerService(
             ActivityMingleSessionsRepository sessionsRepository,
-            ActivitiesMingleService mingleService) {
+            ActivitiesMingleService mingleService,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.groupRules = groupRules;
+        this.jobGroupScope = jobGroupScope;
+        this.groupDatabases = groupDatabases;
+
         this.sessionsRepository = sessionsRepository;
         this.mingleService = mingleService;
     }

@@ -1,4 +1,8 @@
 package com.raxim.myscoutee.domain.accounts.service;
+
+import static com.raxim.myscoutee.common.util.TextValues.distinctIds;
+import static com.raxim.myscoutee.common.util.TextValues.trim;
+import static com.raxim.myscoutee.domain.events.api.EventOwnership.normalizedStatus;
 import com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.FeedbackBucketDelta;
 
 import com.raxim.myscoutee.domain.events.api.ParticipationTickets;
@@ -41,7 +45,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
 public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.FeedbackEvaluationCounters, com.raxim.myscoutee.domain.accounts.api.ActivityCounters {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
+    private final com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
     private final OrganizerFollowingService organizerFollowingService;
 
     public void expireFollowingCounters(Instant now) {
@@ -87,7 +91,10 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             EventWatchDirectory eventWatchSubscriptionsRepository,
             ParticipationTickets eventParticipationTicketService,
             MongoTemplate mongoTemplate,
-            OrganizerFollowingService organizerFollowingService) {
+            OrganizerFollowingService organizerFollowingService,
+            com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics) {
+        this.contentStatistics = contentStatistics;
+
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -100,7 +107,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     public void refreshEventCountersForSourceIds(Collection<String> sourceIds) {
-        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        List<String> normalizedSourceIds = distinctIds(sourceIds);
         if (normalizedSourceIds.isEmpty()) {
             return;
         }
@@ -109,7 +116,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             collectEventUserIds(userIds, event);
         }
         for (Member member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, normalizedSourceIds)) {
-            String userId = normalizeId(member == null ? null : member.getUserId());
+            String userId = trim(member == null ? null : member.getUserId());
             if (StringUtils.hasText(userId)) {
                 userIds.add(userId);
             }
@@ -120,7 +127,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     public void refreshEventCountersForUsers(Collection<String> userIds) {
-        var affected = new LinkedHashSet<>(normalizeIds(userIds));
+        var affected = new LinkedHashSet<>(distinctIds(userIds));
         usersRepository.findByUserIdIn(affected).stream().map(Users::getAccountUserId)
                 .filter(StringUtils::hasText).forEach(affected::add);
         for (String userId : affected) {
@@ -141,10 +148,10 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             Collection<String> addedUserIds,
             Collection<String> removedUserIds) {
         Map<String, Integer> deltasByUserId = new LinkedHashMap<>();
-        for (String userId : normalizeIds(addedUserIds)) {
+        for (String userId : distinctIds(addedUserIds)) {
             deltasByUserId.merge(userId, 1, Integer::sum);
         }
-        for (String userId : normalizeIds(removedUserIds)) {
+        for (String userId : distinctIds(removedUserIds)) {
             deltasByUserId.merge(userId, -1, Integer::sum);
         }
         deltasByUserId.entrySet().removeIf(entry -> entry.getValue() == 0);
@@ -166,7 +173,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     public UserEventCountersDto readStoredEventCounters(String userId) {
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = trim(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return emptyEventCountersDto();
         }
@@ -198,7 +205,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
 
 
     public void refreshAssetCountersForUser(String userId) {
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = trim(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
@@ -218,7 +225,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             boolean wasRemoved,
             boolean isSubmitted,
             boolean isRemoved) {
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = trim(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
@@ -283,7 +290,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         Set<String> sourceIds = new LinkedHashSet<>();
         Set<String> watchedSourceIds = eventWatchSubscriptionsRepository
                 .watchedEventIds(userId).stream()
-                .map(this::normalizeId)
+                .map(com.raxim.myscoutee.common.util.TextValues::trim)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         List<? extends Member> storedMemberships = activityMembersRepository
@@ -293,14 +300,14 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 .filter(Objects::nonNull)
                 .filter(member -> isDeletedMembershipStatus(member.getStatus()))
                 .map(Member::getOwnerId)
-                .map(this::normalizeId)
+                .map(com.raxim.myscoutee.common.util.TextValues::trim)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Set<String> suppressedMembershipSourceIds = memberships.stream()
                 .filter(Objects::nonNull)
                 .filter(this::isRestorableSuppressedMembership)
                 .map(Member::getOwnerId)
-                .map(this::normalizeId)
+                .map(com.raxim.myscoutee.common.util.TextValues::trim)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         collectSourceIds(sourceIds, activityEventsRepository.findDirectOwnerEvents(userId));
@@ -328,7 +335,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         Set<String> countedSources = new LinkedHashSet<>();
         Set<String> allBucketSources = new LinkedHashSet<>();
         for (Event event : preferredBySourceId.values()) {
-            String sourceId = normalizeId(event.getSourceId());
+            String sourceId = trim(event.getSourceId());
             if (!countedSources.add(sourceId)) {
                 continue;
             }
@@ -402,7 +409,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 continue;
             }
             int pending = pendingAssetRequestCount(asset);
-            switch (safeText(asset.getType())) {
+            switch (trim(asset.getType())) {
                 case AssetCatalog.TYPE_TRANSPORT -> {
                     cars += 1;
                     carsPending += pending;
@@ -434,8 +441,8 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         }
         return (int) asset.getRequests().stream()
                 .filter(Objects::nonNull)
-                .filter(request -> "pending".equalsIgnoreCase(safeText(request.status())))
-                .filter(request -> !"manual".equalsIgnoreCase(safeText(request.requestKind())))
+                .filter(request -> "pending".equalsIgnoreCase(trim(request.status())))
+                .filter(request -> !"manual".equalsIgnoreCase(trim(request.requestKind())))
                 .count();
     }
 
@@ -452,7 +459,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         long ticketCount = tickets.stream()
                 .filter(Objects::nonNull)
                 .map(Event::getSourceId)
-                .map(this::normalizeId)
+                .map(com.raxim.myscoutee.common.util.TextValues::trim)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .count();
@@ -504,7 +511,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private void updateEventCounters(String userId, Users.UserActivitiesRecord next) {
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = trim(userId);
         if (!StringUtils.hasText(normalizedUserId) || next == null) {
             return;
         }
@@ -557,7 +564,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private void updateAssetCounters(String userId, Users.UserActivitiesRecord next) {
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = trim(userId);
         if (!StringUtils.hasText(normalizedUserId) || next == null) {
             return;
         }
@@ -604,7 +611,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private void updateFeedbackCounters(String userId, Users.UserActivitiesRecord next) {
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = trim(userId);
         if (!StringUtils.hasText(normalizedUserId) || next == null) {
             return;
         }
@@ -678,18 +685,14 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         Set<String> userIds = new LinkedHashSet<>();
         addUserId(userIds, event == null ? null : event.ownerUserId());
         addUserId(userIds, event == null ? null : event.creatorUserId());
-        safeStrings(event == null ? List.of() : event.admins()).forEach(userIds::add);
+        distinctIds(event == null ? List.of() : event.admins()).forEach(userIds::add);
         return userIds;
     }
 
 
 
     private Instant parseInstant(String value) {
-        try {
-            return StringUtils.hasText(value) ? Instant.parse(value) : null;
-        } catch (RuntimeException ignored) {
-            return null;
-        }
+        return com.raxim.myscoutee.common.util.TimeValues.parseExactInstant(value);
     }
 
 
@@ -703,13 +706,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             String userId,
             String bucket,
             int amount) {
-        if (!StringUtils.hasText(userId) || amount == 0) {
-            return;
-        }
-        deltasByUserId.merge(
-                userId,
-                FeedbackBucketDelta.forBucket(bucket, amount),
-                FeedbackBucketDelta::plus);
+        com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.accumulate(deltasByUserId, userId, bucket, amount);
     }
 
     private int applyFeedbackBucketDeltas(Map<String, FeedbackBucketDelta> deltasByUserId) {
@@ -718,7 +715,8 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         }
         int updated = 0;
         for (Users user : usersRepository.findByUserIdIn(deltasByUserId.keySet())) {
-            String userId = normalizeId(user == null ? null : user.getUserId());
+            if (user == null) { continue; }
+            String userId = trim(user.getUserId());
             FeedbackBucketDelta delta = deltasByUserId.get(userId);
             if (delta == null) {
                 continue;
@@ -748,11 +746,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         }
         addUserId(userIds, event.getOwnerUserId());
         addUserId(userIds, event.getCreatorUserId());
-        safeStrings(event.getAdmins()).forEach(userIds::add);
+        distinctIds(event.getAdmins()).forEach(userIds::add);
     }
 
     private void addUserId(Set<String> userIds, String userId) {
-        String normalized = normalizeId(userId);
+        String normalized = trim(userId);
         if (StringUtils.hasText(normalized)) {
             userIds.add(normalized);
         }
@@ -761,7 +759,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private Map<String, Event> preferredEventsBySourceId(Collection<? extends Event> events, String userId) {
         Map<String, Event> preferred = new LinkedHashMap<>();
         for (Event event : events == null ? List.<Event>of() : events) {
-            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            String sourceId = trim(event == null ? null : event.getSourceId());
             if (!StringUtils.hasText(sourceId)) {
                 continue;
             }
@@ -776,11 +774,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private void collectSourceIds(Set<String> sourceIds, Collection<? extends Event> events) {
         for (Event event : events == null ? List.<Event>of() : events) {
             String parentEventId = isGeneratedSlotRecord(event)
-                    ? normalizeId(event.getParentEventId())
+                    ? trim(event.getParentEventId())
                     : "";
             String sourceId = StringUtils.hasText(parentEventId)
                     ? parentEventId
-                    : normalizeId(event == null ? null : event.getSourceId());
+                    : trim(event == null ? null : event.getSourceId());
             if (StringUtils.hasText(sourceId)) {
                 sourceIds.add(sourceId);
             }
@@ -790,56 +788,56 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private boolean isGeneratedSlotRecord(Event event) {
         return event != null
                 && (Boolean.TRUE.equals(event.getGenerated())
-                || StringUtils.hasText(normalizeId(event.getParentEventId()))
-                || "slot".equals(safeText(event.getEventType())));
+                || StringUtils.hasText(trim(event.getParentEventId()))
+                || "slot".equals(trim(event.getEventType())));
     }
 
     private int eventPreferenceScore(Event event, String userId) {
         if (event == null) {
             return 0;
         }
-        String normalizedUserId = normalizeId(userId);
-        return (normalizedUserId.equals(normalizeId(event.getOwnerUserId())) ? 64 : 0)
+        String normalizedUserId = trim(userId);
+        return (normalizedUserId.equals(trim(event.getOwnerUserId())) ? 64 : 0)
                 + (isTrashScopeStatus(event) ? 0 : 16)
-                + (isHostingRecordForUser(event, normalizeId(event.getCreatorUserId())) ? 8 : 0)
+                + (isHostingRecordForUser(event, trim(event.getCreatorUserId())) ? 8 : 0)
                 + (isActiveEventStatus(event) ? 2 : 0)
-                + (!safeStrings(event.getAdmins()).isEmpty() ? 1 : 0);
+                + (!distinctIds(event.getAdmins()).isEmpty() ? 1 : 0);
     }
 
     private boolean isHostingRecordForUser(Event event, String userId) {
         if (event == null) {
             return false;
         }
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = trim(userId);
         return StringUtils.hasText(normalizedUserId)
-                && (normalizedUserId.equals(normalizeId(event.getCreatorUserId()))
-                        || safeStrings(event.getAdmins()).contains(normalizedUserId));
+                && (normalizedUserId.equals(trim(event.getCreatorUserId()))
+                        || distinctIds(event.getAdmins()).contains(normalizedUserId));
     }
 
     private boolean isInvitationForUser(Event event, String userId) {
-        return event != null && safeStrings(event.getInvitedMemberUserIds()).contains(normalizeId(userId));
+        return event != null && distinctIds(event.getInvitedMemberUserIds()).contains(trim(userId));
     }
 
     private boolean isPendingRequestForUser(Event event, String userId) {
-        return event != null && safeStrings(event.getPendingRequestMemberUserIds()).contains(normalizeId(userId));
+        return event != null && distinctIds(event.getPendingRequestMemberUserIds()).contains(trim(userId));
     }
 
     private boolean isAcceptedMemberForUser(Event event, String userId) {
-        return event != null && safeStrings(event.getAcceptedMemberUserIds()).contains(normalizeId(userId));
+        return event != null && distinctIds(event.getAcceptedMemberUserIds()).contains(trim(userId));
     }
 
     private boolean isDraftStatus(Event event) {
         return event != null
-                && (Boolean.FALSE.equals(event.getPublished()) || Event.STATUS_DRAFT.equals(normalizeStatus(event.getStatus())));
+                && (Boolean.FALSE.equals(event.getPublished()) || Event.STATUS_DRAFT.equals(normalizedStatus(event.getStatus())));
     }
 
     private boolean isPendingReviewStatus(Event event) {
-        String status = normalizeStatus(event == null ? null : event.getStatus());
+        String status = normalizedStatus(event == null ? null : event.getStatus());
         return Event.STATUS_UNDER_REVIEW.equals(status) || Event.STATUS_BLOCKED.equals(status);
     }
 
     private boolean isActiveEventStatus(Event event) {
-        String status = normalizeStatus(event == null ? null : event.getStatus());
+        String status = normalizedStatus(event == null ? null : event.getStatus());
         return Event.STATUS_ACTIVE.equals(status) || !StringUtils.hasText(status);
     }
 
@@ -847,45 +845,45 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         if (event == null || Boolean.TRUE.equals(event.getIsTrashed())) {
             return true;
         }
-        String status = normalizeStatus(event.getStatus());
+        String status = normalizedStatus(event.getStatus());
         return Event.STATUS_TRASHED.equals(status);
     }
 
     private boolean isDeletedMembershipStatus(String status) {
-        String normalized = safeText(status);
+        String normalized = trim(status);
         return "deleted".equalsIgnoreCase(normalized)
                 || Event.STATUS_DELETED.equalsIgnoreCase(normalized);
     }
 
     private boolean isRestorableSuppressedMembership(Member member) {
-        if (member == null || !"suppressed".equalsIgnoreCase(safeText(member.getStatus()))) {
+        if (member == null || !"suppressed".equalsIgnoreCase(trim(member.getStatus()))) {
             return false;
         }
-        String ownerId = normalizeId(member.getOwnerId());
+        String ownerId = trim(member.getOwnerId());
         return StringUtils.hasText(ownerId)
-                && ownerId.equals(normalizeId(member.getSuppressionRootOwnerId()))
-                && StringUtils.hasText(safeText(member.getStatusBeforeSuppression()));
+                && ownerId.equals(trim(member.getSuppressionRootOwnerId()))
+                && StringUtils.hasText(trim(member.getStatusBeforeSuppression()));
     }
 
     private boolean hasRestorablePersonalTrashProjection(
             Collection<? extends Event> events,
             String sourceId,
             String userId) {
-        String normalizedSourceId = normalizeId(sourceId);
-        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = trim(sourceId);
+        String normalizedUserId = trim(userId);
         boolean activeCanonicalExists = false;
         boolean personalTrashOverlayExists = false;
         for (Event event : events == null ? List.<Event>of() : events) {
-            if (event == null || !normalizedSourceId.equals(normalizeId(event.getSourceId()))) {
+            if (event == null || !normalizedSourceId.equals(trim(event.getSourceId()))) {
                 continue;
             }
-            String ownerUserId = normalizeId(event.getOwnerUserId());
+            String ownerUserId = trim(event.getOwnerUserId());
             if (!isTrashScopeStatus(event) && isHostingRecordForUser(event, ownerUserId)) {
                 activeCanonicalExists = true;
             }
             if (normalizedUserId.equals(ownerUserId)
                     && isTrashScopeStatus(event)
-                    && StringUtils.hasText(safeText(event.getStatusBeforeSuppression()))) {
+                    && StringUtils.hasText(trim(event.getStatusBeforeSuppression()))) {
                 personalTrashOverlayExists = true;
             }
         }
@@ -893,7 +891,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private boolean isSuppressedAssetStatus(String status) {
-        String normalized = normalizeStatus(status);
+        String normalized = normalizedStatus(status);
         return Event.STATUS_UNDER_REVIEW.equals(normalized)
                 || Event.STATUS_BLOCKED.equals(normalized)
                 || Event.STATUS_DELETED.equals(normalized)
@@ -901,47 +899,15 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 || Event.STATUS_TRASHED.equals(normalized);
     }
 
-    private List<String> normalizeIds(Collection<String> values) {
-        return values == null
-                ? List.of()
-                : values.stream()
-                        .map(this::normalizeId)
-                        .filter(StringUtils::hasText)
-                        .distinct()
-                        .toList();
-    }
 
-    private List<String> safeStrings(Collection<String> values) {
-        return values == null
-                ? List.of()
-                : values.stream()
-                        .map(this::normalizeId)
-                        .filter(StringUtils::hasText)
-                        .distinct()
-                        .toList();
-    }
 
-    private String normalizeStatus(String value) {
-        String normalized = safeText(value);
-        return switch (normalized) {
-            case "active" -> Event.STATUS_ACTIVE;
-            case "draft" -> Event.STATUS_DRAFT;
-            case "trashed", "trash" -> Event.STATUS_TRASHED;
-            case "under-review", "under review" -> Event.STATUS_UNDER_REVIEW;
-            case "blocked" -> Event.STATUS_BLOCKED;
-            case "deleted" -> Event.STATUS_DELETED;
-            case "inactive" -> Event.STATUS_INACTIVE;
-            default -> normalized.toUpperCase();
-        };
-    }
 
-    private String normalizeId(String value) {
-        return safeText(value);
-    }
 
-    private String safeText(String value) {
-        return value == null ? "" : value.trim();
-    }
+
+
+
+
+
 
     private int count(Integer value) {
         if (value == null) {

@@ -37,10 +37,11 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("administration", Set.of("adminMonitoring", "adminStats")),
             java.util.Map.entry("email", Set.of("emailTemplates", "emailCampaignRules", "emailOutbox", "scheduledMessageTasks", "scheduledMessageRuns", "scheduledMessageDeliveries", "operatorEmailConfigurations", "emailUnsubscriptions")),
             java.util.Map.entry("groups", Set.of("communityGroups")),
-            java.util.Map.entry("community", Set.of("serviceCases", "serviceOfferings", "feedbackEvaluations", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks")),
+            java.util.Map.entry("feedback", Set.of("feedbackEvaluations", "feedbackAnswers", "feedbackStates")),
+            java.util.Map.entry("community", Set.of("serviceCases", "serviceOfferings", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks")),
             java.util.Map.entry("affinity", Set.of("userRates", "userAffinityEdges", "affinityConfigs", "affinityRecomputeTasks")),
             java.util.Map.entry("registry", Set.of()),
-            java.util.Map.entry("events", Set.of("activityEventRuntimeItems", "activityMembers", "activityMingleRounds", "activityMingleSessions", "activityResources", "activitySubEventGroups", "activitySubEventStageRuntime", "feedbackAnswers", "feedbackStates", "eventLeaderboardEntries", "eventTicketAudit", "eventTickets", "eventWatchSubscriptions", "events", "schedulerPlanMarkers")),
+            java.util.Map.entry("events", Set.of("activityEventRuntimeItems", "activityMembers", "activityMingleRounds", "activityMingleSessions", "activityResources", "activitySubEventGroups", "activitySubEventStageRuntime", "eventLeaderboardEntries", "eventTicketAudit", "eventTickets", "eventWatchSubscriptions", "events", "schedulerPlanMarkers")),
             java.util.Map.entry("chat", Set.of("chats", "chatMessages", "contactChatAccess")),
             java.util.Map.entry("integrations", Set.of("integrationTokens", "integrationWebhookDeliveries", "mcpEventSubscriptions", "integrationExternalIds", "mcpAuthorizations", "integrationWebhookSubscriptions", "mcpOAuthClients", "integrationParticipantInvites")),
             java.util.Map.entry("payments", Set.of("payments", "affiliateRegistrations", "affiliateLinks", "affiliatePartners", "affiliatePaymentContributions", "payment_gateway_operations", "savedPaymentMethods", "paymentMethodRegistrations", "eventCheckoutBasketItems", "paymentProviders", "exchangeRates")),
@@ -48,7 +49,7 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator", "platform"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "feedback", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator", "platform"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -92,7 +93,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator", "platform"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "feedback", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator", "platform"})
     void domainsUseOnlyForeignContracts(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;
@@ -252,6 +253,8 @@ class DomainServiceBoundaryTest {
 
     private boolean semanticEventLabel(String name, String method) {
         var methods = switch (name.substring(DOMAIN.length())) {
+            case "administration/service/AdminTelemetryService" -> Set.of("signalProjectionInputs");
+            case "feedback/service/FeedbackService" -> Set.of("submit");
             case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "eventsCategory", "membersCategory", "categoryFor", "nodeFor");
             case "administration/service/AdminStatsService" -> Set.of("applyTelemetryEvents", "applyDailyActivity", "timelineItems");
             case "affinity/service/AdminParamsService" -> Set.of("<clinit>", "fieldsFor", "applySection", "copySection");

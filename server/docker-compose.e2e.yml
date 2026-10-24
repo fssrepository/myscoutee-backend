@@ -18,6 +18,7 @@ networks:
     driver: bridge
 
 volumes:
+  nginx-state: {}
   runtime-status-credentials: {}
   mongodb-data:
   minio-data:
@@ -25,6 +26,12 @@ volumes:
   registry-demo-data:
   registry-demo-client-data:
   payment-simulator-data:
+
+secrets:
+  github-packages:
+    file: ${MYSCOUTEE_GITHUB_PACKAGES_PROPERTIES:-${HOME}/.gradle/gradle.properties}
+  npmrc:
+    file: ${NPM_CONFIG_USERCONFIG:-${HOME}/.npmrc}
 
 services:
   stun:
@@ -40,10 +47,10 @@ services:
       - "${CHAT_CALL_E2E_STUN_PORT:-13478}:3478/tcp"
 
   mcp:
-    image: ${MCP_E2E_IMAGE:-myscoutee-mcp:1.4.0-e2e}
+    image: ${MCP_E2E_IMAGE:-myscoutee-mcp:1.5.0-e2e}
     build:
-      context: ../../myscoutee-mcp
-      dockerfile: Dockerfile
+      context: ../config/mcp
+      dockerfile: ../../server/docker/images/mcp/Dockerfile
     container_name: mcp-e2e
     hostname: mcp
     restart: "no"
@@ -71,7 +78,7 @@ services:
     extends:
       file: docker-compose.replicaset.yml
       service: mongodb
-    image: ${MONGODB_E2E_IMAGE:-myscoutee-mongodb:1.4.0-e2e}
+    image: ${MONGODB_E2E_IMAGE:-myscoutee-mongodb:1.5.0-e2e}
     build:
       context: docker/images/mongodb/e2e
       dockerfile: Dockerfile
@@ -121,7 +128,7 @@ services:
       start_period: 2s
 
   minio:
-    image: ${MINIO_E2E_IMAGE:-myscoutee-minio:1.4.0-e2e}
+    image: ${MINIO_E2E_IMAGE:-myscoutee-minio:1.5.0-e2e}
     build:
       context: .
       dockerfile: docker/images/minio/Dockerfile
@@ -148,12 +155,7 @@ services:
       start_period: 10s
 
   registry:
-    image: ${REGISTRY_E2E_IMAGE:-myscoutee-registry:1.4.0-e2e}
-    build:
-      context: ../../myscoutee-registry
-      args:
-        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.4.0}
-      dockerfile: Dockerfile
+    image: ${REGISTRY_E2E_IMAGE:-ghcr.io/fssrepository/myscoutee-registry:1.5.0@sha256:73372bc0f22d71f1d6cb68fc7d8b5a9a60b920f33d703e4883f39470bf67838a}
     container_name: registry-e2e
     hostname: registry
     command: ["start-demo"]
@@ -186,10 +188,7 @@ services:
     stop_grace_period: 15s
 
   payment-simulator:
-    image: ${PAYMENT_SIMULATOR_E2E_IMAGE:-myscoutee-payment-simulator:1.4.0-e2e}
-    build:
-      context: ../../myscoutee-payment-simulator
-      dockerfile: Dockerfile
+    image: ${PAYMENT_SIMULATOR_E2E_IMAGE:-ghcr.io/fssrepository/myscoutee-payment-simulator:1.5.0@sha256:341859243150ae3c41f5d8c03399078915ddaab177cfb70f8ecfc56a998ba7e3}
     container_name: payment-simulator
     hostname: payment-simulator
     environment:
@@ -227,23 +226,26 @@ services:
     extends:
       file: docker-compose.replicaset.yml
       service: profilemanagement
-    image: ${MYSCOUTEE_E2E_IMAGE:-myscoutee-api:1.4.0-e2e}
+    image: ${MYSCOUTEE_E2E_IMAGE:-myscoutee-api:1.5.0-e2e}
     build:
       context: .
       dockerfile: docker/images/profilemanagement/e2e/Dockerfile
+      secrets:
+        - github-packages
       args:
-        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.4.0}
+        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.5.0}
     container_name: myscoutee
     hostname: profilemanagement
     environment:
       MYSCOUTEE_RUNTIME_STATUS_ENABLED: "true"
       MYSCOUTEE_RUNTIME_STATUS_URL: http://nginx:9081/internal/runtime-status
       MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
+      AUTH_REGION_SECURITY_ENABLED: ${AUTH_REGION_SECURITY_ENABLED:-true}
       SPRING_PROFILES_ACTIVE: "prod"
       SPRING_DEVTOOLS_RESTART_ENABLED: "false"
       SPRING_DEVTOOLS_ADD_PROPERTIES: "false"
       E2E_MODE: "true"
-      MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.4.0}
+      MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.5.0}
       MONGO_APP_USERNAME: guest
       MONGO_APP_PASSWORD: guest
       MONGODB_HOST: mongodb
@@ -345,20 +347,25 @@ services:
     stop_grace_period: 30s
 
   nginx:
-    image: ${NGINX_E2E_IMAGE:-myscoutee-nginx:1.4.0-e2e}
+    image: ${NGINX_E2E_IMAGE:-myscoutee-nginx:1.5.0-e2e}
     build:
       context: docker/images/nginx/e2e
       dockerfile: Dockerfile
+      secrets:
+        - npmrc
       additional_contexts:
         frontend-source: ../frontend
-        nginx-config: ./docker/conf/nginx
-        nginx-runtime: ./docker/images/nginx/runtime-status
+        nginx-config: ../config/nginx
+        nginx-partitions: ./docker/conf/mongodb/e2e_db
     container_name: nginx
     hostname: nginx
     environment:
+      AUTH_REGION_SECURITY_ENABLED: ${AUTH_REGION_SECURITY_ENABLED:-true}
       MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
     volumes:
       - runtime-status-credentials:/run/myscoutee-runtime-status
+      - nginx-state:/var/lib/nginx/myscoutee
+      - ../config/nginx/operator:/etc/nginx/myscoutee-operator:ro
     ports:
       - "${E2E_BIND_ADDRESS:-127.0.0.1}:${E2E_HTTP_PORT:-80}:80"
       - "${E2E_BIND_ADDRESS:-127.0.0.1}:443:443"

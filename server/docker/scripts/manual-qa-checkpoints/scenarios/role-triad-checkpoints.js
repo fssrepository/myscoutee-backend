@@ -420,7 +420,7 @@
         branding: values.branding,
         temporaryProductName: "MyScoutee Role QA"
       },
-      next: `Open the three managed browser sessions with guides/qa/tools/open-checkpoint-browser-sessions.sh ${CHECKPOINT}.`
+      next: `Open the three managed browser sessions with npm --prefix tests/qa run browser -- ${CHECKPOINT}.`
     });
   }
 

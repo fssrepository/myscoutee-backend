@@ -16,7 +16,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 @org.junit.jupiter.api.Tag("standard")
 class FriendshipFactsTest {
     private final UserFriendshipsRepository repository = mock(UserFriendshipsRepository.class);
-    private final FriendshipFacts facts = new FriendshipFacts(repository);
+    private final FriendshipFacts facts = new FriendshipFacts(repository, null);
 
     @AfterEach void clearRequest() { RequestContextHolder.resetRequestAttributes(); }
 

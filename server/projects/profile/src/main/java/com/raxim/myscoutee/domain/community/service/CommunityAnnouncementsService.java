@@ -32,19 +32,22 @@ import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain.community.api.Announcements {
-    @org.springframework.beans.factory.annotation.Autowired
-    private CommunityVoteCounterWork voteCounters;
+    private final CommunityVoteCounterWork voteCounters;
     public static final String CLOSE_RULE = "community-voting-close";
     public static final List<String> CHOICES = List.of("yes", "no", "abstain");
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     private final CommunityAnnouncementsRepository announcements;
     private final CommunityAuthority access;
     private final MongoTemplate mongo;
     private final ProfileSummaries users;
     private final NotificationDelivery notifications;
     public CommunityAnnouncementsService(CommunityAnnouncementsRepository announcements,
-            CommunityAuthority access, MongoTemplate mongo, ProfileSummaries users, NotificationDelivery notifications) {
+            CommunityAuthority access, MongoTemplate mongo, ProfileSummaries users, NotificationDelivery notifications,
+            CommunityVoteCounterWork voteCounters,
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory groups) {
+        this.voteCounters = voteCounters;
+        this.groups = groups;
+
         this.announcements = announcements; this.access = access; this.mongo = mongo; this.users = users; this.notifications = notifications;
     }
     public String actor(String profileId) { return access.actor(profileId); }
@@ -82,7 +85,7 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
         var attachments = r.attachments() == null ? List.<com.raxim.myscoutee.domain.media.dto.DocumentAttachment>of() : r.attachments();
         if (attachments.size() > 10) throw error(HttpStatus.BAD_REQUEST);
         for (var file : attachments) com.raxim.myscoutee.domain.media.api.DocumentAttachments.validate(file, List.of(r.userId(), actor), old == null ? List.of() : old.attachments());
-        boolean reopened = old != null && "published".equals(old.status()) && r.voting() && deadline.compareTo(now) > 0
+        boolean reopened = old != null && "published".equals(old.status()) && deadline != null && deadline.compareTo(now) > 0
                 && !Objects.equals(deadline, old.deadlineIso());
         var a = persist(new CommunityAnnouncement(old == null ? UUID.randomUUID().toString() : old.id(), r.communityId(), old == null ? actor : old.authorAccountId(),
                 r.title().trim(), r.body().trim(), List.copyOf(attachments), old == null ? "draft" : old.status(), r.voting(), deadline,

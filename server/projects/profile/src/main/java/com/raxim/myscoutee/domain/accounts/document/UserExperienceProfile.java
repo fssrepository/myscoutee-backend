@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "userExperienceProfiles")
+@lombok.Getter @lombok.Setter
 public class UserExperienceProfile implements com.raxim.myscoutee.domain.accounts.api.Experiences.Profile {
     @Id
     private String mongoId;
@@ -19,38 +20,7 @@ public class UserExperienceProfile implements com.raxim.myscoutee.domain.account
     private String updatedAtIso;
     private List<ExperienceItemRecord> entries = new ArrayList<>();
 
-    public String getMongoId() {
-        return mongoId;
-    }
-
-    public void setMongoId(String mongoId) {
-        this.mongoId = mongoId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUpdatedAtIso() {
-        return updatedAtIso;
-    }
-
-    public void setUpdatedAtIso(String updatedAtIso) {
-        this.updatedAtIso = updatedAtIso;
-    }
-
-    public List<ExperienceItemRecord> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<ExperienceItemRecord> entries) {
-        this.entries = entries;
-    }
-
+    @lombok.Getter @lombok.Setter
     public static class ExperienceItemRecord implements com.raxim.myscoutee.domain.accounts.api.Experiences.Entry {
         @Field("id")
         private String id;
@@ -62,68 +32,5 @@ public class UserExperienceProfile implements com.raxim.myscoutee.domain.account
         private String dateTo;
         private String description;
 
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getOrg() {
-            return org;
-        }
-
-        public void setOrg(String org) {
-            this.org = org;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public void setCity(String city) {
-            this.city = city;
-        }
-
-        public String getDateFrom() {
-            return dateFrom;
-        }
-
-        public void setDateFrom(String dateFrom) {
-            this.dateFrom = dateFrom;
-        }
-
-        public String getDateTo() {
-            return dateTo;
-        }
-
-        public void setDateTo(String dateTo) {
-            this.dateTo = dateTo;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
     }
 }

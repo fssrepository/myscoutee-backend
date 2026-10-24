@@ -95,17 +95,17 @@ class FeedbackServiceTest {
         service = new FeedbackService(
                 selectedProfile,
                 homeUserProfileService,
-                new EventOwnershipService(activityEventsRepository),
+                new EventOwnershipService(activityEventsRepository, null),
                 new MingleEncounterService(null, mingleRoundsRepository, null, null),
                 feedbackStatesRepository,
                 feedbackAnswersRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 accessControlService,
                 userActivityCountersService,
                 feedbackStatMapper,
-                notificationOutboxService);
+                notificationOutboxService, null, null, null, null);
         @SuppressWarnings("unchecked") var counterProvider = (org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters>) org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
         org.mockito.Mockito.lenient().when(counterProvider.getObject()).thenReturn(userActivityCountersService);
         var work = new com.raxim.myscoutee.domain.feedback.service.FeedbackCounterWork(feedbackStatesRepository,

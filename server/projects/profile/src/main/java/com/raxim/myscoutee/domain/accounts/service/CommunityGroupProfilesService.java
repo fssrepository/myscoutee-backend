@@ -16,12 +16,14 @@ import com.raxim.myscoutee.domain.accounts.mapper.CommunityGroupProfileMapper;
 
 @Service
 public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces {
-    @org.springframework.beans.factory.annotation.Autowired
-    private org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final UsersRepository users;
     private final GroupDirectory groups;
     private final CommunityMembershipReads members;
-    public CommunityGroupProfilesService(UsersRepository users, GroupDirectory groups, CommunityMembershipReads members) {
+    public CommunityGroupProfilesService(UsersRepository users, GroupDirectory groups, CommunityMembershipReads members,
+            org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        this.mongo = mongo;
+
         this.users = users; this.groups = groups; this.members = members;
     }
     public Users admit(GroupView group, String accountId) {

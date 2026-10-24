@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @CompoundIndexes({
         @CompoundIndex(name = "scheduler_plan_marker_scope", def = "{'wrapperType': 1, 'actionType': 1, 'ownerId': 1, 'scopeId': 1}", unique = true)
 })
+@lombok.Getter @lombok.Setter
 public class SchedulerPlanMarker {
     @Id
     private String id;
@@ -28,83 +29,4 @@ public class SchedulerPlanMarker {
     private String updatedDate;
     private String updatedUser;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSyncKey() {
-        return syncKey;
-    }
-
-    public void setSyncKey(String syncKey) {
-        this.syncKey = syncKey;
-    }
-
-    public String getWrapperType() {
-        return wrapperType;
-    }
-
-    public void setWrapperType(String wrapperType) {
-        this.wrapperType = wrapperType;
-    }
-
-    public String getActionType() {
-        return actionType;
-    }
-
-    public void setActionType(String actionType) {
-        this.actionType = actionType;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getScopeId() {
-        return scopeId;
-    }
-
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
-    }
-
-    public String getFingerprint() {
-        return fingerprint;
-    }
-
-    public void setFingerprint(String fingerprint) {
-        this.fingerprint = fingerprint;
-    }
-
-    public List<String> getUserIds() {
-        return userIds;
-    }
-
-    public void setUserIds(List<String> userIds) {
-        this.userIds = userIds;
-    }
-
-    public String getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(String updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    public String getUpdatedUser() {
-        return updatedUser;
-    }
-
-    public void setUpdatedUser(String updatedUser) {
-        this.updatedUser = updatedUser;
-    }
 }

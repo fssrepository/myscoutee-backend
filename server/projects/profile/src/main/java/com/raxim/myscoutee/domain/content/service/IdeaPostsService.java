@@ -316,15 +316,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
 
     public IdeaPostDto deletePost(String postId, IdeaPostAdminActionRequestDto request) {
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
-        String normalizedPostId = normalize(postId);
-        IdeaPost post = StringUtils.hasText(normalizedPostId)
-                ? ideaPostsRepository.findById(normalizedPostId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found."))
-                : null;
-        if (post == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article id is required.");
-        }
-        if (!java.util.Objects.equals(admins.baseGroupId(actorUserId), post.getWorkspaceGroupId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        IdeaPost post = requireAdminPost(postId, actorUserId);
         String nowIso = Instant.now().toString();
         post.setFeatured(false);
         post.setPublished(false);
@@ -340,15 +332,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
 
     public IdeaPostDto restorePost(String postId, IdeaPostAdminActionRequestDto request) {
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
-        String normalizedPostId = normalize(postId);
-        IdeaPost post = StringUtils.hasText(normalizedPostId)
-                ? ideaPostsRepository.findById(normalizedPostId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found."))
-                : null;
-        if (post == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article id is required.");
-        }
-        if (!java.util.Objects.equals(admins.baseGroupId(actorUserId), post.getWorkspaceGroupId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        IdeaPost post = requireAdminPost(postId, actorUserId);
         String nowIso = Instant.now().toString();
         post.setFeatured(false);
         post.setPublished(false);
@@ -646,28 +630,11 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     }
 
     private String ensureAdmin(String adminUserId) {
-        String normalized = normalize(adminUserId);
-        if (configProperties.isFirebaseEnabled()) {
-            String email = resolveFirebaseEmail();
-            if (!appSettingsService.isAdminEmail(email)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
-            }
-            return StringUtils.hasText(normalized) ? normalized : email;
-        }
-        if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin demo access is restricted to demo data.");
-        }
-        return StringUtils.hasText(normalized) ? normalized : "admin";
+        return com.raxim.myscoutee.common.security.policy.ContentAdministrator.require(
+                adminUserId, configProperties.isFirebaseEnabled(), appSettingsService);
     }
 
-    private String resolveFirebaseEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof AuthenticatedActor firebasePrincipal) {
-            return normalize(firebasePrincipal.getEmail());
-        }
-        return normalize(authentication == null ? null : authentication.getName());
-    }
+
 
     private String text(String value, String fallback) {
         String normalized = normalize(value);
@@ -679,49 +646,37 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     }
 
     private String supportedContentLang(String value) {
-        String normalized = normalize(value).toLowerCase();
-        int semicolonIndex = normalized.indexOf(';');
-        if (semicolonIndex > 0) {
-            normalized = normalized.substring(0, semicolonIndex);
-        }
-        int dashIndex = normalized.indexOf('-');
-        if (dashIndex > 0) {
-            normalized = normalized.substring(0, dashIndex);
-        }
-        return List.of("en", "hu", "de", "es").contains(normalized) ? normalized : "";
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.supported(value, java.util.Locale.getDefault());
     }
 
     private String requestContentLang(String explicitLang, String acceptLanguage) {
-        if (StringUtils.hasText(normalize(explicitLang))) {
-            return contentLang(explicitLang);
-        }
-        for (String candidate : normalize(acceptLanguage).split(",")) {
-            String supportedLang = supportedContentLang(candidate);
-            if (StringUtils.hasText(supportedLang)) {
-                return supportedLang;
-            }
-        }
-        return DEFAULT_LANG;
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.requested(
+                explicitLang, acceptLanguage, java.util.Locale.getDefault(), DEFAULT_LANG);
     }
 
     private String languageLabel(String lang) {
-        return switch (contentLang(lang)) {
-            case "hu" -> "Magyar";
-            case "de" -> "Deutsch";
-            case "es" -> "Español";
-            default -> "English";
-        };
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.label(contentLang(lang));
     }
 
     private String contentKeyFromId(String id) {
-        String normalized = normalize(id);
-        if (!StringUtils.hasText(normalized)) {
-            return "";
-        }
-        return normalized.replaceFirst("-(hu|de|es)$", "");
+        return com.raxim.myscoutee.domain.localization.api.ContentLanguages.contentKey(id);
     }
 
     private String normalize(String value) {
         return value == null ? "" : value.trim();
     }
+
+    private IdeaPost requireAdminPost(String postId, String actorUserId) {
+        String normalizedPostId = normalize(postId);
+        IdeaPost post = StringUtils.hasText(normalizedPostId)
+                ? ideaPostsRepository.findById(normalizedPostId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found."))
+                : null;
+        if (post == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article id is required.");
+        }
+        if (!java.util.Objects.equals(admins.baseGroupId(actorUserId), post.getWorkspaceGroupId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        return post;
+    }
+
 }

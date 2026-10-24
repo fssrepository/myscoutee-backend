@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "minimalCollections": [
+    "notificationRuleConfigs",
+    "countryPartitions",
+    "i18n_messages",
+    "i18n_bundles"
+  ],
+  "forbiddenReadFragments": [
+    "community"
+  ],
+  "retainedCollections": [
+    "communityGroups",
+    "communityProviders",
+    "adminWorkerSignals",
+    "affinityAdminSignalOutbox",
+    "eventAdminSignalOutbox",
+    "notificationAdminSignalOutbox"
+  ],
+  "inventory": {
+    "shared": [
+      "accessPolicyDefinitions",
+      "communityProviders",
+      "paymentProviders",
+      "countryPartitions",
+      "helpCenterRevisions",
+      "ideaPosts",
+      "emailTemplates",
+      "emailCampaignRules",
+      "notificationTemplates",
+      "i18n_messages",
+      "i18n_bundles",
+      "scheduledMessageTasks",
+      "exchangeRates",
+      "landingSlides",
+      "helpCenterGuideFields",
+      "adminWorkerSignals",
+      "affinityAdminSignalOutbox",
+      "eventAdminSignalOutbox",
+      "notificationAdminSignalOutbox"
+    ],
+    "configured": [
+      "affinityConfigs",
+      "appSettings",
+      "deploymentConfigurations",
+      "notificationRuleConfigs",
+      "adminStats",
+      "adminMonitoring",
+      "operatorRegistryEndpoints"
+    ],
+    "runtime": [
+      "users",
+      "userRates",
+      "userFilterPreferences",
+      "assets",
+      "assetRequests",
+      "activityMembers",
+      "activityResources",
+      "activitySubEventStageRuntime",
+      "communityGroups",
+      "chats",
+      "chatMessages",
+      "events",
+      "feedbackStates",
+      "feedbackAnswers",
+      "navigatorContacts",
+      "payments",
+      "savedPaymentMethods",
+      "userAffinityEdges",
+      "userExperienceProfiles",
+      "userFeedback",
+      "userNotifications",
+      "userReports",
+      "affinityAdminSignalOutboxRetries",
+      "eventAdminSignalOutboxRetries",
+      "notificationAdminSignalOutboxRetries",
+      "integrationWebhookRetries",
+      "mediaDeletionRetries",
+      "mediaDeletions"
+    ],
+    "demoOnlyRuntime": [
+      "communityAnnouncements",
+      "campaigns",
+      "serviceOfferings",
+      "serviceCases",
+      "communityScheduledTasks"
+    ]
+  },
+  "parity": {
+    "comparisons": [
+      {
+        "source": "demo_db",
+        "target": "myscoutee_db",
+        "collections": [
+          "accessPolicyDefinitions",
+          "communityProviders",
+          "paymentProviders",
+          "countryPartitions",
+          "helpCenterRevisions",
+          "ideaPosts",
+          "emailTemplates",
+          "emailCampaignRules",
+          "notificationTemplates",
+          "i18n_messages",
+          "i18n_bundles",
+          "scheduledMessageTasks",
+          "exchangeRates",
+          "landingSlides",
+          "helpCenterGuideFields",
+          "adminWorkerSignals",
+          "affinityAdminSignalOutbox",
+          "eventAdminSignalOutbox",
+          "notificationAdminSignalOutbox"
+        ],
+        "byId": true
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collections": [
+          "accessPolicyDefinitions",
+          "communityProviders",
+          "paymentProviders",
+          "countryPartitions",
+          "helpCenterRevisions",
+          "ideaPosts",
+          "emailTemplates",
+          "emailCampaignRules",
+          "notificationTemplates",
+          "i18n_messages",
+          "i18n_bundles",
+          "scheduledMessageTasks",
+          "exchangeRates",
+          "landingSlides",
+          "helpCenterGuideFields",
+          "adminWorkerSignals",
+          "affinityAdminSignalOutbox",
+          "eventAdminSignalOutbox",
+          "notificationAdminSignalOutbox"
+        ],
+        "byId": true
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collections": [
+          "adminStats",
+          "adminMonitoring"
+        ],
+        "byId": false
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collections": [
+          "communityAnnouncements",
+          "campaigns",
+          "serviceOfferings",
+          "serviceCases",
+          "communityScheduledTasks",
+          "operatorRegistryEndpoints",
+          "savedPaymentMethods"
+        ],
+        "byId": false
+      }
+    ],
+    "configurations": [
+      {
+        "source": "demo_db",
+        "target": "myscoutee_db",
+        "collection": "affinityConfigs",
+        "copyFromTarget": [
+          "_id"
+        ]
+      },
+      {
+        "source": "demo_db",
+        "target": "myscoutee_db",
+        "collection": "appSettings",
+        "set": {
+          "adminEmails": []
+        }
+      },
+      {
+        "source": "demo_db",
+        "target": "myscoutee_db",
+        "collection": "deploymentConfigurations",
+        "copyFromTarget": [
+          "privacyContact"
+        ],
+        "set": {
+          "integration": {
+            "publicBaseUrl": null
+          },
+          "payment.exchangeRateUrl": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"
+        },
+        "requirements": [
+          {
+            "path": "integration.publicBaseUrl",
+            "value": null,
+            "missingEqualsNull": true
+          },
+          {
+            "path": "payment.exchangeRateUrl",
+            "value": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"
+          }
+        ]
+      },
+      {
+        "source": "demo_db",
+        "target": "myscoutee_db",
+        "collection": "notificationRuleConfigs",
+        "sortBy": "_id"
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collection": "affinityConfigs",
+        "copyFromTarget": []
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collection": "appSettings",
+        "set": {}
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collection": "deploymentConfigurations",
+        "copyFromTarget": [
+          "privacyContact"
+        ]
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collection": "notificationRuleConfigs",
+        "sortBy": "_id",
+        "rowSets": [
+          {
+            "where": {
+              "ruleKey": "event-counter-expiry"
+            },
+            "set": {
+              "timing.intervalMinutes": 1,
+              "timing.intervalSeconds": 5,
+              "timing.intervalAmount": 5,
+              "timing.intervalUnit": "seconds",
+              "timing.cronExpression": "0/5 * * * * ?"
+            }
+          }
+        ]
+      }
+    ],
+    "expectedCollections": [
+      {
+        "mode": "demo_db",
+        "collection": "adminWorkerSignals",
+        "documents": [
+          {
+            "_id": "affinity",
+            "derivedRevision": 0,
+            "queuesRevision": 0
+          },
+          {
+            "_id": "events",
+            "derivedRevision": 0,
+            "queuesRevision": 0
+          },
+          {
+            "_id": "notifications",
+            "derivedRevision": 0,
+            "queuesRevision": 0
+          }
+        ]
+      },
+      {
+        "mode": "demo_db",
+        "collection": "affinityAdminSignalOutbox",
+        "documents": [
+          {
+            "_id": "inputs",
+            "derivedRevision": 0,
+            "queuesRevision": 0,
+            "deliveredDerivedRevision": 0,
+            "deliveredQueuesRevision": 0
+          }
+        ]
+      },
+      {
+        "mode": "demo_db",
+        "collection": "eventAdminSignalOutbox",
+        "documents": [
+          {
+            "_id": "inputs",
+            "derivedRevision": 0,
+            "queuesRevision": 0,
+            "deliveredDerivedRevision": 0,
+            "deliveredQueuesRevision": 0
+          }
+        ]
+      },
+      {
+        "mode": "demo_db",
+        "collection": "notificationAdminSignalOutbox",
+        "documents": [
+          {
+            "_id": "inputs",
+            "derivedRevision": 0,
+            "queuesRevision": 0,
+            "deliveredDerivedRevision": 0,
+            "deliveredQueuesRevision": 0
+          }
+        ]
+      }
+    ],
+    "fieldsContain": [
+      {
+        "source": "demo_db",
+        "target": "myscoutee_db",
+        "collection": "adminStats"
+      },
+      {
+        "source": "demo_db",
+        "target": "myscoutee_db",
+        "collection": "adminMonitoring"
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collection": "adminStats"
+      },
+      {
+        "source": "demo_db",
+        "target": "e2e_db",
+        "collection": "adminMonitoring"
+      }
+    ],
+    "emptyCollections": {
+      "myscoutee_db": [
+        "users",
+        "userRates",
+        "userFilterPreferences",
+        "assets",
+        "assetRequests",
+        "activityMembers",
+        "activityResources",
+        "activitySubEventStageRuntime",
+        "chats",
+        "chatMessages",
+        "events",
+        "feedbackStates",
+        "feedbackAnswers",
+        "navigatorContacts",
+        "payments",
+        "savedPaymentMethods",
+        "userAffinityEdges",
+        "userExperienceProfiles",
+        "userFeedback",
+        "userNotifications",
+        "userReports",
+        "affinityAdminSignalOutboxRetries",
+        "eventAdminSignalOutboxRetries",
+        "notificationAdminSignalOutboxRetries",
+        "integrationWebhookRetries",
+        "mediaDeletionRetries",
+        "mediaDeletions",
+        "communityAnnouncements",
+        "campaigns",
+        "serviceOfferings",
+        "serviceCases",
+        "communityScheduledTasks",
+        "operatorRegistryEndpoints",
+        "adminUsers"
+      ]
+    },
+    "recordSets": [
+      {
+        "mode": "myscoutee_db",
+        "collection": "communityGroups",
+        "identities": [
+          "myscoutee-work",
+          "myscoutee-community"
+        ],
+        "fields": {
+          "ownerUserId": "system",
+          "visibility": "public",
+          "policy": {
+            "workspace": true,
+            "enabled": false,
+            "requiredFields": []
+          }
+        }
+      }
+    ],
+    "references": [
+      {
+        "mode": "e2e_db",
+        "collection": "savedPaymentMethods",
+        "field": "userId",
+        "targetCollection": "users",
+        "targetField": "_id",
+        "prefixField": "providerPaymentMethodRef",
+        "prefix": "pm_sim_"
+      }
+    ],
+    "schemaVersions": []
+  }
+}

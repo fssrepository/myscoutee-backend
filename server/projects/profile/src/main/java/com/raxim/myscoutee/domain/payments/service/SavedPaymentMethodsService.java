@@ -43,8 +43,12 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.payments.api.PaymentMethods {
-    @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setEuroService(com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService) {
+        this.euroService = euroService;
+    }
     private static final Logger LOG = LoggerFactory.getLogger(SavedPaymentMethodsService.class);
     public static final int MAX_ACTIVE_PAYMENT_METHODS = 6;
     private static final Duration DEFAULT_REGISTRATION_TTL = Duration.ofMinutes(10);
@@ -641,7 +645,8 @@ public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.pa
     }
 
     private String paymentHistoryDirection(Payment payment, String viewerUserId) {
-        boolean payer = normalizeId(payment == null ? null : payment.getUserId()).equals(normalizeId(viewerUserId));
+        String payerId = normalizeId(payment == null ? null : payment.getUserId());
+        boolean payer = payerId != null && payerId.equals(normalizeId(viewerUserId));
         boolean refund = "refund".equals(normalizeId(payment == null ? null : payment.getAuditKind()));
         if (refund) return payer ? "income" : "expense";
         return payer ? "expense" : "income";

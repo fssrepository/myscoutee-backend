@@ -616,7 +616,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         }
         String key = groupId == null ? "default" : communityGroups.baseGroupIds(List.of(groupId)).getOrDefault(groupId, "default");
         Optional<AffinityConfig> config = affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(key);
-        return config == null ? AffinityConfig.defaults() : config.orElseGet(AffinityConfig::defaults);
+        return config.orElseGet(AffinityConfig::defaults);
     }
 
     private double multiplier(AffinityConfig.MultiplierRule rule, double fallback) {
@@ -630,7 +630,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
             return null;
         }
         Optional<? extends Profile> profile = userExperienceProfilesRepository.findByUserId(normalizedUserId);
-        return profile == null ? null : profile.orElse(null);
+        return profile.orElse(null);
     }
 
     private Map<String, Profile> loadExperienceProfiles(Set<String> userIds) {

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "builder": "frontend/src/app/shared/core/local/seed/builders/accounts/user-seed.builder.ts",
+  "exportName": "SeedUserBuilder",
+  "method": "buildExpandedDemoUsers",
+  "preloadModules": ["@angular/compiler"],
+  "count": 50,
+  "databases": [
+    "demo_db",
+    "e2e_db"
+  ],
+  "seedRoot": "server/docker/conf/mongodb",
+  "collection": "users.json"
+}

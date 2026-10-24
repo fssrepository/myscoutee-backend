@@ -627,9 +627,13 @@ run_scenario() {
   fi
 
   if [ "${mongo_mode}" = "kvm" ]; then
-    local kvm_tools="${SCRIPT_DIR}/../../../../microservices/tools"
+    local kvm_project_root
+    kvm_project_root="$(cd -- "${SCRIPT_DIR}/../../../.." && pwd)"
+    local qa_source="${MYSCOUTEE_QA_SOURCE:-${kvm_project_root}/../myscoutee-qa}"
+    local kvm_fixture="${qa_source}/mongo/kvm-fixture.py"
+    local kvm_runtime_config="${kvm_project_root}/config/microservices/deploy/runtime.json"
     local kvm_demo_db
-    kvm_demo_db="$(python3 "${kvm_tools}/runtime_config.py" databases.demo)"
+    kvm_demo_db="$(python3 "${kvm_fixture}" --runtime-config "${kvm_runtime_config}" --print-demo-database)"
     [ "${target_db}" = "${kvm_demo_db}" ] || fail "KVM fixtures require the configured DEMO database '${kvm_demo_db}'."
     [ -f "${COMMON_SCRIPT}" ] || fail "Missing ${COMMON_SCRIPT}."
     [ -f "${scenario_script}" ] || fail "Missing ${scenario_script}."
@@ -638,7 +642,7 @@ run_scenario() {
       MANUAL_QA_KVM_DEMO_DB="${kvm_demo_db}" MANUAL_QA_DELAY_SECONDS="${delay_seconds}" \
       MANUAL_QA_CHECKPOINT_ID="${checkpoint_id}" MANUAL_QA_SOURCE_CHECKPOINT_ID="${source_checkpoint_id}" \
       MANUAL_QA_BROWSER_SOURCE_SCENARIO="${MANUAL_QA_BROWSER_SOURCE_SCENARIO:-}" \
-      python3 - "${COMMON_SCRIPT}" "${scenario_script}" <<'PY' | python3 "${kvm_tools}/e2e-mongo.py" --database "${target_db}"
+      python3 - "${COMMON_SCRIPT}" "${scenario_script}" <<'PY' | python3 "${kvm_fixture}" --runtime-config "${kvm_runtime_config}" --database "${target_db}"
 import json, os, pathlib, sys
 # Credentials are neither transferred nor printed; the owned KVM helper authenticates.
 keys = ('COMMAND', 'SCENARIO', 'DB', 'DEPLOYMENT_KIND', 'KVM_DEMO_DB',

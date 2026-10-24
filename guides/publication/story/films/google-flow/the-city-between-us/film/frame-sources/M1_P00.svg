@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="720" height="1280" viewBox="0 0 720 1280">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset in="blur" dx="0" dy="2" result="offsetBlur"/>
+      <feFlood flood-color="#020818" flood-opacity="0.95" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow" x="-30%" y="-60%" width="160%" height="220%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <image x="0" y="0" width="720" height="1280" preserveAspectRatio="xMidYMid slice"
+         xlink:href="guides/publication/story/films/google-flow/the-city-between-us/film/frame-sources/M1_P00-background.png"/>
+
+  <!-- Exact repository M/heart mark, never regenerated. -->
+  <g filter="url(#softShadow)">
+    <image x="144" y="26" width="88" height="88" preserveAspectRatio="xMidYMid meet"
+           xlink:href="frontend/src/assets/logo/heart.png"/>
+    <text x="246" y="98" fill="#ffffff" font-family="DejaVu Sans, sans-serif"
+          font-size="65" font-weight="700" letter-spacing="-1">yScoutee</text>
+  </g>
+
+  <g text-anchor="middle" font-family="DejaVu Sans, sans-serif" filter="url(#softShadow)">
+    <text x="360" y="166" fill="#ffc95a" font-size="49" font-weight="700" letter-spacing="3">THE STORY</text>
+    <text x="360" y="218" fill="#ffffff" font-size="28" font-weight="700" letter-spacing="0.6">PART I · THE CITY BETWEEN US</text>
+  </g>
+
+  <!-- Bottom information stays away from the globe and reads over the dark soil. -->
+  <g text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" filter="url(#softShadow)">
+    <text x="360" y="1165" fill="#bed8ff" font-size="29" letter-spacing="1.8">BASED ON A TRUE STORY</text>
+    <text x="360" y="1222" fill="#c2a5ff" stroke="#160d33" stroke-width="1.2"
+          paint-order="stroke" font-size="35" letter-spacing="1.2">BOOK AVAILABLE</text>
+  </g>
+</svg>

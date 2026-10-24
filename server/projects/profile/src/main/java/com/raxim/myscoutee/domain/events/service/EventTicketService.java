@@ -108,7 +108,7 @@ public class EventTicketService {
             Set<String> eligibleHolderUserIds,
             Instant now) {
         String eventId = normalizeId(canonical == null ? null : canonical.getSourceId());
-        if (!StringUtils.hasText(eventId)) {
+        if (canonical == null || !StringUtils.hasText(eventId)) {
             return;
         }
 

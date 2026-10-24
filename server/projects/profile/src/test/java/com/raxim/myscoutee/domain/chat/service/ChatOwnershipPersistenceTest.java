@@ -38,7 +38,7 @@ class ChatOwnershipPersistenceTest {
                     new Document("id", "case-a").append("channelType", "supportCase").append("supportBaseGroupId", "workspace").append("supportCase", new Document("status", "pending")),
                     new Document("id", "case-b").append("channelType", "appSupport").append("supportBaseGroupId", "workspace").append("supportCase", new Document("status", "picked")),
                     new Document("id", "other").append("channelType", "supportCase").append("supportBaseGroupId", "other").append("supportCase", new Document("status", "pending"))));
-                var directory = new ChatDirectoryService(null);
+                var directory = new ChatDirectoryService(null, null);
                 ReflectionTestUtils.setField(directory, "mongo", mongo);
                 assertThat(directory.supportCaseCounts("workspace")).containsOnly(entry("pending", 1), entry("picked", 1));
                 var permissions = new ContactPermissionService(new MongoRepositoryFactory(mongo).getRepository(ContactChatAccessRepository.class));

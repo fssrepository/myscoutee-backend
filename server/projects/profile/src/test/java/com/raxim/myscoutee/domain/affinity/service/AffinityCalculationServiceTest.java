@@ -306,7 +306,7 @@ class AffinityCalculationServiceTest {
         };
         var wireService = new AffinityCalculationService(affinityConfigsRepository, wireProfiles, userRatesRepository,
                 new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository),
-                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups));
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups, null));
         var wireRate = singleRate("wire", "u1", "u2", 7);
         wireService.applyAffinity(List.of(wireRate));
         assertThat(wireRate.getAffinityScore()).isEqualTo(nativeRate.getAffinityScore());
@@ -340,9 +340,9 @@ class AffinityCalculationServiceTest {
         });
         return new AffinityCalculationService(
                 affinityConfigsRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 userRatesRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups));
+                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups, null));
     }
 
     private UserExperienceProfile experienceProfile(String userId, String type, String org) {

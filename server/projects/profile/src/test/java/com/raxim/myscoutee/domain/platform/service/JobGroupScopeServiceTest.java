@@ -54,9 +54,9 @@ class JobGroupScopeServiceTest {
         when(mongo.findOne(any(Query.class), eq(org.bson.Document.class), eq("assets"))).thenReturn(asset);
         when(mongo.findOne(any(Query.class), eq(org.bson.Document.class), eq("events"))).thenReturn(event);
         var assets = new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(
-                mock(com.raxim.myscoutee.domain.assets.repository.AssetsRepository.class));
+                mock(com.raxim.myscoutee.domain.assets.repository.AssetsRepository.class), null);
         var events = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(
-                mock(com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository.class));
+                mock(com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(assets, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(events, "mongo", mongo);
         assertThat(assets.findJobScope("asset-id")).isEqualTo(new com.raxim.myscoutee.domain.assets.dto.AssetJobScopeDto(
@@ -86,7 +86,7 @@ class JobGroupScopeServiceTest {
         var mongo = mock(MongoTemplate.class);
         var community = new org.bson.Document("_id", "private-homes").append("groupType", "community");
         when(mongo.find(any(Query.class), eq(org.bson.Document.class), eq("communityGroups"))).thenReturn(List.of(community));
-        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
         var service = new JobGroupScopeService(mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class),
                 java.util.Optional.of(directory), List.of());

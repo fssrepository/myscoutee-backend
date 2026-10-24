@@ -20,4 +20,18 @@ public interface AssetScoringFacts {
     String getCreatedDate();
     interface Policy { String title(); String description(); Boolean required(); }
     interface Request { String status(); }
+
+    /** Common record bridge for the existing asset content facts. */
+    interface RecordFields extends AssetScoringFacts {
+        String type();
+        @Override default String getType() { return type(); }
+        String title();
+        @Override default String getTitle() { return title(); }
+        String subtitle();
+        @Override default String getSubtitle() { return subtitle(); }
+        String category();
+        @Override default String getCategory() { return category(); }
+        String city();
+        @Override default String getCity() { return city(); }
+    }
 }

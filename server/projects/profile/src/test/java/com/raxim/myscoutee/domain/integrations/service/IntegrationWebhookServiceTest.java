@@ -198,15 +198,15 @@ class IntegrationWebhookServiceTest {
                 subscriptionsRepository,
                 deliveriesRepository,
                 externalIdsRepository,
-                tokensRepository, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                tokensRepository, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 mongoTemplate,
                 new ObjectMapper(),
                 true,
                 true,
                 100,
-                100);
+                100, null, null, null, null, null, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "retryQueue", org.mockito.Mockito.mock(com.raxim.myscoutee.common.delivery.OutboundRetryQueue.class));
-        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
+        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongoTemplate));

@@ -1,8 +1,5 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -17,11 +14,6 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 @Service
 public class BarionApiEndpointResolver {
     private static final String PRODUCTION_API_BASE_URL = "https://api.barion.com";
-    private static final Set<String> DEVELOPMENT_SIMULATOR_HOSTS = Set.of(
-            "localhost",
-            "127.0.0.1",
-            "::1",
-            "payment-simulator");
 
     private final Environment environment;
     private final String configuredBaseUrl;
@@ -49,23 +41,7 @@ public class BarionApiEndpointResolver {
             throw unavailable(
                     "The demo Barion payment simulator is disabled.");
         }
-        try {
-            URI uri = new URI(baseUrl);
-            String host = uri.getHost();
-            if (!uri.isAbsolute()
-                    || host == null
-                    || !("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme()))
-                    || !DEVELOPMENT_SIMULATOR_HOSTS.contains(host.toLowerCase())
-                    || uri.getUserInfo() != null
-                    || uri.getQuery() != null
-                    || uri.getFragment() != null) {
-                throw unavailable(
-                        "The demo Barion simulator URL is invalid or uses a non-local host.");
-            }
-            return baseUrl.replaceAll("/+$", "");
-        } catch (URISyntaxException exception) {
-            throw unavailable("The demo Barion simulator URL is invalid.");
-        }
+        return PaymentSimulatorEndpoint.validate(baseUrl, "Barion");
     }
 
     private String trim(String value) {

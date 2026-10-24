@@ -54,6 +54,8 @@ public final class AdminProjectionSignalOutbox {
             if (revisions.isEmpty()) return;
             Map<String, Object> payload = new java.util.TreeMap<>();
             revisions.forEach((input, revision) -> payload.put(input.name(), revision));
+            // Stable persisted receipt/counter identity; never a password, signature or integrity proof.
+            @SuppressWarnings("java:S4790")
             String id = org.springframework.util.DigestUtils.md5DigestAsHex((producer + payload).getBytes(java.nio.charset.StandardCharsets.UTF_8));
             if (retries.contains(id)) return; // The scheduled job never replays the retry worker's task.
             String rule = producer + "-admin-signals";

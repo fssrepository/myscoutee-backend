@@ -16,7 +16,10 @@ public class EventPrivacyService implements EventPrivacy {
     private final ActivityMembersRepository activityMembersRepository;
     private final MongoTemplate mongoTemplate;
     private final MediaCleanup mediaStorageService;
-    public EventPrivacyService(ActivityEventsRepository events, ActivityMembersRepository members, MongoTemplate mongo, MediaCleanup media) { activityEventsRepository = events; activityMembersRepository = members; mongoTemplate = mongo; mediaStorageService = media; }
+    public EventPrivacyService(ActivityEventsRepository events, ActivityMembersRepository members, MongoTemplate mongo, MediaCleanup media,
+            com.raxim.myscoutee.domain.feedback.api.FeedbackPrivacy feedback) {
+        this.feedback = feedback;
+ activityEventsRepository = events; activityMembersRepository = members; mongoTemplate = mongo; mediaStorageService = media; }
     public List<EventPurgeTargetDto> findOwnedEventsForPurge(String userId) {
         Map<String, ActivityEvent> eventsByKey = new LinkedHashMap<>();
         addEvents(eventsByKey, activityEventsRepository.findByOwnerUserId(userId));
@@ -214,8 +217,7 @@ public class EventPrivacyService implements EventPrivacy {
     }
 
     public void anonymizeTicketAudit(String userId) { anonymizeUserFieldsByAnyField("eventTicketAudit", List.of("holderUserId", "actorUserId", "originalUsedByUserId"), userId); }
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.feedback.api.FeedbackPrivacy feedback;
+    private final com.raxim.myscoutee.domain.feedback.api.FeedbackPrivacy feedback;
     public void purgeFeedback(String userId) { feedback.purgeFeedback(userId); }
     public void purgeLeaderboard(String userId) { deleteDocumentsByAnyField("eventLeaderboardEntries", List.of("memberId", "homeMemberId", "awayMemberId", "createdUser", "updatedUser"), userId); }
     public void anonymizeSchedulerMarkers(String userId) { anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId); }
@@ -224,33 +226,10 @@ public class EventPrivacyService implements EventPrivacy {
         mediaStorageService.deletePublicObjectOrThrow(mediaUrlOrKey);
     }
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {
-        if (!StringUtils.hasText(collectionName) || fields == null || fields.isEmpty() || !StringUtils.hasText(userId)) {
-            return;
-        }
-        List<Criteria> criteria = fields.stream()
-                .filter(StringUtils::hasText)
-                .map(field -> Criteria.where(field).is(userId))
-                .toList();
-        if (criteria.isEmpty()) {
-            return;
-        }
-        mongoTemplate.remove(Query.query(new Criteria().orOperator(criteria.toArray(Criteria[]::new))), collectionName);
+        com.raxim.myscoutee.common.config.mongo.MongoPrivacyOperations.deleteDocumentsByAnyField(mongoTemplate, collectionName, fields, userId);
     }
     private void anonymizeUserFieldsByAnyField(String collectionName, List<String> fields, String userId) {
-        if (!StringUtils.hasText(collectionName) || fields == null || fields.isEmpty() || !StringUtils.hasText(userId)) {
-            return;
-        }
-        List<String> fieldNames = fields.stream()
-                .filter(StringUtils::hasText)
-                .toList();
-        if (fieldNames.isEmpty()) {
-            return;
-        }
-        for (String field : fieldNames) {
-            Update update = new Update();
-            update.set(field, "deleted-user");
-            mongoTemplate.updateMulti(Query.query(Criteria.where(field).is(userId)), update, collectionName);
-        }
+        com.raxim.myscoutee.common.config.mongo.MongoPrivacyOperations.anonymizeUserFieldsByAnyField(mongoTemplate, collectionName, fields, userId);
     }
     private String safeText(String value) {
         return value == null ? "" : value.trim();

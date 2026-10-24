@@ -25,6 +25,8 @@ public class CampaignCounterWork {
         Map<String, Integer> deltas = new LinkedHashMap<>();
         if (revision > 0) deltas.put(key(previous.status()), -1);
         deltas.merge(key(next.status()), 1, Integer::sum);
+        // Stable persisted receipt/counter identity; never a password, signature or integrity proof.
+        @SuppressWarnings("java:S4790")
         String sourceKey = "campaign-" + org.springframework.util.DigestUtils.md5DigestAsHex(
                 next.id().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         var change = new MenuCounterUpdates.Change(next.ownerUserId(), next.workspaceGroupId(), sourceKey, revision + 1, Map.copyOf(deltas));

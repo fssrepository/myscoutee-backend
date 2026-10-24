@@ -58,9 +58,19 @@ import com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundStatus;
 
 @Service
 public class PaymentService implements com.raxim.myscoutee.domain.payments.api.AssetPayments, com.raxim.myscoutee.domain.payments.api.EventPayments {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads profiles;
+    private com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads profiles;
 
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
+    @org.springframework.beans.factory.annotation.Autowired
+    void setProfiles(com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads profiles) {
+        this.profiles = profiles;
+    }
+
+    private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setAccountPaymentTotals(com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals) {
+        this.accountPaymentTotals = accountPaymentTotals;
+    }
 
     private static final String BOOKING_STATUS_INITIATED = "initiated";
     private static final String BOOKING_STATUS_JOINED = "joined";
@@ -78,8 +88,12 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
     public static final String FULFILLMENT_KIND_EVENT_JOIN = "event_join";
     public static final String FULFILLMENT_KIND_CLIENT = "client";
 
-    @Autowired
     private AffiliateRevenueService affiliateRevenueService;
+
+    @Autowired
+    void setAffiliateRevenueService(AffiliateRevenueService affiliateRevenueService) {
+        this.affiliateRevenueService = affiliateRevenueService;
+    }
 
     private final Map<String, PaymentProcessor> processors;
     private final PaymentsRepository paymentsRepository;
@@ -698,7 +712,8 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
         if (!safeText(payment.getProvider()).equals(safeText(result.provider()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment refund provider does not match the payment.");
         }
-        if (!normalizeId(payment.getGatewayAuthorizationId()).equals(normalizeId(result.gatewayAuthorizationId()))) {
+        String expectedAuthorizationId = normalizeId(payment.getGatewayAuthorizationId());
+        if (expectedAuthorizationId == null || !expectedAuthorizationId.equals(normalizeId(result.gatewayAuthorizationId()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment refund does not match the provider payment.");
         }
         BigDecimal actualAmount = result.amount() == null ? BigDecimal.ZERO : result.amount().stripTrailingZeros();
@@ -845,18 +860,19 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
             String expectedSubEventId,
             String label) {
         if (payment == null
-                || !normalizeId(expectedUserId).equals(normalizeId(payment.getUserId()))
-                || !normalizeId(expectedAssetId).equals(normalizeId(payment.getSourceId()))) {
+                || !hasText(expectedUserId) || !hasText(expectedAssetId)
+                || !Objects.equals(normalizeId(expectedUserId), normalizeId(payment.getUserId()))
+                || !Objects.equals(normalizeId(expectedAssetId), normalizeId(payment.getSourceId()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment identity does not match the assignment.");
         }
         if (hasText(expectedEventId)
                 && hasText(payment.getContextEventId())
-                && !normalizeId(expectedEventId).equals(normalizeId(payment.getContextEventId()))) {
+                && !Objects.equals(normalizeId(expectedEventId), normalizeId(payment.getContextEventId()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment Event scope does not match.");
         }
         if (hasText(expectedSubEventId)
                 && hasText(payment.getContextSubEventId())
-                && !normalizeId(expectedSubEventId).equals(normalizeId(payment.getContextSubEventId()))) {
+                && !Objects.equals(normalizeId(expectedSubEventId), normalizeId(payment.getContextSubEventId()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment Sub-event scope does not match.");
         }
     }
@@ -1418,11 +1434,19 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
                 .orElse(anchor);
     }
 
-    @Autowired
     private com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
 
     @Autowired
+    void setEuroService(com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService) {
+        this.euroService = euroService;
+    }
+
     private NotificationDelivery cashNotifications;
+
+    @Autowired
+    void setCashNotifications(NotificationDelivery cashNotifications) {
+        this.cashNotifications = cashNotifications;
+    }
 
     public PaymentHistoryMutationDto recordCashReceipt(
             String recipientId, CashReceiptRequestDto request) {
@@ -1439,12 +1463,12 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
         String method = request.method() == null ? "cash" : request.method();
         if (!Set.of("cash", "bank-transfer").contains(method)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid receipt method.");
         String payerId = normalizeId(request.payerUserId());
-        if (!hasText(payerId) || payerId.equals(recipientId))
+        if (!hasText(recipientId) || !hasText(payerId) || payerId.equals(recipientId))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another member.");
         var participants = profiles.paymentParticipants(java.util.Arrays.asList(payerId, recipientId));
         PaymentParticipantDto payer = participants.stream().filter(user -> payerId.equals(user.userId())).findFirst().orElse(null);
         PaymentParticipantDto recipient = participants.stream().filter(user -> recipientId.equals(user.userId())).findFirst().orElse(null);
-        if (!WorkspaceContext.sameWorkspace(payer, recipient))
+        if (payer == null || recipient == null || !WorkspaceContext.sameWorkspace(payer, recipient))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member unavailable.");
         String id = "cash:" + recipientId + ":" + request.requestId();
         String note = request.note() == null ? "" : request.note().trim();

@@ -59,6 +59,8 @@ public class CommunityVoteCounterWork {
             var recipients = new LinkedHashMap<>(before);
             var affected = new LinkedHashSet<>(before.keySet()); affected.addAll(visible);
             var pending = new ArrayList<MenuCounterUpdates.Change>();
+            // Stable persisted receipt/counter identity; never a password, signature or integrity proof.
+            @SuppressWarnings("java:S4790")
             String source = "vote-" + org.springframework.util.DigestUtils.md5DigestAsHex(row.id().getBytes(java.nio.charset.StandardCharsets.UTF_8));
             for (var id : affected) {
                 var old = before.get(id); boolean next = eligible.contains(id);

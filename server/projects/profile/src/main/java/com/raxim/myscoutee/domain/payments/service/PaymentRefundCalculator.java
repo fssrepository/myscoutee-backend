@@ -17,7 +17,7 @@ final class PaymentRefundCalculator {
     static Preview preview(Payment payment, String requestedAtIso) {
         double paid = money(payment == null ? null : payment.getAmount());
         String currency = text(payment == null ? null : payment.getCurrency(), "USD").toUpperCase();
-        if (paid <= 0) {
+        if (payment == null || paid <= 0) {
             return new Preview(0D, 0D, currency, "none", null, null, null, null, null,
                     "This payment has no refundable amount.");
         }
@@ -64,8 +64,11 @@ final class PaymentRefundCalculator {
     }
 
     static Preview storedOrCurrentPreview(Payment payment, String nowIso, Double paidAmountOverride) {
-        String requestStatus = text(payment == null ? null : payment.getRefundRequestStatus(), "none");
-        String paymentStatus = text(payment == null ? null : payment.getStatus(), "").toLowerCase(Locale.ROOT);
+        if (payment == null) {
+            return preview(null, nowIso);
+        }
+        String requestStatus = text(payment.getRefundRequestStatus(), "none");
+        String paymentStatus = text(payment.getStatus(), "").toLowerCase(Locale.ROOT);
         boolean finalizedRefund = List.of("released", "refunded", "partially_refunded").contains(paymentStatus)
                 && payment.getRefundedAmount() != null
                 && money(payment.getRefundedAmount()) > 0;

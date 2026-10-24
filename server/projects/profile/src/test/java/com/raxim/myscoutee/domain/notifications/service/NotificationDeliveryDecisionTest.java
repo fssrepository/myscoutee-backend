@@ -325,6 +325,7 @@ class NotificationDeliveryDecisionTest {
     }
 
     private NotificationOutboxWorkerService worker(NotificationOutboxItem item) {
+        when(mongo.exists(any(Query.class), eq(NotificationOutboxItem.class))).thenReturn(true);
         when(mongo.find(any(Query.class), eq(NotificationOutboxItem.class))).thenReturn(List.of(item));
         when(mongo.updateFirst(any(Query.class), any(Update.class), eq(NotificationOutboxItem.class)))
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));

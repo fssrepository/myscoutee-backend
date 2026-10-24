@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.chat.service;
+import static com.raxim.myscoutee.common.measurement.MongoEvidenceCursor.*;
 import java.time.Instant;
 import java.util.*;
 import org.bson.Document;
@@ -38,37 +39,14 @@ public class ChatMeasurementService implements ChatMeasurement {
         pipeline.add(new Document("$sort", new Document("userId", 1).append("occurredAt", 1).append("actionType", 1).append("sourceId", 1)));
         return new MongoEvidenceCursor(mongo.getCollection("chatMessages").aggregate(pipeline).allowDiskUse(true).batchSize(1_000).iterator());
     }
-    private static Document range(String start, String end) {
-        return new Document("$gte", start).append("$lt", end);
-    }
 
-    private static Document rangeClause(
-            String field,
-            String start,
-            String end) {
-        return new Document(field, range(start, end));
-    }
 
-    private static Document match(Document criteria) {
-        return new Document("$match", criteria);
-    }
 
-    private static Document project(
-            Object userId,
-            String actionType,
-            Object occurredAt,
-            Object sourceId) {
-        return new Document(
-                "$project",
-                new Document("_id", 0)
-                        .append("userId", userId)
-                        .append("actionType", actionType)
-                        .append("occurredAt", occurredAt)
-                        .append("sourceId", sourceId));
-    }
 
-    private static Document source(Object... parts) {
-        return new Document("$concat", List.of(parts));
-    }
+
+
+
+
+
 
 }

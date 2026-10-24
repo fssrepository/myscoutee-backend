@@ -13,10 +13,8 @@ import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
 /** The completed session is the durable source; publication is marked only after outbox insertion. */
 @Service
 public class IntegrationEncounterPublisher {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
     private static final Logger LOG = LoggerFactory.getLogger(IntegrationEncounterPublisher.class);
     private final MingleEncounters encounters;
@@ -25,7 +23,12 @@ public class IntegrationEncounterPublisher {
     private final IntegrationWebhookService webhooks;
 
     public IntegrationEncounterPublisher(MingleEncounters encounters, EventOwnershipReads events,
-            IntegrationEventQueryService queries, IntegrationWebhookService webhooks) {
+            IntegrationEventQueryService queries, IntegrationWebhookService webhooks,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.groupRules = groupRules;
+        this.groupDatabases = groupDatabases;
+
         this.encounters = encounters; this.events = events; this.queries = queries; this.webhooks = webhooks;
     }
 

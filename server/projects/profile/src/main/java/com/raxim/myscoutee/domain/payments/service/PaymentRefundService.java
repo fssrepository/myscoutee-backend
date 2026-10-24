@@ -24,9 +24,9 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class PaymentRefundService implements com.raxim.myscoutee.domain.payments.api.PaymentRefunds {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
 
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
+    private final com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
 
     private static final Set<String> REFUNDABLE_STATUSES = Set.of(
             "authorized", "captured", "approved", "partially_refunded");
@@ -42,7 +42,12 @@ public class PaymentRefundService implements com.raxim.myscoutee.domain.payments
             PaymentService paymentService,
             SavedPaymentMethodsService paymentMethodsService,
             NotificationDelivery notificationOutboxService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles,
+            com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals) {
+        this.profiles = profiles;
+        this.accountPaymentTotals = accountPaymentTotals;
+
         this.paymentsRepository = paymentsRepository;
         this.paymentService = paymentService;
         this.paymentMethodsService = paymentMethodsService;
@@ -80,7 +85,7 @@ public class PaymentRefundService implements com.raxim.myscoutee.domain.payments
         String historyId = changedTerms ? paymentService.refundHistoryIdForTarget(payment, payment.getAmount()) : refundHistoryId(payment);
         Payment existingRequest = paymentsRepository.findById(historyId).orElse(null);
         String requestStatus = refundRequestStatus(existingRequest);
-        if ("pending".equals(requestStatus) || "approved".equals(requestStatus)) {
+        if (existingRequest != null && ("pending".equals(requestStatus) || "approved".equals(requestStatus))) {
             if (changedTerms && "pending".equals(requestStatus) && !"event-terms-changed".equals(existingRequest.getRefundRuleId())) {
                 double remaining = Math.max(0D, payment.getAmount() - (payment.getRefundedAmount() == null ? 0D : payment.getRefundedAmount()));
                 existingRequest.setAmount(remaining);
@@ -133,7 +138,7 @@ public class PaymentRefundService implements com.raxim.myscoutee.domain.payments
         if ("approved".equals(requestStatus)) {
             return paymentMethodsService.mutationDto(request, actorId);
         }
-        if (!"pending".equals(requestStatus)) {
+        if (request == null || !"pending".equals(requestStatus)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There is no pending refund request for this payment.");
         }
 

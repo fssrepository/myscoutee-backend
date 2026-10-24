@@ -71,7 +71,7 @@ class HelpCenterServiceTest {
                 new com.raxim.myscoutee.domain.accounts.service.AccountConsentService(privacyConsentsRepository),
                 adminTelemetryService,
                 appSettingsService,
-                accessControlService);
+                accessControlService, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", org.mockito.Mockito.mock(AdministrativeActors.class));
     }
 

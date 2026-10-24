@@ -8,12 +8,15 @@ import com.raxim.myscoutee.domain.feedback.service.FeedbackService;
 @RestController
 @RequestMapping("/feedback")
 public class FeedbackController {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.feedback.service.FeedbackEvaluationService evaluations;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.api.CommunityAuthority authority;
+    private final com.raxim.myscoutee.domain.feedback.service.FeedbackEvaluationService evaluations;
+    private final com.raxim.myscoutee.domain.groups.api.CommunityAuthority authority;
     private final FeedbackService feedback;
-    public FeedbackController(FeedbackService feedback) { this.feedback=feedback; }
+    public FeedbackController(FeedbackService feedback,
+            com.raxim.myscoutee.domain.feedback.service.FeedbackEvaluationService evaluations,
+            com.raxim.myscoutee.domain.groups.api.CommunityAuthority authority) {
+        this.evaluations = evaluations;
+        this.authority = authority;
+ this.feedback=feedback; }
     @GetMapping("")
     public List<FeedbackStateDto> queryFeedback(@RequestParam("userId") String userId) {
         return feedback.queryStates(userId);

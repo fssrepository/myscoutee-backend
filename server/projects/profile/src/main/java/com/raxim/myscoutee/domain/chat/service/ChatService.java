@@ -91,9 +91,9 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
 public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQueries {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountDevices accountDevices;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ChatCounters chatCounters;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
+    private final com.raxim.myscoutee.domain.accounts.api.AccountDevices accountDevices;
+    private final com.raxim.myscoutee.domain.accounts.api.ChatCounters chatCounters;
+    private final com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
@@ -112,8 +112,12 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQuer
     private final ChatMessagesRepository chatMessagesRepository;
     private final MongoTemplate mongoTemplate;
     private final ProfileSummaries profileDirectory;
-    @org.springframework.beans.factory.annotation.Autowired(required = false)
     private ChatMemberPages memberPages;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setMemberPages(ChatMemberPages memberPages) {
+        this.memberPages = memberPages;
+    }
     private final ProfileReadState profilePresentation;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
@@ -121,10 +125,18 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQuer
     private final OperationalTelemetry adminTelemetryService;
     private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
-    @org.springframework.beans.factory.annotation.Autowired(required = false)
     private ChatPagePresentation pagePresentation;
+
     @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setPagePresentation(ChatPagePresentation pagePresentation) {
+        this.pagePresentation = pagePresentation;
+    }
     private List<ChatAccessRestriction> accessRestrictions = List.of();
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setAccessRestrictions(List<ChatAccessRestriction> accessRestrictions) {
+        this.accessRestrictions = accessRestrictions;
+    }
     private final ChatMapper chatMapper;
     private final ChatMessageMapper chatMessageMapper;
     private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
@@ -142,7 +154,14 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQuer
             AdministratorClassification adminMenuCounterService,
             AccessPermissions accessControlService,
             ChatMapper chatMapper,
-            ChatMessageMapper chatMessageMapper) {
+            ChatMessageMapper chatMessageMapper,
+            com.raxim.myscoutee.domain.accounts.api.AccountDevices accountDevices,
+            com.raxim.myscoutee.domain.accounts.api.ChatCounters chatCounters,
+            com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile) {
+        this.accountDevices = accountDevices;
+        this.chatCounters = chatCounters;
+        this.selectedProfile = selectedProfile;
+
         this.chatsRepository = chatsRepository;
         this.chatMessagesRepository = chatMessagesRepository;
         this.mongoTemplate = mongoTemplate;
@@ -1131,7 +1150,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQuer
                 .addToSet("readBy", reader)
                 .addToSet("messageReadByUserIds", viewerUserId);
         var updateResult = mongoTemplate.updateMulti(unreadMessages, readUpdate, ChatMessage.class);
-        long changedMessageCount = updateResult == null ? 0 : updateResult.getModifiedCount();
+        long changedMessageCount = updateResult.getModifiedCount();
 
         if (viewerChat != null && previousUnread > 0) {
             Chat nextViewerChat = copyChat(viewerChat);
@@ -1268,7 +1287,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQuer
 
     void incrementStoredChatCounters(Chat chat, int unreadDelta) {
         String ownerUserId = normalizeId(chat == null ? null : chat.getOwnerUserId());
-        if (!StringUtils.hasText(ownerUserId) || unreadDelta == 0) return;
+        if (chat == null || !StringUtils.hasText(ownerUserId) || unreadDelta == 0) return;
         chatCounters.increment(new com.raxim.myscoutee.domain.accounts.api.ChatCounters.Change(
                 ownerUserId, chatCounterContextField(chat.getChannelType()), unreadDelta));
     }
@@ -1565,7 +1584,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQuer
             return true;
         }
         ProfileSummary admin = isSupportCaseChat(chat) ? findUser(normalizedUserId) : null;
-        if (isSupportCaseChat(chat) && isAdminUser(admin)) {
+        if (admin != null && isSupportCaseChat(chat) && isAdminUser(admin)) {
             return Objects.equals(admin.getWorkspaceGroupId(), chat.getSupportBaseGroupId());
         }
         if (chat.getMemberIds() == null) {
@@ -1909,26 +1928,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQuer
     }
 
     private String resolveUserImageUrl(ProfileSummary user) {
-        if (user == null || user.getImages() == null) {
-            return "";
-        }
-        return user.getImages().stream()
-                .map(ChatRecordContext::safeText)
-                .filter(StringUtils::hasText)
-                .findFirst()
-                .orElse("");
+        return com.raxim.myscoutee.domain.chat.service.ChatPagePresentation.resolveUserImageUrl(user);
     }
 
     private String buildInitials(String value) {
-        String normalized = safeText(value);
-        if (!StringUtils.hasText(normalized)) {
-            return "CH";
-        }
-        String[] parts = normalized.split("\\s+");
-        if (parts.length == 1) {
-            return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase(Locale.US);
-        }
-        return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase(Locale.US);
+        return com.raxim.myscoutee.domain.chat.service.ChatPagePresentation.buildInitials(value);
     }
 
     private String normalizeGender(String value) {

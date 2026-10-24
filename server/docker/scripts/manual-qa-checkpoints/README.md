@@ -89,7 +89,7 @@ every isolated rule's exact timing control.
 `EVENT-MODE-REGRESSION-001` uses the separate
 `scenarios/event-mode-regression-checkpoints.js` helper for development timing
 and named runtime replay boundaries. The exact commands and scope are in
-[`EVENT-MODE-REGRESSION-001.md`](../../../../guides/qa/checklists/event/EVENT-MODE-REGRESSION-001.md#reversible-development-timing-and-runtime-checkpoints).
+[the event-format case](../../../../tests/qa/categories/Event/event-formats.md).
 `arm-tournament-review` temporarily sets the existing job to 60 seconds;
 `reset` restores its original configuration, retaining real execution history.
 `capture-runtime-checkpoint` / `restore-runtime-checkpoint` capture one explicit
@@ -99,7 +99,7 @@ continue an existing run; they do not create a new browser or stage a fresh camp
 
 The event-domain runner implements executable setup and machine oracles for the
 checkpoint graph in
-[`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/qa/manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
+[the QA baseline](../../../../tests/qa/README.md).
 It does not merely print that document. `stage` creates the controlled event,
 membership, feedback or ticket prerequisite and stores a complete reset
 snapshot; `status` queries the resulting identities from Mongo.
@@ -598,7 +598,7 @@ three-actor history/delivery/unread/read/reconnect phases owned by
 
 ```bash
 bash manual-qa-checkpoints.sh stage chat-domain CHAT-LIST-001
-node ../../../../guides/qa/tools/verify-chat-list-read-oracle.mjs \
+node ../../../../tests/qa/categories/Chat/tools/verify-chat-list-read-oracle.mjs \
   --manifest /tmp/myscoutee-qa-browser-sessions/CHAT-LIST-001.json \
   --actor-user-id 650000000000000000000061
 bash manual-qa-checkpoints.sh status chat-domain CHAT-LIST-001
@@ -797,7 +797,7 @@ parallel comparison or `standard`, `tournament`, `speed-meeting` for isolation.
 rate for Standard/Tournament; new 0/0 for Speed meeting) and restores
 the temporarily shortened worker schedule; `reset` restores scoped fixture and
 session state. Reset/restage is the supported replay.
-See [the numbered manual guide](../../../../guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
+See [the event-feedback case](../../../../tests/qa/categories/Event/event-feedback.md)
 for full commands, boundaries and cleanup. Startup uses the common versioned
 browser launcher; subsequent rating actions belong to the tester.
 

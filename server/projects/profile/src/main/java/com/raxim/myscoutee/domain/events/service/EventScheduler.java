@@ -122,8 +122,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventSubEventsMapper subEventsMapper;
-    @org.springframework.beans.factory.annotation.Autowired
-    private EventJobQueries jobGroupScope;
+    private final EventJobQueries jobGroupScope;
 
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
@@ -156,7 +155,10 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             NotificationJobs notificationRuleRegistryService,
             SchedulingPolicy platformParametersService,
             NotificationDelivery notificationOutboxService,
-            ActivityEventSubEventsMapper subEventsMapper) {
+            ActivityEventSubEventsMapper subEventsMapper,
+            EventJobQueries jobGroupScope) {
+        this.jobGroupScope = jobGroupScope;
+
         this.userRatesRepository = userRatesRepository;
         this.affinityEdgeService = affinityEdgeService;
         this.communityGroups = communityGroups;
@@ -430,7 +432,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         long delayMs = platformParametersService == null
                 ? 1_800_000L
                 : platformParametersService.eventSchedulerPollDelayMs(1_800_000L);
-        if (lastStageSchedulerRunAt != Instant.EPOCH
+        if (!Instant.EPOCH.equals(lastStageSchedulerRunAt)
                 && effectiveNow.toEpochMilli() - lastStageSchedulerRunAt.toEpochMilli() < delayMs) {
             return false;
         }
@@ -443,7 +445,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         long delayMs = platformParametersService == null
                 ? 7_200_000L
                 : platformParametersService.autoInviterCadenceMs(7_200_000L);
-        if (lastAutoInviterRunAt != Instant.EPOCH
+        if (!Instant.EPOCH.equals(lastAutoInviterRunAt)
                 && effectiveNow.toEpochMilli() - lastAutoInviterRunAt.toEpochMilli() < delayMs) {
             return false;
         }
@@ -614,23 +616,9 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     }
 
     private int autoTournamentGroupCount(SubEventItem subEvent) {
-        if (subEvent == null) {
-            return 0;
-        }
-        int groupMin = safeCount(subEvent.tournamentGroupCapacityMin());
-        int groupMax = Math.max(groupMin, safeCount(subEvent.tournamentGroupCapacityMax()));
-        if (groupMin > 0 || groupMax > 0) {
-            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
-            int stageMax = safeCount(subEvent.capacityMax());
-            int groupsNeededForMaximum = stageMax > 0
-                    ? (int) Math.ceil((double) stageMax / divisor)
-                    : 0;
-            int groupsAllowedByMinimum = groupMin > 0
-                    ? Math.max(1, stageMax / groupMin)
-                    : groupsNeededForMaximum;
-            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
-        }
-        return 0;
+        return subEvent == null ? 0 : TournamentGroupCountPolicy.countForIncoming(
+                subEvent.tournamentGroupCapacityMin(), subEvent.tournamentGroupCapacityMax(),
+                subEvent.capacityMax(), subEvent.capacityMax());
     }
 
     private SubEventItem closeStageForReviewIfDue(
@@ -1078,7 +1066,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         Set<String> publicUserIds = new LinkedHashSet<>();
         for (ProfileSummary user : usersRepository.findByUserIdIn(normalizedCandidateUserIds)) {
             String userId = normalizeId(user == null ? null : user.getUserId());
-            if (StringUtils.hasText(userId)
+            if (user != null && StringUtils.hasText(userId)
                     && PUBLIC_PROFILE_STATUS.equalsIgnoreCase(safeText(user.getProfileStatus()))) {
                 publicUserIds.add(userId);
             }
@@ -1608,7 +1596,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 runtimes == null ? List.<ActivitySubEventStageRuntime>of() : runtimes) {
             String ownerId = normalizeId(runtime == null ? null : runtime.getOwnerId());
             String stageId = normalizeId(runtime == null ? null : runtime.getSubEventId());
-            if (!StringUtils.hasText(ownerId)
+            if (runtime == null || !StringUtils.hasText(ownerId)
                     || !StringUtils.hasText(stageId)
                     || "D".equalsIgnoreCase(safeText(runtime.getStatus()))) {
                 continue;
@@ -1675,7 +1663,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         if (!isTournamentStage(previousStage) || !isTournamentStage(currentStage)) {
             return accepted;
         }
-        String previousStageId = normalizeId(previousStage == null ? null : previousStage.id());
+        String previousStageId = normalizeId(previousStage.id());
         if (!StringUtils.hasText(previousStageId)) {
             return Set.of();
         }
@@ -1690,7 +1678,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             if (!isTournamentStage(stage)) {
                 continue;
             }
-            String stageId = normalizeId(stage == null ? null : stage.id());
+            String stageId = normalizeId(stage.id());
             if (!StringUtils.hasText(stageId)) {
                 continue;
             }
@@ -2346,7 +2334,8 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         List<String> assignedUserIds = new ArrayList<>();
         Set<String> plannedTargetIds = new LinkedHashSet<>();
         for (GeneratedEventPlan plan : plans) {
-            String targetId = normalizeId(plan == null ? null : plan.seedId());
+            if (plan == null) { return false; }
+            String targetId = normalizeId(plan.seedId());
             GroupAssignmentTarget target = targetById.get(targetId);
             if (target == null || !plannedTargetIds.add(targetId)) {
                 return false;
@@ -2433,7 +2422,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             GroupAssignmentTarget assignmentTarget,
             boolean tournamentRoomPresentation) {
         String roomEventId = normalizeId(assignmentTarget == null ? null : assignmentTarget.memberOwnerId());
-        if (!StringUtils.hasText(roomEventId)) {
+        if (assignmentTarget == null || !StringUtils.hasText(roomEventId)) {
             throw new IllegalStateException("A generated random room requires a stable event id.");
         }
         // Keep the legacy scheduler identity stable: it is an internal assignment key,
@@ -2623,7 +2612,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             String roomEventId = normalizeId(room == null ? null : room.getSourceId());
             List<String> recipientUserIds = normalizeUserIds(
                     changedRoom == null ? null : changedRoom.memberUserIds());
-            if (!StringUtils.hasText(roomEventId) || recipientUserIds.isEmpty()) {
+            if (room == null || !StringUtils.hasText(roomEventId) || recipientUserIds.isEmpty()) {
                 continue;
             }
             boolean tournamentRoom = TOURNAMENT_ROOM_EVENT_TYPE.equals(normalizeId(room.getEventType()));

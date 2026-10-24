@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.feedback.api;
 import java.util.List;
 public interface FeedbackDirectory {
     List<? extends Answer> findByTargetUserIdOrderBySubmittedAtIsoDesc(String userId);
-    interface Answer {
+    interface Answer extends com.raxim.myscoutee.common.dto.AuditFields {
         String getId();
         String getSyncKey();
         String getViewerUserId();
@@ -17,9 +17,9 @@ public interface FeedbackDirectory {
         List<String> getPersonalityTraitIds();
         List<String> getTags();
         String getSubmittedAtIso();
-        String getCreatedDate();
-        String getCreatedUser();
-        String getUpdatedDate();
-        String getUpdatedUser();
+
+        
+
+        
     }
 }

@@ -120,7 +120,7 @@ public class ActivityEventDetailMapper {
                 value.requireGenderBalance());
     }
 
-    private int aggregateRuntimeActivity(ActivityEvent record) {
+    public static int aggregateRuntimeActivity(ActivityEvent record) {
         int pending = 0;
         for (SubEventItem item : record == null || record.getSubEvents() == null
                 ? List.<SubEventItem>of()
@@ -178,7 +178,7 @@ public class ActivityEventDetailMapper {
         return new LocationCoordinatesDto(value.latitude(), value.longitude());
     }
 
-    private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
+    public static List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
         if (items == null) {
             return new ArrayList<>();
         }
@@ -201,7 +201,7 @@ public class ActivityEventDetailMapper {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
-    private PricingConfigDto clonePricing(PricingConfigDto pricing) {
+    private static PricingConfigDto clonePricing(PricingConfigDto pricing) {
         return pricing;
     }
 
@@ -213,7 +213,7 @@ public class ActivityEventDetailMapper {
         return SubEventItemMapper.toDtoList(items);
     }
 
-    private List<SubEventDefinitionDto> cloneSubEventDefinitions(List<SubEventDefinitionDto> items) {
+    public static List<SubEventDefinitionDto> cloneSubEventDefinitions(List<SubEventDefinitionDto> items) {
         if (items == null) {
             return new ArrayList<>();
         }
@@ -244,17 +244,7 @@ public class ActivityEventDetailMapper {
     }
 
     private List<String> normalizeStrings(Collection<String> values) {
-        if (values == null) {
-            return List.of();
-        }
-        List<String> normalized = new ArrayList<>();
-        for (String value : values) {
-            String text = safeText(value);
-            if (StringUtils.hasText(text)) {
-                normalized.add(text);
-            }
-        }
-        return normalized;
+        return com.raxim.myscoutee.common.util.TextValues.trimmedStrings(values);
     }
 
     private List<String> normalizeIds(Collection<String> values) {
@@ -279,7 +269,7 @@ public class ActivityEventDetailMapper {
         return value == null ? "" : value.trim();
     }
 
-    private int normalizeCount(Integer value) {
+    private static int normalizeCount(Integer value) {
         return value == null ? 0 : Math.max(0, value);
     }
 

@@ -481,19 +481,7 @@ public class OperatorNetworkService {
         runtime.setSoftwareVersion(realProperties.getSoftwareVersion());
         runtime.setPackageSigningPublicKeyPath(
                 realProperties.getPackageSigningPublicKeyPath());
-        if (mode == MongoSessionMode.DEMO) {
-            runtime.setPrivateKeyPath(demoProperties.getPrivateKeyPath());
-            runtime.setPublicKeyPath(demoProperties.getPublicKeyPath());
-            runtime.setStateDir(demoProperties.getStateDir());
-            runtime.setAllowInsecureHttp(demoProperties.isAllowInsecureHttp());
-            runtime.setInsecureHttpAllowedHosts(demoProperties.getInsecureHttpAllowedHosts());
-        } else {
-            runtime.setPrivateKeyPath(realProperties.getPrivateKeyPath());
-            runtime.setPublicKeyPath(realProperties.getPublicKeyPath());
-            runtime.setStateDir(realProperties.getStateDir());
-            runtime.setAllowInsecureHttp(false);
-            runtime.setInsecureHttpAllowedHosts("");
-        }
+        OperatorRevenueRegistryRuntimeResolver.applyIdentityPaths(runtime, mode, realProperties, demoProperties);
         if (!runtime.isOutboundAllowed()) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,

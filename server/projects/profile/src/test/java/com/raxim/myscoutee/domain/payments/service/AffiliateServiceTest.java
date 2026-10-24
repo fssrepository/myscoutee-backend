@@ -19,11 +19,11 @@ import org.springframework.data.mongodb.core.query.Update;
 @org.junit.jupiter.api.Tag("standard")
 class AffiliateServiceTest {
     private final MongoTemplate mongo = mock(MongoTemplate.class);
-    private final AffiliateService service = new AffiliateService(mongo);
+    private final AffiliateService service = new AffiliateService(mongo, null, null);
     private static final String CODE = "00000000-0000-4000-8000-000000000001";
 
     @org.junit.jupiter.api.BeforeEach void owners() {
-        var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(null);
+        var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(profiles, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "profiles", profiles);
     }
@@ -75,4 +75,12 @@ class AffiliateServiceTest {
         assertThat(update.getAllValues()).allSatisfy(value -> assertThat(value.getUpdateObject().keySet()).containsExactly("$setOnInsert"));
         assertThat(update.getAllValues().get(0).getUpdateObject()).isEqualTo(update.getAllValues().get(1).getUpdateObject());
     }
+
+    @Test
+    void missingDurableLinkFailsWithoutPublishingAnInvitationUrl() {
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.link("owner"))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class,
+                        error -> assertThat(error.getStatusCode().value()).isEqualTo(503));
+    }
+
 }

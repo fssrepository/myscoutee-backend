@@ -1,0 +1,165 @@
+[
+  {
+    "className": "com.raxim.myscoutee.domain.email.document.EmailTemplate",
+    "properties": {
+      "id": "String",
+      "baseGroupId": "String",
+      "syncKey": "String",
+      "templateKey": "String",
+      "name": "String",
+      "description": "String",
+      "category": "String",
+      "locale": "String",
+      "enabled": "Boolean",
+      "subjectTemplate": "String",
+      "htmlTemplate": "String",
+      "textTemplate": "String",
+      "createdDate": "String",
+      "createdUser": "String",
+      "updatedDate": "String",
+      "updatedUser": "String"
+    },
+    "indexes": [
+      "email_template_sync_key"
+    ]
+  },
+  {
+    "className": "com.raxim.myscoutee.domain.notifications.document.NotificationTemplate",
+    "properties": {
+      "id": "String",
+      "baseGroupId": "String",
+      "syncKey": "String",
+      "templateKey": "String",
+      "name": "String",
+      "description": "String",
+      "category": "String",
+      "locale": "String",
+      "enabled": "Boolean",
+      "titleTemplate": "String",
+      "bodyTemplate": "String",
+      "iconUrl": "String",
+      "badgeUrl": "String",
+      "ctaPath": "String",
+      "createdDate": "String",
+      "createdUser": "String",
+      "updatedDate": "String",
+      "updatedUser": "String"
+    },
+    "indexes": [
+      "notification_template_sync_key"
+    ]
+  },
+  {
+    "className": "com.raxim.myscoutee.domain.operator.document.GlobalIdentityPresenceOutboxItem",
+    "properties": {
+      "id": "String",
+      "version": "Long",
+      "schemaVersion": "Integer",
+      "registryScope": "String",
+      "deploymentId": "String",
+      "qmauReportId": "String",
+      "qmauCommitmentHash": "String",
+      "period": "String",
+      "revision": "Long",
+      "supersedesBatchId": "String",
+      "reportedQmauCount": "Long",
+      "keyVersion": "Long",
+      "suite": "String",
+      "submissionId": "String",
+      "chunkIndex": "Integer",
+      "chunkCount": "Integer",
+      "totalCommitmentCount": "Long",
+      "commitmentSetHash": "String",
+      "networkIdentityCommitments": "List",
+      "materializationComplete": "Boolean",
+      "payloadHash": "String",
+      "idempotencyKey": "String",
+      "status": "String",
+      "attemptCount": "Integer",
+      "nextRetryAt": "String",
+      "lastAttempt": "SignedAttempt",
+      "signedRequestHashes": "List",
+      "lastFailure": "Failure",
+      "acceptedResponse": "GlobalIdentityPresenceBatchResponse",
+      "acceptedAt": "String",
+      "createdAt": "String",
+      "updatedAt": "String"
+    },
+    "indexes": [
+      "global_identity_presence_deployment_period_revision_chunk",
+      "global_identity_presence_delivery",
+      "global_identity_presence_idempotency"
+    ]
+  },
+  {
+    "className": "com.raxim.myscoutee.domain.operator.document.QualifiedMauReportOutboxItem",
+    "properties": {
+      "id": "String",
+      "version": "Long",
+      "schemaVersion": "Integer",
+      "registryScope": "String",
+      "deploymentId": "String",
+      "period": "String",
+      "windowStart": "String",
+      "windowEnd": "String",
+      "revision": "Long",
+      "supersedesBatchId": "String",
+      "kind": "String",
+      "rulesetVersion": "String",
+      "qualifiedMauCount": "Long",
+      "actionCount": "Long",
+      "actionCounts": "Map",
+      "commitmentHash": "String",
+      "payloadHash": "String",
+      "idempotencyKey": "String",
+      "status": "String",
+      "attemptCount": "Integer",
+      "nextRetryAt": "String",
+      "lastAttempt": "SignedAttempt",
+      "lastFailure": "Failure",
+      "acceptedResponse": "BatchResponse",
+      "acceptedAt": "String",
+      "createdAt": "String",
+      "updatedAt": "String"
+    },
+    "indexes": [
+      "qmau_outbox_deployment_period_revision",
+      "qmau_outbox_delivery",
+      "qmau_outbox_idempotency"
+    ]
+  },
+  {
+    "className": "com.raxim.myscoutee.domain.operator.document.RevenueReportOutboxItem",
+    "properties": {
+      "id": "String",
+      "version": "Long",
+      "schemaVersion": "Integer",
+      "registryScope": "String",
+      "deploymentId": "String",
+      "period": "String",
+      "revision": "Long",
+      "supersedesBatchId": "String",
+      "kind": "String",
+      "rulesetVersion": "String",
+      "commissionRateBasisPoints": "Integer",
+      "currencies": "List",
+      "aggregateHash": "String",
+      "payloadHash": "String",
+      "idempotencyKey": "String",
+      "status": "String",
+      "attemptCount": "Integer",
+      "nextRetryAt": "String",
+      "lastAttempt": "SignedAttempt",
+      "lastFailure": "Failure",
+      "acceptedResponse": "RevenueBatchResponse",
+      "acceptedAt": "String",
+      "createdAt": "String",
+      "updatedAt": "String"
+    },
+    "indexes": [
+      "revenue_outbox_deployment_period_revision",
+      "revenue_outbox_delivery",
+      "revenue_outbox_idempotency"
+    ]
+  }
+]

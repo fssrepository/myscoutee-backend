@@ -19,7 +19,7 @@ public record ProfileSummaryDto(
         String city,
         String initials,
         String gender,
-        java.util.List<String> images, java.util.Map<String, Integer> menuCounters) implements ProfileSummary {
+        java.util.List<String> images, java.util.Map<String, Integer> menuCounters) implements ProfileSummary, com.raxim.myscoutee.domain.accounts.api.ProfileSummary.RecordFields {
     public ProfileSummaryDto {
         if (images != null) images = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(images));
         menuCounters = menuCounters == null ? java.util.Map.of() : java.util.Map.copyOf(menuCounters);
@@ -43,22 +43,5 @@ public record ProfileSummaryDto(
                 value.getGender(),
                 value.getImages(), value.getMenuCounters());
     }
-    @Override public String getUserId() { return userId; }
-    @Override public String getAccountUserId() { return accountUserId; }
-    @Override public String getWorkspaceGroupId() { return workspaceGroupId; }
-    @Override public String getDeletedAtIso() { return deletedAtIso; }
-    @Override public String getProfileStatus() { return profileStatus; }
-    @Override public String getStatus() { return status; }
-    @Override public String getHostTier() { return hostTier; }
-    @Override public String getStatusText() { return statusText; }
-    @Override public Integer getAge() { return age; }
-    @Override public String getCity() { return city; }
-    @Override public String getAbout() { return about; }
-    @Override public String getHeadline() { return headline; }
-    @Override public String getTraitLabel() { return traitLabel; }
-    @Override public String getName() { return name; }
-    @Override public String getInitials() { return initials; }
-    @Override public String getGender() { return gender; }
-    @Override public java.util.List<String> getImages() { return images; }
     @Override public java.util.Map<String, Integer> getMenuCounters() { return menuCounters; }
 }

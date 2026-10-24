@@ -29,7 +29,7 @@ class EventLifecycleRecoveryTest {
             try (var client = MongoClients.create("mongodb://" + address.getHost() + ":" + address.getPort())) {
                 var mongo = new MongoTemplate(client, "event-lifecycle");
                 var events = new MongoRepositoryFactory(mongo).getRepository(ActivityEventsRepository.class);
-                var attachments = new ChatAttachmentLifecycleService(mock(ChatMessagesRepository.class));
+                var attachments = new ChatAttachmentLifecycleService(mock(ChatMessagesRepository.class), null);
                 ReflectionTestUtils.setField(attachments, "mongo", mongo);
                 mongo.getCollection("chatMessages").insertOne(new Document("_id", "message").append("attachments", List.of(
                         new Document("type", "event").append("entityId", "event").append("title", "Keep title").append("status", "available"),

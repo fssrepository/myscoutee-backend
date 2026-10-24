@@ -99,7 +99,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
             payment.setUserId(owner); payment.setStatus("pending"); payment.setCreatedDate(owner);
             mongoTemplate.save(payment);
         }
-        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongoTemplate);
         var scope = new JobGroupScopeService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class),
                 java.util.Optional.of(directory), java.util.List.of());
@@ -410,6 +410,18 @@ class ScheduledMessageTaskServiceIntegrationTest {
             JobGroupScopeService.class
     })
     static class Config {
+        @Bean
+        com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService projectionChanges() {
+            return org.mockito.Mockito.mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        }
+        @Bean
+        com.raxim.myscoutee.domain.administration.api.OperationalTelemetry projectionTelemetry() {
+            return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.class);
+        }
+        @Bean
+        com.raxim.myscoutee.common.delivery.OutboundRetryWorker projectionRetryWorker() {
+            return org.mockito.Mockito.mock(com.raxim.myscoutee.common.delivery.OutboundRetryWorker.class);
+        }
         @Bean
         com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases() {
             return new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner(

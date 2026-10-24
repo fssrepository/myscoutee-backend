@@ -12,7 +12,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 class CommunityMembershipServiceTest {
     @Test void returnedMembershipIsDetachedAndTransitionsPreserveCompareAndSetGuards() {
         var repository = mock(ActivityMembersRepository.class);
-        var service = new CommunityMembershipService(repository);
+        var service = new CommunityMembershipService(repository, null, null);
         var stored = new ActivityMember();
         stored.setId("membership"); stored.setOwnerType("community"); stored.setOwnerId("group"); stored.setUserId("account");
         stored.setStatus("pending"); stored.setRole("Member"); stored.setActionAtIso("previous");

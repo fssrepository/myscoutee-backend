@@ -34,7 +34,7 @@ class PaymentMethodExpiryTaskServiceTest {
                 repository,
                 outbox,
                 registry,
-                sessionRunner);
+                sessionRunner, null, null);
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY);
         SavedPaymentMethod method = dueMethod();
@@ -83,7 +83,7 @@ class PaymentMethodExpiryTaskServiceTest {
                 repository,
                 mock(NotificationOutboxService.class),
                 registry,
-                sessionRunner);
+                sessionRunner, null, null);
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY);
 

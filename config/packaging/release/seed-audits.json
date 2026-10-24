@@ -1,0 +1,23 @@
+[
+  {
+    "file": "communityGroups.json",
+    "policy": "seed-audits/communityGroups.jq",
+    "optional": false,
+    "error": "Production community groups must contain only the two public system workspaces."
+  },
+  {
+    "file": "communityProviders.json",
+    "policy": "seed-audits/communityProviders.jq",
+    "optional": true,
+    "error": "Production community providers must contain only unconfigured built-in catalog definitions."
+  },
+  {
+    "file": "helpCenterRevisions.json",
+    "policy": "seed-audits/helpCenterRevisions.jq",
+    "optional": false,
+    "error": "Production privacy help content must use runtime contact tokens without fixed privacy identities.",
+    "slurpFiles": {
+      "languages": "frontend/src/app/shared/core/common/content-languages.json"
+    }
+  }
+]

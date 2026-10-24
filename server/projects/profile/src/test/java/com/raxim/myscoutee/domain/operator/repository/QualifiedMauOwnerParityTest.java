@@ -57,7 +57,11 @@ class QualifiedMauOwnerParityTest {
                 var expected = new ArrayList<QualifiedMauEvidenceRepository.QualifiedMauActionEvidence>();
                 new LegacyQualifiedMauEvidence(template).read(start, end, expected::add);
                 var actual = new ArrayList<QualifiedMauEvidenceRepository.QualifiedMauActionEvidence>();
-                new MongoQualifiedMauEvidenceRepository(new RatingMeasurementService(template), new EventMeasurementService(template),
+                new MongoQualifiedMauEvidenceRepository(new RatingMeasurementService(template), new EventMeasurementService(template,
+                        new com.raxim.myscoutee.domain.feedback.service.FeedbackMeasurementService(template,
+                            new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(
+                                new com.raxim.myscoutee.common.config.repository.MongoRepositoryFactory(template, Map.of())
+                                    .getRepository(com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository.class), template))),
                     new ChatMeasurementService(template), new AssetMeasurementService(template), new MeasurementEligibilityService(template)).read(start, end, actual::add);
                 assertThat(actual).containsExactlyElementsOf(expected).hasSize(1013);
                 assertThat(actual).extracting(QualifiedMauEvidenceRepository.QualifiedMauActionEvidence::actionType)

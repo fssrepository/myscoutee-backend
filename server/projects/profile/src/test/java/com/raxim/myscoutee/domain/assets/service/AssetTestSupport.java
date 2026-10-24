@@ -11,7 +11,7 @@ import com.raxim.myscoutee.domain.events.service.EventOwnershipService;
 public final class AssetTestSupport {
     private AssetTestSupport() {}
     public static AssetOwnershipService ownership(AssetsRepository repository, MongoTemplate mongo) {
-        var service = new AssetOwnershipService(repository);
+        var service = new AssetOwnershipService(repository, null);
         ReflectionTestUtils.setField(service, "mongo", mongo);
         return service;
     }
@@ -29,7 +29,7 @@ public final class AssetTestSupport {
             var repository = (ActivityMembersRepository) ReflectionTestUtils.getField(members, "members");
             ReflectionTestUtils.setField(service, "assetMemberships", new AssetMembershipService(repository, mongo));
         }
-        var events = new EventOwnershipService(null);
+        var events = new EventOwnershipService(null, null);
         ReflectionTestUtils.setField(events, "mongo", mongo);
         ReflectionTestUtils.setField(service, "eventOwnership", events);
         return service;

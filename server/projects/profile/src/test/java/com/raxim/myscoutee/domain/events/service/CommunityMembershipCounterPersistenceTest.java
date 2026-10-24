@@ -31,7 +31,7 @@ class CommunityMembershipCounterPersistenceTest {
                 var users = factory.getRepository(UsersRepository.class);
                 var account = new Users(); account.setUserId("account"); users.save(account);
                 var counters = spy(new AccountMenuCounterService(mongo));
-                var service = new CommunityMembershipService(members);
+                var service = new CommunityMembershipService(members, null, null);
                 ReflectionTestUtils.setField(service, "mongo", mongo);
                 ReflectionTestUtils.setField(service, "counters", counters);
                 var member = new CommunityMember();

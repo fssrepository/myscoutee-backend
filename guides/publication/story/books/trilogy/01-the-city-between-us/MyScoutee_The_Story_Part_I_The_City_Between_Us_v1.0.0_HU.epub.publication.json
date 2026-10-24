@@ -1,0 +1,44 @@
+{
+  "file": "MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.epub",
+  "sha256": "1f823516a08813514ef9f0312290b22136dcbe3faae5dc572a02cce56adf3853",
+  "format": "EPUB 3 reflowable",
+  "drm_embedded": false,
+  "part": 1,
+  "part_roman": "I",
+  "edition_version": "1.0.0",
+  "published": "2026-08-20",
+  "source": {
+    "file": "guides/story/trilogy/01-the-city-between-us/book/THE_CITY_BETWEEN_US_REVIEW_DRAFT_HU.md",
+    "sha256": "1f573ac3a0033559716198dec0622a2f6bcb7319f5ef22dd0311a8598153196a"
+  },
+  "cover_source": {
+    "file": "guides/story/trilogy/01-the-city-between-us/book/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.pdf",
+    "sha256": "5111f7ade4d9e86a62cf09acf9d50ae20870215356d1de836de8e8accf4ac9ea"
+  },
+  "asset_count": 30,
+  "toc_entries": 46,
+  "archive_entries": 38,
+  "validation": [
+    "EPUB mimetype and container",
+    "well-formed package, navigation, NCX and XHTML",
+    "manifest, spine, cover and image targets",
+    "navigation anchors",
+    "reflowable text without split drop-cap words",
+    "readable source-link labels instead of visible raw URLs"
+  ],
+  "metadata": {
+    "title": "MyScoutee – A történet · I. rész · A város közöttünk",
+    "author": "MyScoutee",
+    "subject": "Egy alapító emlékirata és a MyScoutee eredettörténete",
+    "keywords": [
+      "MyScoutee",
+      "emlékirat",
+      "közösség",
+      "emberi kapcsolatok",
+      "termékeredet"
+    ],
+    "creator": "MyScoutee könyvkészítő",
+    "language": "hu",
+    "copyright": "© 2026 MyScoutee. Minden jog fenntartva."
+  }
+}

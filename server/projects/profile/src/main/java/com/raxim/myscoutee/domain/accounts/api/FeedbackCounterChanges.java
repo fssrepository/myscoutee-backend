@@ -19,4 +19,18 @@ public interface FeedbackCounterChanges {
                     removed + other.removed);
         }
     }
+
+    static void accumulate(
+            java.util.Map<String, FeedbackBucketDelta> deltasByUserId,
+            String userId,
+            String bucket,
+            int amount) {
+        if (!org.springframework.util.StringUtils.hasText(userId) || amount == 0) {
+            return;
+        }
+        deltasByUserId.merge(
+                userId,
+                FeedbackBucketDelta.forBucket(bucket, amount),
+                FeedbackBucketDelta::plus);
+    }
 }

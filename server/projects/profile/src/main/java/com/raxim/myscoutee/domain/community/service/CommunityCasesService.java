@@ -33,8 +33,7 @@ import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 @Service
 public class CommunityCasesService implements com.raxim.myscoutee.domain.community.api.Cases {
     public static final List<String> TYPES = List.of("fault", "maintenance", "meter-replacement", "chimney-sweep", "renovation", "other");
-    @org.springframework.beans.factory.annotation.Autowired
-    private ScheduledMessages scheduledMessages;
+    private final ScheduledMessages scheduledMessages;
     private final ServiceCasesRepository cases;
     private final CommunityAuthority access;
     private final GroupDirectory groups;
@@ -42,14 +41,19 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
     private final NotificationDelivery notifications;
     private final CaseConversations chats;
     private final ServiceOfferingsRepository offerings;
-    @org.springframework.beans.factory.annotation.Autowired
-    private CommunityCaseCounterWork counterWork;
+    private final CommunityCaseCounterWork counterWork;
     public CommunityCasesService(ServiceCasesRepository cases, CommunityAuthority access, GroupDirectory groups,
-            ProfileSummaries users, NotificationDelivery notifications, CaseConversations chats, ServiceOfferingsRepository offerings) {
+            ProfileSummaries users, NotificationDelivery notifications, CaseConversations chats, ServiceOfferingsRepository offerings,
+            ScheduledMessages scheduledMessages,
+            CommunityCaseCounterWork counterWork,
+            tools.jackson.databind.ObjectMapper objectMapper) {
+        this.scheduledMessages = scheduledMessages;
+        this.counterWork = counterWork;
+        this.objectMapper = objectMapper;
+
         this.cases = cases; this.access = access; this.groups = groups; this.users = users; this.notifications = notifications; this.chats = chats; this.offerings = offerings;
     }
-    @org.springframework.beans.factory.annotation.Autowired
-    private tools.jackson.databind.ObjectMapper objectMapper;
+    private final tools.jackson.databind.ObjectMapper objectMapper;
     private void scheduleFeedback(ServiceCase closed) {
         try {
             scheduledMessages.scheduleCaseFeedback(new com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Request(

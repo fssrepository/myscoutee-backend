@@ -32,7 +32,7 @@ public class EventTicketAuditService implements com.raxim.myscoutee.domain.event
         String ticketId = text(ticket == null ? null : ticket.getId());
         String holderUserId = text(ticket == null ? null : ticket.getHolderUserId());
         String normalizedActorUserId = text(actorUserId);
-        if (!StringUtils.hasText(ticketId)
+        if (ticket == null || !StringUtils.hasText(ticketId)
                 || !StringUtils.hasText(holderUserId)
                 || !StringUtils.hasText(normalizedActorUserId)) {
             return null;

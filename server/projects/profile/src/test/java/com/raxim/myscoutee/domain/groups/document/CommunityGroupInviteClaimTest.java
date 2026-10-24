@@ -32,11 +32,11 @@ class CommunityGroupInviteClaimTest {
     private final CommunityGroup group = new CommunityGroup("group", "owner", "Invited group", "", null,
             "friends", "invitation", true, new GroupPolicy(true, false, List.of()),
             "now", "now", 0L, "accepted", 0L);
-    private final com.raxim.myscoutee.domain.events.service.CommunityMembershipService memberships = new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members);
-    private final CommunityGroupsService service = new CommunityGroupsService(groups, memberships, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
+    private final com.raxim.myscoutee.domain.events.service.CommunityMembershipService memberships = new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members, null, null);
+    private final CommunityGroupsService service = new CommunityGroupsService(groups, memberships, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null),
             mock(SelectedProfile.class), mock(com.raxim.myscoutee.domain.accounts.api.ProfileCards.class), profiles, mock(ContentModerationService.class),
             mock(com.raxim.myscoutee.domain.content.api.CommunityReports.class), mock(AdminTelemetryService.class), mock(com.raxim.myscoutee.domain.groups.api.GroupCounters.class),
-            mock(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.class));
+            mock(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.class), null);
 
     @BeforeEach void setup() {
         var counterApi = mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class);

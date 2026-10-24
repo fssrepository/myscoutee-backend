@@ -69,8 +69,7 @@ import com.raxim.myscoutee.domain.events.mapper.ActivityMemberMapper;
 
 @Service
 public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.PartnerInvitationAdmission, com.raxim.myscoutee.domain.events.api.CheckoutMemberships, com.raxim.myscoutee.domain.events.api.MemberAudience {
-    @org.springframework.beans.factory.annotation.Autowired
-    private EventJobQueries jobGroupScope;
+    private final EventJobQueries jobGroupScope;
 
     private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
     private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
@@ -133,7 +132,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private final CheckoutBaskets eventCheckoutBasketService;
     private final EventPayments paymentService;
     private final EventInviteNotificationService eventInviteNotificationService;
-    @org.springframework.beans.factory.annotation.Autowired private EventMembershipCounterWork membershipCounterWork;
+    private final EventMembershipCounterWork membershipCounterWork;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final EventConversations chatService;
@@ -165,7 +164,14 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             AccessPermissions accessControlService,
             ActivityCounters userActivityCountersService,
             ActivityTournamentGroupCounterService tournamentGroupCounterService,
-            ActivityMemberMapper activityMemberMapper) {
+            ActivityMemberMapper activityMemberMapper,
+            EventJobQueries jobGroupScope,
+            EventMembershipCounterWork membershipCounterWork,
+            org.springframework.beans.factory.ObjectProvider<EventCancellationService> cancellationService) {
+        this.jobGroupScope = jobGroupScope;
+        this.membershipCounterWork = membershipCounterWork;
+        this.cancellationService = cancellationService;
+
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -313,7 +319,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         for (ActivityMemberSyncKnownItemDto item : request.knownItems() == null
                 ? List.<ActivityMemberSyncKnownItemDto>of()
                 : request.knownItems()) {
-            String id = normalizeId(item == null ? null : item.id());
+            if (item == null) { continue; }
+            String id = normalizeId(item.id());
             if (StringUtils.hasText(id)) {
                 knownRevisionsById.put(id, safeText(item.revision()));
             }
@@ -322,7 +329,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         List<ActivityMemberEntryDto> upserts = new ArrayList<>();
         Set<String> remainingKnownIds = new LinkedHashSet<>(knownRevisionsById.keySet());
         for (ActivityMemberEntryDto entry : current) {
-            String id = normalizeId(entry == null ? null : entry.id());
+            if (entry == null) { continue; }
+            String id = normalizeId(entry.id());
             if (!StringUtils.hasText(id)) {
                 continue;
             }
@@ -455,7 +463,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             ActivityMember storedAssetMember) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
-        if (!StringUtils.hasText(assetId)
+        if (asset == null || !StringUtils.hasText(assetId)
                 || !StringUtils.hasText(ownerUserId)
                 || StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
             return null;
@@ -481,7 +489,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             String scopedManagerUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String userId = normalizeId(request == null ? null : request.userId());
-        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(userId)) {
+        if (asset == null || request == null || !StringUtils.hasText(assetId) || !StringUtils.hasText(userId)) {
             return null;
         }
         String status = normalizeStatus(request.status());
@@ -609,7 +617,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         Map<String, String> namesByUserId = new LinkedHashMap<>();
         if (!userIds.isEmpty()) {
             for (ProfileSummary user : usersRepository.findByUserIdIn(userIds)) {
-                String userId = normalizeId(user == null ? null : user.getUserId());
+                if (user == null) { continue; }
+                String userId = normalizeId(user.getUserId());
                 if (StringUtils.hasText(userId)) {
                     namesByUserId.putIfAbsent(userId, safeText(user.getName()));
                 }
@@ -617,7 +626,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         }
         Map<String, StoredMemberState> statesByUserId = new LinkedHashMap<>();
         for (ActivityMember member : storedMembers) {
-            String userId = normalizeId(member == null ? null : member.getUserId());
+            if (member == null) { continue; }
+            String userId = normalizeId(member.getUserId());
             if (StringUtils.hasText(userId)) {
                 statesByUserId.put(userId, new StoredMemberState(
                         normalizeStatus(member.getStatus()),
@@ -749,7 +759,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         }
         Set<String> sourceIds = new LinkedHashSet<>();
         for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId)) {
-            String ownerId = normalizeId(member == null ? null : member.getOwnerId());
+            if (member == null) { continue; }
+            String ownerId = normalizeId(member.getOwnerId());
             if (!StringUtils.hasText(ownerId)) {
                 continue;
             }
@@ -958,8 +969,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         }
     }
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private org.springframework.beans.factory.ObjectProvider<EventCancellationService> cancellationService;
+    private final org.springframework.beans.factory.ObjectProvider<EventCancellationService> cancellationService;
 
     @Override public void finishPendingCancellations() {
         cancellationService.getObject().finishPendingCancellationsInGroup();
@@ -2332,17 +2342,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 || !StringUtils.hasText(normalizedTargetUserId)) {
             return;
         }
-        Map<String, ActivityEvent> roomsBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent room : activityEventsRepository
-                .findByParentEventIdIn(List.of(normalizedParentEventId))) {
-            String roomSourceId = normalizeId(room == null ? null : room.getSourceId());
-            if (!StringUtils.hasText(roomSourceId)
-                    || !Boolean.TRUE.equals(room.getGenerated())
-                    || !TOURNAMENT_ROOM_EVENT_TYPE.equalsIgnoreCase(safeText(room.getEventType()))) {
-                continue;
-            }
-            roomsBySourceId.putIfAbsent(roomSourceId, room);
-        }
+        Map<String, ActivityEvent> roomsBySourceId = tournamentRoomsBySourceId(normalizedParentEventId);
         if (roomsBySourceId.isEmpty()) {
             return;
         }
@@ -2400,16 +2400,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 || !StringUtils.hasText(nextStatus)) {
             return;
         }
-        Map<String, ActivityEvent> roomsBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent room : activityEventsRepository.findByParentEventIdIn(List.of(normalizedParentEventId))) {
-            String roomSourceId = normalizeId(room == null ? null : room.getSourceId());
-            if (!StringUtils.hasText(roomSourceId)
-                    || !Boolean.TRUE.equals(room.getGenerated())
-                    || !TOURNAMENT_ROOM_EVENT_TYPE.equalsIgnoreCase(safeText(room.getEventType()))) {
-                continue;
-            }
-            roomsBySourceId.putIfAbsent(roomSourceId, room);
-        }
+        Map<String, ActivityEvent> roomsBySourceId = tournamentRoomsBySourceId(normalizedParentEventId);
         if (roomsBySourceId.isEmpty()) {
             return;
         }
@@ -3125,7 +3116,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             List<String> memberUserIds,
             List<ActivityMember> existingMembers) {
         String eventId = normalizeId(materializedEvent == null ? null : materializedEvent.getSourceId());
-        if (!StringUtils.hasText(eventId)) {
+        if (materializedEvent == null || !StringUtils.hasText(eventId)) {
             return List.of();
         }
         List<ActivityMember> normalizedExistingMembers = existingMembers == null
@@ -4427,7 +4418,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private ActivityMemberInvolvementDto toInvolvementDto(ActivityMember member) {
         String ownerType = normalizeOwnerType(member == null ? null : member.getOwnerType());
         String ownerId = normalizeId(member == null ? null : member.getOwnerId());
-        if (!StringUtils.hasText(ownerType) || !StringUtils.hasText(ownerId)) {
+        if (member == null || !StringUtils.hasText(ownerType) || !StringUtils.hasText(ownerId)) {
             return null;
         }
         String scope = ownerTypeLabel(ownerType);
@@ -5334,41 +5325,13 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         List<ActivityEvent> documentsToSave = new ArrayList<>();
         for (Map.Entry<String, List<ActivityEvent>> entry : documentsBySourceId.entrySet()) {
             OwnerMembersSnapshot snapshot = snapshotsBySourceId.get(entry.getKey());
-            int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
-            int pendingMembers = snapshot == null ? 0 : snapshot.pendingMembers();
-            List<String> acceptedMemberUserIds =
-                    snapshot == null ? List.of() : snapshot.acceptedMemberUserIds();
-            List<String> pendingMemberUserIds =
-                    snapshot == null ? List.of() : snapshot.pendingMemberUserIds();
-            List<String> invitedMemberUserIds =
-                    snapshot == null ? List.of() : snapshot.invitedMemberUserIds();
-            List<String> pendingRequestMemberUserIds =
-                    snapshot == null ? List.of() : snapshot.pendingRequestMemberUserIds();
-            LinkedHashSet<String> adminUserIds = snapshot == null
-                    ? new LinkedHashSet<>()
-                    : new LinkedHashSet<>(snapshot.adminUserIds());
+            var patchSnapshot = memberSnapshotPatch(snapshot);
 
             for (ActivityEvent document : entry.getValue()) {
                 if (document == null) {
                     continue;
                 }
-                document.setAcceptedMembers(acceptedMembers);
-                document.setPendingMembers(pendingMembers);
-                document.setAcceptedMemberUserIds(acceptedMemberUserIds);
-                document.setPendingMemberUserIds(pendingMemberUserIds);
-                document.setInvitedMemberUserIds(invitedMemberUserIds);
-                document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
-                document.setAdmins(new ArrayList<>(adminUserIds));
-                document.setCapacityTotal(Math.max(
-                        acceptedMembers,
-                        snapshot == null || snapshot.capacityTotal() == null
-                                ? Math.max(
-                                        acceptedMembers,
-                                        document.getCapacityTotal() == null
-                                                ? 0
-                                                : document.getCapacityTotal())
-                                : snapshot.capacityTotal()));
-                document.setFull(resolveDirectEventFull(document));
+                patchSnapshot.accept(document);
                 documentsToSave.add(document);
             }
         }
@@ -5395,34 +5358,14 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         }
 
         OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
-        int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
-        int pendingMembers = snapshot == null ? 0 : snapshot.pendingMembers();
-        List<String> acceptedMemberUserIds = snapshot == null ? List.of() : snapshot.acceptedMemberUserIds();
-        List<String> pendingMemberUserIds = snapshot == null ? List.of() : snapshot.pendingMemberUserIds();
-        List<String> invitedMemberUserIds = snapshot == null ? List.of() : snapshot.invitedMemberUserIds();
-        List<String> pendingRequestMemberUserIds = snapshot == null ? List.of() : snapshot.pendingRequestMemberUserIds();
-        LinkedHashSet<String> adminUserIds = snapshot == null
-                ? new LinkedHashSet<>()
-                : new LinkedHashSet<>(snapshot.adminUserIds());
+        var patchSnapshot = memberSnapshotPatch(snapshot);
 
         List<ActivityEvent> documentsToSave = new ArrayList<>();
         for (ActivityEvent document : documents) {
             if (document == null) {
                 continue;
             }
-            document.setAcceptedMembers(acceptedMembers);
-            document.setPendingMembers(pendingMembers);
-            document.setAcceptedMemberUserIds(acceptedMemberUserIds);
-            document.setPendingMemberUserIds(pendingMemberUserIds);
-            document.setInvitedMemberUserIds(invitedMemberUserIds);
-            document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
-            document.setAdmins(new ArrayList<>(adminUserIds));
-            document.setCapacityTotal(Math.max(
-                    acceptedMembers,
-                    snapshot == null || snapshot.capacityTotal() == null
-                            ? Math.max(acceptedMembers, document.getCapacityTotal() == null ? 0 : document.getCapacityTotal())
-                            : snapshot.capacityTotal()));
-            document.setFull(resolveDirectEventFull(document));
+            patchSnapshot.accept(document);
             documentsToSave.add(document);
         }
         if (!documentsToSave.isEmpty()) {
@@ -5781,21 +5724,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     }
 
     private String initialsFromText(String value) {
-        String normalizedValue = safeText(value);
-        if (!StringUtils.hasText(normalizedValue)) {
-            return "";
-        }
-        String[] parts = normalizedValue.split("\\s+");
-        StringBuilder initials = new StringBuilder();
-        for (String part : parts) {
-            if (!part.isEmpty()) {
-                initials.append(Character.toUpperCase(part.charAt(0)));
-            }
-            if (initials.length() >= 2) {
-                break;
-            }
-        }
-        return initials.toString();
+        return com.raxim.myscoutee.common.util.TextValues.firstTwoInitials(value);
     }
 
     private String defaultStatusText(
@@ -5952,4 +5881,49 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                     pendingMemberUserIds);
         }
     }
+
+    private Map<String, ActivityEvent> tournamentRoomsBySourceId(String normalizedParentEventId) {
+        Map<String, ActivityEvent> roomsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent room : activityEventsRepository
+                .findByParentEventIdIn(List.of(normalizedParentEventId))) {
+            if (room == null) { continue; }
+            String roomSourceId = normalizeId(room.getSourceId());
+            if (!StringUtils.hasText(roomSourceId)
+                    || !Boolean.TRUE.equals(room.getGenerated())
+                    || !TOURNAMENT_ROOM_EVENT_TYPE.equalsIgnoreCase(safeText(room.getEventType()))) {
+                continue;
+            }
+            roomsBySourceId.putIfAbsent(roomSourceId, room);
+        }
+        return roomsBySourceId;
+    }
+
+    private java.util.function.Consumer<ActivityEvent> memberSnapshotPatch(OwnerMembersSnapshot snapshot) {
+        int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
+        int pendingMembers = snapshot == null ? 0 : snapshot.pendingMembers();
+        List<String> acceptedMemberUserIds = snapshot == null ? List.of() : snapshot.acceptedMemberUserIds();
+        List<String> pendingMemberUserIds = snapshot == null ? List.of() : snapshot.pendingMemberUserIds();
+        List<String> invitedMemberUserIds = snapshot == null ? List.of() : snapshot.invitedMemberUserIds();
+        List<String> pendingRequestMemberUserIds = snapshot == null ? List.of() : snapshot.pendingRequestMemberUserIds();
+        LinkedHashSet<String> adminUserIds = snapshot == null
+                ? new LinkedHashSet<>()
+                : new LinkedHashSet<>(snapshot.adminUserIds());
+
+        return document -> {
+            document.setAcceptedMembers(acceptedMembers);
+            document.setPendingMembers(pendingMembers);
+            document.setAcceptedMemberUserIds(acceptedMemberUserIds);
+            document.setPendingMemberUserIds(pendingMemberUserIds);
+            document.setInvitedMemberUserIds(invitedMemberUserIds);
+            document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
+            document.setAdmins(new ArrayList<>(adminUserIds));
+            document.setCapacityTotal(Math.max(
+                    acceptedMembers,
+                    snapshot == null || snapshot.capacityTotal() == null
+                            ? Math.max(acceptedMembers, document.getCapacityTotal() == null ? 0 : document.getCapacityTotal())
+                            : snapshot.capacityTotal()));
+            document.setFull(resolveDirectEventFull(document));
+        };
+    }
+
 }

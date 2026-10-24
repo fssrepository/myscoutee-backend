@@ -37,7 +37,7 @@ class CommunityAnnouncementVersionPersistenceTest {
                 var access = mock(CommunityAuthority.class);
                 var users = mock(ProfileSummaries.class);
                 var notifications = mock(NotificationDelivery.class);
-                var service = new CommunityAnnouncementsService(records, access, mongo, users, notifications);
+                var service = new CommunityAnnouncementsService(records, access, mongo, users, notifications, null, null);
                 ReflectionTestUtils.setField(service, "voteCounters", mock(CommunityVoteCounterWork.class));
                 var groups = mock(GroupDirectory.class);
                 ReflectionTestUtils.setField(service, "groups", groups);

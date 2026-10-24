@@ -232,4 +232,22 @@ class OperatorRevenueRegistryRuntimeResolver {
     com.raxim.myscoutee.domain.registry.api.RegistryTransport transport(RegisteredRuntime runtime) {
         return operations.openTransport(runtime.properties());
     }
+
+    static void applyIdentityPaths(RegistryConfiguration runtime, MongoSessionMode mode,
+            RegistryConfiguration realProperties, RegistryDemoConfiguration demoProperties) {
+        if (mode == MongoSessionMode.DEMO) {
+            runtime.setPrivateKeyPath(demoProperties.getPrivateKeyPath());
+            runtime.setPublicKeyPath(demoProperties.getPublicKeyPath());
+            runtime.setStateDir(demoProperties.getStateDir());
+            runtime.setAllowInsecureHttp(demoProperties.isAllowInsecureHttp());
+            runtime.setInsecureHttpAllowedHosts(demoProperties.getInsecureHttpAllowedHosts());
+        } else {
+            runtime.setPrivateKeyPath(realProperties.getPrivateKeyPath());
+            runtime.setPublicKeyPath(realProperties.getPublicKeyPath());
+            runtime.setStateDir(realProperties.getStateDir());
+            runtime.setAllowInsecureHttp(false);
+            runtime.setInsecureHttpAllowedHosts("");
+        }
+    }
+
 }

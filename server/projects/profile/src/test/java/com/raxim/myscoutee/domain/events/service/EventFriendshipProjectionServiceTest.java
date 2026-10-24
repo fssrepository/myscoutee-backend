@@ -37,7 +37,7 @@ class EventFriendshipProjectionServiceTest {
     private final MongoCollection<Document> collection = mock(MongoCollection.class);
     private final MongoCollection<Document> rateCollection = mock(MongoCollection.class);
     private final UserRatesService rates = mock(UserRatesService.class);
-    private final EventFriendshipProjectionService service = new EventFriendshipProjectionService(mongo, members, rates);
+    private final EventFriendshipProjectionService service = new EventFriendshipProjectionService(mongo, members, rates, null, null);
     @org.junit.jupiter.api.BeforeEach void wireMeetingEvidence() {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "meetingEvidence", new com.raxim.myscoutee.domain.affinity.service.MeetingEvidenceService(mongo));
     }

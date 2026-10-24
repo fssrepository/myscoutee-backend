@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    "server/docker/conf/mongodb/demo_db/users.json",
+    "server/docker/conf/mongodb/e2e_db/users.json"
+  ],
+  "domain": "myscoutee.local",
+  "adminCount": 2,
+  "operatorCount": 1,
+  "minimumMemberCount": 1
+}

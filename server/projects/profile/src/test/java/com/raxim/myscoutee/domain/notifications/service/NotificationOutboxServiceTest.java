@@ -47,6 +47,18 @@ class NotificationOutboxServiceTest {
                     () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.ChatPresence.class));
             context.registerBean(com.raxim.myscoutee.common.redis.RedisStreamRetentionService.class,
                     () -> org.mockito.Mockito.mock(com.raxim.myscoutee.common.redis.RedisStreamRetentionService.class));
+            context.registerBean(org.springframework.data.mongodb.core.MongoTemplate.class,
+                    () -> org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class));
+            context.registerBean(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class));
+            context.registerBean(com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner.class));
+            context.registerBean(com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.administration.api.OperationalTelemetry.class));
+            context.registerBean(com.raxim.myscoutee.domain.notifications.api.NotificationJobs.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.notifications.api.NotificationJobs.class));
+            context.registerBean(com.raxim.myscoutee.common.delivery.OutboundRetryWorker.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.common.delivery.OutboundRetryWorker.class));
             context.register(NotificationOutboxService.class);
             context.refresh();
             var item = context.getBean(NotificationOutboxService.class)

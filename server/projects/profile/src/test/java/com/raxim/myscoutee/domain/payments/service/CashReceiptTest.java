@@ -75,4 +75,26 @@ class CashReceiptTest {
     private Users user(String id, String name, String group) {
         Users user = new Users(); user.setUserId(id); user.setName(name); user.setWorkspaceGroupId(group); return user;
     }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"payer", "recipient", "both"})
+    void missingReceiptParticipantCannotWritePaymentOrNotification(String missing) {
+        var members = new java.util.ArrayList<Users>();
+        if (!"payer".equals(missing) && !"both".equals(missing)) members.add(user("payer", "Payer", null));
+        if (!"recipient".equals(missing) && !"both".equals(missing)) members.add(user("recipient", "Recipient", null));
+        when(mongo.find(any(Query.class), eq(Users.class))).thenReturn(members);
+        assertThatThrownBy(() -> service.recordCashReceipt("recipient", request))
+                .isInstanceOfSatisfying(ResponseStatusException.class,
+                        error -> assertThat(error.getStatusCode().value()).isEqualTo(404));
+        verifyNoInteractions(payments, notifications);
+    }
+
+    @Test
+    void missingReceiptRecipientIsRejectedBeforeParticipantLookup() {
+        assertThatThrownBy(() -> service.recordCashReceipt(null, request))
+                .isInstanceOfSatisfying(ResponseStatusException.class,
+                        error -> assertThat(error.getStatusCode().value()).isEqualTo(400));
+        verifyNoInteractions(payments, mongo, notifications);
+    }
+
 }

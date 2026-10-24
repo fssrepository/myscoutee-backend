@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "seedRoot": "server/docker/conf/mongodb",
+  "databases": [
+    "demo_db",
+    "e2e_db",
+    "myscoutee_db"
+  ],
+  "buckets": [
+    "hosting",
+    "participation",
+    "pending",
+    "invitations",
+    "trash"
+  ],
+  "counterPrefix": "groups_",
+  "versionPrefix": "group-member-",
+  "ownerType": "community",
+  "revision": 1
+}

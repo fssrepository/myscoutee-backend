@@ -1329,28 +1329,8 @@ public class ActivitiesEventLeaderboardService {
     }
 
     private int autoTournamentGroupCount(ActivityEvent event, SubEventItem targetStage) {
-        if (targetStage == null) {
-            return 0;
-        }
-        List<SubEventItem> stages = runtimeStageSequence(event);
-        if (stages.isEmpty()) {
-            stages = List.of(targetStage);
-        }
-        int incomingCapacityMax = safeCount(event == null ? null : event.getCapacityMax());
-        for (SubEventItem stage : stages == null ? List.<SubEventItem>of() : stages) {
-            if (stage == null) {
-                continue;
-            }
-            int groupCount = autoTournamentGroupCountForIncoming(stage, incomingCapacityMax);
-            if (sameStage(stage, targetStage)) {
-                return groupCount;
-            }
-            if (hasTournamentStageConfig(stage) && groupCount > 0) {
-                int advancePerGroup = safeCount(stage.tournamentAdvancePerGroup());
-                incomingCapacityMax = advancePerGroup > 0 ? groupCount * advancePerGroup : 0;
-            }
-        }
-        return autoTournamentGroupCountForIncoming(targetStage, incomingCapacityMax);
+        return targetStage == null ? 0 : TournamentGroupCountPolicy.countForStage(
+                event, targetStage, runtimeStageSequence(event));
     }
 
     private int autoTournamentGroupCountForIncoming(SubEventItem subEvent, int incomingCapacityMax) {

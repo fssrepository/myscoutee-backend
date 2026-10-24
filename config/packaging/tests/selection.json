@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "tests": {
+    "chat-redis-blocking-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/retention/chat-redis-blocking-test.py"
+    },
+    "client-tools-package-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/client/client-tools-package-test.sh"
+    },
+    "client-tools-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/client/client-tools-test.sh"
+    },
+    "compact-guide-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/catalogs/compact-guide-migration-test.py"
+    },
+    "compose-firebase-path-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/compose-firebase-path-test.sh"
+    },
+    "compose-project-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/compose-project-migration-test.py"
+    },
+    "debian-removal-contract-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/debian/debian-removal-contract-test.sh"
+    },
+    "debian-tls-lifecycle-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/debian/debian-tls-lifecycle-test.sh"
+    },
+    "default-help-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/catalogs/default-help-migration-test.py"
+    },
+    "default-help-v5-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/catalogs/default-help-v5-migration-test.py"
+    },
+    "demo-location-seed-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/demo/demo-location-seed-test.mjs"
+    },
+    "demo-profile-details-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/demo/demo-profile-details-migration-test.py"
+    },
+    "demo-profile-lifecycle-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/demo/demo-profile-lifecycle-test.mjs"
+    },
+    "demo-reset-seed-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/runtime/demo-reset-seed-test.mjs"
+    },
+    "demo-reset-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/runtime/demo-reset-test.sh"
+    },
+    "deployment-asset-cache-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/deployment-asset-cache-test.mjs"
+    },
+    "deployment-configuration-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/configuration/deployment-configuration-migration-test.py"
+    },
+    "deployment-http-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/deployment-http-test.mjs"
+    },
+    "deployment-input-parity-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/deployment-input-parity-test.py"
+    },
+    "deployment-qualification-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/deployment-qualification-test.sh"
+    },
+    "dev-runtime-directories-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/dev-runtime-directories-test.py"
+    },
+    "exchange-rate-configuration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/configuration/exchange-rate-configuration-test.py"
+    },
+    "feedback-access-migration-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/configuration/feedback-access-migration-test.mjs"
+    },
+    "four-language-content-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/catalogs/four-language-content-test.mjs"
+    },
+    "i18n-runtime-seed-sync-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/runtime/i18n-runtime-seed-sync-test.sh"
+    },
+    "image-content-fingerprint-test.sh": {
+      "owner": "package",
+      "path": "tests/unit/image-content-fingerprint-test.sh"
+    },
+    "install-policy-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/debian/install-policy-test.py"
+    },
+    "integration-indexes-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/indexes/integration-indexes-test.py"
+    },
+    "migration-chain-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/release/migration-chain-test.py"
+    },
+    "mobile-qa-isolation-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/mobile-qa-isolation-test.mjs"
+    },
+    "mongo-import-entrypoint-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/mongo-import-entrypoint-test.sh"
+    },
+    "mongo-replica-default-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/indexes/mongo-replica-default-test.py"
+    },
+    "nginx-native-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/nginx-native-test.py"
+    },
+    "nginx-transport-policy-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/nginx-transport-policy-test.sh"
+    },
+    "numeric-ownership-policy-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/debian/numeric-ownership-policy-test.sh"
+    },
+    "operator-bootstrap-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/debian/operator-bootstrap-test.sh"
+    },
+    "owner-version-import-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/retention/owner-version-import-test.py"
+    },
+    "package-content-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/release/package-content-test.sh"
+    },
+    "partial-release-data-inputs-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/release/partial-release-data-inputs-test.py"
+    },
+    "postinst-image-policy-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/debian/postinst-image-policy-test.sh"
+    },
+    "registry-packaging-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/deployment/registry-packaging-test.sh"
+    },
+    "release-catalog-parity-runtime-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/catalogs/release-catalog-parity-runtime-test.py"
+    },
+    "release-catalog-parity-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/catalogs/release-catalog-parity-test.mjs"
+    },
+    "release-project-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/release/release-project-test.sh"
+    },
+    "release-seed-selection-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/release/release-seed-selection-test.mjs"
+    },
+    "release-system-defaults-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/configuration/release-system-defaults-test.py"
+    },
+    "restart-update-stack-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/runtime/restart-update-stack-test.sh"
+    },
+    "runtime-identity-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/debian/runtime-identity-migration-test.py"
+    },
+    "runtime-index-parity-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/indexes/runtime-index-parity-test.mjs"
+    },
+    "seed-singleton-preservation-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/seed-singleton-preservation-test.py"
+    },
+    "seeded-image-migration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/media/seeded-image-migration-test.py"
+    },
+    "seeded-media-integration-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/media/seeded-media-integration-test.py"
+    },
+    "seeded-media-test.py": {
+      "owner": "package",
+      "path": "tests/unit/seeded-media-test.py"
+    },
+    "temporary-frontend-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/client/temporary-frontend-test.py"
+    },
+    "tls-worker-test.sh": {
+      "owner": "package",
+      "path": "tests/consumer/runtime/tls-worker-test.sh"
+    },
+    "ui-translation-key-migration-test.mjs": {
+      "owner": "package",
+      "path": "tests/consumer/mongo/catalogs/ui-translation-key-migration-test.mjs"
+    },
+    "update-manifest-compatibility-test.py": {
+      "owner": "package",
+      "path": "tests/consumer/release/update-manifest-compatibility-test.py"
+    },
+    "update-status-server-test.py": {
+      "owner": "package",
+      "path": "tests/unit/update-status-server-test.py"
+    },
+    "update-worker-test.sh": {
+      "owner": "package",
+      "path": "tests/unit/update-worker-test.sh"
+    }
+  }
+}

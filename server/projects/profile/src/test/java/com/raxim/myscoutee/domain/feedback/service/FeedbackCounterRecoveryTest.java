@@ -38,7 +38,7 @@ class FeedbackCounterRecoveryTest {
                                 .append("feedbackCounts", new Document("pending", 1).append("ownEvents", 0).append("feedbacked", 0).append("removed", 0))),
                         new Document("userId", "host").append("activities", new Document("feedback", 4)
                                 .append("feedbackCounts", new Document("pending", 0).append("ownEvents", 4).append("feedbacked", 0).append("removed", 0)))));
-                var owner = new UserActivityCountersService(users, null, null, null, null, null, null, mongo, null);
+                var owner = new UserActivityCountersService(users, null, null, null, null, null, null, mongo, null, null);
                 var brokenReply = mock(ActivityCounters.class);
                 when(brokenReply.applyFeedbackReceipt(any())).thenAnswer(call -> {
                     owner.applyFeedbackReceipt(call.getArgument(0));

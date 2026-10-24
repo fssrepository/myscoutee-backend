@@ -1,5 +1,0 @@
-model,reasoning_effort,responses,input_tokens,cached_input_tokens,output_tokens,reasoning_output_tokens,total_tokens
-gpt-5.6-sol,xhigh,11593,1725154199,1674981504,7034227,2527695,1732188426
-gpt-5.6-terra,high,39,2674529,2542464,15299,6242,2689828
-gpt-6-astra,high,3242,529051618,516908544,1873606,327709,530925224
-gpt-6-astra,xhigh,187,28914498,27718784,189607,58958,29104105

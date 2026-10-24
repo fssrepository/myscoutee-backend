@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.events.dto;
 
 /** Detached community membership state used to calculate conditional transitions. */
-public class CommunityMember {
+public class CommunityMember implements com.raxim.myscoutee.domain.events.api.CommunityMemberState.Mutable {
     private String id;
     public String getId() { return id; }
     public void setId(String value) { this.id = value; }

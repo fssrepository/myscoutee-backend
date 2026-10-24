@@ -89,7 +89,8 @@ public class ChatActivityPresentation implements ChatPagePresentation {
         Map<String, Event> eventsByViewerAndId = new LinkedHashMap<>();
         Map<String, Event> fallbackEventsById = new LinkedHashMap<>();
         for (Event event : eventRecords == null ? List.<Event>of() : eventRecords) {
-            String eventId = normalizeId(event == null ? null : event.getSourceId());
+            if (event == null) { continue; }
+            String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) {
                 continue;
             }
@@ -353,8 +354,9 @@ public class ChatActivityPresentation implements ChatPagePresentation {
                         RUNTIME_STATUS_DELETED);
         Map<String, List<Resource>> result = new LinkedHashMap<>();
         for (Resource record : records == null ? List.<Resource>of() : records) {
-            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
-            String subEventId = normalizeId(record == null ? null : record.getSubEventId());
+            if (record == null) { continue; }
+            String ownerId = normalizeId(record.getOwnerId());
+            String subEventId = normalizeId(record.getSubEventId());
             if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId)) {
                 continue;
             }
@@ -484,13 +486,14 @@ public class ChatActivityPresentation implements ChatPagePresentation {
         int capacityMin = 0;
         int capacityMax = 0;
         for (Resource record : records == null ? List.<Resource>of() : records) {
+            if (record == null) { continue; }
             Map<String, ? extends Map<String, ? extends AssetSettings>> settingsByType =
-                    record == null || record.getAssetSettingsByType() == null
+                    record.getAssetSettingsByType() == null
                             ? Map.of()
                             : record.getAssetSettingsByType();
             Map<String, ? extends AssetSettings> settingsByAssetId = settingsByType.get(type);
             if (settingsByAssetId == null) settingsByAssetId = Map.of();
-            List<String> assignedIds = record == null || record.getAssetAssignmentIds() == null
+            List<String> assignedIds = record.getAssetAssignmentIds() == null
                     ? List.of()
                     : record.getAssetAssignmentIds().getOrDefault(type, List.of());
             List<String> assetIds = assignedIds == null || assignedIds.isEmpty()
@@ -530,10 +533,11 @@ public class ChatActivityPresentation implements ChatPagePresentation {
         for (AssetRequestRecord request : asset == null || asset.getRequests() == null
                 ? List.<AssetRequestRecord>of()
                 : asset.getRequests()) {
+            if (request == null) { continue; }
             String bookingSubEventId = normalizeId(
-                    request == null || request.booking() == null ? null : request.booking().subEventId());
+                    request.booking() == null ? null : request.booking().subEventId());
             String bookingOwnerId = normalizeId(
-                    request == null || request.booking() == null ? null : request.booking().eventId());
+                    request.booking() == null ? null : request.booking().eventId());
             if (!normalizedSubEventId.equals(bookingSubEventId)
                     || !normalizedOwnerId.equals(bookingOwnerId)) {
                 continue;

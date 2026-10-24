@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "collections": [
+    "integrationTokens",
+    "mcpOAuthClients",
+    "mcpAuthorizations",
+    "mcpEventSubscriptions",
+    "integrationWebhookDeliveries"
+  ],
+  "indexCount": 15,
+  "ttlIndexes": [
+    [
+      1,
+      "expiresAt"
+    ],
+    [
+      2,
+      "expiresAt"
+    ],
+    [
+      3,
+      "deleteAfter"
+    ],
+    [
+      4,
+      "deleteAfter"
+    ]
+  ],
+  "rejectUnselectedCollections": false
+}

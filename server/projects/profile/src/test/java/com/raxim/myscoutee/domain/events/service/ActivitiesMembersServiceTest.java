@@ -115,7 +115,7 @@ class ActivitiesMembersServiceTest {
                 activityMembersRepository,
                 activityEventsRepository,
                 activitySubEventResourcesRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 selectedProfile,
                 homeUserProfileService,
                 profileReadState,
@@ -132,7 +132,7 @@ class ActivitiesMembersServiceTest {
                 accessControlService,
                 userActivityCountersService,
                 tournamentGroupCounterService,
-                activityMemberMapper);
+                activityMemberMapper, null, null, null);
 
         var cancellation = mock(EventCancellationService.class);
         @SuppressWarnings("unchecked") org.springframework.beans.factory.ObjectProvider<EventCancellationService> cancellationProvider = mock(org.springframework.beans.factory.ObjectProvider.class);
@@ -3859,4 +3859,25 @@ class ActivitiesMembersServiceTest {
                 null,
                 null);
     }
+
+    @Test
+    void missingMaterializedEventCannotChangeMemberships() {
+        assertThat(service.syncMaterializedSystemEventMembers(null, "actor", List.of("member"), List.of()))
+                .isEmpty();
+        assertThat(service.syncMaterializedSystemEventMembers(new ActivityEvent(), "actor", List.of("member"), List.of()))
+                .isEmpty();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, activitySubEventResourcesRepository);
+    }
+
+    @Test
+    void missingAssetOrRequestCannotBecomeAnAcceptedScopedMember() {
+        Object owner = org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                service, "scopedAssetOwnerMember", null, "event", "stage", null);
+        Object request = org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                service, "scopedAssetRequestMember", null, null, null, "manager");
+        assertThat(owner).isNull();
+        assertThat(request).isNull();
+        verifyNoInteractions(activityMembersRepository);
+    }
+
 }

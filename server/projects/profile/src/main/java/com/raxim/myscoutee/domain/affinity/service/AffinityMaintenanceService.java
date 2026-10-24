@@ -34,11 +34,9 @@ import com.raxim.myscoutee.domain.accounts.api.ScoringProfiles;
 
 @Service
 public class AffinityMaintenanceService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
+    private final com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String STATUS_ACCEPTED = "accepted";
     private final ScoringProfiles usersRepository;
@@ -64,7 +62,12 @@ public class AffinityMaintenanceService {
             AbsoluteAffinityService absoluteAffinityService,
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope,
+            com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections) {
+        this.jobGroupScope = jobGroupScope;
+        this.accountProjections = accountProjections;
+
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.eventDerivedUpdates = eventDerivedUpdates;
@@ -104,22 +107,8 @@ public class AffinityMaintenanceService {
     }
 
     public void refreshUserAffinityAndDependents(ScoringProfile user) {
-        if (user == null) {
-            return;
-        }
-        String userId = normalizeId(user.getId());
-        if (!StringUtils.hasText(userId)) {
-            return;
-        }
-        double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
-        ScoringProfile refreshed = user;
-        if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
-            if (updateUserAffinityOnly(user, nextAffinity)) {
-                refreshed = com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.from(user).withAffinity(nextAffinity);
-            }
-        }
-        refreshRateAffinitiesForUser(refreshed);
-        refreshForUser(refreshed);
+        ScoringProfile refreshed = refreshAffinityAndRates(user);
+        if (refreshed != null) refreshForUser(refreshed);
     }
 
     public void refreshUserAffinityAndRates(String userId) {
@@ -131,21 +120,7 @@ public class AffinityMaintenanceService {
     }
 
     public void refreshUserAffinityAndRates(ScoringProfile user) {
-        if (user == null) {
-            return;
-        }
-        String userId = normalizeId(user.getId());
-        if (!StringUtils.hasText(userId)) {
-            return;
-        }
-        double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
-        ScoringProfile refreshed = user;
-        if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
-            if (updateUserAffinityOnly(user, nextAffinity)) {
-                refreshed = com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.from(user).withAffinity(nextAffinity);
-            }
-        }
-        refreshRateAffinitiesForUser(refreshed);
+        refreshAffinityAndRates(user);
     }
 
     public UserAffinityDependents resolveUserAffinityDependents(String userId) {
@@ -619,7 +594,7 @@ public class AffinityMaintenanceService {
 
         private static boolean sameDouble(Double left, Double right) {
             if (left == null || right == null) {
-                return left == right;
+                return left == null && right == null;
             }
             return Math.abs(left.doubleValue() - right.doubleValue()) <= 0.000001d;
         }
@@ -663,5 +638,24 @@ public class AffinityMaintenanceService {
     }
 
     public record UserAffinityDependents(List<String> eventSourceIds, List<String> assetIds) {
+    }
+
+    private ScoringProfile refreshAffinityAndRates(ScoringProfile user) {
+        if (user == null) {
+            return null;
+        }
+        String userId = normalizeId(user.getId());
+        if (!StringUtils.hasText(userId)) {
+            return null;
+        }
+        double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
+        ScoringProfile refreshed = user;
+        if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
+            if (updateUserAffinityOnly(user, nextAffinity)) {
+                refreshed = com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.from(user).withAffinity(nextAffinity);
+            }
+        }
+        refreshRateAffinitiesForUser(refreshed);
+        return refreshed;
     }
 }

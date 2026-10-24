@@ -1,0 +1,25 @@
+{
+  "viewer": "group:myscoutee-work:bf057de7c586eede7e84bdc7",
+  "rejections": [
+    [
+      "missing campaign",
+      "msc122-absent-campaign",
+      404
+    ],
+    [
+      "draft campaign",
+      "work-campaign-alex-draft",
+      404
+    ],
+    [
+      "own campaign",
+      "work-campaign-local-studio",
+      404
+    ],
+    [
+      "campaign without positive rating",
+      "work-campaign-learning-circle",
+      403
+    ]
+  ]
+}

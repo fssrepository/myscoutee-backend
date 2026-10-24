@@ -14,7 +14,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 
 @Service
 public class EventOwnershipService implements EventOwnership, com.raxim.myscoutee.domain.events.api.OrganizerEventReads {
-    @org.springframework.beans.factory.annotation.Autowired private MongoTemplate mongo;
+    private final MongoTemplate mongo;
     @Override public void markFeedbackProjected(java.util.Collection<String> sourceIds, boolean projected) {
         if (sourceIds.isEmpty()) return;
         mongo.updateMulti(Query.query(Criteria.where("sourceId").in(sourceIds)),
@@ -24,7 +24,10 @@ public class EventOwnershipService implements EventOwnership, com.raxim.myscoute
     @Override public boolean ownedExists(String owner,String source) { return mongo.exists(Query.query(Criteria.where("ownerUserId").is(owner).and("sourceId").is(source)),ActivityEvent.class); }
     @Override public List<ActivityEvent> findStoredFamilyBySourceId(String source) { return mongo.find(Query.query(Criteria.where("sourceId").is(source)),ActivityEvent.class); }
     private final ActivityEventsRepository events;
-    public EventOwnershipService(ActivityEventsRepository events) { this.events = events; }
+    public EventOwnershipService(ActivityEventsRepository events,
+            MongoTemplate mongo) {
+        this.mongo = mongo;
+ this.events = events; }
     @Override public List<ActivityEvent> findBySourceId(String sourceId) { return events.findBySourceId(sourceId); }
     @Override public java.util.List<ActivityEvent> findBySourceIdIn(java.util.Collection<String> ids) { return events.findBySourceIdIn(ids); }
     @Override public java.util.List<ActivityEvent> findByCreatorUserId(String id) { return events.findByCreatorUserId(id); }
@@ -91,26 +94,8 @@ public class EventOwnershipService implements EventOwnership, com.raxim.myscoute
         return event != null && updateStatusVersionIfCurrent(new EventVersionDto(event.getId(), event.getUpdatedDate()), nextStatus, previousStatus);
     }
     @Override public boolean updateStatusVersionIfCurrent(EventVersionDto version, String nextStatus, String previousStatus) {
-        if (version == null) {
-            return false;
-        }
-        String id = normalizeId(version.id());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(version.updatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        Update update = new Update().set("status", nextStatus);
-        if (StringUtils.hasText(previousStatus)) {
-            update.set("statusBeforeSuppression", previousStatus);
-        } else {
-            update.unset("statusBeforeSuppression");
-        }
-        UpdateResult result = mongo.updateFirst(new Query(criteria), update, ActivityEvent.class);
-        return result.getMatchedCount() > 0;
+        return version != null && com.raxim.myscoutee.common.config.mongo.MongoStatusUpdates.updateIfCurrent(
+                mongo, ActivityEvent.class, version.id(), version.updatedDate(), nextStatus, previousStatus);
     }
     public EventJobScopeDto findJobScope(String sourceId) {
         var row = mongo.findOne(Query.query(Criteria.where("sourceId").is(sourceId)), org.bson.Document.class, "events");

@@ -1,4 +1,8 @@
 package com.raxim.myscoutee.domain.feedback.service;
+
+import static com.raxim.myscoutee.common.util.TextValues.distinctIds;
+import static com.raxim.myscoutee.common.util.TextValues.trim;
+import static com.raxim.myscoutee.domain.events.api.EventOwnership.normalizedStatus;
 import java.time.Instant;
 import java.util.*;
 import org.bson.types.ObjectId;
@@ -16,15 +20,18 @@ import com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.FeedbackBu
 public class FeedbackEligibilityService implements FeedbackEligibility {
     private static final long FEEDBACK_UNLOCK_DELAY_SECONDS = 2L * 60L * 60L;
     private static final String FEEDBACK_COUNTER_PROJECTOR = "feedback-counter";
-    @org.springframework.beans.factory.annotation.Autowired private FeedbackCounterWork counterWork;
+    private final FeedbackCounterWork counterWork;
     private final EventOwnership activityEventsRepository;
     private final FeedbackStatesRepository feedbackStatesRepository;
     private final MongoTemplate mongoTemplate;
-    public FeedbackEligibilityService(EventOwnership events, FeedbackStatesRepository states, MongoTemplate mongo) { activityEventsRepository = events; feedbackStatesRepository = states; mongoTemplate = mongo; }
+    public FeedbackEligibilityService(EventOwnership events, FeedbackStatesRepository states, MongoTemplate mongo,
+            FeedbackCounterWork counterWork) {
+        this.counterWork = counterWork;
+ activityEventsRepository = events; feedbackStatesRepository = states; mongoTemplate = mongo; }
     private record FeedbackEligibilityKey(String userId, String eventId) {}
     public void complete(Projection projection) { projection.changes().forEach(counterWork::acknowledge); updateFeedbackProjectionMarker(projection.projectedSources(), true); updateFeedbackProjectionMarker(projection.waitingSources(), false); }
     public Projection project(Collection<String> sourceIds, Instant requestedNow) {
-        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        List<String> normalizedSourceIds = distinctIds(sourceIds);
         if (normalizedSourceIds.isEmpty()) {
             return new Projection(Map.of(), List.of(), List.of(), List.of());
         }
@@ -39,9 +46,9 @@ public class FeedbackEligibilityService implements FeedbackEligibility {
                 continue;
             }
             Set<String> adminUserIds = feedbackAdminUserIds(event);
-            for (String userId : safeStrings(event.getAcceptedMemberUserIds())) {
+            for (String userId : distinctIds(event.getAcceptedMemberUserIds())) {
                 if (!adminUserIds.contains(userId)) {
-                    desiredEligibility.put(new FeedbackEligibilityKey(userId, normalizeId(event.getSourceId())), event);
+                    desiredEligibility.put(new FeedbackEligibilityKey(userId, trim(event.getSourceId())), event);
                 }
             }
         }
@@ -127,7 +134,8 @@ public class FeedbackEligibilityService implements FeedbackEligibility {
     private Map<String, Event> preferredFeedbackEventsBySourceId(Collection<? extends Event> events) {
         Map<String, Event> preferred = new LinkedHashMap<>();
         for (Event event : events == null ? List.<Event>of() : events) {
-            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (event == null) { continue; }
+            String sourceId = trim(event.getSourceId());
             if (!StringUtils.hasText(sourceId) || Boolean.TRUE.equals(event.getGenerated())) {
                 continue;
             }
@@ -142,8 +150,8 @@ public class FeedbackEligibilityService implements FeedbackEligibility {
         if (event == null) {
             return 0;
         }
-        boolean canonical = normalizeId(event.getCreatorUserId()).equals(normalizeId(event.getOwnerUserId()));
-        int acceptedCount = safeStrings(event.getAcceptedMemberUserIds()).size();
+        boolean canonical = trim(event.getCreatorUserId()).equals(trim(event.getOwnerUserId()));
+        int acceptedCount = distinctIds(event.getAcceptedMemberUserIds()).size();
         return (canonical ? 1_000_000 : 0) + acceptedCount;
     }
     private boolean isFeedbackUnlocked(Event event, Instant now) {
@@ -153,8 +161,8 @@ public class FeedbackEligibilityService implements FeedbackEligibility {
                         .isAfter(now == null ? Instant.now() : now);
     }
     private FeedbackEligibilityKey feedbackEligibilityKey(FeedbackState state) {
-        String userId = normalizeId(state == null ? null : state.getViewerUserId());
-        String eventId = normalizeId(state == null ? null : state.getEventId());
+        String userId = trim(state == null ? null : state.getViewerUserId());
+        String eventId = trim(state == null ? null : state.getEventId());
         return StringUtils.hasText(userId) && StringUtils.hasText(eventId)
                 ? new FeedbackEligibilityKey(userId, eventId)
                 : null;
@@ -192,12 +200,12 @@ public class FeedbackEligibilityService implements FeedbackEligibility {
                 waitingSourceIds.add(entry.getKey());
             }
         }
-        Set<String> projectedSourceIds = new LinkedHashSet<>(normalizeIds(sourceIds));
+        Set<String> projectedSourceIds = new LinkedHashSet<>(distinctIds(sourceIds));
         projectedSourceIds.removeAll(waitingSourceIds);
         return new Projection(deltas, List.copyOf(projectedSourceIds), List.copyOf(waitingSourceIds), List.of());
     }
     private void updateFeedbackProjectionMarker(Collection<String> sourceIds, boolean projected) {
-        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        List<String> normalizedSourceIds = distinctIds(sourceIds);
         if (normalizedSourceIds.isEmpty()) {
             return;
         }
@@ -207,75 +215,33 @@ public class FeedbackEligibilityService implements FeedbackEligibility {
         Set<String> userIds = new LinkedHashSet<>();
         addUserId(userIds, event == null ? null : event.getOwnerUserId());
         addUserId(userIds, event == null ? null : event.getCreatorUserId());
-        safeStrings(event == null ? List.of() : event.getAdmins()).forEach(userIds::add);
+        distinctIds(event == null ? List.of() : event.getAdmins()).forEach(userIds::add);
         return userIds;
     }
     private Instant parseInstant(String value) {
-        try {
-            return StringUtils.hasText(value) ? Instant.parse(value) : null;
-        } catch (RuntimeException ignored) {
-            return null;
-        }
+        return com.raxim.myscoutee.common.util.TimeValues.parseExactInstant(value);
     }
     private void addFeedbackDelta(
             Map<String, FeedbackBucketDelta> deltasByUserId,
             String userId,
             String bucket,
             int amount) {
-        if (!StringUtils.hasText(userId) || amount == 0) {
-            return;
-        }
-        deltasByUserId.merge(
-                userId,
-                FeedbackBucketDelta.forBucket(bucket, amount),
-                FeedbackBucketDelta::plus);
+        com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.accumulate(deltasByUserId, userId, bucket, amount);
     }
-    private List<String> normalizeIds(Collection<String> values) {
-        return values == null
-                ? List.of()
-                : values.stream()
-                        .map(this::normalizeId)
-                        .filter(StringUtils::hasText)
-                        .distinct()
-                        .toList();
-    }
-    private List<String> safeStrings(Collection<String> values) {
-        return values == null
-                ? List.of()
-                : values.stream()
-                        .map(this::normalizeId)
-                        .filter(StringUtils::hasText)
-                        .distinct()
-                        .toList();
-    }
-    private String normalizeStatus(String value) {
-        String normalized = safeText(value);
-        return switch (normalized) {
-            case "active" -> Event.STATUS_ACTIVE;
-            case "draft" -> Event.STATUS_DRAFT;
-            case "trashed", "trash" -> Event.STATUS_TRASHED;
-            case "under-review", "under review" -> Event.STATUS_UNDER_REVIEW;
-            case "blocked" -> Event.STATUS_BLOCKED;
-            case "deleted" -> Event.STATUS_DELETED;
-            case "inactive" -> Event.STATUS_INACTIVE;
-            default -> normalized.toUpperCase();
-        };
-    }
-    private String normalizeId(String value) {
-        return safeText(value);
-    }
-    private String safeText(String value) {
-        return value == null ? "" : value.trim();
-    }
+
+
+
+
+
     private boolean isTrashScopeStatus(Event event) {
         if (event == null || Boolean.TRUE.equals(event.getIsTrashed())) {
             return true;
         }
-        String status = normalizeStatus(event.getStatus());
+        String status = normalizedStatus(event.getStatus());
         return Event.STATUS_TRASHED.equals(status);
     }
     private void addUserId(Set<String> userIds, String userId) {
-        String normalized = normalizeId(userId);
+        String normalized = trim(userId);
         if (StringUtils.hasText(normalized)) {
             userIds.add(normalized);
         }

@@ -35,12 +35,9 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class EventWatchService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
     private static final String SYSTEM_USER_ID = "event-watchlist";
     private static final String DEFAULT_CLICK_URL = "/game";
@@ -64,7 +61,14 @@ public class EventWatchService {
             SelectedProfile homeUserProfileService,
             FriendshipReads friendshipFacts,
             ActivityCounters userActivityCountersService,
-            NotificationDelivery notificationOutboxService) {
+            NotificationDelivery notificationOutboxService,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.groupRules = groupRules;
+        this.jobGroupScope = jobGroupScope;
+        this.groupDatabases = groupDatabases;
+
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.homeUserProfileService = homeUserProfileService;

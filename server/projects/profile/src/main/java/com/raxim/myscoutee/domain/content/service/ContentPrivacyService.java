@@ -17,7 +17,7 @@ public class ContentPrivacyService implements com.raxim.myscoutee.domain.content
                         Criteria.where("updatedUser").is(userId),
                         Criteria.where("trashedByUserId").is(userId))),
                 IdeaPost.class);
-        for (IdeaPost post : posts == null ? List.<IdeaPost>of() : posts) {
+        for (IdeaPost post : posts) {
             if (post == null) {
                 continue;
             }

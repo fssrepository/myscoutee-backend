@@ -47,7 +47,7 @@ class ActivitiesMingleServiceTest {
     ActivitiesMingleService service;
 
     @BeforeEach void setup() {
-        service = new ActivitiesMingleService(events, sessions, rounds, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users), new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(affinities), members, access, notifications, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)));
+        service = new ActivitiesMingleService(events, sessions, rounds, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null), new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(affinities), members, access, notifications, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class), null));
     }
 
     @Test void acceptedParticipantWithoutATableReceivesWaitingStateWithoutOtherTables() {

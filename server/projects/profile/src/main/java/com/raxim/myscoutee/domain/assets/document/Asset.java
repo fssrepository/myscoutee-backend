@@ -17,6 +17,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
         @CompoundIndex(name = "asset_owner_asset_id", def = "{'ownerUserId': 1, 'assetId': 1}", unique = true),
         @CompoundIndex(name = "asset_owner_updated", def = "{'ownerUserId': 1, 'updatedDate': -1}")
 })
+@lombok.Getter @lombok.Setter
 public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset {
     @org.springframework.data.annotation.Version private Long version;
     private java.util.List<com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto> lifecycleWork = new java.util.ArrayList<>();
@@ -27,8 +28,6 @@ public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnersh
 
     @org.springframework.data.mongodb.core.index.Indexed
     private String workspaceGroupId;
-    public String getWorkspaceGroupId() { return workspaceGroupId; }
-    public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_UNDER_REVIEW = "UR";
     private static final String STATUS_BLOCKED = "B";
@@ -66,12 +65,6 @@ public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnersh
     private String moderationStatus;
     private String moderationPreviousStatus;
     private Long moderationVersion;
-    public String getModerationStatus() { return moderationStatus; }
-    public void setModerationStatus(String value) { moderationStatus = value; }
-    public String getModerationPreviousStatus() { return moderationPreviousStatus; }
-    public void setModerationPreviousStatus(String value) { moderationPreviousStatus = value; }
-    public Long getModerationVersion() { return moderationVersion; }
-    public void setModerationVersion(Long value) { moderationVersion = value; }
     private String statusBeforeSuppression;
     private String ownerReleasedAtIso;
     private String trashedAtIso;
@@ -82,166 +75,6 @@ public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnersh
     private String updatedDate;
     private String updatedUser;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSyncKey() {
-        return syncKey;
-    }
-
-    public void setSyncKey(String syncKey) {
-        this.syncKey = syncKey;
-    }
-
-    public String getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(String assetId) {
-        this.assetId = assetId;
-    }
-
-    public String getOwnerUserId() {
-        return ownerUserId;
-    }
-
-    public void setOwnerUserId(String ownerUserId) {
-        this.ownerUserId = ownerUserId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public Integer getCapacityTotal() {
-        return capacityTotal;
-    }
-
-    public void setCapacityTotal(Integer capacityTotal) {
-        this.capacityTotal = capacityTotal;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getSourceLink() {
-        return sourceLink;
-    }
-
-    public void setSourceLink(String sourceLink) {
-        this.sourceLink = sourceLink;
-    }
-
-    public List<String> getRoutes() {
-        return routes;
-    }
-
-    public void setRoutes(List<String> routes) {
-        this.routes = routes;
-    }
-
-    public PricingConfigDto getPricing() {
-        return pricing;
-    }
-
-    public void setPricing(PricingConfigDto pricing) {
-        this.pricing = pricing;
-    }
-
-    public List<AssetPolicyRecord> getPolicies() {
-        return policies;
-    }
-
-    public Boolean getPoliciesEnabled() {
-        return policiesEnabled;
-    }
-
-    public void setPoliciesEnabled(Boolean policiesEnabled) {
-        this.policiesEnabled = policiesEnabled;
-    }
-
-    public void setPolicies(List<AssetPolicyRecord> policies) {
-        this.policies = policies;
-    }
-
-    public List<AssetRequestRecord> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(List<AssetRequestRecord> requests) {
-        this.requests = requests;
-    }
-
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
-
     public String getStatus() {
         return normalizeStatus(status);
     }
@@ -250,76 +83,12 @@ public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnersh
         this.status = normalizeStatus(status);
     }
 
-    public String getStatusBeforeSuppression() {
-        return statusBeforeSuppression;
-    }
-
     public void setStatusBeforeSuppression(String statusBeforeSuppression) {
         this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatus(statusBeforeSuppression) : null;
     }
 
-    public String getOwnerReleasedAtIso() {
-        return ownerReleasedAtIso;
-    }
-
     public void setOwnerReleasedAtIso(String ownerReleasedAtIso) {
         this.ownerReleasedAtIso = hasText(ownerReleasedAtIso) ? ownerReleasedAtIso.trim() : null;
-    }
-
-    public String getTrashedAtIso() {
-        return trashedAtIso;
-    }
-
-    public void setTrashedAtIso(String trashedAtIso) {
-        this.trashedAtIso = trashedAtIso;
-    }
-
-    public Double getAffinity() {
-        return affinity;
-    }
-
-    public void setAffinity(Double affinity) {
-        this.affinity = affinity;
-    }
-
-    public Double getBoost() {
-        return boost;
-    }
-
-    public void setBoost(Double boost) {
-        this.boost = boost;
-    }
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedUser() {
-        return createdUser;
-    }
-
-    public void setCreatedUser(String createdUser) {
-        this.createdUser = createdUser;
-    }
-
-    public String getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(String updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    public String getUpdatedUser() {
-        return updatedUser;
-    }
-
-    public void setUpdatedUser(String updatedUser) {
-        this.updatedUser = updatedUser;
     }
 
     private static boolean hasText(String value) {

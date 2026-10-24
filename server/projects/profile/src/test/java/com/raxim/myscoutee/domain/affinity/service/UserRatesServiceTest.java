@@ -347,7 +347,7 @@ class UserRatesServiceTest {
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(first, second));
         when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
         AffinityCalculationService affinity = new AffinityCalculationService(affinityConfigsRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), userRatesRepository, new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null), userRatesRepository, new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class), null));
         UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, ratingProfiles(),
                 homeUserProfileService, homeUserProfileService, profileReadState(), affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
@@ -829,9 +829,9 @@ class UserRatesServiceTest {
         stubUsers(usersById);
         AffinityCalculationService affinityCalculationService = new AffinityCalculationService(
                 affinityConfigsRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 userRatesRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
+                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class), null));
         return campaignAware(new UserRatesService(
                 userRatesRepository,
                 ratingProfiles(),
@@ -857,9 +857,9 @@ class UserRatesServiceTest {
                 homeUserProfileService, homeUserProfileService, profileReadState(),
                 new AffinityCalculationService(
                         affinityConfigsRepository,
-                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                         userRatesRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class))),
+                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class), null)),
                 userAffinityEdgeService,
                 mongoTemplate,
                 adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);
@@ -954,9 +954,9 @@ class UserRatesServiceTest {
     }
 
     private static UserRatesService campaignAware(UserRatesService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
-        var projections = new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(mongo, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class));
+        var projections = new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(mongo, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", projections);
-        var friendships = new com.raxim.myscoutee.domain.accounts.service.FriendshipFacts(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository.class));
+        var friendships = new com.raxim.myscoutee.domain.accounts.service.FriendshipFacts(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(friendships, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "friendships", friendships);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",

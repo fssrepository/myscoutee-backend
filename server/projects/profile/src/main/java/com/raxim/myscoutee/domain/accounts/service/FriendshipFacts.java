@@ -14,10 +14,13 @@ import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 /** One indexed adjacency read per viewer/request; no process-wide authorization cache. */
 @Component
 public class FriendshipFacts implements com.raxim.myscoutee.domain.accounts.api.Friendships {
-    @org.springframework.beans.factory.annotation.Autowired private MongoTemplate mongo;
+    private final MongoTemplate mongo;
     private final UserFriendshipsRepository friendships;
 
-    public FriendshipFacts(UserFriendshipsRepository friendships) {
+    public FriendshipFacts(UserFriendshipsRepository friendships,
+            MongoTemplate mongo) {
+        this.mongo = mongo;
+
         this.friendships = friendships;
     }
 

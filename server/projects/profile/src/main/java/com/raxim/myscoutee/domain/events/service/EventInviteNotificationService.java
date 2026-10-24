@@ -107,14 +107,7 @@ public class EventInviteNotificationService {
         if (!StringUtils.hasText(memberUserId)) {
             return;
         }
-        LinkedHashSet<String> recipients = new LinkedHashSet<>();
-        if (recipientUserIds != null) {
-            recipientUserIds.stream()
-                    .map(this::safeText)
-                    .filter(StringUtils::hasText)
-                    .forEach(recipients::add);
-        }
-        recipients.remove(memberUserId);
+        LinkedHashSet<String> recipients = recipientIdsExcluding(recipientUserIds, memberUserId);
         if (recipients.isEmpty()) {
             return;
         }
@@ -165,14 +158,7 @@ public class EventInviteNotificationService {
         if (!StringUtils.hasText(memberUserId)) {
             return;
         }
-        LinkedHashSet<String> recipients = new LinkedHashSet<>();
-        if (recipientUserIds != null) {
-            recipientUserIds.stream()
-                    .map(this::safeText)
-                    .filter(StringUtils::hasText)
-                    .forEach(recipients::add);
-        }
-        recipients.remove(memberUserId);
+        LinkedHashSet<String> recipients = recipientIdsExcluding(recipientUserIds, memberUserId);
         if (recipients.isEmpty()) {
             return;
         }
@@ -489,14 +475,7 @@ public class EventInviteNotificationService {
         if (!StringUtils.hasText(memberUserId)) {
             return;
         }
-        LinkedHashSet<String> recipients = new LinkedHashSet<>();
-        if (recipientUserIds != null) {
-            recipientUserIds.stream()
-                    .map(this::safeText)
-                    .filter(StringUtils::hasText)
-                    .forEach(recipients::add);
-        }
-        recipients.remove(memberUserId);
+        LinkedHashSet<String> recipients = recipientIdsExcluding(recipientUserIds, memberUserId);
         if (recipients.isEmpty()) {
             return;
         }
@@ -588,4 +567,17 @@ public class EventInviteNotificationService {
     private String safeText(String value) {
         return value == null ? "" : value.trim();
     }
+
+    private LinkedHashSet<String> recipientIdsExcluding(List<String> recipientUserIds, String memberUserId) {
+        LinkedHashSet<String> recipients = new LinkedHashSet<>();
+        if (recipientUserIds != null) {
+            recipientUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(recipients::add);
+        }
+        recipients.remove(memberUserId);
+        return recipients;
+    }
+
 }

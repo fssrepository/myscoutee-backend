@@ -116,7 +116,10 @@ public class ActivitiesMingleService {
         String actorUserId = effectiveActorUserId(request == null ? null : request.actorUserId());
         ActivityEvent event = requireMingleEvent(eventId);
         requireManager(eventId, actorUserId);
-        String action = safeText(request == null ? null : request.action()).toLowerCase();
+        if (request == null) {
+            throw new MingleActionException(HttpStatus.BAD_REQUEST, "MINGLE_ACTION_UNSUPPORTED");
+        }
+        String action = safeText(request.action()).toLowerCase();
         Instant now = Instant.now();
 
         ActivityMingleSession session = activityMingleSessionsRepository.findByEventId(eventId).orElse(null);
@@ -329,7 +332,7 @@ public class ActivitiesMingleService {
             ActivityMingleSession session,
             Integer requestedRoundNumber) {
         ActivityEvent event = resolveMingleEvent(session == null ? null : session.getEventId());
-        if (event == null) {
+        if (session == null || event == null) {
             return null;
         }
         boolean manager = accessControlService.canManageEvent(session.getEventId(), actorUserId);
@@ -503,8 +506,9 @@ public class ActivitiesMingleService {
         eligibleUserIds.forEach(userId -> nodes.put(userId, new Node(userId)));
         List<Edge> edges = new ArrayList<>();
         for (EdgeView affinity : userAffinityEdgesRepository.findRelevantByUserIds(List.copyOf(eligibleUserIds))) {
-            String left = normalizeId(affinity == null ? null : affinity.getLeftUserId());
-            String right = normalizeId(affinity == null ? null : affinity.getRightUserId());
+            if (affinity == null) { continue; }
+            String left = normalizeId(affinity.getLeftUserId());
+            String right = normalizeId(affinity.getRightUserId());
             if (!eligibleUserIds.contains(left) || !eligibleUserIds.contains(right) || left.equals(right)) {
                 continue;
             }

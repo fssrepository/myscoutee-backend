@@ -47,8 +47,7 @@ public class AffinityRecomputeChangeStreamService {
         Instant timerAt;
     }
     private final java.util.Map<String, Wakeups> wakeups = new java.util.concurrent.ConcurrentHashMap<>();
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes;
+    private final com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes;
     private Wakeups currentWakeups() {
         return wakeups.computeIfAbsent(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name()
                 + ":" + JobGroupContext.key(), ignored -> new Wakeups());
@@ -69,7 +68,10 @@ public class AffinityRecomputeChangeStreamService {
             MongoTemplate mongoTemplate,
             AffinityRecomputeWorkerService workerService,
             AffinityRecomputeProperties properties,
-            AffinityRecomputeMetricsService metricsService) {
+            AffinityRecomputeMetricsService metricsService,
+            com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        this.changes = changes;
+
         this.mongoTemplate = mongoTemplate;
         this.workerService = workerService;
         this.properties = properties;

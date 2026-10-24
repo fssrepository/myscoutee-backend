@@ -26,18 +26,27 @@ import static com.raxim.myscoutee.domain.content.dto.ContentModerationDtos.*;
 /** Scope-owned write-side counters and durable mutation intents. Reads never rebuild counts from rows. */
 @Service
 public class ContentModerationService implements com.raxim.myscoutee.domain.content.api.ContentRegistration {
-    @org.springframework.beans.factory.annotation.Autowired
-    private GroupDirectory groupDirectory;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.api.GroupModerationProjection groupModeration;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventModeration eventModeration;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetModerationProjection assetModeration;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
+    private final GroupDirectory groupDirectory;
+    private final com.raxim.myscoutee.domain.groups.api.GroupModerationProjection groupModeration;
+    private final com.raxim.myscoutee.domain.events.api.EventModeration eventModeration;
+    private final com.raxim.myscoutee.domain.assets.api.AssetModerationProjection assetModeration;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
     private final ContentModerationRepository repository;
     private final MongoTemplate mongo;
     private final SupportMessages chats;
     private final ActivityCounters counters;
-    public ContentModerationService(ContentModerationRepository repository, MongoTemplate mongo, SupportMessages chats, ActivityCounters counters) {
+    public ContentModerationService(ContentModerationRepository repository, MongoTemplate mongo, SupportMessages chats, ActivityCounters counters,
+            GroupDirectory groupDirectory,
+            com.raxim.myscoutee.domain.groups.api.GroupModerationProjection groupModeration,
+            com.raxim.myscoutee.domain.events.api.EventModeration eventModeration,
+            com.raxim.myscoutee.domain.assets.api.AssetModerationProjection assetModeration,
+            com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles) {
+        this.groupDirectory = groupDirectory;
+        this.groupModeration = groupModeration;
+        this.eventModeration = eventModeration;
+        this.assetModeration = assetModeration;
+        this.profiles = profiles;
+
         this.repository = repository; this.mongo = mongo; this.chats = chats; this.counters = counters;
     }
     private State state(String groupId) { return groupId == null ? repository.state() : repository.state(groupId); }

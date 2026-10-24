@@ -15,15 +15,21 @@ import com.raxim.myscoutee.domain.payments.document.Payment;
 
 @Service
 public class PaymentEuroService {
-    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+    private final PaymentJobQueries paymentJobs;
 
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
+    private final com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private JobAudience jobGroupScope;
+    private final JobAudience jobGroupScope;
     private final ExchangeRateStore rates;
     private final MongoTemplate mongo;
-    public PaymentEuroService(ExchangeRateStore rates, MongoTemplate mongo) { this.rates = rates; this.mongo = mongo; }
+    public PaymentEuroService(ExchangeRateStore rates, MongoTemplate mongo,
+            PaymentJobQueries paymentJobs,
+            com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals,
+            JobAudience jobGroupScope) {
+        this.paymentJobs = paymentJobs;
+        this.accountPaymentTotals = accountPaymentTotals;
+        this.jobGroupScope = jobGroupScope;
+ this.rates = rates; this.mongo = mongo; }
 
     public void prepare(Payment payment) {
         if (payment == null) return;

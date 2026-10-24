@@ -113,14 +113,14 @@ class AdminClientServiceTest {
                 mock(com.raxim.myscoutee.domain.administration.service.AdminTelemetryScopeService.class),
                 new AdminGraphScienceService(mock(com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository.class),
                     mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class),
-                    new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users))).refreshGraphScienceSnapshot();
+                    new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository.class), null), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null))).refreshGraphScienceSnapshot();
         assertEquals(Map.of("female", 3L), snapshot.getActiveProfileGenders());
     }
     @Test void administratorAccessIsRecheckedAndRemovedRolesAreDenied() {
         var users = mock(UsersRepository.class); var roles = mock(AdminMenuCounterService.class);
         var user = new Users(); user.setUserId("admin"); user.setProfileStatus("public");
         when(users.findByUserId("admin")).thenReturn(Optional.of(user)); when(roles.isAdminUser(user)).thenReturn(true);
-        var access = new AdminClientAccessService(new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  roles); assertSame(user, access.requireAdmin("admin"));
+        var access = new AdminClientAccessService(new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null),  roles); assertSame(user, access.requireAdmin("admin"));
         user.setProfileStatus("inactive"); assertThrows(org.springframework.web.server.ResponseStatusException.class, () -> access.requireAdmin("admin"));
         user.setProfileStatus("public"); when(roles.isAdminUser(user)).thenReturn(false);
         assertThrows(org.springframework.web.server.ResponseStatusException.class, () -> access.requireAdmin("admin"));

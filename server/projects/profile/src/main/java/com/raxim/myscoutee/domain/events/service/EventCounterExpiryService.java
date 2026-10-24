@@ -35,9 +35,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class EventCounterExpiryService {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates eventCounterUpdates;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
+    private final com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates eventCounterUpdates;
+    private final com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCounterExpiryService.class);
     private static final String SYSTEM_USER = "event-counter-expiry";
@@ -82,7 +81,12 @@ public class EventCounterExpiryService {
             OperationalTelemetry adminTelemetryService,
             ActivityCounters userActivityCountersService,
             EventFriendshipProjectionService eventFriendshipProjectionService,
-            @Value("${events.counter-expiry.batch-size:200}") int batchSize) {
+            @Value("${events.counter-expiry.batch-size:200}") int batchSize,
+            com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates eventCounterUpdates,
+            com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope) {
+        this.eventCounterUpdates = eventCounterUpdates;
+        this.jobGroupScope = jobGroupScope;
+
         this.activityMembersRepository = activityMembersRepository;
         this.mongoTemplate = mongoTemplate;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
@@ -265,7 +269,7 @@ public class EventCounterExpiryService {
                 dueBoundary(nowIso)));
         Update update = expiryUpdate(nowIso);
         UpdateResult result = mongoTemplate.updateMulti(query, update, ActivityEvent.class);
-        return result == null ? 0L : result.getModifiedCount();
+        return result.getModifiedCount();
     }
 
     private long markDueTicketsExpired(Collection<ActivityEvent> ticketDocuments, String nowIso) {
@@ -281,7 +285,7 @@ public class EventCounterExpiryService {
                 dueBoundary(nowIso)));
         Update update = expiryUpdate(nowIso);
         UpdateResult result = mongoTemplate.updateMulti(query, update, ActivityEvent.class);
-        return result == null ? 0L : result.getModifiedCount();
+        return result.getModifiedCount();
     }
 
     private Update expiryUpdate(String nowIso) {
@@ -361,7 +365,8 @@ public class EventCounterExpiryService {
         }
 
         for (ActivityMember member : memberships == null ? List.<ActivityMember>of() : memberships) {
-            String sourceId = normalizeId(member == null ? null : member.getOwnerId());
+            if (member == null) { continue; }
+            String sourceId = normalizeId(member.getOwnerId());
             if (!StringUtils.hasText(sourceId)) {
                 continue;
             }
@@ -419,7 +424,7 @@ public class EventCounterExpiryService {
     }
 
     private boolean isPendingInvitation(ActivityMember member) {
-        if (!MEMBER_STATUS_PENDING.equals(normalizeMemberStatus(member == null ? null : member.getStatus()))) {
+        if (member == null || !MEMBER_STATUS_PENDING.equals(normalizeMemberStatus(member.getStatus()))) {
             return false;
         }
         String requestKind = safeText(member.getRequestKind());
@@ -530,7 +535,7 @@ public class EventCounterExpiryService {
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
         for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
             String sourceId = normalizeId(record == null ? null : record.getSourceId());
-            if (!StringUtils.hasText(sourceId)) {
+            if (record == null || !StringUtils.hasText(sourceId)) {
                 continue;
             }
             ActivityEvent current = preferredBySourceId.get(sourceId);

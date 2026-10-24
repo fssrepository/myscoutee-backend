@@ -223,13 +223,15 @@ public class MemberPolicyFacts {
             return false;
         }
         String normalizedUserId = normalizeId(userId);
-        return normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))
-                || normalizeIds(eventRecord.getAdmins()).contains(normalizedUserId);
+        return normalizedUserId != null && (normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))
+                || normalizeIds(eventRecord.getAdmins()).contains(normalizedUserId));
     }
 
     private boolean isEventCreator(String eventId, String userId) {
         Event eventRecord = findPreferredEventRecord(eventId);
-        return eventRecord != null && normalizeId(userId).equals(normalizeId(eventRecord.getCreatorUserId()));
+        String normalizedUserId = normalizeId(userId);
+        return eventRecord != null && normalizedUserId != null
+                && normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()));
     }
 
     private Event findPreferredEventRecord(String sourceId) {

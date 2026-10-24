@@ -472,6 +472,25 @@ public final class GlobalIdentityVoprfClient {
         }
 
         private record Secrets(byte[] input, byte[] blind) {
+            @Override
+            public boolean equals(Object value) {
+                return this == value || value instanceof Secrets other
+                        && java.util.Arrays.equals(input, other.input)
+                        && java.util.Arrays.equals(blind, other.blind);
+            }
+
+            @Override
+            public int hashCode() {
+                int result = 1;
+                result = 31 * result + java.util.Arrays.hashCode(input);
+                result = 31 * result + java.util.Arrays.hashCode(blind);
+                return result;
+            }
+
+            @Override
+            public String toString() {
+                return "Secrets[redacted]";
+            }
         }
     }
 }

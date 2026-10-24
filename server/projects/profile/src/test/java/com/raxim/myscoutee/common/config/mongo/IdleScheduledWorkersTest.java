@@ -41,7 +41,7 @@ class IdleScheduledWorkersTest {
                 var affinity = new AffinityRecomputeWorkerService(taskOwner, null, null, properties, mongo,
                         new AffinityRecomputeMetricsService());
                 var sessions = new MongoRepositoryFactory(mongo).getRepository(ActivityMingleSessionsRepository.class);
-                var mingle = new ActivitiesMingleWorkerService(sessions, null);
+                var mingle = new ActivitiesMingleWorkerService(sessions, null, null, null, null);
                 ReflectionTestUtils.setField(mingle, "groupRules", jobs);
                 ReflectionTestUtils.setField(mingle, "groupDatabases", new ScheduledMongoSessionRunner("same", "same"));
 

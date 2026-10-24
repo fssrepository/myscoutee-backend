@@ -1320,41 +1320,15 @@ public class OperatorGlobalIdentityPresenceReportService {
     private static boolean retryDue(
             GlobalIdentityPresenceOutboxItem item,
             Instant now) {
-        if (item.getNextRetryAt() == null
-                || item.getNextRetryAt().isBlank()) {
-            return true;
-        }
-        try {
-            return !Instant.parse(item.getNextRetryAt()).isAfter(now);
-        } catch (RuntimeException exception) {
-            return true;
-        }
+        return OperatorReportDelivery.retryDue(item.getNextRetryAt(), now);
     }
 
     private static boolean retryable(RuntimeException exception) {
-        if (exception instanceof RegistryHttpException http) {
-            return http.getStatusCode() == 0
-                    || http.getStatusCode() == 408
-                    || http.getStatusCode() == 425
-                    || http.getStatusCode() == 429
-                    || http.getStatusCode() >= 500;
-        }
-        return exception instanceof DataAccessException;
+        return OperatorReportDelivery.retryable(exception);
     }
 
     private static String failureCode(RuntimeException exception) {
-        if (exception instanceof RegistryHttpException http
-                && http.getErrorCode() != null
-                && !http.getErrorCode().isBlank()) {
-            return http.getErrorCode();
-        }
-        if (exception instanceof DataAccessException) {
-            return "GLOBAL_IDENTITY_PRESENCE_PERSISTENCE_RETRY";
-        }
-        if (exception instanceof IllegalStateException) {
-            return "INVALID_GLOBAL_IDENTITY_PRESENCE_RECEIPT";
-        }
-        return "GLOBAL_IDENTITY_PRESENCE_REJECTED";
+        return OperatorReportDelivery.failureCode(exception, "GLOBAL_IDENTITY_PRESENCE_PERSISTENCE_RETRY", "INVALID_GLOBAL_IDENTITY_PRESENCE_RECEIPT", "GLOBAL_IDENTITY_PRESENCE_REJECTED");
     }
 
     private static boolean isMaterializationComplete(
@@ -1363,7 +1337,7 @@ public class OperatorGlobalIdentityPresenceReportService {
     }
 
     private static Duration retryDelay(Integer attempts) {
-        int normalized = Math.max(1, Math.min(value(attempts), 12));
+        int normalized = Math.clamp(value(attempts), 1, 12);
         Duration delay = Duration.ofMinutes(1L << (normalized - 1));
         return delay.compareTo(MAX_RETRY_DELAY) > 0
                 ? MAX_RETRY_DELAY

@@ -1,0 +1,141 @@
+{
+  "status": "script draft; no replacement audio generated or mixed",
+  "picture_frames": 4861,
+  "picture_fps": 24,
+  "picture_duration": 202.54166666666666,
+  "clinical_cut": 197.04166666666666,
+  "narration_latest_end": 196,
+  "script": "guides/publication/story/films/higgsfield/the-path-between-people/03_film/narration_directors_cut.txt",
+  "script_sha256": "b49f551f3bad8718a49866f3b7d456ad7020b3b8374246d10d884a5ae4eb3b06",
+  "word_count": 323,
+  "word_count_method": "whitespace-delimited; contractions count as one word",
+  "timing_basis": "Proposed global picture windows, not measured new speech timestamps. Existing Grady read suggests roughly 144 words/minute; measure the new recording before placement. No time stretching.",
+  "segments": [
+    {
+      "id": "DC01",
+      "start": 4.4,
+      "end": 17,
+      "words": 23,
+      "window_wpm": 109.5,
+      "text": "I don't remember my life as a straight line. I remember places opening into other places, and people I thought I'd left behind.",
+      "picture_anchor": "P01: moving city, statue, warm room and returning faces."
+    },
+    {
+      "id": "DC02",
+      "start": 20.5,
+      "end": 32,
+      "words": 22,
+      "window_wpm": 114.8,
+      "text": "Sometimes I remember being alone more clearly than where I was. Sometimes a face returns, and I remember what I couldn't say.",
+      "picture_anchor": "P02: bedroom, seated man, phone profile and the return to the street."
+    },
+    {
+      "id": "DC03",
+      "start": 35,
+      "end": 47,
+      "words": 23,
+      "window_wpm": 115.0,
+      "text": "Travelling meant trusting people I might never see again. Someone made space beside them, and for a little while I belonged there too.",
+      "picture_anchor": "P03: station approach, gates, bus conversation and shared taxi; no early balloon claim."
+    },
+    {
+      "id": "DC04",
+      "start": 49.5,
+      "end": 62,
+      "words": 24,
+      "window_wpm": 115.2,
+      "text": "What stayed was often small: an awkward step, an offered hand. I couldn't have told you then which moments I would keep returning to.",
+      "picture_anchor": "P04: helpers, dance, travel fragments; awkward step and offered hand belong to this passage."
+    },
+    {
+      "id": "DC05",
+      "start": 65,
+      "end": 77.5,
+      "words": 24,
+      "window_wpm": 115.2,
+      "text": "At work, I wanted to be useful. I thought the papers would help explain what I knew, what I'd done, what I could offer.",
+      "picture_anchor": "P05: waiting, work, diploma and documents. Work credentials become personal hopes, not an invented outcome."
+    },
+    {
+      "id": "DC06",
+      "start": 78.5,
+      "end": 94.5,
+      "words": 30,
+      "window_wpm": 112.5,
+      "text": "Later, I kept trying to put everything in order. An AI helped me hold the whole story together, and sometimes simply keep going. I still needed people to hear it.",
+      "picture_anchor": "P05 laptop into P06 occupied offices. AI assistance is retained autobiographical context, not a claim that the screen visibly demonstrates AI."
+    },
+    {
+      "id": "DC07",
+      "start": 97,
+      "end": 108,
+      "words": 24,
+      "window_wpm": 130.9,
+      "text": "There were questions, searches, things to account for. I tried to answer carefully. The person across the desk could only see part of me.",
+      "picture_anchor": "P06: approach to the doorway, bag search, drawer and desk procedure. Avoid an unsupported laugh or unreachable-lawyer claim."
+    },
+    {
+      "id": "DC08",
+      "start": 110,
+      "end": 123.5,
+      "words": 29,
+      "window_wpm": 128.9,
+      "text": "Afterwards, I would go over it again. What had I said? What had they understood? Outside, people were getting on with their day. I wanted to do the same.",
+      "picture_anchor": "P07: long public walk, phone, stairs and river. Use recollection and uncertainty without inventing an institutional decision."
+    },
+    {
+      "id": "DC09",
+      "start": 125.5,
+      "end": 136.5,
+      "words": 21,
+      "window_wpm": 114.5,
+      "text": "A photograph could show my face. A file could put my name beside it. Explaining how I'd arrived there was harder.",
+      "picture_anchor": "P07: document/photo discussion and corridor. Avoid enumerating props before their appearance."
+    },
+    {
+      "id": "DC10",
+      "start": 139,
+      "end": 151,
+      "words": 24,
+      "window_wpm": 120.0,
+      "text": "I wanted the record put right. Every time I explained, I had to decide where to begin, and how much someone would listen to.",
+      "picture_anchor": "P08: desk, portraits, files and repeated administrative spaces. Retain the wish to correct the record; omit unseen refusal/quorum/upper-chair events."
+    },
+    {
+      "id": "DC11",
+      "start": 156,
+      "end": 164.5,
+      "words": 19,
+      "window_wpm": 134.1,
+      "text": "Then I remember someone smiling. Someone helping me through. For a moment, there was nothing I had to explain.",
+      "picture_anchor": "P09: smile around 157–158 s, gate help around 159–160 s, then balloon helpers. Let the first and second sentences sit by those gestures."
+    },
+    {
+      "id": "DC12",
+      "start": 165,
+      "end": 175.5,
+      "words": 22,
+      "window_wpm": 125.7,
+      "text": "People helped with what was in front of them. A hand, a cup, a place at the table. I remember being welcome.",
+      "picture_anchor": "P10 into P11: help, offered drink, doorway welcome and the six-person table. Aim the table phrase toward 171–173 s; do not place years of institutional delay over this warmth."
+    },
+    {
+      "id": "DC13",
+      "start": 177,
+      "end": 184,
+      "words": 15,
+      "window_wpm": 128.6,
+      "text": "I have a number here too. I wonder what anyone can really tell from it.",
+      "picture_anchor": "P11: own readable 6.2 around 179–180 s, then the wider city. Do not call this the first score reveal: earlier output already showed it."
+    },
+    {
+      "id": "DC14",
+      "start": 185,
+      "end": 196,
+      "words": 23,
+      "window_wpm": 125.5,
+      "text": "London, Budapest, rooms I thought I'd left behind. They keep coming back. I recognise them. I still don't know where this leaves me.",
+      "picture_anchor": "P12: recurring street, bedroom, brief clinical detail, helpers and glass approach. End the uncertainty before the actual clinical cut; do not narrate the clinic before it appears."
+    }
+  ]
+}

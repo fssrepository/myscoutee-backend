@@ -39,7 +39,7 @@ class CommunityAnnouncementsServiceTest {
     @BeforeEach void setup() {
         records=mock(CommunityAnnouncementsRepository.class);
         access=mock(CommunityAccessService.class);mongo=mock(MongoTemplate.class);users=mock(UsersRepository.class);notifications=mock(NotificationOutboxService.class);
-        service=new CommunityAnnouncementsService(records,access,mongo,new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),notifications);
+        service=new CommunityAnnouncementsService(records,access,mongo,new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null),notifications, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "voteCounters", mock(CommunityVoteCounterWork.class));
         groups = mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groups", groups);

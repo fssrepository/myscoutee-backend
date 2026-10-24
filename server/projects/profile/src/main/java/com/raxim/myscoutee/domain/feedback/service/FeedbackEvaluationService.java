@@ -33,19 +33,20 @@ public class FeedbackEvaluationService implements com.raxim.myscoutee.domain.fee
     private final ProfileSummaries users;
     private final NotificationDelivery notifications;
     private final MenuCounterUpdates counters;
-    public FeedbackEvaluationService(MongoTemplate mongo, ProfileSummaries users, NotificationDelivery notifications, MenuCounterUpdates counters) {
+    public FeedbackEvaluationService(MongoTemplate mongo, ProfileSummaries users, NotificationDelivery notifications, MenuCounterUpdates counters,
+            @org.springframework.context.annotation.Lazy com.raxim.myscoutee.domain.community.api.Cases cases,
+            @org.springframework.context.annotation.Lazy com.raxim.myscoutee.domain.community.api.ServiceOfferings serviceOfferings) {
+        this.cases = cases;
+        this.serviceOfferings = serviceOfferings;
+
         this.mongo=mongo; this.users=users; this.notifications=notifications; this.counters=counters;
     }
     public record Item(FeedbackEvaluation feedback, String providerName, String reviewerName, String serviceTitle, String serviceImageUrl) {}
     public record Command(String userId, String action, Map<String,Double> criteria, String comment) {}
     public record Stats(long count, double average, Map<String,Double> criteria) {}
 
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private com.raxim.myscoutee.domain.community.api.Cases cases;
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private com.raxim.myscoutee.domain.community.api.ServiceOfferings serviceOfferings;
+    private final com.raxim.myscoutee.domain.community.api.Cases cases;
+    private final com.raxim.myscoutee.domain.community.api.ServiceOfferings serviceOfferings;
     @Override public int prepareSnapshot(String snapshot) { return prepare(cases.feedbackContext(snapshot)); }
 
     public int prepare(com.raxim.myscoutee.domain.feedback.api.FeedbackPreparation.Context closed) {
@@ -98,6 +99,7 @@ public class FeedbackEvaluationService implements com.raxim.myscoutee.domain.fee
         FeedbackEvaluation row=mongo.findById(id,FeedbackEvaluation.class);
         if(row==null || !BaseGroups.COMMUNITY_BASE_ID.equals(row.baseGroupId()) || !actor.equals(row.viewerAccountId())) throw error(HttpStatus.NOT_FOUND);
         row=initializeCounters(row);
+        if(row==null) throw error(HttpStatus.NOT_FOUND);
         finishCounters(row);
         var query=Query.query(Criteria.where("_id").is(id).and("status").is(row.status())
                 .and("counterState.revision").is(row.counterState().revision()));
@@ -134,6 +136,8 @@ public class FeedbackEvaluationService implements com.raxim.myscoutee.domain.fee
     private CounterState counterState(String id, String viewer, String provider, String status, CounterState before, List<String> profileIds) {
         long revision=before==null?1:before.revision()+1;
         String previous=before==null?null:before.status();
+        // Stable persisted receipt/counter identity; never a password, signature or integrity proof.
+        @SuppressWarnings("java:S4790")
         String source="feedbackEvaluation-"+org.springframework.util.DigestUtils.md5DigestAsHex(id.getBytes(StandardCharsets.UTF_8));
         var pending=new ArrayList<MenuCounterUpdates.Change>();
         Map<String,Integer> buckets=new LinkedHashMap<>();

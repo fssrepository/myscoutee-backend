@@ -100,7 +100,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Assets, com.raxim.myscoutee.domain.assets.api.TicketReads, com.raxim.myscoutee.domain.assets.api.AssetModerationDetails {
-    @org.springframework.beans.factory.annotation.Autowired private AssetLifecycleWork lifecycleWork;
+    private final AssetLifecycleWork lifecycleWork;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AssetsService.class);
     private static final String STATUS_ACTIVE = "A";
@@ -116,13 +116,11 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
 
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private ContentRegistration contentModeration;
+    private final ContentRegistration contentModeration;
 
-    @Autowired private com.raxim.myscoutee.domain.events.api.AssetMemberships assetMemberships;
-    @Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
-    @Autowired private com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads accountPaymentReads;
+    private final com.raxim.myscoutee.domain.events.api.AssetMemberships assetMemberships;
+    private final com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
+    private final com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads accountPaymentReads;
     private final AssetsRepository assetsRepository;
     private final AssetProfiles usersRepository;
     private final FriendshipReads friendshipFacts;
@@ -156,7 +154,18 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             NotificationDelivery notificationOutboxService,
             AttachmentLifecycle chatAttachmentLifecycleService,
             AccessPermissions accessControlService,
-            ActivityCounters userActivityCountersService) {
+            ActivityCounters userActivityCountersService,
+            AssetLifecycleWork lifecycleWork,
+            @org.springframework.context.annotation.Lazy ContentRegistration contentModeration,
+            com.raxim.myscoutee.domain.events.api.AssetMemberships assetMemberships,
+            com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership,
+            com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads accountPaymentReads) {
+        this.lifecycleWork = lifecycleWork;
+        this.contentModeration = contentModeration;
+        this.assetMemberships = assetMemberships;
+        this.eventOwnership = eventOwnership;
+        this.accountPaymentReads = accountPaymentReads;
+
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.friendshipFacts = friendshipFacts;
@@ -544,7 +553,8 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
 
         Map<String, String> knownRevisions = new LinkedHashMap<>();
         for (AssetTicketSyncKnownItemDto item : request.knownItems() == null ? List.<AssetTicketSyncKnownItemDto>of() : request.knownItems()) {
-            String id = safeText(item == null ? null : item.id());
+            if (item == null) continue;
+            String id = safeText(item.id());
             if (StringUtils.hasText(id)) {
                 knownRevisions.put(id, safeText(item.revision()));
             }
@@ -1520,6 +1530,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
 
     private String authorizationEventId(String eventId, String subEventId) {
         String normalizedEventId = normalizeId(eventId);
+        if (normalizedEventId == null) return null;
         String normalizedSubEventId = normalizeId(subEventId);
         String runtimeEventId = normalizedEventId;
         if (StringUtils.hasText(normalizedSubEventId)) {
@@ -1893,7 +1904,8 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         Map<String, AssetRequestRecord> nextById = requestsById(proposed.getRequests());
         List<AssetRequestRecord> merged = new ArrayList<>();
         for (AssetRequestRecord previous : safeRequests(existing.getRequests())) {
-            String requestId = normalizeId(previous == null ? null : previous.id());
+            if (previous == null) continue;
+            String requestId = normalizeId(previous.id());
             if (!StringUtils.hasText(requestId)) {
                 continue;
             }
@@ -1949,7 +1961,8 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 : nowIso;
         Set<String> retainedRequestIds = new LinkedHashSet<>();
         for (AssetRequestRecord request : safeRequests(saved.getRequests())) {
-            String requestId = normalizeId(request == null ? null : request.id());
+            if (request == null) continue;
+            String requestId = normalizeId(request.id());
             if (!StringUtils.hasText(requestId)) {
                 continue;
             }
@@ -2133,13 +2146,13 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         }
 
         String requesterUserId = normalizeId(next == null ? null : next.userId());
-        if (!StringUtils.hasText(requesterUserId)) {
+        if (next == null || !StringUtils.hasText(requesterUserId)) {
             return false;
         }
         if (!isDeletedAssetRequest(next)
                 && !hasAcceptedRequiredPolicies(
                         asset,
-                        next == null || next.booking() == null
+                        next.booking() == null
                                 ? List.of()
                                 : next.booking().acceptedPolicyIds())) {
             return false;
@@ -2203,7 +2216,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         if (!isBorrowRequest(previous)) {
             return fullAssetWriteAllowed;
         }
-        String requesterUserId = normalizeId(previous == null ? null : previous.userId());
+        String requesterUserId = normalizeId(previous.userId());
         if (!StringUtils.hasText(requesterUserId)) {
             return false;
         }
@@ -2340,18 +2353,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         }
 
         String nowIso = Instant.now().toString();
-        Asset next = current == null ? new Asset() : cloneAsset(current);
-        next.setId(current == null ? new ObjectId().toHexString() : current.getId());
-        next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
-        next.setAssetId(assetId);
-        next.setOwnerUserId(ownerUserId);
-        next.setType(type);
-        next.setTitle(safeText(dto.title()));
-        next.setSubtitle(safeText(dto.subtitle()));
-        next.setCategory(safeText(dto.category()));
-        next.setCity(safeText(dto.city()));
-        next.setCapacityTotal(Math.max(1, normalizeCount(dto.capacityTotal())));
-        next.setQuantity(normalizeAssetQuantity(type, dto.quantity(), dto.capacityTotal()));
+        Asset next = initializeAssetDocument(current, assetId, ownerUserId, type);
+        populateAssetSummary(next, dto.title(), dto.subtitle(), dto.category(), dto.city(),
+                dto.capacityTotal(), normalizeAssetQuantity(type, dto.quantity(), dto.capacityTotal()));
         next.setDetails(safeText(dto.details()));
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(safeText(dto.sourceLink()));
@@ -2359,24 +2363,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         next.setPoliciesEnabled(Boolean.TRUE.equals(dto.policiesEnabled()));
         next.setPolicies(normalizePolicies(dto.policies()));
         next.setPricing(clonePricing(dto.pricing()));
-        next.setRequests(normalizeRequests(dto.requests()));
-        String nextVisibility = normalizeVisibility(dto.visibility());
-        if (!StringUtils.hasText(nextVisibility)) {
-            nextVisibility = normalizeVisibility(current == null ? null : current.getVisibility());
-        }
-        next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
-        if (current == null) {
-            next.setStatus(STATUS_ACTIVE);
-            next.setStatusBeforeSuppression(null);
-            next.setTrashedAtIso(null);
-        }
-        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
-        next.setBoost(resolveAssetBoost(next, ownerUserId));
-        next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
-        next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
-        next.setUpdatedDate(nowIso);
-        next.setUpdatedUser(ownerUserId);
-        return next;
+        return finishAssetDocument(next, current, dto.requests(), dto.visibility(), ownerUserId, nowIso);
     }
 
     private Asset toDocument(AssetDto dto, String ownerUserId, Asset current) {
@@ -2387,18 +2374,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         }
 
         String nowIso = Instant.now().toString();
-        Asset next = current == null ? new Asset() : cloneAsset(current);
-        next.setId(current == null ? new ObjectId().toHexString() : current.getId());
-        next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
-        next.setAssetId(assetId);
-        next.setOwnerUserId(ownerUserId);
-        next.setType(type);
-        next.setTitle(safeText(dto.title()));
-        next.setSubtitle(safeText(dto.subtitle()));
-        next.setCategory(safeText(dto.category()));
-        next.setCity(safeText(dto.city()));
-        next.setCapacityTotal(Math.max(1, normalizeCount(dto.capacityTotal())));
-        next.setQuantity(normalizeAssetQuantity(type, dto.quantity(), dto.capacityTotal()));
+        Asset next = initializeAssetDocument(current, assetId, ownerUserId, type);
+        populateAssetSummary(next, dto.title(), dto.subtitle(), dto.category(), dto.city(),
+                dto.capacityTotal(), normalizeAssetQuantity(type, dto.quantity(), dto.capacityTotal()));
         next.setDetails(current == null ? safeText(dto.description()) : safeText(current.getDetails()));
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(current == null ? "" : safeText(current.getSourceLink()));
@@ -2406,8 +2384,23 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         next.setPoliciesEnabled(current == null ? Boolean.TRUE.equals(dto.policiesEnabled()) : Boolean.TRUE.equals(current.getPoliciesEnabled()));
         next.setPolicies(current == null ? List.of() : new ArrayList<>(safePolicies(current.getPolicies())));
         next.setPricing(current == null ? null : clonePricing(current.getPricing()));
-        next.setRequests(normalizeRequests(dto.requests()));
-        String nextVisibility = normalizeVisibility(dto.visibility());
+        return finishAssetDocument(next, current, dto.requests(), dto.visibility(), ownerUserId, nowIso);
+    }
+
+    private Asset initializeAssetDocument(Asset current, String assetId, String ownerUserId, String type) {
+        Asset next = current == null ? new Asset() : cloneAsset(current);
+        next.setId(current == null ? new ObjectId().toHexString() : current.getId());
+        next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
+        next.setAssetId(assetId);
+        next.setOwnerUserId(ownerUserId);
+        next.setType(type);
+        return next;
+    }
+
+    private Asset finishAssetDocument(Asset next, Asset current, List<AssetMemberRequestDto> requests,
+            String visibility, String ownerUserId, String nowIso) {
+        next.setRequests(normalizeRequests(requests));
+        String nextVisibility = normalizeVisibility(visibility);
         if (!StringUtils.hasText(nextVisibility)) {
             nextVisibility = normalizeVisibility(current == null ? null : current.getVisibility());
         }
@@ -2556,8 +2549,11 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             Event event,
             AssetProfile holder,
             String holderRole) {
-        String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
-        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        if (ticket == null || event == null) {
+            return null;
+        }
+        String holderUserId = normalizeId(ticket.getHolderUserId());
+        String eventId = normalizeId(event.getSourceId());
         if (!StringUtils.hasText(holderUserId) || !StringUtils.hasText(eventId)) {
             return null;
         }
@@ -2904,7 +2900,8 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         }
         Map<String, AssetRequestMetricsDto> metricsByAssetId = new LinkedHashMap<>();
         for (Asset asset : assets) {
-            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+            if (asset == null) continue;
+            String assetId = normalizeId(asset.getAssetId());
             if (StringUtils.hasText(assetId)) {
                 metricsByAssetId.put(assetId, toAssetRequestMetrics(asset.getRequests()));
             }
@@ -3224,42 +3221,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return;
         }
         String nowIso = normalizeDateTime(deletedAtIso, Instant.now().toString());
-        for (String rawAssetId : assetIds == null ? List.<String>of() : assetIds) {
-            String assetId = normalizeId(rawAssetId);
-            if (!StringUtils.hasText(assetId)) {
-                continue;
-            }
-            Asset current = findAssetByAssetId(assetId).orElse(null);
-            if (current == null) {
-                continue;
-            }
-            boolean changed = false;
-            List<AssetRequestRecord> nextRequests = new ArrayList<>();
-            for (AssetRequestRecord request : safeRequests(current.getRequests())) {
-                if (!isDeletedAssetRequest(request)
-                        && isAssignmentScopeRequest(
-                                request,
-                                normalizedOwnerId,
-                                normalizedAuthorizationEventId,
-                                normalizedSubEventId)) {
-                    nextRequests.add(withAssetRequestStatus(request, STATUS_DELETED));
-                    changed = true;
-                } else if (request != null) {
-                    nextRequests.add(request);
-                }
-            }
-            if (!changed) {
-                continue;
-            }
-            Asset next = cloneAsset(current);
-            next.setRequests(nextRequests);
-            next.setUpdatedDate(nowIso);
-            next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), normalizedAssetOwnerUserId));
-            assetsRepository.save(next);
-            syncAssetRequestProjection(current, next);
-            affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
-            userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
-        }
+        deleteAssetRequests(assetIds, request -> isAssignmentScopeRequest(request,
+                normalizedOwnerId, normalizedAuthorizationEventId, normalizedSubEventId),
+                actorUserId, normalizedAssetOwnerUserId, nowIso, false);
     }
 
     public Set<String> statusDeleteEventAssignmentRequestsForUsers(
@@ -3278,44 +3242,10 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         }
 
         String nowIso = normalizeDateTime(deletedAtIso, Instant.now().toString());
-        Set<String> changedAssetIds = new LinkedHashSet<>();
-        for (String rawAssetId : assetIds == null ? List.<String>of() : assetIds) {
-            String assetId = normalizeId(rawAssetId);
-            if (!StringUtils.hasText(assetId)) {
-                continue;
-            }
-            Asset current = findAssetByAssetId(assetId).orElse(null);
-            if (current == null) {
-                continue;
-            }
-
-            boolean changed = false;
-            List<AssetRequestRecord> nextRequests = new ArrayList<>();
-            for (AssetRequestRecord request : safeRequests(current.getRequests())) {
-                if (!isDeletedAssetRequest(request)
-                        && normalizedUserIds.contains(normalizeId(request == null ? null : request.userId()))
-                        && requestBelongsToEvent(request, normalizedEventId)) {
-                    nextRequests.add(withAssetRequestStatus(request, STATUS_DELETED));
-                    changed = true;
-                } else if (request != null) {
-                    nextRequests.add(request);
-                }
-            }
-            if (!changed) {
-                continue;
-            }
-
-            Asset next = cloneAsset(current);
-            next.setRequests(nextRequests);
-            next.setUpdatedDate(nowIso);
-            next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId), normalizeId(current.getOwnerUserId())));
-            assetsRepository.save(next);
-            syncAssetRequestProjection(current, next);
-            affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
-            userActivityCountersService.refreshAssetCountersForUser(normalizeId(next.getOwnerUserId()));
-            changedAssetIds.add(assetId);
-        }
-        return Set.copyOf(changedAssetIds);
+        return deleteAssetRequests(assetIds, request ->
+                normalizedUserIds.contains(normalizeId(request == null ? null : request.userId()))
+                        && requestBelongsToEvent(request, normalizedEventId),
+                actorUserId, null, nowIso, true);
     }
 
     private boolean requestBelongsToEvent(AssetRequestRecord request, String eventId) {
@@ -3703,7 +3633,10 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     }
 
     private Set<String> acceptedAssetManagerUserIds(Asset asset) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (asset == null) {
+            return Set.of();
+        }
+        String assetId = normalizeId(asset.getAssetId());
         if (!StringUtils.hasText(assetId)) {
             return Set.of();
         }
@@ -3795,11 +3728,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         if (!StringUtils.hasText(assetId)) {
             return null;
         }
-        LinkedHashSet<String> recipients = new LinkedHashSet<>(assetRequesterUserIds(asset));
-        recipients.addAll(activeResponsibleAssetUserIds(asset));
-        if (StringUtils.hasText(normalizedActorUserId)) {
-            recipients.remove(normalizedActorUserId);
-        }
+        LinkedHashSet<String> recipients = affectedAssetRecipients(asset, normalizedActorUserId);
         if (recipients.isEmpty()) {
             return null;
         }
@@ -3827,9 +3756,12 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             Ticket ticket,
             Event event,
             String actorUserId) {
-        String eventId = normalizeId(event == null ? null : event.getSourceId());
-        String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
-        String usedAtIso = safeText(ticket == null ? null : ticket.getUsedAtIso());
+        if (ticket == null || event == null) {
+            return;
+        }
+        String eventId = normalizeId(event.getSourceId());
+        String holderUserId = normalizeId(ticket.getHolderUserId());
+        String usedAtIso = safeText(ticket.getUsedAtIso());
         if (notificationOutboxService == null
                 || !StringUtils.hasText(eventId)
                 || !StringUtils.hasText(holderUserId)
@@ -3886,9 +3818,12 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             Ticket ticket,
             Event event,
             String actorUserId) {
-        String ticketId = normalizeId(ticket == null ? null : ticket.getId());
-        String eventId = normalizeId(event == null ? null : event.getSourceId());
-        String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
+        if (ticket == null || event == null) {
+            return;
+        }
+        String ticketId = normalizeId(ticket.getId());
+        String eventId = normalizeId(event.getSourceId());
+        String holderUserId = normalizeId(ticket.getHolderUserId());
         if (notificationOutboxService == null
                 || !StringUtils.hasText(ticketId)
                 || !StringUtils.hasText(eventId)
@@ -3940,11 +3875,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         if (!StringUtils.hasText(assetId)) {
             return null;
         }
-        LinkedHashSet<String> recipients = new LinkedHashSet<>(assetRequesterUserIds(asset));
-        recipients.addAll(activeResponsibleAssetUserIds(asset));
-        if (StringUtils.hasText(normalizedActorUserId)) {
-            recipients.remove(normalizedActorUserId);
-        }
+        LinkedHashSet<String> recipients = affectedAssetRecipients(asset, normalizedActorUserId);
         if (recipients.isEmpty()) {
             return null;
         }
@@ -4001,7 +3932,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 title,
                 body,
                 "/game",
-                firstNonBlank(next == null ? null : next.getImageUrl(), "/assets/logo/heart.webp"),
+                firstNonBlank(next.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 "asset-takeover-" + assetId,
                 Map.of(
@@ -4014,7 +3945,10 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     }
 
     private NotificationIntent assetOwnerReleasedNotification(Asset asset, String actorUserId) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (asset == null) {
+            return null;
+        }
+        String assetId = normalizeId(asset.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         List<String> recipients = assetOwnerReleaseRecipientUserIds(asset, normalizedActorUserId);
         if (!StringUtils.hasText(assetId) || recipients.isEmpty()) {
@@ -4039,7 +3973,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                                 ? "An Asset Manager can take over responsibility."
                                 : "An accepted Asset Member can take over responsibility."),
                 "/game",
-                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 "asset-owner-left-" + assetId + "-" + safeText(asset.getOwnerReleasedAtIso()),
                 Map.of(
@@ -4066,6 +4000,17 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     }
 
     private void enqueueAssetManagerPromotedNotification(Asset asset, String actorUserId, String targetUserId) {
+        enqueueAssetManagerRoleNotification(asset, actorUserId, targetUserId,
+                "asset-manager-promoted", " can now help manage ");
+    }
+
+    private void enqueueAssetManagerRevokedNotification(Asset asset, String actorUserId, String targetUserId) {
+        enqueueAssetManagerRoleNotification(asset, actorUserId, targetUserId,
+                "asset-manager-revoked", " is no longer a manager of ");
+    }
+
+    private void enqueueAssetManagerRoleNotification(Asset asset, String actorUserId, String targetUserId,
+            String notificationType, String changeDescription) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         String normalizedTargetUserId = normalizeId(targetUserId);
@@ -4085,9 +4030,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 .filter(StringUtils::hasText)
                 .orElse("A member");
         String title = "Asset manager updated";
-        String body = targetName + " can now help manage " + assetTitle(asset) + ".";
+        String body = targetName + changeDescription + assetTitle(asset) + ".";
         notificationOutboxService.enqueue(new NotificationIntent(
-                "asset-manager-promoted",
+                notificationType,
                 "asset",
                 assetId,
                 "asset-active-managers",
@@ -4097,51 +4042,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 "/game",
                 firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
-                "asset-manager-promoted-" + assetId + "-" + normalizedTargetUserId,
-                Map.of(
-                        "assetId", assetId,
-                        "assetTitle", assetTitle(asset),
-                        "memberUserId", normalizedTargetUserId,
-                        "targetUserId", normalizedTargetUserId,
-                        "actorUserId", normalizedActorUserId),
-                normalizedActorUserId));
-    }
-
-    private void enqueueAssetManagerRevokedNotification(Asset asset, String actorUserId, String targetUserId) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
-        String normalizedActorUserId = normalizeId(actorUserId);
-        String normalizedTargetUserId = normalizeId(targetUserId);
-        if (!StringUtils.hasText(assetId)
-                || !StringUtils.hasText(normalizedActorUserId)
-                || !StringUtils.hasText(normalizedTargetUserId)) {
-            return;
-        }
-        LinkedHashSet<String> recipients = new LinkedHashSet<>();
-        recipients.add(normalizedTargetUserId);
-        recipients.addAll(activeResponsibleAssetUserIds(asset));
-        recipients.remove(normalizedActorUserId);
-        if (recipients.isEmpty()) {
-            return;
-        }
-        String targetName = usersRepository.findByUserId(normalizedTargetUserId)
-                .map(AssetProfile::getName)
-                .map(this::safeText)
-                .filter(StringUtils::hasText)
-                .orElse("A member");
-        String title = "Asset manager updated";
-        String body = targetName + " is no longer a manager of " + assetTitle(asset) + ".";
-        notificationOutboxService.enqueue(new NotificationIntent(
-                "asset-manager-revoked",
-                "asset",
-                assetId,
-                "asset-active-managers",
-                recipients,
-                title,
-                body,
-                "/game",
-                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
-                "/assets/logo/heart.webp",
-                "asset-manager-revoked-" + assetId + "-" + normalizedTargetUserId,
+                notificationType + "-" + assetId + "-" + normalizedTargetUserId,
                 Map.of(
                         "assetId", assetId,
                         "assetTitle", assetTitle(asset),
@@ -4157,7 +4058,10 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             String eventId,
             String subEventId,
             String actorUserId) {
-        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        if (next == null) {
+            return;
+        }
+        String assetId = normalizeId(next.getAssetId());
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
         String normalizedActorUserId = normalizeId(actorUserId);
@@ -4224,9 +4128,12 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             String eventId,
             String subEventId,
             String actorUserId) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
-        String memberUserId = normalizeId(request == null ? null : request.userId());
-        String requestKind = normalizeAssetRequestKind(request == null ? null : request.requestKind());
+        if (asset == null || request == null) {
+            return;
+        }
+        String assetId = normalizeId(asset.getAssetId());
+        String memberUserId = normalizeId(request.userId());
+        String requestKind = normalizeAssetRequestKind(request.requestKind());
         boolean invitation = ASSET_REQUEST_KIND_INVITE.equals(requestKind);
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(memberUserId)) {
             return;
@@ -4289,7 +4196,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 assetTitle(asset),
                 body,
                 "/game",
-                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 notificationType + "-" + assetId + "-" + requestId,
                 payload,
@@ -4300,7 +4207,10 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             Asset previous,
             Asset next,
             String actorUserId) {
-        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        if (next == null) {
+            return;
+        }
+        String assetId = normalizeId(next.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
             return;
@@ -4309,7 +4219,8 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         Map<String, AssetRequestRecord> previousById = requestsById(
                 previous == null ? null : previous.getRequests());
         for (AssetRequestRecord accepted : safeRequests(next.getRequests())) {
-            String requestId = normalizeId(accepted == null ? null : accepted.id());
+            if (accepted == null) continue;
+            String requestId = normalizeId(accepted.id());
             AssetRequestRecord pending = previousById.get(requestId);
             if (!StringUtils.hasText(requestId)
                     || pending == null
@@ -4365,9 +4276,12 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             Asset previous,
             Asset next,
             String actorUserId) {
+        if (next == null) {
+            return;
+        }
         enqueueAcceptedAssetInviteNotifications(previous, next, actorUserId);
 
-        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        String assetId = normalizeId(next.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
             return;
@@ -4375,8 +4289,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
 
         Map<String, AssetRequestRecord> nextById = requestsById(next.getRequests());
         for (AssetRequestRecord previousRequest : safeRequests(previous == null ? null : previous.getRequests())) {
-            String requestId = normalizeId(previousRequest == null ? null : previousRequest.id());
-            String memberUserId = normalizeId(previousRequest == null ? null : previousRequest.userId());
+            if (previousRequest == null) continue;
+            String requestId = normalizeId(previousRequest.id());
+            String memberUserId = normalizeId(previousRequest.userId());
             if (!StringUtils.hasText(requestId)
                     || !StringUtils.hasText(memberUserId)
                     || "manual".equals(normalizeAssetRequestKind(previousRequest.requestKind()))) {
@@ -4479,9 +4394,12 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             String title,
             String body,
             String membershipAction) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
-        String requestId = normalizeId(request == null ? null : request.id());
-        String memberUserId = normalizeId(request == null ? null : request.userId());
+        if (asset == null || request == null) {
+            return;
+        }
+        String assetId = normalizeId(asset.getAssetId());
+        String requestId = normalizeId(request.id());
+        String memberUserId = normalizeId(request.userId());
         String normalizedActorUserId = normalizeId(actorUserId);
         List<String> recipients = (recipientUserIds == null ? List.<String>of() : recipientUserIds).stream()
                 .map(this::normalizeId)
@@ -4520,7 +4438,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 title,
                 body,
                 "/game",
-                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 notificationType + "-" + assetId + "-" + requestId,
                 payload,
@@ -4533,11 +4451,14 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             String eventId,
             String subEventId,
             String departedManagerUserId) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (asset == null) {
+            return;
+        }
+        String assetId = normalizeId(asset.getAssetId());
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
         String normalizedDepartedManagerUserId = normalizeId(departedManagerUserId);
-        List<String> recipients = safeRequests(asset == null ? null : asset.getRequests()).stream()
+        List<String> recipients = safeRequests(asset.getRequests()).stream()
                 .filter(Objects::nonNull)
                 .filter(item -> !isDeletedAssetRequest(item))
                 .filter(item -> "borrow".equals(normalizeAssetRequestKind(item.requestKind())))
@@ -4591,12 +4512,15 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             String subEventId,
             String previousManagerUserId,
             String successorUserId) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (asset == null) {
+            return;
+        }
+        String assetId = normalizeId(asset.getAssetId());
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
         String normalizedPreviousManagerUserId = normalizeId(previousManagerUserId);
         String normalizedSuccessorUserId = normalizeId(successorUserId);
-        LinkedHashSet<String> recipientIds = safeRequests(asset == null ? null : asset.getRequests()).stream()
+        LinkedHashSet<String> recipientIds = safeRequests(asset.getRequests()).stream()
                 .filter(Objects::nonNull)
                 .filter(item -> !isDeletedAssetRequest(item))
                 .filter(item -> "borrow".equals(normalizeAssetRequestKind(item.requestKind())))
@@ -4653,7 +4577,10 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             String subEventId,
             String previousManagerUserId,
             String predecessorPaymentId) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (asset == null) {
+            return;
+        }
+        String assetId = normalizeId(asset.getAssetId());
         String normalizedPreviousManagerUserId = normalizeId(previousManagerUserId);
         String paymentId = normalizeId(predecessorPaymentId);
         if (!StringUtils.hasText(assetId)
@@ -5105,33 +5032,11 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     }
 
     private Document toDocument(Object raw) {
-        if (raw instanceof Document document) {
-            return document;
-        }
-        if (raw instanceof Map<?, ?> map) {
-            Document document = new Document();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                if (entry.getKey() instanceof String key) {
-                    document.put(key, entry.getValue());
-                }
-            }
-            return document;
-        }
-        return new Document();
+        return com.raxim.myscoutee.common.config.mongo.MongoDocumentValues.toDocument(raw);
     }
 
     private List<String> normalizeStrings(Object rawValues) {
-        if (!(rawValues instanceof Collection<?> values)) {
-            return List.of();
-        }
-        LinkedHashSet<String> next = new LinkedHashSet<>();
-        for (Object rawValue : values) {
-            String value = normalizeId(String.valueOf(rawValue));
-            if (StringUtils.hasText(value)) {
-                next.add(value);
-            }
-        }
-        return new ArrayList<>(next);
+        return com.raxim.myscoutee.common.config.mongo.MongoDocumentValues.normalizeStrings(rawValues);
     }
 
     private Double safeDouble(Double value) {
@@ -5327,6 +5232,71 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             List<Asset> items,
             int total,
             String nextCursor) {
+    }
+
+
+    private void populateAssetSummary(Asset next, String title, String subtitle, String category, String city,
+            Integer capacityTotal, Integer quantity) {
+        next.setTitle(safeText(title));
+        next.setSubtitle(safeText(subtitle));
+        next.setCategory(safeText(category));
+        next.setCity(safeText(city));
+        next.setCapacityTotal(Math.max(1, normalizeCount(capacityTotal)));
+        next.setQuantity(quantity);
+    }
+
+
+    private LinkedHashSet<String> affectedAssetRecipients(Asset asset, String normalizedActorUserId) {
+        LinkedHashSet<String> recipients = new LinkedHashSet<>(assetRequesterUserIds(asset));
+        recipients.addAll(activeResponsibleAssetUserIds(asset));
+        if (StringUtils.hasText(normalizedActorUserId)) {
+            recipients.remove(normalizedActorUserId);
+        }
+        return recipients;
+    }
+
+
+    private Set<String> deleteAssetRequests(Collection<String> assetIds,
+            java.util.function.Predicate<AssetRequestRecord> matches, String actorUserId,
+            String fallbackOwnerUserId, String nowIso, boolean refreshSavedOwner) {
+        Set<String> changedAssetIds = new LinkedHashSet<>();
+        for (String rawAssetId : assetIds == null ? List.<String>of() : assetIds) {
+            String assetId = normalizeId(rawAssetId);
+            if (!StringUtils.hasText(assetId)) {
+                continue;
+            }
+            Asset current = findAssetByAssetId(assetId).orElse(null);
+            if (current == null) {
+                continue;
+            }
+
+            boolean changed = false;
+            List<AssetRequestRecord> nextRequests = new ArrayList<>();
+            for (AssetRequestRecord request : safeRequests(current.getRequests())) {
+                if (!isDeletedAssetRequest(request)
+                        && matches.test(request)) {
+                    nextRequests.add(withAssetRequestStatus(request, STATUS_DELETED));
+                    changed = true;
+                } else if (request != null) {
+                    nextRequests.add(request);
+                }
+            }
+            if (!changed) {
+                continue;
+            }
+
+            Asset next = cloneAsset(current);
+            next.setRequests(nextRequests);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(firstNonBlank(normalizeId(actorUserId),
+                    fallbackOwnerUserId == null ? normalizeId(current.getOwnerUserId()) : fallbackOwnerUserId));
+            assetsRepository.save(next);
+            syncAssetRequestProjection(current, next);
+            affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, next.getUpdatedUser());
+            userActivityCountersService.refreshAssetCountersForUser(normalizeId(refreshSavedOwner ? next.getOwnerUserId() : current.getOwnerUserId()));
+            changedAssetIds.add(assetId);
+        }
+        return Set.copyOf(changedAssetIds);
     }
 
 }

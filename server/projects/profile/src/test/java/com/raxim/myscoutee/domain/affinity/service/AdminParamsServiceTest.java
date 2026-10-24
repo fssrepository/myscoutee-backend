@@ -343,4 +343,25 @@ class AdminParamsServiceTest {
         config.setChangeSummary(summary);
         return config;
     }
+
+    @Test
+    void updateSummaryTranslationPreservesLabelsAndRejectsLongMalformedWhitespace() {
+        var service = service(org.mockito.Mockito.mock(AffinityConfigsRepository.class));
+        for (String summary : List.of("Updated Matching parameters.", "Updated Multi word label parameters.",
+                "Updated\tMatching   parameters.", "UPDATED Matching PARAMETERS.")) {
+            String key = org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                    service, "summaryKeyFor", summary, "matching");
+            assertThat(key).isEqualTo("admin.params.summary.updated.matching");
+        }
+        String key = org.springframework.test.util.ReflectionTestUtils.invokeMethod(service,
+                "summaryKeyFor", "Updated " + " ".repeat(100_000) + "not-an-update", "matching");
+        assertThat(key).isEmpty();
+        String repeatedWords = "Updated " + "label ".repeat(100_000);
+        assertThat((String) org.springframework.test.util.ReflectionTestUtils.invokeMethod(service,
+                "summaryKeyFor", repeatedWords + "parameters.", "matching"))
+                .isEqualTo("admin.params.summary.updated.matching");
+        assertThat((String) org.springframework.test.util.ReflectionTestUtils.invokeMethod(service,
+                "summaryKeyFor", repeatedWords + "not-an-update", "matching")).isEmpty();
+    }
+
 }

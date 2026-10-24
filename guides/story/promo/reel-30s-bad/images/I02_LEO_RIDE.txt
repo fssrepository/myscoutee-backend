@@ -1,7 +1,0 @@
-IMAGE ID: I02_LEO_RIDE
-MODEL SETTING: Nano Banana Pro, 2K, 9:16, one single full-frame image.
-REFERENCE INPUTS: None. Create a different fictional adult.
-
-Leo, a fictional 32-year-old man with light skin, short loose brown curls and a navy knitted crew-neck sweater. Waist-up at his apartment doorway beside a city bicycle leaning securely against the wall. A simple bicycle helmet rests on a narrow shelf, away from his face. One hand rests naturally on the closed door handle. His expression is expectant, with a small unresolved pause: ready for a relaxed ride, wishing someone would join him. Pale warm walls, afternoon side light, face and bicycle clearly readable. No other people or visible text.
-
-All featured people are naturally energetic adults aged 30–45, with believable age-appropriate skin and everyday styling. Photographic contemporary European cinema, real skin and fabric, natural facial proportions, clean midtones and readable eyes. Soft directional late-afternoon light, restrained warm colour, natural 35mm perspective and medium depth of field. Vertical composition for a 720x1280 video. Keep faces clear and leave some breathing room for short camera moves and editorial copy. No lettering, logos, watermark, floating interface, scores, split screen, collage, illustration or 3D-render look. One full-frame scene within a film, not a poster.

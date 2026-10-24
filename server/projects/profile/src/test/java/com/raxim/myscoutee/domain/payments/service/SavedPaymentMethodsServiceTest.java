@@ -75,7 +75,7 @@ class SavedPaymentMethodsServiceTest {
     }
 
     private com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads accountReads(UsersRepository users) {
-        var accounts = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users);
+        var accounts = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null);
         org.springframework.test.util.ReflectionTestUtils.setField(accounts, "mongo",
                 mock(org.springframework.data.mongodb.core.MongoTemplate.class));
         return accounts;

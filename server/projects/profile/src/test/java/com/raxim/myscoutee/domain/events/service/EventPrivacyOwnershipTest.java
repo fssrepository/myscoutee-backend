@@ -20,7 +20,7 @@ class EventPrivacyOwnershipTest {
         var event = new ActivityEvent(); event.setId("document"); event.setSourceId("source");
         when(events.findByOwnerUserId("user")).thenReturn(List.of(event));
         when(events.findByCreatorUserId("user")).thenReturn(List.of(event));
-        var owner = new EventPrivacyService(events, mock(ActivityMembersRepository.class), mock(MongoTemplate.class), mock(MediaCleanup.class));
+        var owner = new EventPrivacyService(events, mock(ActivityMembersRepository.class), mock(MongoTemplate.class), mock(MediaCleanup.class), null);
         assertEquals(List.of(new EventPurgeTargetDto("document", "source")), owner.findOwnedEventsForPurge("user"));
     }
     @Test void failedMediaDeletionKeepsNativeDocumentsAndMembershipsForExistingJobRetry() {
@@ -30,7 +30,7 @@ class EventPrivacyOwnershipTest {
         var event = new ActivityEvent(); event.setId("document"); event.setImageUrl("stored-media");
         when(events.findAllById(List.of("document"))).thenReturn(List.of(event));
         doThrow(new IllegalStateException("unavailable")).when(media).deletePublicObjectOrThrow("stored-media");
-        var owner = new EventPrivacyService(events, members, mock(MongoTemplate.class), media);
+        var owner = new EventPrivacyService(events, members, mock(MongoTemplate.class), media, null);
         assertThrows(IllegalStateException.class, () -> owner.purgeOwnedEvents(List.of("document"), List.of("source")));
         verify(events, never()).deleteAll(any(Iterable.class));
         verifyNoInteractions(members);
@@ -42,7 +42,7 @@ class EventPrivacyOwnershipTest {
         when(events.findAllById(List.of("document"))).thenReturn(List.of());
         var member = new ActivityMember(); member.setId("membership");
         when(members.findByOwnerTypeAndOwnerIdIn("event", List.of("persisted-source"))).thenReturn(List.of(member));
-        var owner = new EventPrivacyService(events, members, mock(MongoTemplate.class), media);
+        var owner = new EventPrivacyService(events, members, mock(MongoTemplate.class), media, null);
         owner.purgeOwnedEvents(List.of("document"), List.of("persisted-source"));
         verify(members).deleteAll(List.of(member));
         verifyNoInteractions(media);

@@ -15,7 +15,6 @@
 
 # compiled output
 /**/dist
-packaging/dist/
 /**/dist-server
 /**/tmp
 /**/out-tsc
@@ -94,16 +93,24 @@ Thumbs.db
 !/server/docker/conf/nginx/keys/README.md
 
 # local target deploy configs
-/packaging/client-tools/*.env
-/packaging/tests/__pycache__/
+/config/packaging/client-tools/*.env
 /server/docker/.qa-mobile-runtime/
 
-# Guide QA screenshots are temporary local diagnostics, not versioned evidence.
-/guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.png
-/guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.jpg
-/guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.webp
 
 # Python command modules used by source-only seed/release tools.
 /tools/seeds/__pycache__/
-/packaging/release/__pycache__/
 /tools/traffic/__pycache__/
+
+# Project-specific microservices inputs and generated/private tool outputs.
+server/build/microservices/
+tools/microservices/__pycache__/
+config/microservices/**/*.local.env
+
+# Publication builder intermediates; released PDF/PPTX stay versioned.
+/guides/publication/presentations/**/slides/
+/guides/publication/presentations/**/assets/
+/guides/publication/presentations/**/contact-sheet.png
+/guides/publication/presentations/**/*.odp
+/guides/publication/presentations/**/*_Office.pdf
+/guides/**/__pycache__/
+/tests/**/__pycache__/

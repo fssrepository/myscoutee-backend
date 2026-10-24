@@ -12,11 +12,13 @@ import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 /** Current resource visibility; only small indexed metadata reads, never event graph reconstruction. */
 @Component
 public class MediaPolicyFacts {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.campaigns.api.CampaignMediaVisibility campaignCatalog;
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
+    private final com.raxim.myscoutee.domain.campaigns.api.CampaignMediaVisibility campaignCatalog;
     private com.raxim.myscoutee.domain.administration.api.AdministratorClassification adminCounters;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setAdminCounters(@org.springframework.context.annotation.Lazy com.raxim.myscoutee.domain.administration.api.AdministratorClassification adminCounters) {
+        this.adminCounters = adminCounters;
+    }
     private final com.raxim.myscoutee.domain.accounts.api.AccountMediaVisibility accounts;
     private final com.raxim.myscoutee.domain.groups.api.GroupMediaVisibility groups;
     private final com.raxim.myscoutee.domain.community.api.CommunityMediaVisibility community;
@@ -35,7 +37,10 @@ public class MediaPolicyFacts {
             com.raxim.myscoutee.domain.events.api.EventMediaVisibility events,
             com.raxim.myscoutee.domain.content.api.ContentMediaVisibility content,
             com.raxim.myscoutee.domain.chat.api.ChatMediaVisibility chat,
-            FriendshipReads friendships, ChatPolicyFacts chats) {
+            FriendshipReads friendships, ChatPolicyFacts chats,
+            com.raxim.myscoutee.domain.campaigns.api.CampaignMediaVisibility campaignCatalog) {
+        this.campaignCatalog = campaignCatalog;
+
         this.accounts = accounts;
         this.groups = groups;
         this.community = community;

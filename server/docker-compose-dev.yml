@@ -13,10 +13,10 @@ services:
       - myscoutee
 
   mcp:
-    image: ${MCP_DEV_IMAGE:-myscoutee-mcp:1.4.0-dev}
+    image: ${MCP_DEV_IMAGE:-myscoutee-mcp:1.5.0-dev}
     build:
-      context: ../../myscoutee-mcp
-      dockerfile: Dockerfile
+      context: ../config/mcp
+      dockerfile: ../../server/docker/images/mcp/Dockerfile
     container_name: mcp-dev
     hostname: mcp
     restart: "no"
@@ -57,16 +57,19 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE:-myscoutee-nginx:1.4.0-dev}
+    image: ${NGINX_IMAGE:-myscoutee-nginx:1.5.0-dev}
     pull_policy: build
     build:
       context: docker
       dockerfile: images/nginx/dev/Dockerfile
+      additional_contexts:
+        nginx-config: ../config/nginx
       args:
-        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.4.0-base}
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-ghcr.io/fssrepository/myscoutee-nginx:1.5.0@sha256:7ec3ba085e30314d5536401ac22e14064d30a5461bfc1a9ccbe0e6340b6c6c24}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
+      AUTH_REGION_SECURITY_ENABLED: ${AUTH_REGION_SECURITY_ENABLED:-true}
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     #  WAIT_FOR: profilemanagement:8080
     ports:
@@ -75,11 +78,12 @@ services:
       - 127.0.0.1:27017-27019:27017-27019
     volumes:
       - runtime-status-credentials:/run/myscoutee-runtime-status
-      - ./docker/conf/nginx/conf/http:/etc/nginx/dev-templates:ro
-      - ./docker/images/nginx/dev/nginx-entrypoint.sh:/scripts/nginx-entrypoint.sh:ro
+      - nginx-state:/var/lib/nginx/myscoutee
+      - ../config/nginx/operator:/etc/nginx/myscoutee-operator:ro
+      - ../config/nginx/http:/etc/nginx/dev-templates:ro
       - ./docker/.qa-mobile-runtime:/var/lib/myscoutee-qa:ro
-      - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
-      - ./docker/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../config/nginx/stream:/etc/nginx/stream_conf.d/
+      - ../config/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./docker/conf/nginx/app/myscoutee:/usr/share/nginx/html
       - ./docker/conf/nginx/keys:/etc/nginx/keys
       #- ./docker/scripts:/scripts
@@ -177,7 +181,7 @@ services:
     networks:
       - myscoutee
   minio:
-    image: ${MINIO_DEV_IMAGE:-myscoutee-minio:1.4.0-dev}
+    image: ${MINIO_DEV_IMAGE:-myscoutee-minio:1.5.0-dev}
     pull_policy: build
     build:
       context: .
@@ -207,7 +211,7 @@ services:
       start_period: 20s
   runtime-directories:
     # Runs once before the unprivileged API; contains no application process.
-    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.4.0-dev}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.5.0-dev}
     user: "0:0"
     network_mode: none
     restart: "no"
@@ -223,7 +227,7 @@ services:
     extends:
       file: docker-compose.replicaset.yml
       service: profilemanagement
-    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.4.0-dev}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.5.0-dev}
     pull_policy: build
     build:
       context: .
@@ -242,7 +246,7 @@ services:
       - /bin/sh /workspace/docker/scripts/ensure_operator_configuration_master_key.sh && exec bash /workspace/docker/scripts/start_profilemanagement_dev.sh
     environment:
       MYSCOUTEE_RUNTIME_STATUS_ENABLED: "true"
-      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.4.0}"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.5.0}"
       MYSCOUTEE_RUNTIME_STATUS_URL: http://nginx:9081/internal/runtime-status
       MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
       HOME: /workspace
@@ -314,6 +318,7 @@ services:
     volumes:
       - runtime-status-credentials:/run/myscoutee-runtime-status:ro
       - ./:/workspace
+      - ${MYSCOUTEE_GITHUB_PACKAGES_PROPERTIES:-${HOME}/.gradle/gradle.properties}:/workspace/.gradle-docker/gradle.properties:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -341,7 +346,7 @@ services:
       release-simulator:
         condition: service_healthy
   frontend-sync:
-    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.4.0-dev}
+    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.5.0-dev}
     pull_policy: build
     build:
       context: .
@@ -356,7 +361,7 @@ services:
       bash -c "rm -f /workspace/nginx-html/.frontend-ready;
       exec bash /scripts/frontend_auto_watch.sh"
     environment:
-      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.4.0}"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.5.0}"
       FRONTEND_ROOT: /workspace/frontend
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
       FRONTEND_BUILD_CONFIGURATION: dev
@@ -383,13 +388,8 @@ services:
       retries: 90
   registry:
     container_name: registry
-    image: ${LOCAL_REGISTRY_IMAGE:-myscoutee-registry:1.4.0-dev}
-    pull_policy: build
-    build:
-      context: ../../myscoutee-registry
-      args:
-        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.4.0}
-      dockerfile: Dockerfile
+    image: ${LOCAL_REGISTRY_IMAGE:-ghcr.io/fssrepository/myscoutee-registry:1.5.0@sha256:73372bc0f22d71f1d6cb68fc7d8b5a9a60b920f33d703e4883f39470bf67838a}
+    pull_policy: missing
     restart: "no"
     command: ["start-demo"]
     environment:
@@ -424,7 +424,7 @@ services:
   release-simulator:
     container_name: release-simulator
     hostname: release-simulator
-    image: myscoutee-release-simulator:1.4.0-dev
+    image: myscoutee-release-simulator:1.5.0-dev
     build:
       context: docker/images/release-simulator
     user: "${UID:-1000}:${GID:-1000}"
@@ -435,7 +435,7 @@ services:
       - "127.0.0.1:18445:18445"
     volumes:
       - ./data/release-simulator:/data
-      - ../guides/qa/tools/operator-update-release-server.py:/workspace/guides/qa/tools/operator-update-release-server.py:ro
+      - ../tests/qa/categories/Operator/tools/operator-update-release-server.py:/workspace/tests/qa/categories/Operator/tools/operator-update-release-server.py:ro
       - ./docker/scripts/start_release_simulator.sh:/workspace/server/docker/scripts/start_release_simulator.sh:ro
     networks:
       - myscoutee
@@ -458,11 +458,8 @@ services:
   payment-simulator:
     container_name: payment-simulator
     hostname: payment-simulator
-    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.4.0-dev}
-    pull_policy: build
-    build:
-      context: ../../myscoutee-payment-simulator
-      dockerfile: Dockerfile
+    image: ${PAYMENT_SIMULATOR_IMAGE:-ghcr.io/fssrepository/myscoutee-payment-simulator:1.5.0@sha256:341859243150ae3c41f5d8c03399078915ddaab177cfb70f8ecfc56a998ba7e3}
+    pull_policy: missing
     restart: "no"
     environment:
       PAYMENT_SIMULATOR_LISTEN_ADDR: ":18082"
@@ -498,6 +495,7 @@ services:
     stop_grace_period: 15s
 
 volumes:
+  nginx-state: {}
   runtime-status-credentials: {}
   registry-dev-demo-data:
     name: "${LOCAL_REGISTRY_DEMO_VOLUME_NAME:-myscoutee-registry-dev-demo-data-v1}"

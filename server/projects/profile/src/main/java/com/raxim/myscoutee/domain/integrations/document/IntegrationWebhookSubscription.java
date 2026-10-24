@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 name = "integration_webhook_owner_enabled",
                 def = "{'ownerUserId': 1, 'enabled': 1}")
 })
+@lombok.Getter @lombok.Setter
 public class IntegrationWebhookSubscription {
     @Id
     private String id;
@@ -30,24 +31,7 @@ public class IntegrationWebhookSubscription {
     private String createdAtIso;
     private String updatedAtIso;
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getOwnerUserId() { return ownerUserId; }
-    public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
-    public String getTokenId() { return tokenId; }
-    public void setTokenId(String tokenId) { this.tokenId = tokenId; }
-    public String getClientId() { return clientId; }
-    public void setClientId(String clientId) { this.clientId = clientId; }
-    public String getCallbackUrl() { return callbackUrl; }
-    public void setCallbackUrl(String callbackUrl) { this.callbackUrl = callbackUrl; }
-    public List<String> getEventTypes() { return eventTypes; }
     public void setEventTypes(List<String> eventTypes) {
         this.eventTypes = eventTypes == null ? new ArrayList<>() : new ArrayList<>(eventTypes);
     }
-    public Boolean getEnabled() { return enabled; }
-    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
-    public String getCreatedAtIso() { return createdAtIso; }
-    public void setCreatedAtIso(String createdAtIso) { this.createdAtIso = createdAtIso; }
-    public String getUpdatedAtIso() { return updatedAtIso; }
-    public void setUpdatedAtIso(String updatedAtIso) { this.updatedAtIso = updatedAtIso; }
 }

@@ -27,8 +27,8 @@ import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 class AffinityProjectionOwnershipTest {
     @Test void eventAndAssetUpdatesKeepSnapshotGuardAndChangeMemoryOnlyAfterMatchedWrite() {
         var mongo = mock(MongoTemplate.class);
-        var events = new EventOwnershipService(mock(ActivityEventsRepository.class));
-        var assets = new AssetOwnershipService(mock(AssetsRepository.class));
+        var events = new EventOwnershipService(mock(ActivityEventsRepository.class), null);
+        var assets = new AssetOwnershipService(mock(AssetsRepository.class), null);
         ReflectionTestUtils.setField(events, "mongo", mongo);
         ReflectionTestUtils.setField(assets, "mongo", mongo);
         var event = new ActivityEvent(); event.setId("event"); event.setUpdatedDate("v1"); event.setAffinity(1d); event.setBoost(2d);
@@ -52,7 +52,7 @@ class AffinityProjectionOwnershipTest {
     }
     @Test void profileUpdateUsesUserIdAndOnlyItsDerivedField() {
         var mongo = mock(MongoTemplate.class);
-        var service = new AccountAffinityProjectionService(mongo, mock(UsersRepository.class));
+        var service = new AccountAffinityProjectionService(mongo, mock(UsersRepository.class), null);
         var profile = new Users(); profile.setId("u"); profile.setAffinity(1d);
         when(mongo.updateFirst(any(Query.class), any(Update.class), eq(Users.class)))
             .thenReturn(UpdateResult.acknowledged(0, 0L, null), UpdateResult.acknowledged(1, 1L, null));
@@ -65,7 +65,7 @@ class AffinityProjectionOwnershipTest {
     }
     @Test void scopedRecomputationBatchesOnlyTheAlreadySelectedOwners() {
         var rates = mock(UserRatesRepository.class);
-        var service = new AffinityMaintenanceService(null, null, null, null, null, null, rates, null, null, null, null);
+        var service = new AffinityMaintenanceService(null, null, null, null, null, null, rates, null, null, null, null, null, null);
         var ids = java.util.stream.IntStream.range(0, 1001).mapToObj(i -> "owner-" + i).toList();
         JobGroupContext.call("group-a", () -> {
             ReflectionTestUtils.invokeMethod(service, "refreshAllRateAffinities", ids); return null;

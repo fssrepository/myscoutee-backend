@@ -65,7 +65,7 @@ class AdminAffinityGraphServiceTest {
         when(adminModerationService.baseGroupId("admin-1")).thenReturn(null);
         service = new AdminAffinityGraphService(
                 adminModerationService,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 userAffinityEdgesRepository,
                 layoutsRepository,
                 graphNodesRepository,

@@ -1025,7 +1025,7 @@ class BackendContentMediaE2ETest {
     }
 
     private static class InMemoryMediaObjectStoreClient implements MediaObjectStoreClient {
-        private final Map<String, MediaObjectStoreClient.StoredObject> objects = new ConcurrentHashMap<>();
+        private final Map<String, com.raxim.myscoutee.domain.media.api.MediaStorage.StoredMediaObject> objects = new ConcurrentHashMap<>();
         private volatile boolean failNextPut;
 
         @Override
@@ -1039,16 +1039,16 @@ class BackendContentMediaE2ETest {
                 failNextPut = false;
                 throw new IllegalStateException("E2E media store failure");
             }
-            objects.put(storageKey(bucket, key), new MediaObjectStoreClient.StoredObject(bytes.clone(), contentType));
+            objects.put(storageKey(bucket, key), new com.raxim.myscoutee.domain.media.api.MediaStorage.StoredMediaObject(bytes.clone(), contentType));
         }
 
         @Override
-        public MediaObjectStoreClient.StoredObject getObject(String bucket, String key) {
-            MediaObjectStoreClient.StoredObject stored = objects.get(storageKey(bucket, key));
+        public com.raxim.myscoutee.domain.media.api.MediaStorage.StoredMediaObject getObject(String bucket, String key) {
+            com.raxim.myscoutee.domain.media.api.MediaStorage.StoredMediaObject stored = objects.get(storageKey(bucket, key));
             if (stored == null || stored.bytes() == null) {
                 return null;
             }
-            return new MediaObjectStoreClient.StoredObject(stored.bytes().clone(), stored.contentType());
+            return new com.raxim.myscoutee.domain.media.api.MediaStorage.StoredMediaObject(stored.bytes().clone(), stored.contentType());
         }
 
         @Override

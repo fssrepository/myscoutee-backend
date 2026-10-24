@@ -25,10 +25,9 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class PaymentMethodExpiryTaskService {
-    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+    private final PaymentJobQueries paymentJobs;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentMethodExpiryTaskService.class);
     private static final String ACTIVE = "active";
@@ -42,7 +41,12 @@ public class PaymentMethodExpiryTaskService {
             SavedPaymentMethodsRepository repository,
             NotificationDelivery notificationOutboxService,
             NotificationJobs notificationRuleRegistryService,
-            ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
+            ScheduledMongoSessionRunner scheduledMongoSessionRunner,
+            PaymentJobQueries paymentJobs,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope) {
+        this.paymentJobs = paymentJobs;
+        this.jobGroupScope = jobGroupScope;
+
         this.repository = repository;
         this.notificationOutboxService = notificationOutboxService;
         this.notificationRuleRegistryService = notificationRuleRegistryService;

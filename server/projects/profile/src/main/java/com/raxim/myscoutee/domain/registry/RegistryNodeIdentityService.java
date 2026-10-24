@@ -38,6 +38,8 @@ import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 public class RegistryNodeIdentityService {
     private static final Set<PosixFilePermission> PRIVATE_KEY_PERMISSIONS =
             PosixFilePermissions.fromString("rw-------");
+    // Public verification material is intentionally readable; private signing material stays owner-only.
+    @SuppressWarnings("java:S2612")
     private static final Set<PosixFilePermission> PUBLIC_KEY_PERMISSIONS =
             PosixFilePermissions.fromString("rw-r--r--");
     private static final Set<PosixFilePermission> NEW_DIRECTORY_PERMISSIONS =

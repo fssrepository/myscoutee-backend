@@ -22,7 +22,7 @@ class CommunityGroupWorkspaceSelectionTest {
     private final UsersRepository users = mock(UsersRepository.class);
     private final CommunityGroupsRepository groups = mock(CommunityGroupsRepository.class);
     private final ActivityMembersRepository members = mock(ActivityMembersRepository.class);
-    private final CommunityGroupProfilesService service = new CommunityGroupProfilesService(users, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups), new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members));
+    private final CommunityGroupProfilesService service = new CommunityGroupProfilesService(users, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups, null), new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members, null, null), null);
     private final Users account = new Users();
     private final Users profile = new Users();
     private final ActivityMember membership = new ActivityMember();

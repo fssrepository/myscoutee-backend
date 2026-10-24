@@ -24,9 +24,12 @@ node server/docker/scripts/country-partitions/import-nominatim-country.mjs \
 node server/docker/scripts/country-partitions/export-local-country.mjs DE
 ```
 
-The local-adapter Germany geometry is generated from the canonical production
-catalog; the bounding box is only a fast prefilter. Existing local Hungary
-behavior is preserved. No additional application HTTP request is introduced.
+The local-adapter export contains partition IDs, country labels and one sample
+location per country. It deliberately excludes country geometry and bounding
+boxes. Offline/local profiles retain their assigned partition; the first save
+of a new local profile assigns one of the four supported partitions at random.
+Geographic eligibility remains a backend HTTP responsibility. No additional
+application HTTP request is introduced.
 The running dev seed watcher imports the catalog; normal release/seed delivery
 is still required for other deployments. No German translation bundle is added:
 unsupported German language preferences resolve to the existing English bundle.
@@ -77,5 +80,46 @@ The delegated CDP test selected existing London demo member Emma Parker
 (ninth entry), received native login `200 / ACCEPTED`, entered `/game` and
 logged out. No country geometry or user coordinate was modified. This is one
 real demo entry plus regional boundary checks, not a Firebase login test.
-The versioned launcher configuration and `microservices/tools/check-uk-entry.mjs`
-reproduce the check; see `guides/plans/MSC120_121_TASK_REVIEW.md`.
+The versioned launcher configuration and `tests/e2e/microservices/check-uk-entry.mjs`
+reproduce the check; see `tests/qa/README.md`.
+
+## Offline partitions and consistent seed precision — 2026-10-23
+
+1. Simplify the existing four country geometries offline with a topology-preserving
+   tolerance of `0.001` degrees. Preserve document metadata, polygons and holes.
+   Use the same corrected catalog in both applications and all three Mongo seed
+   environments; do not fetch newer boundary data.
+2. Export only partition metadata and one predefined sample location per country
+   to the frontend. Offline/local profiles use their stored partition; new local
+   profiles receive one random supported partition on their first save. Preserve
+   that choice on later saves and share it with linked profiles. Remove local
+   polygon imports and geographic eligibility checks. Backend HTTP country
+   eligibility and all Mongo country geometries remain in place.
+3. Assign demo accounts reproducibly across the four supported partitions before
+   import/bootstrap. Keep linked profiles with their account. Store coordinates
+   with six decimal places of precision in local and Mongo seeds; do not depend
+   on the visitor's location to generate seed data. Keep production user seeds empty.
+4. Verify catalog parity, topology, supported and unsupported coordinates, local
+   seed coverage and Mongo account/profile consistency using focused checks.
+
+Verification of the completed change:
+
+- All six Mongo country catalogs are byte-identical, stored as separate files and
+  simplified with the same `0.001` degree topology-preserving tolerance. Country
+  document metadata, polygon parts, holes and retained coordinate values are
+  preserved. Every demo/E2E user coordinate resolves to its assigned country.
+- Demo/local accounts have predefined locations with six-decimal precision;
+  linked workspace profiles use the account location and partition. Existing
+  local seed records receive a missing partition during the existing seed merge.
+- The new-profile assignment runs in the existing local users service; subsequent
+  repository writes preserve the assigned partition. No native location request
+  or country boundary download is required to make that assignment.
+- Focused checks passed: 63 backend-frontend tests and 13 template tests. Both
+  production builds passed. The same source/entry-point chunk membership, static
+  and dynamic import edges, and initial loading boundaries were preserved
+  (backend: 266 JS chunks; template: 101). Initial JS bytes are unchanged.
+- Compared with the previous rollback build containing full frontend country
+  geometry, JavaScript output decreased by 1,071,467 bytes in the backend app and
+  1,072,758 bytes in the template. The four local country source files together
+  now occupy 1,871 bytes. Local validation output is under
+  `server/build/seed-precision/`; no VM, live Mongo import or browser QA was run.

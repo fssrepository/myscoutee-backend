@@ -29,10 +29,8 @@ import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class CommunityScheduledTasksService implements com.raxim.myscoutee.domain.community.api.ScheduledCases {
-    @org.springframework.beans.factory.annotation.Autowired
-    private CommunityCaseCounterWork counterWork;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.accounts.api.ProfileSummaries profiles;
+    private final CommunityCaseCounterWork counterWork;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileSummaries profiles;
     public static final String RULE = "community-scheduled-cases";
     public static final int LEAD_DAYS = 45;
     private final CommunityScheduledTasksRepository tasks;
@@ -42,7 +40,12 @@ public class CommunityScheduledTasksService implements com.raxim.myscoutee.domai
     private final CommunityMemberships members;
     private final CommunityCasesService caseService;
     public CommunityScheduledTasksService(CommunityScheduledTasksRepository tasks, ServiceCasesRepository cases,
-            CommunityAuthority access, GroupDirectory groups, CommunityMemberships members, CommunityCasesService caseService) {
+            CommunityAuthority access, GroupDirectory groups, CommunityMemberships members, CommunityCasesService caseService,
+            CommunityCaseCounterWork counterWork,
+            com.raxim.myscoutee.domain.accounts.api.ProfileSummaries profiles) {
+        this.counterWork = counterWork;
+        this.profiles = profiles;
+
         this.tasks = tasks; this.cases = cases; this.access = access; this.groups = groups; this.members = members; this.caseService = caseService;
     }
     public String actor(String id) { return access.actor(id); }

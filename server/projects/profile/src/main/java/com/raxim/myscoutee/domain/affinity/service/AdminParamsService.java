@@ -126,13 +126,13 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
         if (selectedVersion == null || selectedVersion <= 0) {
             return state(request == null ? null : request.adminUserId());
         }
-        AffinityConfig current = activeConfig(configKey(request == null ? null : request.adminUserId()));
+        AffinityConfig current = activeConfig(configKey(request.adminUserId()));
         if (selectedVersion == activeSectionVersion(section.key(), configHistory(current.getKey()), current)) {
-            return state(request == null ? null : request.adminUserId());
+            return state(request.adminUserId());
         }
         Optional<AffinityConfig> selected = affinityConfigsRepository.findByKeyAndVersion(current.getKey(), selectedVersion);
         if (selected.isEmpty()) {
-            return state(request == null ? null : request.adminUserId());
+            return state(request.adminUserId());
         }
         AffinityConfig next = cloneConfig(current);
         copySection(section.key(), selected.get(), next);
@@ -140,10 +140,10 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
                 current,
                 next,
                 section.key(),
-                request == null ? null : request.adminUserId(),
+                request.adminUserId(),
                 "Reverted " + section.label() + " parameters to version " + selectedVersion + ".",
                 "revert");
-        return state(request == null ? null : request.adminUserId());
+        return state(request.adminUserId());
     }
 
     private AdminParamsSectionDto sectionDto(
@@ -157,7 +157,7 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
                 section.labelKey(),
                 safeVersion(metadata),
                 changedDate(metadata),
-                firstNonBlank(metadata.getChangedUser(), "system"),
+                firstNonBlank(metadata == null ? null : metadata.getChangedUser(), "system"),
                 summaryFor(metadata, section.key()),
                 summaryKeyFor(summaryFor(metadata, section.key()), section.key()),
                 fieldsFor(section.key(), active));
@@ -466,7 +466,7 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
                             "version", String.valueOf(safeVersion(saved)),
                             "changeKind", firstNonBlank(changeKind, "save")));
         }
-        affinityRecomputeTaskService.enqueueConfigChanged(saved == null ? null : saved.getKey(), actorUserId);
+        affinityRecomputeTaskService.enqueueConfigChanged(saved.getKey(), actorUserId);
         notifyAdminParameterChange(saved, sectionKey, actorUserId, summary);
     }
 
@@ -734,28 +734,18 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
         if (!StringUtils.hasText(normalizedSummary) || !StringUtils.hasText(normalizedSection)) {
             return "";
         }
-        if (normalizedSummary.matches("(?i)^Updated\\s+.+?\\s+parameters\\.$")) {
+        if (normalizedSummary.matches("(?i)^Updated\\s++(?:\\S++\\s++)++parameters\\.$")) {
             return "admin.params.summary.updated." + normalizedSection;
         }
-        if ("Initial parameter seed.".equals(normalizedSummary)) {
-            return "admin.params.summary.initial.seed";
-        }
-        if ("Initial platform parameter defaults.".equals(normalizedSummary)) {
-            return "admin.params.summary.initial.defaults";
-        }
-        if ("Raised inside-network confidence after graph review.".equals(normalizedSummary)) {
-            return "admin.params.summary.matching.raised";
-        }
-        if ("Balanced profile, workplace, school, and trait inputs.".equals(normalizedSummary)) {
-            return "admin.params.summary.profile.balanced";
-        }
-        if ("Adjusted host confidence and open-capacity boost.".equals(normalizedSummary)) {
-            return "admin.params.summary.events.adjusted";
-        }
-        if ("Added owner confidence and request pressure to asset ranking.".equals(normalizedSummary)) {
-            return "admin.params.summary.assets.adjusted";
-        }
-        return "";
+        return switch (normalizedSummary) {
+            case "Initial parameter seed." -> "admin.params.summary.initial.seed";
+            case "Initial platform parameter defaults." -> "admin.params.summary.initial.defaults";
+            case "Raised inside-network confidence after graph review." -> "admin.params.summary.matching.raised";
+            case "Balanced profile, workplace, school, and trait inputs." -> "admin.params.summary.profile.balanced";
+            case "Adjusted host confidence and open-capacity boost." -> "admin.params.summary.events.adjusted";
+            case "Added owner confidence and request pressure to asset ranking." -> "admin.params.summary.assets.adjusted";
+            default -> "";
+        };
     }
 
     private SectionDefinition section(String value) {
@@ -788,8 +778,8 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
     private String i18nSegment(String value) {
         String normalized = safeText(value)
                 .replaceAll("([a-z0-9])([A-Z])", "$1.$2")
-                .replaceAll("[^a-zA-Z0-9]+", ".")
-                .replaceAll("^\\.+|\\.+$", "")
+                .replaceAll("[^a-zA-Z0-9]++", ".")
+                .transform(edgeText -> org.springframework.util.StringUtils.trimLeadingCharacter(org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '.'), '.'))
                 .toLowerCase();
         return normalized;
     }

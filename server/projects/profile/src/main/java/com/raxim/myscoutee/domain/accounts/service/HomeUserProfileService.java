@@ -200,22 +200,27 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             Map.entry("attendee risk", "ambitious-go-getter"),
             Map.entry("attendee role-fit", "deep-thinker"));
 
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private ContentRegistration contentModeration;
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
+    private final ContentRegistration contentModeration;
     private PaymentMethods savedPaymentMethods;
 
-    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     @org.springframework.beans.factory.annotation.Autowired
+    void setSavedPaymentMethods(@org.springframework.context.annotation.Lazy PaymentMethods savedPaymentMethods) {
+        this.savedPaymentMethods = savedPaymentMethods;
+    }
+
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     private ProfileMenuCountersService menuCounters;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setMenuCounters(ProfileMenuCountersService menuCounters) {
+        this.menuCounters = menuCounters;
+    }
     private final UsersRepository usersRepository;
     private final SelectedProfileService selectedProfile;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
-    @org.springframework.beans.factory.annotation.Autowired private AccountLifecycleService lifecycle;
-    @org.springframework.beans.factory.annotation.Autowired private AccountLocationService locations;
+    private final AccountLifecycleService lifecycle;
+    private final AccountLocationService locations;
     private final EdgeDirectory userAffinityEdgesRepository;
     private final UserFriendshipsRepository userFriendshipsRepository;
     private final RatingDirectory userRatesRepository;
@@ -283,7 +288,14 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             AccessPermissions accessControlService,
             TicketReads assetsService,
             AffiliateRegistrations affiliateService,
-            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository,
+            @org.springframework.context.annotation.Lazy ContentRegistration contentModeration,
+            AccountLifecycleService lifecycle,
+            AccountLocationService locations) {
+        this.contentModeration = contentModeration;
+        this.lifecycle = lifecycle;
+        this.locations = locations;
+
         this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;
         this.selectedProfile = selectedProfile;
@@ -1366,23 +1378,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             affinityWeightsCacheByUserIdsKey.remove(cacheKey, cached);
         }
 
-        Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
-        for (EdgeView edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
-            String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
-            String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
-            if (!StringUtils.hasText(leftUserId) || !StringUtils.hasText(rightUserId) || leftUserId.equals(rightUserId)) {
-                continue;
-            }
-            double edgeWeight = resolveAffinityEdgeWeight(edge);
-            if (edgeWeight <= 0d) {
-                continue;
-            }
-            String key = pairKey(leftUserId, rightUserId);
-            Double existingWeight = weightsByPairKey.get(key);
-            if (existingWeight == null || edgeWeight > existingWeight.doubleValue()) {
-                weightsByPairKey.put(key, edgeWeight);
-            }
-        }
+        Map<String, Double> weightsByPairKey = com.raxim.myscoutee.domain.affinity.api.EdgeDirectory.weightsByPairKey(
+                userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds));
         Map<String, Double> resolved = Map.copyOf(weightsByPairKey);
         affinityWeightsCacheByUserIdsKey.put(cacheKey, new CacheEntry<>(resolved, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS, revision));
         return resolved;
@@ -1519,19 +1516,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         }
     }
 
-    private double resolveAffinityEdgeWeight(EdgeView edge) {
-        if (edge == null) {
-            return 0d;
-        }
-        Double edgeWeight = edge.getEdgeWeight();
-        if (edgeWeight == null || !Double.isFinite(edgeWeight) || edgeWeight <= 0d) {
-            edgeWeight = edge.getAffinityScore();
-        }
-        if (edgeWeight == null || !Double.isFinite(edgeWeight)) {
-            return 0d;
-        }
-        return Math.max(0d, Math.min(1d, edgeWeight));
-    }
+
 
     private boolean isUsableUserDocument(Users user) {
         return SelectedProfileService.isUsableUserDocument(user);
@@ -2171,7 +2156,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             DataIntegrityViolationException exception) {
         String normalizedEmail = normalizeUserEmail(
                 attemptedUser == null ? null : attemptedUser.getEmail());
-        if (!StringUtils.hasText(normalizedEmail)) {
+        if (attemptedUser == null || !StringUtils.hasText(normalizedEmail)) {
             return;
         }
         Users currentOwner = usersRepository.findFirstByEmail(normalizedEmail).orElse(null);
@@ -2328,7 +2313,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             UserRealtimeCountersDto counters) {
         Users.UserImpressionsRecord storedImpressions = user == null ? null : user.getImpressions();
         return String.join(":",
-                normalizeId(user.getId()).replace(":", "%3A"),
+                normalizeId(user == null ? null : user.getId()).replace(":", "%3A"),
                 String.valueOf(normalizeCount(counters.game())),
                 String.valueOf(normalizeCount(counters.chats())),
                 String.valueOf(normalizeCount(counters.invitations())),

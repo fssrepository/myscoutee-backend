@@ -19,19 +19,19 @@ class ContentModerationServiceTest {
     final ContentModerationRepository repository = mock(ContentModerationRepository.class);
     final MongoTemplate mongo = mock(MongoTemplate.class);
     final SupportMessages chat = mock(SupportMessages.class);
-    final ContentModerationService service = new ContentModerationService(repository, mongo, chat, mock(UserActivityCountersService.class));
+    final ContentModerationService service = new ContentModerationService(repository, mongo, chat, mock(UserActivityCountersService.class), null, null, null, null, null);
     final Map<String, Item> items = new HashMap<>();
     final Map<String, State> groupStates = new HashMap<>();
     State state = new State("global", 0, new Settings(true, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of());
     final AdminUserDto admin = new AdminUserDto("admin", "Admin", "", "", "", "", List.of());
     @BeforeEach void persistence() {
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventModeration", new com.raxim.myscoutee.domain.events.service.EventModerationService(mongo));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventModeration", new com.raxim.myscoutee.domain.events.service.EventModerationService(mongo, null));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "assetModeration", new com.raxim.myscoutee.domain.assets.service.AssetModerationProjectionService(mongo));
         var profiles = mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class, call ->
             "findByUserId".equals(call.getMethod().getName()) ? Optional.ofNullable(mongo.findOne(
                 org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").is(call.getArgument(0))),
                 com.raxim.myscoutee.domain.accounts.document.Users.class)) : org.mockito.Answers.RETURNS_DEFAULTS.answer(call));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "profiles", new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profiles", new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles, null));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
 
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groupModeration", new com.raxim.myscoutee.domain.groups.service.GroupModerationProjectionService(mongo));

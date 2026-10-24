@@ -41,8 +41,12 @@ public class SupportConversationService implements SupportMessages {
     private final ChatPushNotificationService chatPushNotificationService;
     private final AccessPermissions accessControlService;
     private final OperationalTelemetry adminTelemetryService;
-    @org.springframework.beans.factory.annotation.Autowired(required = false)
     private SupportWorkspaceDirectory supportWorkspaces;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setSupportWorkspaces(SupportWorkspaceDirectory supportWorkspaces) {
+        this.supportWorkspaces = supportWorkspaces;
+    }
 
     public SupportConversationService(ChatService chats, ChatsRepository chatsRepository,
             ChatMessagesRepository chatMessagesRepository, SupportCaseCounters supportCaseCounters,

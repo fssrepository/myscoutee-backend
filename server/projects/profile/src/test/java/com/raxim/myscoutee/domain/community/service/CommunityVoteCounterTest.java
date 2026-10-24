@@ -51,7 +51,7 @@ class CommunityVoteCounterTest {
                 when(access.admin("homes", "admin")).thenReturn(true); when(access.member("homes", "voter")).thenReturn(voter);
                 var accounts = spy(new AccountMenuCounterService(mongo));
                 var work = new CommunityVoteCounterWork(mongo, accounts, profiles, members, groups, rows);
-                var service = new CommunityAnnouncementsService(rows, access, mongo, profiles, mock(NotificationDelivery.class));
+                var service = new CommunityAnnouncementsService(rows, access, mongo, profiles, mock(NotificationDelivery.class), null, null);
                 ReflectionTestUtils.setField(service, "voteCounters", work);
                 var draft = service.save("admin", new Save("admin", null, "homes", "Vote", "Body", List.of(), true, "2099-01-01T00:00:00Z", null));
                 assertThat(draft.votesCount()).isZero();

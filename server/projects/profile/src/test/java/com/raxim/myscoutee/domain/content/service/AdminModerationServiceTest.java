@@ -75,19 +75,19 @@ class AdminModerationServiceTest {
     void setUp() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new AdminModerationService(
-                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)),
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class), null),
                 new com.raxim.myscoutee.domain.administration.service.AdministrativeActorService(configProperties,
-                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), appSettingsService),
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null), appSettingsService),
                 reportsRepository,
                 feedbackRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
-                new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
+                new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository, null),
                 new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
                 chatService,
                 supportCaseCounters,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                notificationOutboxService);
+                notificationOutboxService, null);
         var statusWork = new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(usersRepository,
                 org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class),
                 java.util.List.of(affinityRecomputeTaskService::enqueueAdminStatusChanged), null);

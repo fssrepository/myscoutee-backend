@@ -29,7 +29,7 @@ class AssetLifecycleRecoveryTest {
             try (var client = MongoClients.create("mongodb://" + address.getHost() + ":" + address.getPort())) {
                 var mongo = new MongoTemplate(client, "asset-lifecycle");
                 var assets = new MongoRepositoryFactory(mongo).getRepository(AssetsRepository.class);
-                var attachments = new ChatAttachmentLifecycleService(mock(ChatMessagesRepository.class));
+                var attachments = new ChatAttachmentLifecycleService(mock(ChatMessagesRepository.class), null);
                 ReflectionTestUtils.setField(attachments, "mongo", mongo);
                 mongo.getCollection("chatMessages").insertOne(new Document("_id", "message").append("attachments", List.of(
                         new Document("type", "asset").append("entityId", "asset").append("title", "Keep title").append("status", "available"),

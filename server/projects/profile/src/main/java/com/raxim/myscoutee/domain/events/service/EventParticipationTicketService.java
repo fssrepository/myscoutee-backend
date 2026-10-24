@@ -477,9 +477,9 @@ public class EventParticipationTicketService implements com.raxim.myscoutee.doma
     }
 
     private boolean isCreatorOwnedSourceRecord(ActivityEvent record) {
-        return record != null
-                && StringUtils.hasText(normalizeId(record.getOwnerUserId()))
-                && normalizeId(record.getOwnerUserId()).equals(normalizeId(record.getCreatorUserId()));
+        String ownerUserId = record == null ? null : normalizeId(record.getOwnerUserId());
+        return record != null && ownerUserId != null
+                && ownerUserId.equals(normalizeId(record.getCreatorUserId()));
     }
 
     private boolean isManagedParticipationOverlay(ActivityEvent record, String creatorUserId) {

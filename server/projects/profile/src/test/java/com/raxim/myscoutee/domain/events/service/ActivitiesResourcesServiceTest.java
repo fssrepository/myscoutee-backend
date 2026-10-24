@@ -132,14 +132,14 @@ class ActivitiesResourcesServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository), new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository), new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
-                new ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, java.util.List.of(new com.raxim.myscoutee.domain.access.security.CaseChatPolicyRestriction(new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)))));
+                new MemberPolicyFacts(new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository, null), new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository, null), new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository, null), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null)),
+                new ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository, null), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null), adminMenuCounterService, java.util.List.of(new com.raxim.myscoutee.domain.access.security.CaseChatPolicyRestriction(new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class), null, null), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null)))));
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
                 activityEventsRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 assetsService,
                 activitiesMembersServiceProvider,
                 accessControlService,
@@ -1435,4 +1435,21 @@ class ActivitiesResourcesServiceTest {
         grant.setEffect(effect);
         return grant;
     }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource(value = {
+            "NULL,stage,event,stage,false", "event,NULL,event,stage,false",
+            "event,stage,NULL,stage,false", "event,stage,event,NULL,false",
+            "event,stage,event,stage,true", "event,stage,other,stage,false",
+            "event,stage,event,other,false", "event:stage:group:1,stage,event:stage:group:1,stage,true",
+            "event:stage:group:1,stage,event:stage:group:2,stage,false"}, nullValues = "NULL")
+    void incompleteOrDifferentBookingScopesNeverGrantScopedAssetAccess(
+            String owner, String stage, String bookingOwner, String bookingStage, boolean expected) {
+        var booking = new AssetRequestBookingDto(bookingOwner, "", bookingStage, "", "", "", "",
+                null, null, 1, 0D, 0D, "USD", List.of(), null, false);
+        Boolean allowed = org.springframework.test.util.ReflectionTestUtils.invokeMethod(service,
+                "isScopedAssetRequest", assetRequest("request", "member", booking), owner, stage);
+        assertThat(allowed).isEqualTo(expected);
+    }
+
 }

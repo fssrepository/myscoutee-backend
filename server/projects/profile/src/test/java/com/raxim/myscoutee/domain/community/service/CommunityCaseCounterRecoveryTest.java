@@ -38,9 +38,9 @@ class CommunityCaseCounterRecoveryTest {
                         groups, mock(com.raxim.myscoutee.domain.accounts.api.ProfileSummaries.class),
                         mock(com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.class),
                         mock(com.raxim.myscoutee.domain.chat.api.CaseConversations.class),
-                        mock(com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository.class));
+                        mock(com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository.class), null, null, null);
                 org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork",
-                        new CommunityCaseCounterWork(cases, mock(MenuCounterUpdates.class), mock(CommunityMemberships.class), mongo, groups));
+                        new CommunityCaseCounterWork(cases, mock(MenuCounterUpdates.class), mock(CommunityMemberships.class), mongo, groups, null));
                 assertThat(service.action("resident", initial.id(), command("join", initial.version())).version()).isEqualTo(initial.version() + 1);
                 var left = service.action("owner", initial.id(), command("leave", initial.version()));
                 assertThat(left.ownerAccountId()).isNull();
@@ -117,11 +117,11 @@ class CommunityCaseCounterRecoveryTest {
                     accountWriter.apply(changes.getFirst());
                     throw new IllegalStateException("reply lost after first recipient commit");
                 });
-                var failingWriter = new CommunityCaseCounterWork(cases, interrupted, mock(CommunityMemberships.class), mongo, mock(GroupDirectory.class));
+                var failingWriter = new CommunityCaseCounterWork(cases, interrupted, mock(CommunityMemberships.class), mongo, mock(GroupDirectory.class), null);
                 assertThatThrownBy(() -> failingWriter.save(record("open", null, List.of("owner", "resident")), null, List.of("admin", "owner")))
                         .hasMessage("reply lost after first recipient commit");
                 var pending = cases.findById("case").orElseThrow();
-                var writer = new CommunityCaseCounterWork(cases, accountWriter, mock(CommunityMemberships.class), mongo, mock(GroupDirectory.class));
+                var writer = new CommunityCaseCounterWork(cases, accountWriter, mock(CommunityMemberships.class), mongo, mock(GroupDirectory.class), null);
                 writer.finish(pending); writer.finish(pending);
                 var open = cases.findById("case").orElseThrow();
                 assertThat(open.counterState().pending()).isEmpty();

@@ -22,19 +22,13 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 /** Durable cancellation/refund work. Actor authority is checked by the event service before enqueueing. */
 @Service
 public class EventCancellationService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private EventParticipationTicketService tickets;
-    @org.springframework.beans.factory.annotation.Autowired
-    private org.springframework.beans.factory.ObjectProvider<PaymentRefunds> refunds;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.payments.api.EventPaymentCancellations paymentCancellations;
+    private final EventParticipationTicketService tickets;
+    private final org.springframework.beans.factory.ObjectProvider<PaymentRefunds> refunds;
+    private final com.raxim.myscoutee.domain.payments.api.EventPaymentCancellations paymentCancellations;
     private final MongoTemplate mongo;
     private final EventPayments payments;
     private final ScheduledMongoSessionRunner sessions;
@@ -43,7 +37,20 @@ public class EventCancellationService {
 
     public EventCancellationService(MongoTemplate mongo, EventPayments payments,
             ScheduledMongoSessionRunner sessions, NotificationDelivery notifications,
-            org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> members) {
+            org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> members,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases,
+            EventParticipationTicketService tickets,
+            org.springframework.beans.factory.ObjectProvider<PaymentRefunds> refunds,
+            com.raxim.myscoutee.domain.payments.api.EventPaymentCancellations paymentCancellations) {
+        this.groupRules = groupRules;
+        this.jobGroupScope = jobGroupScope;
+        this.groupDatabases = groupDatabases;
+        this.tickets = tickets;
+        this.refunds = refunds;
+        this.paymentCancellations = paymentCancellations;
+
         this.mongo = mongo; this.payments = payments; this.sessions = sessions; this.notifications = notifications;
         this.members = members;
     }

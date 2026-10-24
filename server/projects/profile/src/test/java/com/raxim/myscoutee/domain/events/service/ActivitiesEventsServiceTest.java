@@ -181,7 +181,7 @@ class ActivitiesEventsServiceTest {
                 activitySubEventStageRuntimeRepository,
                 activityMembersRepository,
                 activityMingleSessionsRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 friendshipFacts,
                 new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 homeUserProfileService,
@@ -193,7 +193,7 @@ class ActivitiesEventsServiceTest {
                 eventCheckoutPricingService,
                 scheduledMessageTaskService,
                 new com.raxim.myscoutee.domain.affinity.service.EventAffinityService(absoluteAffinityService,
-                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null)),
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 mongoTemplate,
@@ -211,7 +211,7 @@ class ActivitiesEventsServiceTest {
                 activityEventMapper,
                 activityEventSubEventsMapper,
                 activitySubEventResourceMapper,
-                activitySubEventStageRuntimeMapper);
+                activitySubEventStageRuntimeMapper, null, null, null, null, null, null);
         org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters> counterProvider = org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
         lenient().when(counterProvider.getObject()).thenReturn(userActivityCountersService);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "lifecycleWork",
@@ -232,7 +232,7 @@ class ActivitiesEventsServiceTest {
         lenient().when(accessControlService.canCurrentActorTakeOverEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorJoinEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorApplyEventStageAction(anyString())).thenReturn(true);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "followingEvents", new com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService(mongoTemplate, friendshipFacts));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "followingEvents", new com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService(mongoTemplate, friendshipFacts, null, null));
     }
 
     @Test
@@ -3231,4 +3231,21 @@ class ActivitiesEventsServiceTest {
         edge.setAffinityScore(edgeWeight);
         return edge;
     }
+
+    @Test
+    void absentViewerNeverGetsOwnershipBonusFromMissingOwnerOrCreator() {
+        ActivityEvent record = new ActivityEvent();
+        record.setOwnerUserId("manager");
+        record.setCreatorUserId(null);
+        record.setAdmins(List.of());
+        Integer anonymous = org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                service, "subEventsDefinitionRecordScore", record, null);
+        Integer unrelated = org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                service, "subEventsDefinitionRecordScore", record, "unrelated");
+        Integer owner = org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                service, "subEventsDefinitionRecordScore", record, "manager");
+        assertThat(anonymous).isEqualTo(unrelated);
+        assertThat(owner - anonymous).isEqualTo(2000);
+    }
+
 }

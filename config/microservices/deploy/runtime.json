@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "mongoCpuLimit": 3,
+  "mongoReplicaSet": true,
+  "namespace": "myscoutee-msc121",
+  "frontendReplicas": 1,
+  "frontendNodePort": 30080,
+  "localPort": 18080,
+  "dependencies": {
+    "frontend": "myscoutee-service-frontend:1.5.0",
+    "mongodb": "mongo:8.0.4",
+    "redis": "redis:8.6.1-alpine",
+    "minio": "myscoutee-service-minio:1.5.0",
+    "stun": "myscoutee-service-stun:1.5.0",
+    "mcp": "myscoutee-service-mcp:1.5.0",
+    "registry": "ghcr.io/fssrepository/myscoutee-registry:1.5.0@sha256:73372bc0f22d71f1d6cb68fc7d8b5a9a60b920f33d703e4883f39470bf67838a",
+    "payment-simulator": "ghcr.io/fssrepository/myscoutee-payment-simulator:1.5.0@sha256:341859243150ae3c41f5d8c03399078915ddaab177cfb70f8ecfc56a998ba7e3",
+    "release-simulator": "myscoutee-service-release-simulator:1.5.0"
+  },
+  "stunNodePort": 30478,
+  "metricsNodePort": 30081,
+  "lab": {
+    "displayName": "MyScoutee",
+    "stateDirectory": "myscoutee-microservices/msc121",
+    "vmName": "myscoutee-msc121",
+    "bridge": "virbr-msc121",
+    "networkCidr": "192.168.173.0/24",
+    "memoryMiB": 8192,
+    "macAddress": "52:54:00:12:10:01",
+    "monitoringProject": "msc121-observability",
+    "grafanaPort": 13000,
+    "prometheusPort": 19090,
+    "grafanaPassword": "msc121-local-only"
+  },
+  "images": {
+    "prefix": "myscoutee-service-",
+    "buildTag": "1.5.0",
+    "immutableVersion": "1.5.0",
+    "frontendBase": "myscoutee-frontend-runtime-base:1.5.0",
+    "nginxBase": "ghcr.io/fssrepository/myscoutee-nginx:1.5.0@sha256:7ec3ba085e30314d5536401ac22e14064d30a5461bfc1a9ccbe0e6340b6c6c24",
+    "supportSources": {
+      "mcp": "config/mcp",
+      "stun": "../myscoutee-microservices/deploy/stun"
+    }
+  },
+  "databases": {
+    "real": "msc121_real",
+    "demo": "msc121_demo",
+    "bootstrap": "msc121_bootstrap",
+    "replicaSet": "msc121"
+  },
+  "environment": {
+    "SPRING_PROFILES_ACTIVE": "prod",
+    "MONGODB_HOST": "mongodb",
+    "MONGODB_PORT": "27017",
+    "SPRING_DATA_REDIS_HOST": "redis",
+    "FIREBASE_ENABLED": "false",
+    "CONFIG_MCP_DEMO_ENABLED": "true",
+    "MEDIA_ENABLED": "true",
+    "MEDIA_OBJECT_STORE_ENDPOINT": "http://minio:9000",
+    "MEDIA_OBJECT_STORE_REGION": "eu-central-1",
+    "MEDIA_BUCKET": "myscoutee-media",
+    "MEDIA_OBJECT_STORE_PATH_STYLE": "true",
+    "EMAIL_ENABLED": "false",
+    "REGISTRY_ENABLED": "false",
+    "REGISTRY_OUTBOUND_ALLOWED": "false",
+    "PAYMENT_ENABLE_PAY": "false",
+    "REGISTRY_DEMO_BASE_URL": "http://registry:8080",
+    "REGISTRY_DEMO_SCOPE": "demo:myscoutee",
+    "REGISTRY_DEMO_ALLOW_INSECURE_HTTP": "true",
+    "REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS": "registry",
+    "REGISTRY_DEMO_PRIVATE_KEY_PATH": "/var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem",
+    "REGISTRY_DEMO_PUBLIC_KEY_PATH": "/var/lib/myscoutee/registry-demo/keys/deployment-public-key.der",
+    "REGISTRY_DEMO_STATE_DIR": "/var/lib/myscoutee/registry-demo/state",
+    "PAYMENT_SIMULATOR_ENABLED": "true",
+    "PAYMENT_SIMULATOR_BASE_URL": "http://payment-simulator:18082",
+    "PAYMENT_SIMULATOR_REGISTRATION_CALLBACK_URL": "http://payments:8080/payment-methods/registrations/callback",
+    "PAYMENT_SIMULATOR_APPLICATION_BASE_URL": "@PUBLIC_BASE_URL@",
+    "PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT": "merchant@myscoutee.invalid",
+    "PAYMENT_STRIPE_API_BASE_URL": "http://payment-simulator:18082",
+    "PAYMENT_STRIPE_TEST_GATEWAY_ENABLED": "true",
+    "PAYMENT_BARION_API_BASE_URL": "http://payment-simulator:18082",
+    "PAYMENT_BARION_TEST_GATEWAY_ENABLED": "true",
+    "CHAT_CALL_STUN_URLS": "stun:@VM_IP@:@STUN_NODE_PORT@",
+    "CHAT_CALL_STUN_HEALTH_HOST": "stun",
+    "WEBSOCKET_ALLOWED_ORIGIN_PATTERNS": "@PUBLIC_BASE_URL@,@LOOPBACK_BASE_URL@",
+    "MYSCOUTEE_VERSION": "1.5.0"
+  },
+  "publicRoutes": [
+    {
+      "pattern": "~^/api/admin/notifications/ws$",
+      "service": "communication"
+    },
+    {
+      "pattern": "~^/api/activities/events/checkout/slots(?:/|$)",
+      "service": "community"
+    },
+    {
+      "pattern": "~^/api/activities/events/(?:checkout|pay)(?:/|$)",
+      "service": "payments"
+    },
+    {
+      "pattern": "~^/api/activities/events/following(?:/|$)",
+      "service": "identity"
+    },
+    {
+      "pattern": "~^/api/admin/content-moderation(?:/|$)",
+      "service": "community"
+    },
+    {
+      "pattern": "~^/api/(?:help|privacy|terms|explanation)(?:/|$)",
+      "service": "help"
+    },
+    {
+      "pattern": "~^/api/public/email/unsubscribe(?:/|$)",
+      "service": "communication"
+    },
+    {
+      "pattern": "~^/api/(?:activities/chats|notifications|i18n|operator/email-configuration)(?:/|$)",
+      "service": "communication"
+    },
+    {
+      "pattern": "~^/api/(?:assets|media)(?:/|$)",
+      "service": "assets"
+    },
+    {
+      "pattern": "~^/api/(?:activities/rates|user-rates)(?:/|$)",
+      "service": "affinity"
+    },
+    {
+      "pattern": "~^/api/(?:payment-methods|payment/webhooks|admin/payment-simulator)(?:/|$)",
+      "service": "payments"
+    },
+    {
+      "pattern": "~^/api/(?:activities/events|activities/feed|campaigns|community-announcements|community-cases|feedback|groups|landing|operator/community|service-offerings|share-tokens)(?:/|$)",
+      "service": "community"
+    },
+    {
+      "pattern": "~^/api/operator/(?:registry|network|claim|deployment/(?:deactivate|reactivate)|leaderboard|announcements|measurements|revenue)(?:/|$)",
+      "service": "network"
+    },
+    {
+      "pattern": "~^/api/(?:admin|admin-client/v1|auth|deployment/configuration|game-cards|integrations|mcp/oauth|navigator/contacts|operator)(?:/|$)",
+      "service": "identity"
+    }
+  ],
+  "configurationKeyPath": "/etc/myscoutee/configuration/deployment-master-key"
+}

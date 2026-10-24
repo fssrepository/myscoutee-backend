@@ -245,8 +245,10 @@ public class ModerationSubmissionService {
     }
 
     private boolean shouldPreferEventRecord(Event next, Event current) {
-        boolean nextActive = "A".equals(safeText(next == null ? null : next.getStatus()));
-        boolean currentActive = "A".equals(safeText(current == null ? null : current.getStatus()));
+        if (next == null) return false;
+        if (current == null) return true;
+        boolean nextActive = "A".equals(safeText(next.getStatus()));
+        boolean currentActive = "A".equals(safeText(current.getStatus()));
         if (nextActive != currentActive) {
             return nextActive;
         }

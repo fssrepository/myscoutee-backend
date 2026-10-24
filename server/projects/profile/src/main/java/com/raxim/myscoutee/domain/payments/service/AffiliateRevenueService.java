@@ -22,21 +22,31 @@ import com.raxim.myscoutee.domain.payments.repository.AffiliateRevenueRepository
 
 @Service
 public class AffiliateRevenueService {
-    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+    private final PaymentJobQueries paymentJobs;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
-    @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setEuroService(com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService) {
+        this.euroService = euroService;
+    }
     private final MongoTemplate mongo;
     private final AffiliateRevenueRepository repository;
     private final ScheduledMongoSessionRunner sessions;
-    public AffiliateRevenueService(MongoTemplate mongo, AffiliateRevenueRepository repository, ScheduledMongoSessionRunner sessions) {
+    public AffiliateRevenueService(MongoTemplate mongo, AffiliateRevenueRepository repository, ScheduledMongoSessionRunner sessions,
+            PaymentJobQueries paymentJobs,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.paymentJobs = paymentJobs;
+        this.groupRules = groupRules;
+        this.jobGroupScope = jobGroupScope;
+        this.groupDatabases = groupDatabases;
+
         this.mongo = mongo; this.repository = repository; this.sessions = sessions;
     }
 

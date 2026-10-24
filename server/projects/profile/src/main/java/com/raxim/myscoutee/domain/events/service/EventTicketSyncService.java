@@ -159,6 +159,8 @@ public class EventTicketSyncService {
     }
 
     private boolean preferCanonicalRecord(ActivityEvent next, ActivityEvent current) {
+        if (next == null) return false;
+        if (current == null) return true;
         boolean nextCreatorOwned = isCreatorOwnedRecord(next);
         boolean currentCreatorOwned = isCreatorOwnedRecord(current);
         if (nextCreatorOwned != currentCreatorOwned) {
@@ -176,8 +178,9 @@ public class EventTicketSyncService {
     }
 
     private boolean isCreatorOwnedRecord(ActivityEvent record) {
-        return record != null
-                && normalizeId(record.getOwnerUserId()).equals(normalizeId(record.getCreatorUserId()));
+        String ownerId = normalizeId(record == null ? null : record.getOwnerUserId());
+        return record != null && ownerId != null
+                && ownerId.equals(normalizeId(record.getCreatorUserId()));
     }
 
     private boolean isParticipantDirectRecord(ActivityEvent record) {

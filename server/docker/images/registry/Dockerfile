@@ -1,0 +1,2 @@
+ARG REGISTRY_BASE_IMAGE=ghcr.io/fssrepository/myscoutee-registry:1.5.0@sha256:73372bc0f22d71f1d6cb68fc7d8b5a9a60b920f33d703e4883f39470bf67838a
+FROM ${REGISTRY_BASE_IMAGE}

@@ -14,16 +14,23 @@ import com.raxim.myscoutee.domain.assets.mapper.AssetAvailabilityMapper;
 public class AssetAvailabilityService {
     private final AssetAvailabilityRepository availabilityRepository;
     private final AssetAvailabilityMapper availabilityMapper;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.events.api.EventOwnershipReads events;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
-    @org.springframework.beans.factory.annotation.Autowired
+    private final com.raxim.myscoutee.domain.events.api.EventOwnershipReads events;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     private com.raxim.myscoutee.domain.access.api.AccessPermissions access;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setAccess(com.raxim.myscoutee.domain.access.api.AccessPermissions access) {
+        this.access = access;
+    }
 
     public AssetAvailabilityService(
             AssetAvailabilityRepository availabilityRepository,
-            AssetAvailabilityMapper availabilityMapper) {
+            AssetAvailabilityMapper availabilityMapper,
+            com.raxim.myscoutee.domain.events.api.EventOwnershipReads events,
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory groups) {
+        this.events = events;
+        this.groups = groups;
+
         this.availabilityRepository = availabilityRepository;
         this.availabilityMapper = availabilityMapper;
     }

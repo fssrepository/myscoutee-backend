@@ -110,7 +110,7 @@ class ExchangeRateTest {
         verify(store, times(1)).observations();
     }
     private PaymentEuroService paymentService(ExchangeRateStore store) {
-        var service = new PaymentEuroService(store, mock(MongoTemplate.class));
+        var service = new PaymentEuroService(store, mock(MongoTemplate.class), null, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
             com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(MongoTemplate.class)));
         return service;

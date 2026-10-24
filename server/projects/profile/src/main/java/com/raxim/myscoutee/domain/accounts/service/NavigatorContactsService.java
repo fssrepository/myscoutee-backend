@@ -120,7 +120,8 @@ public class NavigatorContactsService {
         String id = chatAccess.pairId(actor, target);
         contactWorkflow.finishPending(id);
         var current = chatAccess.findById(id).orElse(null);
-        String action = command == null ? "" : safeText(command.action());
+        if (command == null) throw chatAccessError(400, "Unknown chat access action.");
+        String action = safeText(command.action());
         String status;
         String requester;
         String requestedAt;

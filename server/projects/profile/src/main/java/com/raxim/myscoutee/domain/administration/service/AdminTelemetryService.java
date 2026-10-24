@@ -24,8 +24,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class AdminTelemetryService implements com.raxim.myscoutee.domain.administration.api.OperationalTelemetry {
-    @org.springframework.beans.factory.annotation.Autowired
-    private org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
 
     @Override public void signalProjectionInputs(ProjectionSignal signal) {
         if (signal == null || signal.producer() == null || !java.util.Set.of("affinity", "events", "notifications").contains(signal.producer())
@@ -40,8 +39,7 @@ public class AdminTelemetryService implements com.raxim.myscoutee.domain.adminis
                 org.springframework.data.mongodb.core.query.Criteria.where("_id").is(signal.producer())), update,
                 com.raxim.myscoutee.domain.administration.document.AdminWorkerSignals.class);
     }
-    @org.springframework.beans.factory.annotation.Autowired
-    private JobAudience jobGroupScope;
+    private final JobAudience jobGroupScope;
 
     public static String streamKey(AdminStatsProperties properties, String groupId) {
         var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
@@ -60,7 +58,12 @@ public class AdminTelemetryService implements com.raxim.myscoutee.domain.adminis
             StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
             AdminStatsProperties properties,
-            RedisStreamRetentionService redisStreamRetentionService) {
+            RedisStreamRetentionService redisStreamRetentionService,
+            org.springframework.data.mongodb.core.MongoTemplate mongo,
+            JobAudience jobGroupScope) {
+        this.mongo = mongo;
+        this.jobGroupScope = jobGroupScope;
+
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.properties = properties;

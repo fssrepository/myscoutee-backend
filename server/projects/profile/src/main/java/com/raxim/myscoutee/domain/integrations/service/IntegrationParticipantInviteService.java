@@ -34,29 +34,38 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
 public class IntegrationParticipantInviteService {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
-    @org.springframework.beans.factory.annotation.Autowired
-    private GroupDirectory groupDirectory;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.MingleEncounters encounters;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
+    private final GroupDirectory groupDirectory;
+    private final com.raxim.myscoutee.domain.events.api.MingleEncounters encounters;
     private final MongoTemplate mongo;
     private final EventOwnershipReads events;
     private final AccessPermissions access;
     private final PartnerInvitationAdmission members;
     private final IntegrationPublicEndpointResolver endpoint;
     private final SelectedProfile profiles;
-    @org.springframework.beans.factory.annotation.Autowired
-    private IntegrationGroups groups;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory users;
-    @org.springframework.beans.factory.annotation.Autowired
-    private Affiliates affiliates;
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private EventOperations eventActions;
+    private final IntegrationGroups groups;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileDirectory users;
+    private final Affiliates affiliates;
+    private final EventOperations eventActions;
     private final SecureRandom random = new SecureRandom();
 
     public IntegrationParticipantInviteService(MongoTemplate mongo, EventOwnershipReads events, AccessPermissions access,
-            PartnerInvitationAdmission members, IntegrationPublicEndpointResolver endpoint, SelectedProfile profiles) {
+            PartnerInvitationAdmission members, IntegrationPublicEndpointResolver endpoint, SelectedProfile profiles,
+            com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication,
+            GroupDirectory groupDirectory,
+            com.raxim.myscoutee.domain.events.api.MingleEncounters encounters,
+            IntegrationGroups groups,
+            com.raxim.myscoutee.domain.accounts.api.ProfileDirectory users,
+            Affiliates affiliates,
+            @org.springframework.context.annotation.Lazy EventOperations eventActions) {
+        this.profileAuthentication = profileAuthentication;
+        this.groupDirectory = groupDirectory;
+        this.encounters = encounters;
+        this.groups = groups;
+        this.users = users;
+        this.affiliates = affiliates;
+        this.eventActions = eventActions;
+
         this.mongo = mongo; this.events = events; this.access = access; this.members = members; this.endpoint = endpoint; this.profiles = profiles;
     }
 
@@ -224,6 +233,9 @@ public class IntegrationParticipantInviteService {
                     FindAndModifyOptions.options().upsert(true).returnNew(true), IntegrationParticipantInvite.class);
         } catch (DuplicateKeyException conflict) {
             invite = mongo.findById(id, IntegrationParticipantInvite.class);
+        }
+        if (invite == null) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Invitation could not be stored.");
         }
         return new ExternalInviteLinkDto(invitationBaseUrl(actor) + "&partnerInvite=" + invite.token()
                 + "&mode=" + invitationLandingType(actor, ownerType, entityId));

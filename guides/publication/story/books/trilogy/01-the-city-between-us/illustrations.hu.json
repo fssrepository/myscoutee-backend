@@ -1,0 +1,93 @@
+{
+  "founder_budapest_portrait": {
+    "file": "assets/illustrations/founder-budapest-portrait.png",
+    "placement": "portrait-right",
+    "alt": "Az Alapító stilizált portréja a vidéki emlékek és Budapest között",
+    "caption": "Eljuthatunk egy gyönyörű városba úgy is, hogy közben kívül maradunk az emberi beszélgetésein."
+  },
+  "budapest_relationship_montage": {
+    "file": "assets/illustrations/budapest-relationship-memories-montage.png",
+    "placement": "full",
+    "alt": "Budapesti kapcsolati emlékek távolságról, térről, elköteleződésről és hiányos háttérről",
+    "caption": "Más kezdetek, más korlátok: senkit nem lehet az első látható problémára szűkíteni."
+  },
+  "budapest_character_debrecen": {
+    "file": "assets/illustrations/budapest-character-debrecen-woman.png",
+    "placement": "portrait-right",
+    "alt": "A debreceni távolság emlékének személyiségi jogokat védő szereplőportréja",
+    "caption": "A vonzalom nem tüntette el a távolságot, az időzítést és a hiányzó hátteret."
+  },
+  "budapest_character_spontaneous": {
+    "file": "assets/illustrations/budapest-character-spontaneous-woman.png",
+    "placement": "portrait-right",
+    "alt": "Egy spontán budapesti bemutatkozás személyiségi jogokat védő szereplőportréja",
+    "caption": "Néha maga az idegen teremtette meg a lehetőséget."
+  },
+  "budapest_character_online_date": {
+    "file": "assets/illustrations/budapest-character-online-date-woman.png",
+    "placement": "portrait-right",
+    "alt": "Egy későbbi internetes randevú emlékének személyiségi jogokat védő szereplőportréja",
+    "caption": "Volt tér a találkozásra; a közös jövő nem következett belőle automatikusan."
+  },
+  "budapest_character_commitment": {
+    "file": "assets/illustrations/budapest-character-commitment-woman.png",
+    "placement": "portrait-right",
+    "alt": "Egy befejezetlen lehetőség személyiségi jogokat védő szereplőportréja",
+    "caption": "Néha az Alapító volt az, aki hátralépett."
+  },
+  "budapest_character_former_colleague": {
+    "file": "assets/illustrations/budapest-character-former-colleague.png",
+    "placement": "portrait-right",
+    "alt": "Egy korábbi kollégához fűződő emlék személyiségi jogokat védő szereplőportréja",
+    "caption": "A gyorsaság és a hiányos háttér mindkét irányban hatott."
+  },
+  "london_house_montage": {
+    "file": "assets/illustrations/london-house-residents-montage.png",
+    "placement": "full",
+    "alt": "Tíz magyar felnőtt a közös Lee Valley-i ház tetején, csatornák és vizes élőhelyek fölött",
+    "caption": "Tíz élet egy zsúfolt házban; a tetőn túl a csatorna, a víztározók és a nyitott Lee Valley."
+  },
+  "london_resident_portraits": {
+    "files": [
+      "../../../films/google-flow/the-city-between-us/assets/characters/london-hmo-h01.png",
+      "../../../films/google-flow/the-city-between-us/assets/characters/london-hmo-h02.png",
+      "../../../films/google-flow/the-city-between-us/assets/characters/london-hmo-h06.png",
+      "../../../films/google-flow/the-city-between-us/assets/characters/london-hmo-h11.png"
+    ],
+    "placement": "portrait-grid",
+    "alt": "Négy londoni lakótárs különálló, stilizált portréja",
+    "caption": "Négy különböző út ugyanabba a házba: családi nyomás, nyelvtanulás, szakmai újrakezdés és társas felfedezés."
+  },
+  "global_local_montage": {
+    "file": "assets/illustrations/global-local-encounters-montage.png",
+    "placement": "full",
+    "alt": "Helyi emberi találkozások montázsa az Alapító utazásaiból",
+    "caption": "Az útvonal kitágítja a világot. A találkozás emberi léptéket ad neki."
+  },
+  "six_person_montage": {
+    "file": "assets/illustrations/myscoutee-six-person-ensemble-montage.png",
+    "placement": "full",
+    "alt": "Három nőből és három férfiból álló kiegyensúlyozott MyScoutee-csoport",
+    "caption": "Hat különálló belső világ az első közös találkozás előtt."
+  },
+  "six_person_portraits": {
+    "files": [
+      "assets/illustrations/myscoutee-character-01.png",
+      "assets/illustrations/myscoutee-character-02.png",
+      "assets/illustrations/myscoutee-character-03.png",
+      "assets/illustrations/myscoutee-character-04.png",
+      "assets/illustrations/myscoutee-character-05.png",
+      "assets/illustrations/myscoutee-character-06.png"
+    ],
+    "placement": "portrait-grid",
+    "alt": "Hat különálló MyScoutee-szereplőportré",
+    "caption": "Ugyanaz a hat idegen, ezúttal önálló emberként láthatóan."
+  },
+  "first_event_montage": {
+    "file": "assets/illustrations/myscoutee-first-event-montage.png",
+    "placement": "full",
+    "alt": "Hat ember bemutatkozik egymásnak az első közös MyScoutee-eseményen",
+    "caption": "A döntő átmenet nem az, amikor a húzásból párosítás lesz, hanem amikor az idegenből valaki, akivel találkoztunk."
+  }
+}
+

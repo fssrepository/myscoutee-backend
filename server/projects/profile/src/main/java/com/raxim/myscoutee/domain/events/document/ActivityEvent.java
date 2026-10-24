@@ -56,154 +56,206 @@ public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.Even
     public java.util.List<com.raxim.myscoutee.domain.events.dto.EventLifecycleWorkDto> getLifecycleWork() { return lifecycleWork == null ? java.util.List.of() : lifecycleWork; }
     public void setLifecycleWork(java.util.List<com.raxim.myscoutee.domain.events.dto.EventLifecycleWorkDto> value) { lifecycleWork = new java.util.ArrayList<>(value); }
 
+    @lombok.Getter @lombok.Setter
     private String campaignId;
-    public String getCampaignId() { return campaignId; }
-    public void setCampaignId(String value) { campaignId = value; }
     @org.springframework.data.mongodb.core.index.Indexed
+    @lombok.Getter @lombok.Setter
     private String workspaceGroupId;
-    public String getWorkspaceGroupId() { return workspaceGroupId; }
-    public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
 
     @Id
+    @lombok.Getter @lombok.Setter
     private String id;
     @Indexed(name = "event_sync_key", unique = true, sparse = true)
+    @lombok.Getter @lombok.Setter
     private String syncKey;
+    @lombok.Getter @lombok.Setter
     private String sourceId;
+    @lombok.Getter @lombok.Setter
     private String ownerUserId;
     private String status;
+    @lombok.Getter @lombok.Setter
     private String moderationStatus;
+    @lombok.Getter @lombok.Setter
     private String moderationPreviousStatus;
+    @lombok.Getter @lombok.Setter
     private Long moderationVersion;
-    public String getModerationStatus() { return moderationStatus; }
-    public void setModerationStatus(String value) { moderationStatus = value; }
-    public String getModerationPreviousStatus() { return moderationPreviousStatus; }
-    public void setModerationPreviousStatus(String value) { moderationPreviousStatus = value; }
-    public Long getModerationVersion() { return moderationVersion; }
-    public void setModerationVersion(Long value) { moderationVersion = value; }
     // Cancellation retains the event definition; only Delete changes its lifecycle to Trash.
+    @lombok.Getter @lombok.Setter
     private String cancelledAtIso;
+    @lombok.Getter @lombok.Setter
     private String cancellationSessionMode;
-    public String getCancellationSessionMode() { return cancellationSessionMode; }
-    public void setCancellationSessionMode(String value) { cancellationSessionMode = value; }
+    @lombok.Getter @lombok.Setter
     private String cancelledByUserId;
     @Indexed(name = "event_cancellation_complete")
+    @lombok.Getter @lombok.Setter
     private Boolean cancellationRefundsComplete;
     @Indexed(name = "event_paid_terms_pending")
+    @lombok.Getter @lombok.Setter
     private Boolean paidTermsRefundsPending;
-    public Boolean getPaidTermsRefundsPending() { return paidTermsRefundsPending; }
-    public void setPaidTermsRefundsPending(Boolean value) { paidTermsRefundsPending = value; }
+    @lombok.Getter @lombok.Setter
     private String paidTermsChangedBy;
-    public String getPaidTermsChangedBy() { return paidTermsChangedBy; }
-    public void setPaidTermsChangedBy(String value) { paidTermsChangedBy = value; }
+    @lombok.Getter @lombok.Setter
     private String paidTermsChangedAtIso;
+    @lombok.Getter @lombok.Setter
     private String paidTermsRefundsProjectedAtIso;
+    @lombok.Getter @lombok.Setter
     private List<String> refundEligibleUserIds = new ArrayList<>();
-    public String getCancelledAtIso() { return cancelledAtIso; }
-    public void setCancelledAtIso(String value) { cancelledAtIso = value; }
-    public String getCancelledByUserId() { return cancelledByUserId; }
-    public void setCancelledByUserId(String value) { cancelledByUserId = value; }
-    public Boolean getCancellationRefundsComplete() { return cancellationRefundsComplete; }
-    public void setCancellationRefundsComplete(Boolean value) { cancellationRefundsComplete = value; }
-    public String getPaidTermsChangedAtIso() { return paidTermsChangedAtIso; }
-    public void setPaidTermsChangedAtIso(String value) { paidTermsChangedAtIso = value; }
-    public String getPaidTermsRefundsProjectedAtIso() { return paidTermsRefundsProjectedAtIso; }
-    public void setPaidTermsRefundsProjectedAtIso(String value) { paidTermsRefundsProjectedAtIso = value; }
-    public List<String> getRefundEligibleUserIds() { return refundEligibleUserIds; }
-    public void setRefundEligibleUserIds(List<String> value) { refundEligibleUserIds = value; }
+    @lombok.Getter
     private String statusBeforeSuppression;
+    @lombok.Getter
     private List<String> admins = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private String avatar;
+    @lombok.Getter @lombok.Setter
     private String title;
+    @lombok.Getter @lombok.Setter
     private String subtitle;
+    @lombok.Getter @lombok.Setter
     private String timeframe;
+    @lombok.Setter
     private String inviter;
+    @lombok.Setter
     private Integer unread;
+    @lombok.Setter
     private Integer activity;
     @Field("expired")
     private Boolean expired;
+    @lombok.Getter @lombok.Setter
     private Boolean feedbackCountersProjected;
+    @lombok.Getter @lombok.Setter
     private Boolean friendshipsProjected;
+    @lombok.Getter @lombok.Setter
     private Boolean feedbackOwnEventCountersProjected;
+    @lombok.Getter
     private List<String> feedbackOwnEventCounterUserIds = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private String trashedAtIso;
+    @lombok.Getter @lombok.Setter
     private String creatorUserId;
+    @lombok.Getter @lombok.Setter
     private String creatorName;
+    @lombok.Getter @lombok.Setter
     private String creatorInitials;
+    @lombok.Getter @lombok.Setter
     private String creatorGender;
+    @lombok.Getter @lombok.Setter
     private String creatorCity;
+    @lombok.Getter @lombok.Setter
     private String organizerUserId;
+    @lombok.Getter @lombok.Setter
     private String visibility;
+    @lombok.Getter @lombok.Setter
     private String blindMode;
+    @lombok.Getter @lombok.Setter
     private String startAtIso;
+    @lombok.Getter @lombok.Setter
     private String endAtIso;
+    @lombok.Getter @lombok.Setter
     private Double distanceKm;
+    @lombok.Getter @lombok.Setter
     private Map<String, ImageDetailsDto> imageDetails;
-    public Map<String, ImageDetailsDto> getImageDetails() { return imageDetails; }
-    public void setImageDetails(Map<String, ImageDetailsDto> value) { imageDetails = value; }
+    @lombok.Getter @lombok.Setter
     private String imageUrl;
+    @lombok.Getter @lombok.Setter
     private List<String> imageUrls;
+    @lombok.Getter @lombok.Setter
     private String sourceLink;
+    @lombok.Getter @lombok.Setter
     private String location;
+    @lombok.Getter @lombok.Setter
     private LocationCoordinatesDto locationCoordinates;
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+    @lombok.Getter @lombok.Setter
     private GeoJsonPoint locationGeo;
+    @lombok.Getter @lombok.Setter
     private Integer capacityMin;
+    @lombok.Getter @lombok.Setter
     private Integer capacityMax;
+    @lombok.Getter @lombok.Setter
     private Integer capacityTotal;
+    @lombok.Getter @lombok.Setter
     private Boolean full;
+    @lombok.Getter @lombok.Setter
     private Boolean autoInviter;
+    @lombok.Getter @lombok.Setter
     private String frequency;
+    @lombok.Getter @lombok.Setter
     private Boolean ticketing;
+    @lombok.Getter @lombok.Setter
     private Boolean approvalRequired;
+    @lombok.Getter @lombok.Setter
     private Integer paymentDeadlineHours;
+    @lombok.Getter @lombok.Setter
     private Boolean paymentDeadlineEnabled;
+    @lombok.Getter @lombok.Setter
     private PricingConfigDto pricing;
+    @lombok.Getter @lombok.Setter
     private Boolean policiesEnabled;
+    @lombok.Getter
     private List<PolicyItemDto> policies = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private Boolean slotsEnabled;
+    @lombok.Getter
     private List<EventSlotTemplateDto> slotTemplates = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private String parentEventId;
+    @lombok.Getter @lombok.Setter
     private String parentSubEventId;
+    @lombok.Getter @lombok.Setter
     private String groupId;
+    @lombok.Getter @lombok.Setter
     private String slotTemplateId;
+    @lombok.Getter @lombok.Setter
     private Boolean generated;
+    @lombok.Getter @lombok.Setter
     private String eventType;
+    @lombok.Getter
     private List<EventSlotOccurrenceDto> upcomingSlots = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private Integer acceptedMembers;
+    @lombok.Getter @lombok.Setter
     private Integer pendingMembers;
+    @lombok.Getter
     private List<String> acceptedMemberUserIds = new ArrayList<>();
+    @lombok.Getter
     private List<String> pendingMemberUserIds = new ArrayList<>();
+    @lombok.Getter
     private List<String> invitedMemberUserIds = new ArrayList<>();
+    @lombok.Getter
     private List<String> pendingRequestMemberUserIds = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private List<String> topics = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private Boolean subEventsEnabled = true;
+    @lombok.Getter
     private List<SubEventDefinitionDto> subEventDefinitions = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private List<SubEventItem> subEvents = new ArrayList<>();
+    @lombok.Getter @lombok.Setter
     private TournamentCurrentStageDto currentStage;
     private String mode = "Casual";
+    @lombok.Getter @lombok.Setter
     private MingleConfigurationDto mingleConfiguration;
+    @lombok.Getter @lombok.Setter
     private Double rating;
+    @lombok.Getter @lombok.Setter
     private Double boost;
+    @lombok.Getter @lombok.Setter
     private Double affinity;
+    @lombok.Getter @lombok.Setter
     private String createdDate;
+    @lombok.Getter @lombok.Setter
     private String createdUser;
+    @lombok.Getter @lombok.Setter
     private String membershipCounterWork;
     private java.util.List<String> membershipCounterUsers = java.util.List.of();
-    public String getMembershipCounterWork() { return membershipCounterWork; }
-    public void setMembershipCounterWork(String value) { membershipCounterWork = value; }
     public java.util.List<String> getMembershipCounterUsers() { return membershipCounterUsers == null ? java.util.List.of() : membershipCounterUsers; }
     public void setMembershipCounterUsers(java.util.List<String> value) { membershipCounterUsers = value == null ? java.util.List.of() : java.util.List.copyOf(value); }
+    @lombok.Getter @lombok.Setter
     private String updatedDate;
+    @lombok.Getter @lombok.Setter
     private String updatedUser;
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getSyncKey() { return syncKey; }
-    public void setSyncKey(String syncKey) { this.syncKey = syncKey; }
-    public String getSourceId() { return sourceId; }
-    public void setSourceId(String sourceId) { this.sourceId = sourceId; }
-    public String getOwnerUserId() { return ownerUserId; }
-    public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
     public String getStatus() {
         if (hasText(status)) {
             return normalizeStatusValue(status);
@@ -211,31 +263,18 @@ public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.Even
         return deriveStatusFromLegacy();
     }
     public void setStatus(String status) { this.status = normalizeStatusValue(status); }
-    public String getStatusBeforeSuppression() { return statusBeforeSuppression; }
     public void setStatusBeforeSuppression(String statusBeforeSuppression) {
         this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatusValue(statusBeforeSuppression) : null;
     }
-    public List<String> getAdmins() { return admins; }
     public void setAdmins(List<String> admins) { this.admins = normalizeAdminIds(admins); }
-    public String getAvatar() { return avatar; }
-    public void setAvatar(String avatar) { this.avatar = avatar; }
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public String getSubtitle() { return subtitle; }
-    public void setSubtitle(String subtitle) { this.subtitle = subtitle; }
-    public String getTimeframe() { return timeframe; }
-    public void setTimeframe(String timeframe) { this.timeframe = timeframe; }
     public String getInviter() {
         if (inviter != null && !inviter.isBlank()) {
             return inviter;
         }
         return null;
     }
-    public void setInviter(String inviter) { this.inviter = inviter; }
     public Integer getUnread() { return unread == null ? 0 : unread; }
-    public void setUnread(Integer unread) { this.unread = unread; }
     public Integer getActivity() { return activity == null ? 0 : activity; }
-    public void setActivity(Integer activity) { this.activity = activity; }
     public Boolean getIsAdmin() {
         if (hasText(ownerUserId) && admins != null && admins.contains(ownerUserId)) {
             return true;
@@ -253,156 +292,38 @@ public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.Even
     }
     public Boolean getIsExpired() { return expired; }
     public void setIsExpired(Boolean expired) { this.expired = expired; }
-    public Boolean getFeedbackCountersProjected() { return feedbackCountersProjected; }
-    public void setFeedbackCountersProjected(Boolean feedbackCountersProjected) { this.feedbackCountersProjected = feedbackCountersProjected; }
-    public Boolean getFriendshipsProjected() { return friendshipsProjected; }
-    public void setFriendshipsProjected(Boolean friendshipsProjected) { this.friendshipsProjected = friendshipsProjected; }
-    public Boolean getFeedbackOwnEventCountersProjected() { return feedbackOwnEventCountersProjected; }
-    public void setFeedbackOwnEventCountersProjected(Boolean feedbackOwnEventCountersProjected) { this.feedbackOwnEventCountersProjected = feedbackOwnEventCountersProjected; }
-    public List<String> getFeedbackOwnEventCounterUserIds() { return feedbackOwnEventCounterUserIds; }
     public void setFeedbackOwnEventCounterUserIds(List<String> feedbackOwnEventCounterUserIds) {
         this.feedbackOwnEventCounterUserIds = feedbackOwnEventCounterUserIds == null
                 ? new ArrayList<>()
                 : new ArrayList<>(feedbackOwnEventCounterUserIds);
     }
-    public String getTrashedAtIso() { return trashedAtIso; }
-    public void setTrashedAtIso(String trashedAtIso) { this.trashedAtIso = trashedAtIso; }
-    public String getCreatorUserId() { return creatorUserId; }
-    public void setCreatorUserId(String creatorUserId) { this.creatorUserId = creatorUserId; }
-    public String getCreatorName() { return creatorName; }
-    public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
-    public String getCreatorInitials() { return creatorInitials; }
-    public void setCreatorInitials(String creatorInitials) { this.creatorInitials = creatorInitials; }
-    public String getCreatorGender() { return creatorGender; }
-    public void setCreatorGender(String creatorGender) { this.creatorGender = creatorGender; }
-    public String getCreatorCity() { return creatorCity; }
-    public void setCreatorCity(String creatorCity) { this.creatorCity = creatorCity; }
-    public String getOrganizerUserId() { return organizerUserId; }
-    public void setOrganizerUserId(String organizerUserId) { this.organizerUserId = organizerUserId; }
-    public String getVisibility() { return visibility; }
-    public void setVisibility(String visibility) { this.visibility = visibility; }
-    public String getBlindMode() { return blindMode; }
-    public void setBlindMode(String blindMode) { this.blindMode = blindMode; }
-    public String getStartAtIso() { return startAtIso; }
-    public void setStartAtIso(String startAtIso) { this.startAtIso = startAtIso; }
-    public String getEndAtIso() { return endAtIso; }
-    public void setEndAtIso(String endAtIso) { this.endAtIso = endAtIso; }
-    public Double getDistanceKm() { return distanceKm; }
-    public void setDistanceKm(Double distanceKm) { this.distanceKm = distanceKm; }
-    public List<String> getImageUrls() { return imageUrls; }
-    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-    public String getSourceLink() { return sourceLink; }
-    public void setSourceLink(String sourceLink) { this.sourceLink = sourceLink; }
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
-    public LocationCoordinatesDto getLocationCoordinates() { return locationCoordinates; }
-    public void setLocationCoordinates(LocationCoordinatesDto locationCoordinates) { this.locationCoordinates = locationCoordinates; }
-    public GeoJsonPoint getLocationGeo() { return locationGeo; }
-    public void setLocationGeo(GeoJsonPoint locationGeo) { this.locationGeo = locationGeo; }
-    public Integer getCapacityMin() { return capacityMin; }
-    public void setCapacityMin(Integer capacityMin) { this.capacityMin = capacityMin; }
-    public Integer getCapacityMax() { return capacityMax; }
-    public void setCapacityMax(Integer capacityMax) { this.capacityMax = capacityMax; }
-    public Integer getCapacityTotal() { return capacityTotal; }
-    public void setCapacityTotal(Integer capacityTotal) { this.capacityTotal = capacityTotal; }
-    public Boolean getFull() { return full; }
-    public void setFull(Boolean full) { this.full = full; }
-    public Boolean getAutoInviter() { return autoInviter; }
-    public void setAutoInviter(Boolean autoInviter) { this.autoInviter = autoInviter; }
-    public String getFrequency() { return frequency; }
-    public void setFrequency(String frequency) { this.frequency = frequency; }
-    public Boolean getTicketing() { return ticketing; }
-    public void setTicketing(Boolean ticketing) { this.ticketing = ticketing; }
-    public Boolean getPaymentDeadlineEnabled() { return paymentDeadlineEnabled; }
-    public void setPaymentDeadlineEnabled(Boolean value) { paymentDeadlineEnabled = value; }
-    public Integer getPaymentDeadlineHours() { return paymentDeadlineHours; }
-    public void setPaymentDeadlineHours(Integer value) { this.paymentDeadlineHours = value; }
-
-    public Boolean getApprovalRequired() { return approvalRequired; }
-    public void setApprovalRequired(Boolean approvalRequired) { this.approvalRequired = approvalRequired; }
-    public PricingConfigDto getPricing() { return pricing; }
-    public void setPricing(PricingConfigDto pricing) { this.pricing = pricing; }
-    public Boolean getPoliciesEnabled() { return policiesEnabled; }
-    public void setPoliciesEnabled(Boolean policiesEnabled) { this.policiesEnabled = policiesEnabled; }
-    public List<PolicyItemDto> getPolicies() { return policies; }
     public void setPolicies(List<PolicyItemDto> policies) {
         this.policies = policies == null ? new ArrayList<>() : new ArrayList<>(policies);
     }
-    public Boolean getSlotsEnabled() { return slotsEnabled; }
-    public void setSlotsEnabled(Boolean slotsEnabled) { this.slotsEnabled = slotsEnabled; }
-    public List<EventSlotTemplateDto> getSlotTemplates() { return slotTemplates; }
     public void setSlotTemplates(List<EventSlotTemplateDto> slotTemplates) {
         this.slotTemplates = slotTemplates == null ? new ArrayList<>() : new ArrayList<>(slotTemplates);
     }
-    public String getParentEventId() { return parentEventId; }
-    public void setParentEventId(String parentEventId) { this.parentEventId = parentEventId; }
-    public String getParentSubEventId() { return parentSubEventId; }
-    public void setParentSubEventId(String parentSubEventId) { this.parentSubEventId = parentSubEventId; }
-    public String getGroupId() { return groupId; }
-    public void setGroupId(String groupId) { this.groupId = groupId; }
-    public String getSlotTemplateId() { return slotTemplateId; }
-    public void setSlotTemplateId(String slotTemplateId) { this.slotTemplateId = slotTemplateId; }
-    public Boolean getGenerated() { return generated; }
-    public void setGenerated(Boolean generated) { this.generated = generated; }
-    public String getEventType() { return eventType; }
-    public void setEventType(String eventType) { this.eventType = eventType; }
-    public List<EventSlotOccurrenceDto> getUpcomingSlots() { return upcomingSlots; }
     public void setUpcomingSlots(List<EventSlotOccurrenceDto> upcomingSlots) {
         this.upcomingSlots = upcomingSlots == null ? new ArrayList<>() : new ArrayList<>(upcomingSlots);
     }
-    public Integer getAcceptedMembers() { return acceptedMembers; }
-    public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
-    public Integer getPendingMembers() { return pendingMembers; }
-    public void setPendingMembers(Integer pendingMembers) { this.pendingMembers = pendingMembers; }
-    public List<String> getAcceptedMemberUserIds() { return acceptedMemberUserIds; }
     public void setAcceptedMemberUserIds(List<String> acceptedMemberUserIds) {
         this.acceptedMemberUserIds = acceptedMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(acceptedMemberUserIds);
     }
-    public List<String> getPendingMemberUserIds() { return pendingMemberUserIds; }
     public void setPendingMemberUserIds(List<String> pendingMemberUserIds) {
         this.pendingMemberUserIds = pendingMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(pendingMemberUserIds);
     }
-    public List<String> getInvitedMemberUserIds() { return invitedMemberUserIds; }
     public void setInvitedMemberUserIds(List<String> invitedMemberUserIds) {
         this.invitedMemberUserIds = invitedMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(invitedMemberUserIds);
     }
-    public List<String> getPendingRequestMemberUserIds() { return pendingRequestMemberUserIds; }
     public void setPendingRequestMemberUserIds(List<String> pendingRequestMemberUserIds) {
         this.pendingRequestMemberUserIds = pendingRequestMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(pendingRequestMemberUserIds);
     }
-    public List<String> getTopics() { return topics; }
-    public void setTopics(List<String> topics) { this.topics = topics; }
-    public Boolean getSubEventsEnabled() { return subEventsEnabled; }
-    public void setSubEventsEnabled(Boolean subEventsEnabled) { this.subEventsEnabled = subEventsEnabled; }
-    public List<SubEventDefinitionDto> getSubEventDefinitions() { return subEventDefinitions; }
     public void setSubEventDefinitions(List<SubEventDefinitionDto> subEventDefinitions) {
         this.subEventDefinitions = subEventDefinitions == null ? new ArrayList<>() : new ArrayList<>(subEventDefinitions);
     }
-    public List<SubEventItem> getSubEvents() { return subEvents; }
-    public void setSubEvents(List<SubEventItem> subEvents) { this.subEvents = subEvents; }
-    public TournamentCurrentStageDto getCurrentStage() { return currentStage; }
-    public void setCurrentStage(TournamentCurrentStageDto currentStage) { this.currentStage = currentStage; }
     public String getMode() { return normalizeMode(mode); }
     public void setMode(String mode) { this.mode = normalizeMode(mode); }
-    public MingleConfigurationDto getMingleConfiguration() { return mingleConfiguration; }
-    public void setMingleConfiguration(MingleConfigurationDto mingleConfiguration) { this.mingleConfiguration = mingleConfiguration; }
-    public Double getRating() { return rating; }
-    public void setRating(Double rating) { this.rating = rating; }
-    public Double getBoost() { return boost; }
-    public void setBoost(Double boost) { this.boost = boost; }
-    public Double getAffinity() { return affinity; }
-    public void setAffinity(Double affinity) { this.affinity = affinity; }
-    public String getCreatedDate() { return createdDate; }
-    public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }
-    public String getCreatedUser() { return createdUser; }
-    public void setCreatedUser(String createdUser) { this.createdUser = createdUser; }
-    public String getUpdatedDate() { return updatedDate; }
-    public void setUpdatedDate(String updatedDate) { this.updatedDate = updatedDate; }
-    public String getUpdatedUser() { return updatedUser; }
-    public void setUpdatedUser(String updatedUser) { this.updatedUser = updatedUser; }
 
     public void normalizeLifecycleState() {
         status = getStatus();

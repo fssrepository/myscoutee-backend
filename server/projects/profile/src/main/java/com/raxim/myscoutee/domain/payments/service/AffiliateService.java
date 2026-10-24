@@ -18,19 +18,32 @@ import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationPa
 
 @Service
 public class AffiliateService implements com.raxim.myscoutee.domain.payments.api.Affiliates, com.raxim.myscoutee.domain.payments.api.AffiliateRegistrations {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
 
     private final MongoTemplate mongo;
-    @org.springframework.beans.factory.annotation.Autowired
     private AffiliateRevenueService revenue;
 
-    public AffiliateService(MongoTemplate mongo) { this.mongo = mongo; }
+    @org.springframework.beans.factory.annotation.Autowired
+    void setRevenue(AffiliateRevenueService revenue) {
+        this.revenue = revenue;
+    }
+
+    public AffiliateService(MongoTemplate mongo,
+            com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles,
+            com.raxim.myscoutee.domain.integrations.api.ParticipantStatistics participantStatistics) {
+        this.profiles = profiles;
+        this.participantStatistics = participantStatistics;
+ this.mongo = mongo; }
 
     public String link(String owner) {
         var link = mongo.findAndModify(Query.query(Criteria.where("_id").is(owner)), new Update()
                 .setOnInsert("code", UUID.randomUUID().toString())
                 .setOnInsert("createdAtIso", Instant.now().toString()),
                 FindAndModifyOptions.options().upsert(true).returnNew(true), AffiliateLink.class);
+        if (link == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE, "Affiliate link could not be stored.");
+        }
         return "/entry?affiliate=" + link.code();
     }
 
@@ -40,8 +53,7 @@ public class AffiliateService implements com.raxim.myscoutee.domain.payments.api
         return new AffiliateSummaryDto(url, registered, revenue == null ? null : revenue.summary(owner));
     }
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.integrations.api.ParticipantStatistics participantStatistics;
+    private final com.raxim.myscoutee.domain.integrations.api.ParticipantStatistics participantStatistics;
     public IntegrationParticipantSummaryDto participantSummary(String owner) { return participantStatistics.participantSummary(owner); }
 
     public AffiliateRegistration resolveRegistration(String code, String userId) {

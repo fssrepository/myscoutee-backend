@@ -67,7 +67,7 @@ class EventCounterExpiryServiceTest {
                 adminTelemetryService,
                 userActivityCountersService,
                 eventFriendshipProjectionService,
-                20);
+                20, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "eventCounterUpdates", new com.raxim.myscoutee.domain.accounts.service.AccountEventCounterUpdateService(usersRepository));
     }
 

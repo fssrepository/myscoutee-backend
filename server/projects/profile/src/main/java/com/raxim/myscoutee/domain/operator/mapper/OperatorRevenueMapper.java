@@ -103,7 +103,7 @@ public class OperatorRevenueMapper {
                 ? ""
                 : value.trim().toLowerCase(Locale.ROOT)
                         .replaceAll("[^a-z0-9]+", "-")
-                        .replaceAll("(^-+|-+$)", "");
+                        .transform(edgeText -> org.springframework.util.StringUtils.trimLeadingCharacter(org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '-'), '-'));
         return StringUtils.hasText(normalized) ? normalized : "asset";
     }
 }

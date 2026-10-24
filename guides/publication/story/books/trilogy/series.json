@@ -1,0 +1,27 @@
+{
+  "series": "MyScoutee \u2014 The Story",
+  "format": "trilogy",
+  "parts": [
+    {
+      "part": 1,
+      "roman": "I",
+      "title": "The City Between Us",
+      "path": "01-the-city-between-us",
+      "status": "public"
+    },
+    {
+      "part": 2,
+      "roman": "II",
+      "title": "The System Between Us",
+      "path": "02-the-system-between-us",
+      "status": "review"
+    },
+    {
+      "part": 3,
+      "roman": "III",
+      "title": null,
+      "path": null,
+      "status": "planned"
+    }
+  ]
+}

@@ -25,8 +25,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 /** Write-side projection owned by the existing expiry job; never called by card reads. */
 @Service
 public class EventFriendshipProjectionService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
+    private final com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
 
     private static final String MINGLE_MODE = "Mingle";
     private static final String MINGLE_ROUND_COMPLETED = "COMPLETED";
@@ -37,7 +36,12 @@ public class EventFriendshipProjectionService {
     private final MeetingProjections userRatesService;
 
     public EventFriendshipProjectionService(MongoTemplate mongo, ActivityMembersRepository members,
-            MeetingProjections userRatesService) {
+            MeetingProjections userRatesService,
+            com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope,
+            com.raxim.myscoutee.domain.affinity.api.MeetingEvidence meetingEvidence) {
+        this.jobGroupScope = jobGroupScope;
+        this.meetingEvidence = meetingEvidence;
+
         this.mongo = mongo;
         this.members = members;
         this.userRatesService = userRatesService;
@@ -147,7 +151,7 @@ public class EventFriendshipProjectionService {
     }
 
     private record UserPair(String left, String right) {}
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.MeetingEvidence meetingEvidence;
+    private final com.raxim.myscoutee.domain.affinity.api.MeetingEvidence meetingEvidence;
     private void flush(List<com.raxim.myscoutee.domain.affinity.api.MeetingEvidence.Meeting> meetings) {
         if (meetings.isEmpty()) return;
         meetingEvidence.record(meetings);

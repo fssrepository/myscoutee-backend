@@ -53,6 +53,20 @@ import tools.jackson.databind.ObjectMapper;
 
 @org.junit.jupiter.api.Tag("standard")
 class OperatorConfigurationServiceTest {
+    @Test
+    void contactEmailPatternsPreserveExistingAddressAcceptance() {
+        for (String field : List.of("PRIVACY_CONTACT_EMAIL_PATTERN", "PAYMENT_MERCHANT_EMAIL_PATTERN")) {
+            var pattern = (java.util.regex.Pattern) org.springframework.test.util.ReflectionTestUtils
+                    .getField(OperatorConfigurationService.class, field);
+            for (String email : List.of("owner@example.test", "o+tag@a.b.c", "owner@.a.b", "owner@a.b."))
+                assertThat(pattern.matcher(email).matches()).as(email).isTrue();
+            for (String email : List.of("owner@example", "@example.test", "owner@.a", "owner@a.",
+                    "owner@@example.test", "owner name@example.test", "owner@example.test\n",
+                    "owner@" + "a".repeat(100_000)))
+                assertThat(pattern.matcher(email).matches()).as(field).isFalse();
+        }
+    }
+
     private static final Clock FIXED_CLOCK = Clock.fixed(
             Instant.parse("2026-07-28T12:34:56Z"),
             ZoneOffset.UTC);

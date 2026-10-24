@@ -1,0 +1,3253 @@
+{
+  "schemaVersion": 1,
+  "bindings": [
+    {
+      "domain": "localization",
+      "api": "TranslationBundles",
+      "package": "localization",
+      "configuration": "Localization",
+      "propertyPrefix": "localization",
+      "credential": "localizationToken"
+    },
+    {
+      "domain": "groups",
+      "api": "GroupMediaVisibility",
+      "package": "groups",
+      "configuration": "GroupMediaVisibility",
+      "propertyPrefix": "groups-media",
+      "credential": "groupsMediaToken"
+    },
+    {
+      "domain": "community",
+      "api": "CommunityMediaVisibility",
+      "package": "community",
+      "configuration": "CommunityMediaVisibility",
+      "propertyPrefix": "community-media",
+      "credential": "communityMediaToken"
+    },
+    {
+      "domain": "accounts",
+      "api": "ProfileIdentities",
+      "package": "accounts",
+      "configuration": "ProfileIdentities",
+      "propertyPrefix": "profile-identities",
+      "credential": "profileIdentitiesToken"
+    },
+    {
+      "domain": "assets",
+      "api": "AssetMediaVisibility",
+      "package": "assets",
+      "configuration": "AssetMediaVisibility",
+      "propertyPrefix": "assets-media",
+      "credential": "assetsMediaToken"
+    },
+    {
+      "domain": "events",
+      "api": "EventMediaVisibility",
+      "package": "events",
+      "configuration": "EventMediaVisibility",
+      "propertyPrefix": "events-media",
+      "credential": "eventsMediaToken"
+    },
+    {
+      "domain": "content",
+      "api": "ContentMediaVisibility",
+      "package": "content",
+      "configuration": "ContentMediaVisibility",
+      "propertyPrefix": "content-media",
+      "credential": "contentMediaToken"
+    },
+    {
+      "domain": "chat",
+      "api": "ChatMediaVisibility",
+      "package": "chat",
+      "configuration": "ChatMediaVisibility",
+      "propertyPrefix": "chat-media",
+      "credential": "chatMediaToken"
+    },
+    {
+      "domain": "chat",
+      "api": "ChatDirectory",
+      "package": "chat",
+      "configuration": "ChatDirectory",
+      "propertyPrefix": "chat-directory",
+      "credential": "chatDirectoryToken"
+    },
+    {
+      "domain": "notifications",
+      "api": "NotificationCatalog",
+      "package": "notifications",
+      "configuration": "NotificationCatalog",
+      "propertyPrefix": "notification-catalog",
+      "credential": "notificationCatalogToken"
+    },
+    {
+      "domain": "affinity",
+      "api": "RecomputeQueue",
+      "package": "affinity",
+      "configuration": "RecomputeQueue",
+      "propertyPrefix": "recompute-queue",
+      "credential": "recomputeQueueToken"
+    },
+    {
+      "domain": "community",
+      "api": "CaseParticipants",
+      "package": "community",
+      "configuration": "CaseParticipants",
+      "propertyPrefix": "case-participants",
+      "credential": "caseParticipantsToken"
+    },
+    {
+      "domain": "campaigns",
+      "api": "CampaignMediaVisibility",
+      "package": "campaigns",
+      "configuration": "CampaignMediaVisibility",
+      "propertyPrefix": "campaigns-media",
+      "credential": "campaignsMediaToken"
+    },
+    {
+      "domain": "events",
+      "api": "MemberDirectory",
+      "package": "events",
+      "configuration": "MemberDirectory",
+      "propertyPrefix": "member-directory",
+      "credential": "memberDirectoryToken"
+    },
+    {
+      "domain": "events",
+      "api": "EventMembershipFacts",
+      "package": "events",
+      "configuration": "EventMembershipFacts",
+      "propertyPrefix": "event-membership-facts",
+      "credential": "eventMembershipFactsToken"
+    },
+    {
+      "domain": "assets",
+      "api": "AssetMembershipFacts",
+      "package": "assets",
+      "configuration": "AssetMembershipFacts",
+      "propertyPrefix": "asset-membership-facts",
+      "credential": "assetMembershipFactsToken"
+    },
+    {
+      "domain": "groups",
+      "api": "GroupDirectory",
+      "package": "groups",
+      "configuration": "GroupDirectory",
+      "propertyPrefix": "group-directory",
+      "credential": "groupDirectoryToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory",
+        "com.raxim.myscoutee.domain.platform.api.WorkspaceNames",
+        "com.raxim.myscoutee.domain.chat.api.SupportWorkspaceDirectory"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "CommunityMembershipReads",
+      "package": "events",
+      "configuration": "CommunityMembershipReads",
+      "propertyPrefix": "community-memberships",
+      "credential": "communityMembershipsToken"
+    },
+    {
+      "domain": "affinity",
+      "api": "EdgeDirectory",
+      "package": "affinity",
+      "configuration": "EdgeDirectory",
+      "propertyPrefix": "edge-directory",
+      "credential": "edgeDirectoryToken"
+    },
+    {
+      "domain": "affinity",
+      "api": "RatingDirectory",
+      "package": "affinity",
+      "configuration": "RatingDirectory",
+      "propertyPrefix": "rating-directory",
+      "credential": "ratingDirectoryToken"
+    },
+    {
+      "domain": "chat",
+      "api": "ChatReview",
+      "package": "chat",
+      "configuration": "ChatReview",
+      "propertyPrefix": "chat-review",
+      "credential": "chatReviewToken"
+    },
+    {
+      "domain": "events",
+      "api": "EventHomeReads",
+      "package": "events",
+      "configuration": "EventHomeReads",
+      "propertyPrefix": "home-reads",
+      "credential": "eventHomeReadsToken"
+    },
+    {
+      "domain": "feedback",
+      "api": "FeedbackDirectory",
+      "package": "feedback",
+      "configuration": "FeedbackDirectory",
+      "propertyPrefix": "feedback-directory",
+      "credential": "feedbackDirectoryToken"
+    },
+    {
+      "domain": "content",
+      "api": "UserFeedback",
+      "package": "content",
+      "configuration": "UserFeedback",
+      "propertyPrefix": "user-feedback",
+      "credential": "userFeedbackToken",
+      "credentialProperty": "command-token",
+      "actorOperations": [
+        {
+          "audience": "content:feedback:submit",
+          "method": "POST",
+          "path": "/_internal/v1/content/user-feedback"
+        }
+      ]
+    },
+    {
+      "domain": "content",
+      "api": "UserReports",
+      "package": "content",
+      "configuration": "UserReports",
+      "propertyPrefix": "user-reports",
+      "credential": "userReportsToken",
+      "credentialProperty": "command-token",
+      "actorOperations": [
+        {
+          "audience": "content:reports:submit",
+          "method": "POST",
+          "path": "/_internal/v1/content/user-reports/submit"
+        },
+        {
+          "audience": "content:reports:exists",
+          "method": "POST",
+          "path": "/_internal/v1/content/user-reports/exists"
+        }
+      ]
+    },
+    {
+      "domain": "email",
+      "api": "UserActivityScheduling",
+      "package": "email",
+      "configuration": "UserActivityScheduling",
+      "propertyPrefix": "user-activity",
+      "credential": "userActivityToken",
+      "credentialProperty": "command-token",
+      "actorOperations": [
+        {
+          "audience": "email:user-activity:touch",
+          "method": "POST",
+          "path": "/_internal/v1/email/user-activity"
+        }
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "UserAffinityScores",
+      "package": "affinity",
+      "configuration": "UserAffinityScores",
+      "propertyPrefix": "user-affinity",
+      "credential": "userAffinityToken"
+    },
+    {
+      "domain": "accounts",
+      "api": "Experiences",
+      "package": "accounts",
+      "configuration": "Experiences",
+      "propertyPrefix": "experiences",
+      "credential": "experiencesToken"
+    },
+    {
+      "domain": "accounts",
+      "api": "RatingProfiles",
+      "package": "accounts",
+      "configuration": "RatingProfiles",
+      "propertyPrefix": "rating-profiles",
+      "credential": "ratingProfilesToken"
+    },
+    {
+      "domain": "affinity",
+      "api": "UserAffinityChanges",
+      "package": "affinity",
+      "configuration": "UserAffinityChanges",
+      "propertyPrefix": "user-affinity-changes",
+      "credential": "userAffinityChangesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts",
+        "assets",
+        "events",
+        "content",
+        "feedback"
+      ],
+      "providedApis": [
+        "AffinityStatusChanges"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.ProfileStatusObserver"
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "TicketReads",
+      "package": "assets",
+      "configuration": "TicketReads",
+      "propertyPrefix": "ticket-reads",
+      "credential": "ticketReadsToken",
+      "producerDomains": [
+        "accounts"
+      ],
+      "actorOperations": [
+        {
+          "audience": "assets:tickets:read",
+          "method": "POST",
+          "path": "/_internal/v1/assets/tickets"
+        }
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "ConfigurationCatalog",
+      "package": "affinity",
+      "configuration": "ConfigurationCatalog",
+      "propertyPrefix": "configuration-catalog",
+      "credential": "configurationCatalogToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.SchedulingParameters",
+        "com.raxim.myscoutee.domain.platform.api.SchedulingPolicy",
+        "com.raxim.myscoutee.domain.platform.api.NotificationPolicy",
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "AssetJobScopes",
+      "package": "assets",
+      "configuration": "AssetJobScopes",
+      "propertyPrefix": "assets-job-scopes",
+      "credential": "assetJobScopesToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventJobScopes",
+      "package": "events",
+      "configuration": "EventJobScopes",
+      "propertyPrefix": "events-job-scopes",
+      "credential": "eventJobScopesToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "AffiliateRegistrations",
+      "package": "payments",
+      "configuration": "AffiliateRegistrations",
+      "propertyPrefix": "affiliate-registrations",
+      "credential": "affiliateRegistrationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "platform",
+      "api": "JobAudience",
+      "package": "platform",
+      "configuration": "JobAudience",
+      "propertyPrefix": "job-audience",
+      "credential": "jobAudienceToken"
+    },
+    {
+      "domain": "groups",
+      "api": "GroupAdministration",
+      "package": "groups",
+      "configuration": "GroupAdministration",
+      "propertyPrefix": "group-administration",
+      "credential": "groupAdministrationToken"
+    },
+    {
+      "domain": "notifications",
+      "api": "RoleNotifications",
+      "package": "notifications",
+      "configuration": "RoleNotifications",
+      "propertyPrefix": "role-notifications",
+      "credential": "roleNotificationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts",
+        "platform"
+      ]
+    },
+    {
+      "domain": "notifications",
+      "api": "NotificationDelivery",
+      "package": "notifications",
+      "configuration": "NotificationDelivery",
+      "propertyPrefix": "notification-delivery",
+      "credential": "notificationDeliveryToken",
+      "credentialProperty": "command-token"
+    },
+    {
+      "domain": "groups",
+      "api": "ProfileWorkspaceLoads",
+      "package": "groups",
+      "configuration": "ProfileWorkspaceLoads",
+      "propertyPrefix": "profile-workspace",
+      "credential": "profileWorkspaceToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ],
+      "actorOperations": [
+        {
+          "audience": "groups:profile-workspace",
+          "method": "POST",
+          "path": "/_internal/v1/groups/profile-workspace"
+        }
+      ]
+    },
+    {
+      "domain": "email",
+      "api": "EmailLinks",
+      "package": "email",
+      "configuration": "EmailLinks",
+      "propertyPrefix": "email-links",
+      "credential": "emailLinksToken"
+    },
+    {
+      "domain": "localization",
+      "api": "MessageTranslations",
+      "package": "localization",
+      "configuration": "MessageTranslations",
+      "propertyPrefix": "message-translations",
+      "credential": "messageTranslationsToken"
+    },
+    {
+      "domain": "platform",
+      "api": "AdministratorSettings",
+      "package": "platform",
+      "configuration": "AdministratorSettings",
+      "propertyPrefix": "administrator-settings",
+      "credential": "administratorSettingsToken"
+    },
+    {
+      "domain": "chat",
+      "api": "ContactPermissions",
+      "package": "chat",
+      "configuration": "ContactPermissions",
+      "propertyPrefix": "contact-permissions",
+      "credential": "contactPermissionsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ],
+      "actorOperations": [
+        {
+          "audience": "chat:contact-permissions",
+          "method": "POST",
+          "path": "/_internal/v1/chat/contact-permissions/user"
+        },
+        {
+          "audience": "chat:contact-permissions",
+          "method": "POST",
+          "path": "/_internal/v1/chat/contact-permissions/entry"
+        },
+        {
+          "audience": "chat:contact-permissions",
+          "method": "POST",
+          "path": "/_internal/v1/chat/contact-permissions/save"
+        }
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "RecomputeMetrics",
+      "package": "affinity",
+      "configuration": "RecomputeMetrics",
+      "propertyPrefix": "recompute-metrics",
+      "credential": "recomputeMetricsToken"
+    },
+    {
+      "domain": "platform",
+      "api": "DeploymentBranding",
+      "package": "platform",
+      "configuration": "DeploymentBranding",
+      "propertyPrefix": "deployment-branding",
+      "credential": "deploymentBrandingToken"
+    },
+    {
+      "domain": "email",
+      "api": "EmailRendering",
+      "package": "email",
+      "configuration": "EmailRendering",
+      "propertyPrefix": "email-rendering",
+      "credential": "emailRenderingToken"
+    },
+    {
+      "domain": "payments",
+      "api": "ExchangeRateConfiguration",
+      "package": "payments",
+      "configuration": "ExchangeRateConfiguration",
+      "propertyPrefix": "exchange-rate-configuration",
+      "credential": "exchangeRateConfigurationToken"
+    },
+    {
+      "domain": "administration",
+      "api": "AdminAudience",
+      "package": "administration",
+      "configuration": "AdminAudience",
+      "propertyPrefix": "admin-audience",
+      "credential": "adminAudienceToken"
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountJobScopes",
+      "package": "accounts",
+      "configuration": "AccountJobScopes",
+      "propertyPrefix": "account-job-scopes",
+      "credential": "accountJobScopesToken"
+    },
+    {
+      "domain": "platform",
+      "api": "CountryDirectory",
+      "package": "platform",
+      "configuration": "CountryDirectory",
+      "propertyPrefix": "country-directory",
+      "credential": "countryDirectoryToken"
+    },
+    {
+      "domain": "payments",
+      "api": "PaymentProviders",
+      "package": "payments",
+      "configuration": "PaymentProviders",
+      "propertyPrefix": "payment-providers",
+      "credential": "paymentProvidersToken"
+    },
+    {
+      "domain": "content",
+      "api": "ContentStatistics",
+      "package": "content",
+      "configuration": "ContentStatistics",
+      "propertyPrefix": "content-statistics",
+      "credential": "contentStatisticsToken"
+    },
+    {
+      "domain": "payments",
+      "api": "CurrentPaymentProvider",
+      "package": "payments",
+      "configuration": "CurrentPaymentProvider",
+      "propertyPrefix": "current-payment-provider",
+      "credential": "currentPaymentProviderToken"
+    },
+    {
+      "domain": "events",
+      "api": "EventWatchDirectory",
+      "package": "events",
+      "configuration": "EventWatchDirectory",
+      "propertyPrefix": "event-watch-directory",
+      "credential": "eventWatchDirectoryToken"
+    },
+    {
+      "domain": "accounts",
+      "api": "ContactDirectory",
+      "package": "accounts",
+      "configuration": "ContactDirectory",
+      "propertyPrefix": "contact-directory",
+      "credential": "contactDirectoryToken"
+    },
+    {
+      "domain": "events",
+      "api": "OrganizerEventReads",
+      "package": "events",
+      "configuration": "OrganizerEventReads",
+      "propertyPrefix": "organizer-event-reads",
+      "credential": "organizerEventReadsToken",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountPaymentReads",
+      "package": "accounts",
+      "configuration": "AccountPaymentReads",
+      "propertyPrefix": "account-payment-reads",
+      "credential": "accountPaymentReadsToken",
+      "producerDomains": [
+        "payments",
+        "assets"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "ProfileSummaries",
+      "package": "accounts",
+      "configuration": "ProfileSummaries",
+      "propertyPrefix": "profile-summaries",
+      "credential": "profileSummariesToken",
+      "producerDomains": [
+        "groups",
+        "administration",
+        "chat",
+        "community",
+        "events",
+        "affinity",
+        "content",
+        "operator",
+        "feedback"
+      ]
+    },
+    {
+      "domain": "platform",
+      "api": "AuthenticationMode",
+      "package": "platform",
+      "configuration": "AuthenticationMode",
+      "propertyPrefix": "authentication-mode",
+      "credential": "authenticationModeToken"
+    },
+    {
+      "domain": "platform",
+      "api": "OperatorNotificationSettings",
+      "package": "platform",
+      "configuration": "OperatorNotificationSettings",
+      "propertyPrefix": "operator-notification-settings",
+      "credential": "operatorNotificationSettingsToken"
+    },
+    {
+      "domain": "accounts",
+      "api": "SelectedProfile",
+      "package": "accounts",
+      "configuration": "SelectedProfile",
+      "propertyPrefix": "selected-profile",
+      "credential": "selectedProfileToken",
+      "actorOperations": [
+        {
+          "audience": "accounts:selected-profile",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/selected-profile"
+        },
+        {
+          "audience": "accounts:selected-profile",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/selected-profile/discovery"
+        }
+      ],
+      "providedApis": [
+        "CurrentProfile"
+      ]
+    },
+    {
+      "domain": "administration",
+      "api": "AdministrativeActors",
+      "package": "content",
+      "configuration": "AdministrativeActors",
+      "propertyPrefix": "administrative-actors",
+      "credential": "administrativeActorsToken",
+      "actorOperations": [
+        {
+          "audience": "content:administrative-actors",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-actors/actor"
+        },
+        {
+          "audience": "content:administrative-actors",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-actors/group"
+        }
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "ProfileReadState",
+      "package": "accounts",
+      "configuration": "ProfileReadState",
+      "propertyPrefix": "profile-read-state",
+      "credential": "profileReadStateToken",
+      "actorOperations": [
+        {
+          "audience": "accounts:profile-read-state",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/profile-read-state/counters"
+        }
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "EmailProfiles",
+      "package": "accounts",
+      "configuration": "EmailProfiles",
+      "propertyPrefix": "email-profiles",
+      "credential": "emailProfilesToken"
+    },
+    {
+      "domain": "accounts",
+      "api": "EventCounterUpdates",
+      "package": "accounts",
+      "configuration": "EventCounterUpdates",
+      "propertyPrefix": "event-counter-updates",
+      "credential": "eventCounterUpdatesToken",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AssetProfiles",
+      "package": "accounts",
+      "configuration": "AssetProfiles",
+      "propertyPrefix": "asset-profiles",
+      "credential": "assetProfilesToken",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "AssetAffinityScores",
+      "package": "affinity",
+      "configuration": "AssetAffinityScores",
+      "propertyPrefix": "asset-affinity-scores",
+      "credential": "assetAffinityScoresToken",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "RatingSession",
+      "package": "accounts",
+      "configuration": "RatingSession",
+      "propertyPrefix": "rating-session",
+      "credential": "ratingSessionToken",
+      "producerDomains": [
+        "affinity"
+      ],
+      "actorOperations": [
+        {
+          "audience": "accounts:rating-session",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/rating-session"
+        }
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "ProfileCards",
+      "package": "accounts",
+      "configuration": "ProfileCards",
+      "propertyPrefix": "profile-cards",
+      "credential": "profileCardsToken",
+      "producerDomains": [
+        "affinity",
+        "events",
+        "groups"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "LocationEligibility",
+      "package": "accounts",
+      "configuration": "LocationEligibility",
+      "propertyPrefix": "location-eligibility",
+      "credential": "locationEligibilityToken",
+      "producerDomains": [
+        "content"
+      ]
+    },
+    {
+      "domain": "access",
+      "api": "AccessPermissions",
+      "providedApis": [
+        "ConsentAuthorization"
+      ],
+      "package": "access",
+      "configuration": "AccessPermissions",
+      "propertyPrefix": "access-permissions",
+      "credential": "accessPermissionsToken",
+      "actorOperations": [
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/resolve-chat-actor-user-id"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-assign-event-resource-scope"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-assign-event-resources-for-subject"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-receive-event-asset-manager-role"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-create-asset"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-replace-assets"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-edit-asset"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-delete-asset"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-restore-asset"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-take-over-asset"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-promote-asset-manager"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-create-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-edit-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-publish-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-unpublish-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-delete-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-restore-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-take-over-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-join-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-apply-event-stage-action"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-request-asset-borrow"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-approve-asset-borrow"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-reject-asset-borrow"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-cancel-asset-borrow"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-submit-leaderboard-entry"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-submit-feedback"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-save-feedback-note"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-remove-feedback"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-restore-feedback"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-create-chat-message"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-edit-chat-message"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-delete-chat-message"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-pin-chat-message"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-manage-chat-reaction"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-add-chat-attachment"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-manage-support-chat"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-edit-profile"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-delete-profile"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-upload-media"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-import-media"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-submit-privacy-consent"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-manage-event-members"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-view-event-members"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-accept-event-member"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-remove-event-member"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-disqualify-event-member"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-reinstate-event-member"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-invite-event-members"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-current-actor-manage-event-resource-scope"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-cleanup-event-resource-assignments"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/has-accepted-participation"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/has-member-status"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-manage-members"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/is-protected-member"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-manage-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-take-over-event"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-manage-asset"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-take-over-asset"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-access-chat"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/can-manage-support-chat"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/has-explicit-grant"
+        },
+        {
+          "audience": "access:permissions",
+          "method": "POST",
+          "path": "/_internal/v1/access/permissions/requires-authenticated-actor"
+        }
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.access.api.RequiresPolicy",
+        "com.raxim.myscoutee.domain.access.api.RequiresPolicies"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "ScoringProfiles",
+      "package": "accounts",
+      "configuration": "ScoringProfiles",
+      "propertyPrefix": "scoring-profiles",
+      "credential": "scoringProfilesToken",
+      "producerDomains": [
+        "affinity"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountAffinityProjections",
+      "package": "accounts",
+      "configuration": "AccountAffinityProjections",
+      "propertyPrefix": "account-affinity-projections",
+      "credential": "accountAffinityProjectionsToken",
+      "producerDomains": [
+        "affinity"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountDevices",
+      "package": "accounts",
+      "configuration": "AccountDevices",
+      "propertyPrefix": "account-devices",
+      "credential": "accountDevicesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "chat"
+      ],
+      "actorOperations": [
+        {
+          "audience": "accounts:account-devices",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/devices/register"
+        },
+        {
+          "audience": "accounts:account-devices",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/devices/remove"
+        }
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "AssetOwnershipReads",
+      "package": "assets",
+      "configuration": "AssetOwnershipReads",
+      "propertyPrefix": "asset-ownership-reads",
+      "credential": "assetOwnershipReadsToken",
+      "producerDomains": [
+        "accounts",
+        "operator",
+        "integrations",
+        "platform",
+        "content",
+        "chat",
+        "payments",
+        "affinity"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "AssetDerivedUpdates",
+      "package": "assets",
+      "configuration": "AssetDerivedUpdates",
+      "propertyPrefix": "asset-derived-updates",
+      "credential": "assetDerivedUpdatesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "platform",
+        "affinity"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "FollowingEvents",
+      "package": "accounts",
+      "configuration": "FollowingEvents",
+      "propertyPrefix": "following-events",
+      "credential": "followingEventsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events",
+        "affinity"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "FriendshipReads",
+      "package": "accounts",
+      "configuration": "FriendshipReads",
+      "propertyPrefix": "friendship-reads",
+      "credential": "friendshipReadsToken",
+      "producerDomains": [
+        "events",
+        "assets",
+        "access"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "FriendshipProjections",
+      "package": "accounts",
+      "configuration": "FriendshipProjections",
+      "propertyPrefix": "friendship-projections",
+      "credential": "friendshipProjectionsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "affinity"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "MeetingEvidence",
+      "package": "affinity",
+      "configuration": "MeetingEvidence",
+      "propertyPrefix": "meeting-evidence",
+      "credential": "meetingEvidenceToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "notifications",
+      "api": "NotificationJobs",
+      "package": "notifications",
+      "configuration": "NotificationJobs",
+      "propertyPrefix": "notification-jobs",
+      "credential": "notificationJobsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts",
+        "events",
+        "payments",
+        "affinity",
+        "administration",
+        "email",
+        "integrations",
+        "content",
+        "community",
+        "media"
+      ]
+    },
+    {
+      "domain": "campaigns",
+      "api": "CampaignCatalog",
+      "package": "campaigns",
+      "configuration": "CampaignCatalog",
+      "propertyPrefix": "campaign-catalog",
+      "credential": "campaignCatalogToken",
+      "producerDomains": [
+        "accounts",
+        "affinity",
+        "chat",
+        "integrations"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventOwnershipReads",
+      "package": "events",
+      "configuration": "EventOwnershipReads",
+      "propertyPrefix": "event-ownership-reads",
+      "credential": "eventOwnershipReadsToken",
+      "producerDomains": [
+        "accounts",
+        "operator",
+        "assets",
+        "payments",
+        "integrations",
+        "chat",
+        "platform",
+        "content",
+        "affinity",
+        "feedback"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventDerivedUpdates",
+      "package": "events",
+      "configuration": "EventDerivedUpdates",
+      "propertyPrefix": "event-derived-updates",
+      "credential": "eventDerivedUpdatesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "affinity",
+        "platform",
+        "feedback"
+      ]
+    },
+    {
+      "domain": "platform",
+      "api": "ModelStatusChanges",
+      "package": "platform",
+      "configuration": "ModelStatusChanges",
+      "propertyPrefix": "model-status-changes",
+      "credential": "modelStatusChangesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "affinity"
+      ]
+    },
+    {
+      "domain": "administration",
+      "api": "OperationalTelemetry",
+      "package": "administration",
+      "configuration": "OperationalTelemetry",
+      "propertyPrefix": "operational-telemetry",
+      "credential": "operationalTelemetryToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts",
+        "affinity",
+        "assets",
+        "chat",
+        "content",
+        "events",
+        "groups",
+        "help",
+        "notifications",
+        "feedback"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "ProfileModeration",
+      "package": "accounts",
+      "configuration": "ProfileModeration",
+      "propertyPrefix": "profile-moderation",
+      "credential": "profileModerationToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "content"
+      ],
+      "actorOperations": [
+        {
+          "audience": "accounts:profile-moderation",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/profile-moderation/block"
+        },
+        {
+          "audience": "accounts:profile-moderation",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/profile-moderation/unblock"
+        }
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "ActivityCounters",
+      "package": "accounts",
+      "configuration": "ActivityCounters",
+      "propertyPrefix": "activity-counters",
+      "credential": "activityCountersToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "assets",
+        "chat",
+        "content",
+        "events",
+        "community",
+        "campaigns",
+        "feedback"
+      ],
+      "providedApis": [
+        "FeedbackEvaluationCounters",
+        "FeedCounts",
+        "SupportCaseCounters",
+        "MenuCounterUpdates"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "FeedbackSession",
+      "package": "accounts",
+      "configuration": "FeedbackSession",
+      "propertyPrefix": "feedback-session",
+      "credential": "feedbackSessionToken",
+      "producerDomains": [
+        "events",
+        "feedback"
+      ],
+      "actorOperations": [
+        {
+          "audience": "accounts:feedback-session",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/feedback-session"
+        }
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "AffinityPrivacy",
+      "package": "affinity",
+      "configuration": "AffinityPrivacy",
+      "propertyPrefix": "affinity-privacy",
+      "credential": "affinityPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "ChatPrivacy",
+      "package": "chat",
+      "configuration": "ChatPrivacy",
+      "propertyPrefix": "chat-privacy",
+      "credential": "chatPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "content",
+      "api": "ContentPrivacy",
+      "package": "content",
+      "configuration": "ContentPrivacy",
+      "propertyPrefix": "content-privacy",
+      "credential": "contentPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
+      ]
+    },
+    {
+      "domain": "email",
+      "api": "EmailPrivacy",
+      "package": "email",
+      "configuration": "EmailPrivacy",
+      "propertyPrefix": "email-privacy",
+      "credential": "emailPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "help",
+      "api": "HelpPrivacy",
+      "package": "help",
+      "configuration": "HelpPrivacy",
+      "propertyPrefix": "help-privacy",
+      "credential": "helpPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "PaymentPrivacy",
+      "package": "payments",
+      "configuration": "PaymentPrivacy",
+      "propertyPrefix": "payment-privacy",
+      "credential": "paymentPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
+      ]
+    },
+    {
+      "domain": "notifications",
+      "api": "NotificationPrivacy",
+      "package": "notifications",
+      "configuration": "NotificationPrivacy",
+      "propertyPrefix": "notification-privacy",
+      "credential": "notificationPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "AssetPrivacy",
+      "package": "assets",
+      "configuration": "AssetPrivacy",
+      "propertyPrefix": "asset-privacy",
+      "credential": "assetPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventPrivacy",
+      "package": "events",
+      "configuration": "EventPrivacy",
+      "propertyPrefix": "event-privacy",
+      "credential": "eventPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
+      ]
+    },
+    {
+      "domain": "media",
+      "api": "MediaCleanup",
+      "package": "media",
+      "configuration": "MediaCleanup",
+      "propertyPrefix": "media-cleanup",
+      "credential": "mediaCleanupToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts",
+        "assets",
+        "chat",
+        "content",
+        "events",
+        "integrations"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountMediaSessions",
+      "package": "accounts",
+      "configuration": "AccountMediaSessions",
+      "propertyPrefix": "account-media-sessions",
+      "credential": "accountMediaSessionsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "media"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.common.security.media.MediaSessionAccessService"
+      ],
+      "actorOperations": [
+        {
+          "audience": "accounts:media-sessions",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/media-sessions/current"
+        },
+        {
+          "audience": "accounts:media-sessions",
+          "method": "POST",
+          "path": "/_internal/v1/accounts/media-sessions/replace"
+        }
+      ],
+      "consumerDomains": [
+        "media"
+      ]
+    },
+    {
+      "domain": "media",
+      "api": "ImageUploads",
+      "package": "media",
+      "configuration": "ImageUploads",
+      "propertyPrefix": "image-uploads",
+      "credential": "imageUploadsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountInactivity",
+      "package": "accounts",
+      "configuration": "AccountInactivity",
+      "propertyPrefix": "account-inactivity",
+      "credential": "accountInactivityToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "email"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "ChatCounters",
+      "package": "accounts",
+      "configuration": "ChatCounters",
+      "propertyPrefix": "chat-counters",
+      "credential": "chatCountersToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "chat"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountNotifications",
+      "package": "accounts",
+      "configuration": "AccountNotifications",
+      "propertyPrefix": "account-notifications",
+      "credential": "accountNotificationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "notifications"
+      ]
+    },
+    {
+      "domain": "platform",
+      "api": "FirebasePushDelivery",
+      "package": "platform",
+      "configuration": "FirebasePushDelivery",
+      "propertyPrefix": "firebase-push-delivery",
+      "credential": "firebasePushDeliveryToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "notifications"
+      ]
+    },
+    {
+      "domain": "platform",
+      "api": "EmailSecrets",
+      "package": "platform",
+      "configuration": "EmailSecrets",
+      "propertyPrefix": "email-secrets",
+      "credential": "emailSecretsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "email"
+      ]
+    },
+    {
+      "domain": "platform",
+      "api": "PaymentCredentialSecrets",
+      "package": "platform",
+      "configuration": "PaymentCredentialSecrets",
+      "propertyPrefix": "payment-credential-secrets",
+      "credential": "paymentCredentialSecretsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "payments"
+      ]
+    },
+    {
+      "domain": "platform",
+      "api": "DeploymentSettings",
+      "package": "platform",
+      "configuration": "DeploymentSettings",
+      "propertyPrefix": "deployment-settings",
+      "credential": "deploymentSettingsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "payments",
+        "integrations"
+      ]
+    },
+    {
+      "domain": "community",
+      "api": "AnnouncementDirectory",
+      "package": "community",
+      "configuration": "AnnouncementDirectory",
+      "propertyPrefix": "announcement-directory",
+      "credential": "announcementDirectoryToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "chat"
+      ]
+    },
+    {
+      "domain": "feedback",
+      "api": "FeedbackPreparation",
+      "package": "feedback",
+      "configuration": "FeedbackPreparation",
+      "propertyPrefix": "feedback-preparation",
+      "credential": "caseFeedbackPreparationToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "email"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "MemberAttention",
+      "package": "events",
+      "configuration": "MemberAttention",
+      "propertyPrefix": "member-attention",
+      "credential": "memberAttentionToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "notifications"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.notifications.api.NotificationUnreadObserver"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "MemberAudience",
+      "package": "events",
+      "configuration": "MemberAudience",
+      "propertyPrefix": "member-audience",
+      "credential": "memberAudienceToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "email"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventResourceDirectory",
+      "package": "events",
+      "configuration": "EventResourceDirectory",
+      "propertyPrefix": "event-resource-directory",
+      "credential": "eventResourceDirectoryToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "chat"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "RandomGroupAssignment",
+      "package": "events",
+      "configuration": "RandomGroupAssignment",
+      "propertyPrefix": "random-group-assignment",
+      "credential": "randomGroupAssignmentToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "notifications"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "ExchangeRateRefresh",
+      "package": "payments",
+      "configuration": "ExchangeRateRefresh",
+      "propertyPrefix": "exchange-rate-refresh",
+      "credential": "exchangeRateRefreshToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "notifications"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "PaymentTotals",
+      "package": "accounts",
+      "configuration": "PaymentTotals",
+      "propertyPrefix": "payment-totals",
+      "credential": "paymentTotalsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "payments"
+      ]
+    },
+    {
+      "domain": "integrations",
+      "api": "ParticipantStatistics",
+      "package": "integrations",
+      "configuration": "ParticipantStatistics",
+      "propertyPrefix": "participant-statistics",
+      "credential": "participantStatisticsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "payments"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventCheckout",
+      "package": "events",
+      "configuration": "EventCheckout",
+      "propertyPrefix": "event-checkout",
+      "credential": "eventCheckoutToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "payments"
+      ],
+      "actorOperations": [
+        {
+          "audience": "events:event-checkout",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-checkout/pay"
+        }
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "AttachmentLifecycle",
+      "package": "chat",
+      "configuration": "AttachmentLifecycle",
+      "propertyPrefix": "attachment-lifecycle",
+      "credential": "attachmentLifecycleToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "platform",
+        "assets",
+        "events"
+      ]
+    },
+    {
+      "domain": "content",
+      "api": "ContentRegistration",
+      "package": "content",
+      "configuration": "ContentRegistration",
+      "propertyPrefix": "content-registration",
+      "credential": "contentRegistrationToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts",
+        "groups",
+        "assets",
+        "events"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "AssetMemberships",
+      "package": "events",
+      "configuration": "AssetMemberships",
+      "propertyPrefix": "asset-memberships",
+      "credential": "assetMembershipsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "ParticipationTickets",
+      "package": "events",
+      "configuration": "ParticipationTickets",
+      "propertyPrefix": "participation-tickets",
+      "credential": "participationTicketsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts",
+        "assets"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "TicketAudit",
+      "package": "events",
+      "configuration": "TicketAudit",
+      "propertyPrefix": "ticket-audit",
+      "credential": "ticketAuditToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "integrations",
+      "api": "AssetChanges",
+      "package": "integrations",
+      "configuration": "AssetChanges",
+      "propertyPrefix": "asset-changes",
+      "credential": "assetChangesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "integrations",
+      "api": "EventChanges",
+      "package": "integrations",
+      "configuration": "EventChanges",
+      "propertyPrefix": "event-changes",
+      "credential": "eventChangesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "CheckoutResults",
+      "package": "payments",
+      "configuration": "CheckoutResults",
+      "propertyPrefix": "checkout-results",
+      "credential": "checkoutResultsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "AssetPayments",
+      "package": "payments",
+      "configuration": "AssetPayments",
+      "propertyPrefix": "asset-payments",
+      "credential": "assetPaymentsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "DiscoveryProfiles",
+      "package": "accounts",
+      "configuration": "DiscoveryProfiles",
+      "propertyPrefix": "discovery-profiles",
+      "credential": "discoveryProfilesToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "groups",
+        "campaigns",
+        "community",
+        "content",
+        "events"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountWorkspaces",
+      "package": "accounts",
+      "configuration": "AccountWorkspaces",
+      "propertyPrefix": "account-workspaces",
+      "credential": "accountWorkspacesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "groups",
+        "campaigns",
+        "integrations"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.groups.api.WorkspaceMembership"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "EventAffinityScores",
+      "package": "affinity",
+      "configuration": "EventAffinityScores",
+      "propertyPrefix": "event-affinity-scores",
+      "credential": "eventAffinityScoresToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "integrations",
+      "api": "RoleAttentionEvents",
+      "package": "integrations",
+      "configuration": "RoleAttentionEvents",
+      "propertyPrefix": "role-attention-events",
+      "credential": "roleAttentionEventsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "notifications"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "CheckoutMemberships",
+      "package": "events",
+      "configuration": "CheckoutMemberships",
+      "propertyPrefix": "checkout-memberships",
+      "credential": "checkoutMembershipsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "payments"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "ResourceAssignments",
+      "package": "events",
+      "configuration": "ResourceAssignments",
+      "propertyPrefix": "resource-assignments",
+      "credential": "resourceAssignmentsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "assets"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "CheckoutBaskets",
+      "package": "payments",
+      "configuration": "CheckoutBaskets",
+      "propertyPrefix": "checkout-baskets",
+      "credential": "checkoutBasketsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "EventPayments",
+      "package": "payments",
+      "configuration": "EventPayments",
+      "propertyPrefix": "event-payments",
+      "credential": "eventPaymentsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ],
+      "actorOperations": [
+        {
+          "audience": "payments:event-payments",
+          "method": "POST",
+          "path": "/_internal/v1/payments/event-payments/pay"
+        }
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "EventPaymentCancellations",
+      "package": "payments",
+      "configuration": "EventPaymentCancellations",
+      "propertyPrefix": "event-payment-cancellations",
+      "credential": "eventPaymentCancellationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "CheckoutPricing",
+      "package": "payments",
+      "configuration": "CheckoutPricing",
+      "propertyPrefix": "checkout-pricing",
+      "credential": "checkoutPricingToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "ServiceSlotPricing",
+      "package": "payments",
+      "configuration": "ServiceSlotPricing",
+      "propertyPrefix": "service-slot-pricing",
+      "credential": "serviceSlotPricingToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "community"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "PaymentRefunds",
+      "package": "payments",
+      "configuration": "PaymentRefunds",
+      "propertyPrefix": "payment-refunds",
+      "credential": "paymentRefundsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ],
+      "actorOperations": [
+        {
+          "audience": "payments:payment-refunds",
+          "method": "POST",
+          "path": "/_internal/v1/payments/payment-refunds/changed-terms"
+        }
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "CampaignConversations",
+      "package": "chat",
+      "configuration": "CampaignConversations",
+      "propertyPrefix": "campaign-conversations",
+      "credential": "campaignConversationsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "campaigns"
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "CaseConversations",
+      "package": "chat",
+      "configuration": "CaseConversations",
+      "propertyPrefix": "case-conversations",
+      "credential": "caseConversationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "community"
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "EventConversations",
+      "package": "chat",
+      "configuration": "EventConversations",
+      "propertyPrefix": "event-conversations",
+      "credential": "eventConversationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "SupportMessages",
+      "package": "chat",
+      "configuration": "SupportMessages",
+      "propertyPrefix": "support-messages",
+      "credential": "supportMessagesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "content",
+        "accounts"
+      ]
+    },
+    {
+      "domain": "email",
+      "api": "ScheduledMessages",
+      "package": "email",
+      "configuration": "ScheduledMessages",
+      "propertyPrefix": "scheduled-messages",
+      "credential": "scheduledMessagesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events",
+        "community"
+      ]
+    },
+    {
+      "domain": "notifications",
+      "api": "NotificationReads",
+      "package": "notifications",
+      "configuration": "NotificationReads",
+      "propertyPrefix": "notification-reads",
+      "credential": "notificationReadsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "integrations",
+        "accounts"
+      ],
+      "actorOperations": [
+        {
+          "audience": "notifications:notification-reads",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-reads/page"
+        },
+        {
+          "audience": "notifications:notification-reads",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-reads/unread"
+        }
+      ]
+    },
+    {
+      "domain": "notifications",
+      "api": "EventInvitationNotifications",
+      "package": "notifications",
+      "configuration": "EventInvitationNotifications",
+      "propertyPrefix": "event-invitation-notifications",
+      "credential": "eventInvitationNotificationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "AccountConsents",
+      "package": "accounts",
+      "configuration": "AccountConsents",
+      "propertyPrefix": "account-consents",
+      "credential": "accountConsentsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "help",
+        "operator"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "AccountRatings",
+      "package": "affinity",
+      "configuration": "AccountRatings",
+      "propertyPrefix": "account-ratings",
+      "credential": "accountRatingsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "community"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "CampaignRatings",
+      "package": "affinity",
+      "configuration": "CampaignRatings",
+      "propertyPrefix": "campaign-ratings",
+      "credential": "campaignRatingsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "campaigns"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "CampaignGraphs",
+      "package": "affinity",
+      "configuration": "CampaignGraphs",
+      "propertyPrefix": "campaign-graphs",
+      "credential": "campaignGraphsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "MeetingProjections",
+      "package": "affinity",
+      "configuration": "MeetingProjections",
+      "propertyPrefix": "meeting-projections",
+      "credential": "meetingProjectionsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "RatingPageReads",
+      "package": "affinity",
+      "configuration": "RatingPageReads",
+      "propertyPrefix": "rating-page-reads",
+      "credential": "ratingPageReadsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "affinity:rating-page-reads",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/rating-page-reads/page"
+        }
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "AssetModerationDetails",
+      "package": "assets",
+      "configuration": "AssetModerationDetails",
+      "propertyPrefix": "asset-moderation-details",
+      "credential": "assetModerationDetailsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "content"
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "AssetModerationProjection",
+      "package": "assets",
+      "configuration": "AssetModerationProjection",
+      "propertyPrefix": "asset-moderation-projection",
+      "credential": "assetModerationProjectionToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "content"
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "Assets",
+      "package": "assets",
+      "configuration": "Assets",
+      "propertyPrefix": "assets",
+      "credential": "assetsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events",
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "assets:assets",
+          "method": "POST",
+          "path": "/_internal/v1/assets/assets/manage"
+        },
+        {
+          "audience": "assets:assets",
+          "method": "POST",
+          "path": "/_internal/v1/assets/assets/detail"
+        },
+        {
+          "audience": "assets:assets",
+          "method": "POST",
+          "path": "/_internal/v1/assets/assets/assignable"
+        },
+        {
+          "audience": "assets:assets",
+          "method": "POST",
+          "path": "/_internal/v1/assets/assets/page"
+        },
+        {
+          "audience": "assets:assets",
+          "method": "POST",
+          "path": "/_internal/v1/assets/assets/upsert"
+        }
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "RatingMeasurement",
+      "package": "affinity",
+      "configuration": "RatingMeasurement",
+      "propertyPrefix": "rating-measurement",
+      "credential": "ratingMeasurementToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "assets",
+      "api": "AssetMeasurement",
+      "package": "assets",
+      "configuration": "AssetMeasurement",
+      "propertyPrefix": "asset-measurement",
+      "credential": "assetMeasurementToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "ChatMeasurement",
+      "package": "chat",
+      "configuration": "ChatMeasurement",
+      "propertyPrefix": "chat-measurement",
+      "credential": "chatMeasurementToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventMeasurement",
+      "package": "events",
+      "configuration": "EventMeasurement",
+      "propertyPrefix": "event-measurement",
+      "credential": "eventMeasurementToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "PaymentMethods",
+      "package": "payments",
+      "configuration": "PaymentMethods",
+      "propertyPrefix": "payment-methods",
+      "credential": "paymentMethodsToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "PaymentSimulatorConfiguration",
+      "package": "payments",
+      "configuration": "PaymentSimulatorConfiguration",
+      "propertyPrefix": "payment-simulator-configuration",
+      "credential": "paymentSimulatorConfigurationToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "platform"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "PaymentRevenue",
+      "package": "payments",
+      "configuration": "PaymentRevenue",
+      "propertyPrefix": "payment-revenue",
+      "credential": "paymentRevenueToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "email",
+      "api": "EmailSending",
+      "package": "email",
+      "configuration": "EmailSending",
+      "propertyPrefix": "email-sending",
+      "credential": "emailSendingToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "feedback",
+      "api": "FeedbackEligibility",
+      "package": "feedback",
+      "configuration": "FeedbackEligibility",
+      "propertyPrefix": "feedback-eligibility",
+      "credential": "feedbackEligibilityToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "payments",
+      "api": "Affiliates",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.integrations.api.IntegrationAccountSummaries"
+      ],
+      "package": "payments",
+      "configuration": "Affiliates",
+      "propertyPrefix": "affiliates",
+      "credential": "affiliatesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "GraphScience",
+      "package": "affinity",
+      "configuration": "GraphScience",
+      "propertyPrefix": "graph-science",
+      "credential": "graphScienceToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "administration"
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "AffinityParameters",
+      "package": "affinity",
+      "configuration": "AffinityParameters",
+      "propertyPrefix": "affinity-parameters",
+      "credential": "affinityParametersToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "administration"
+      ],
+      "actorOperations": [
+        {
+          "audience": "affinity:affinity-parameters",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-parameters/state_1"
+        },
+        {
+          "audience": "affinity:affinity-parameters",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-parameters/history_1"
+        },
+        {
+          "audience": "affinity:affinity-parameters",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-parameters/history_2"
+        },
+        {
+          "audience": "affinity:affinity-parameters",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-parameters/save_1"
+        },
+        {
+          "audience": "affinity:affinity-parameters",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-parameters/revert_1"
+        }
+      ]
+    },
+    {
+      "domain": "affinity",
+      "api": "AffinityGraph",
+      "package": "affinity",
+      "configuration": "AffinityGraph",
+      "propertyPrefix": "affinity-graph",
+      "credential": "affinityGraphToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "administration"
+      ],
+      "actorOperations": [
+        {
+          "audience": "affinity:affinity-graph",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-graph/meta_1"
+        },
+        {
+          "audience": "affinity:affinity-graph",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-graph/full_1"
+        },
+        {
+          "audience": "affinity:affinity-graph",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-graph/neighborhood_1"
+        },
+        {
+          "audience": "affinity:affinity-graph",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-graph/forests_1"
+        },
+        {
+          "audience": "affinity:affinity-graph",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-graph/tile_1"
+        },
+        {
+          "audience": "affinity:affinity-graph",
+          "method": "POST",
+          "path": "/_internal/v1/affinity/affinity-graph/rebuildlayout_1"
+        }
+      ]
+    },
+    {
+      "domain": "help",
+      "api": "HelpAdministration",
+      "package": "help",
+      "configuration": "HelpAdministration",
+      "propertyPrefix": "help-administration",
+      "credential": "helpAdministrationToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "administration"
+      ],
+      "actorOperations": [
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/adminstate_1"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/adminstate_2"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/adminstate_3"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/adminstate_4"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/saverevision_1"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/saverevision_2"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/activaterevision_1"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/activaterevision_2"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/deleterevision_1"
+        },
+        {
+          "audience": "help:help-administration",
+          "method": "POST",
+          "path": "/_internal/v1/help/help-administration/deleterevision_2"
+        }
+      ]
+    },
+    {
+      "domain": "content",
+      "api": "IdeaAdministration",
+      "package": "content",
+      "configuration": "IdeaAdministration",
+      "propertyPrefix": "idea-administration",
+      "credential": "ideaAdministrationToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "administration"
+      ],
+      "actorOperations": [
+        {
+          "audience": "content:idea-administration",
+          "method": "POST",
+          "path": "/_internal/v1/content/idea-administration/adminposts_1"
+        },
+        {
+          "audience": "content:idea-administration",
+          "method": "POST",
+          "path": "/_internal/v1/content/idea-administration/adminposts_2"
+        },
+        {
+          "audience": "content:idea-administration",
+          "method": "POST",
+          "path": "/_internal/v1/content/idea-administration/adminpostspage_1"
+        },
+        {
+          "audience": "content:idea-administration",
+          "method": "POST",
+          "path": "/_internal/v1/content/idea-administration/savepost_1"
+        },
+        {
+          "audience": "content:idea-administration",
+          "method": "POST",
+          "path": "/_internal/v1/content/idea-administration/deletepost_1"
+        },
+        {
+          "audience": "content:idea-administration",
+          "method": "POST",
+          "path": "/_internal/v1/content/idea-administration/restorepost_1"
+        }
+      ]
+    },
+    {
+      "domain": "notifications",
+      "api": "NotificationAdministration",
+      "package": "notifications",
+      "configuration": "NotificationAdministration",
+      "propertyPrefix": "notification-administration",
+      "credential": "notificationAdministrationToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "administration"
+      ],
+      "actorOperations": [
+        {
+          "audience": "notifications:notification-administration",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-administration/state_1"
+        },
+        {
+          "audience": "notifications:notification-administration",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-administration/rulestate_1"
+        },
+        {
+          "audience": "notifications:notification-administration",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-administration/save_1"
+        },
+        {
+          "audience": "notifications:notification-administration",
+          "method": "POST",
+          "path": "/_internal/v1/notifications/notification-administration/run_1"
+        }
+      ]
+    },
+    {
+      "domain": "content",
+      "api": "AdministrativeAccess",
+      "package": "content",
+      "configuration": "AdministrativeAccess",
+      "propertyPrefix": "administrative-access",
+      "credential": "administrativeAccessToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "administration"
+      ],
+      "actorOperations": [
+        {
+          "audience": "content:administrative-access",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-access/dashboard_1"
+        },
+        {
+          "audience": "content:administrative-access",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-access/dashboard_2"
+        },
+        {
+          "audience": "content:administrative-access",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-access/warn_1"
+        },
+        {
+          "audience": "content:administrative-access",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-access/block_1"
+        },
+        {
+          "audience": "content:administrative-access",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-access/unblock_1"
+        },
+        {
+          "audience": "content:administrative-access",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-access/resolvereport_1"
+        },
+        {
+          "audience": "content:administrative-access",
+          "method": "POST",
+          "path": "/_internal/v1/content/administrative-access/resolvefeedback_1"
+        }
+      ]
+    },
+    {
+      "domain": "campaigns",
+      "api": "Campaigns",
+      "package": "campaigns",
+      "configuration": "Campaigns",
+      "propertyPrefix": "campaigns",
+      "credential": "campaignsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations",
+        "events"
+      ],
+      "actorOperations": [
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/actor_1"
+        },
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/visible_1"
+        },
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/detail_1"
+        },
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/history_1"
+        },
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/page_1"
+        },
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/save_1"
+        },
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/createimported_1"
+        },
+        {
+          "audience": "campaigns:campaigns",
+          "method": "POST",
+          "path": "/_internal/v1/campaigns/campaigns/action_1"
+        }
+      ]
+    },
+    {
+      "domain": "chat",
+      "api": "ChatQueries",
+      "package": "chat",
+      "configuration": "ChatQueries",
+      "propertyPrefix": "chat-queries",
+      "credential": "chatQueriesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "chat:chat-queries",
+          "method": "POST",
+          "path": "/_internal/v1/chat/chat-queries/querychatbyid_1"
+        },
+        {
+          "audience": "chat:chat-queries",
+          "method": "POST",
+          "path": "/_internal/v1/chat/chat-queries/querychatpage_1"
+        },
+        {
+          "audience": "chat:chat-queries",
+          "method": "POST",
+          "path": "/_internal/v1/chat/chat-queries/querymessagespage_1"
+        },
+        {
+          "audience": "chat:chat-queries",
+          "method": "POST",
+          "path": "/_internal/v1/chat/chat-queries/querymessagespage_2"
+        },
+        {
+          "audience": "chat:chat-queries",
+          "method": "POST",
+          "path": "/_internal/v1/chat/chat-queries/querymessagespage_3"
+        }
+      ]
+    },
+    {
+      "domain": "community",
+      "api": "Announcements",
+      "package": "community",
+      "configuration": "Announcements",
+      "propertyPrefix": "announcements",
+      "credential": "announcementsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "community:announcements",
+          "method": "POST",
+          "path": "/_internal/v1/community/announcements/actor_1"
+        },
+        {
+          "audience": "community:announcements",
+          "method": "POST",
+          "path": "/_internal/v1/community/announcements/detail_1"
+        },
+        {
+          "audience": "community:announcements",
+          "method": "POST",
+          "path": "/_internal/v1/community/announcements/page_1"
+        },
+        {
+          "audience": "community:announcements",
+          "method": "POST",
+          "path": "/_internal/v1/community/announcements/save_1"
+        },
+        {
+          "audience": "community:announcements",
+          "method": "POST",
+          "path": "/_internal/v1/community/announcements/action_1"
+        }
+      ]
+    },
+    {
+      "domain": "community",
+      "api": "Cases",
+      "package": "community",
+      "configuration": "Cases",
+      "propertyPrefix": "cases",
+      "credential": "casesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations",
+        "feedback"
+      ],
+      "actorOperations": [
+        {
+          "audience": "community:cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/cases/actor_1"
+        },
+        {
+          "audience": "community:cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/cases/detail_1"
+        },
+        {
+          "audience": "community:cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/cases/read_1"
+        },
+        {
+          "audience": "community:cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/cases/page_1"
+        },
+        {
+          "audience": "community:cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/cases/save_1"
+        },
+        {
+          "audience": "community:cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/cases/action_1"
+        }
+      ]
+    },
+    {
+      "domain": "community",
+      "api": "ScheduledCases",
+      "package": "community",
+      "configuration": "ScheduledCases",
+      "propertyPrefix": "scheduled-cases",
+      "credential": "scheduledCasesToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "community:scheduled-cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/scheduled-cases/actor_1"
+        },
+        {
+          "audience": "community:scheduled-cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/scheduled-cases/page_1"
+        },
+        {
+          "audience": "community:scheduled-cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/scheduled-cases/save_1"
+        },
+        {
+          "audience": "community:scheduled-cases",
+          "method": "POST",
+          "path": "/_internal/v1/community/scheduled-cases/action_1"
+        }
+      ]
+    },
+    {
+      "domain": "community",
+      "api": "ServiceOfferings",
+      "package": "community",
+      "configuration": "ServiceOfferings",
+      "propertyPrefix": "service-offerings",
+      "credential": "serviceOfferingsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations",
+        "feedback"
+      ],
+      "actorOperations": [
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/actor_1"
+        },
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/detail_1"
+        },
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/page_1"
+        },
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/page_2"
+        },
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/save_1"
+        },
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/action_1"
+        },
+        {
+          "audience": "community:service-offerings",
+          "method": "POST",
+          "path": "/_internal/v1/community/service-offerings/visibleMetadata"
+        }
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "EventOperations",
+      "package": "events",
+      "configuration": "EventOperations",
+      "propertyPrefix": "event-operations",
+      "credential": "eventOperationsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/queryitemsbyuserpage_1"
+        },
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/queryinvitationspage_1"
+        },
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/queryattendingpage_1"
+        },
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/queryhostingpage_1"
+        },
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/querytrashpage_1"
+        },
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/loadeventdetailbyid_1"
+        },
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/requestjoin_1"
+        },
+        {
+          "audience": "events:event-operations",
+          "method": "POST",
+          "path": "/_internal/v1/events/event-operations/sync_1"
+        }
+      ]
+    },
+    {
+      "domain": "groups",
+      "api": "IntegrationGroups",
+      "package": "groups",
+      "configuration": "IntegrationGroups",
+      "propertyPrefix": "integration-groups",
+      "credential": "integrationGroupsToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/actor_1"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/detail_1"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/page_1"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/page_2"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/joinworkspacebase_1"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/claimintegrationinvite_1"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/claimeventinvite_1"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/administeredgroups_1"
+        },
+        {
+          "audience": "groups:integration-groups",
+          "method": "POST",
+          "path": "/_internal/v1/groups/integration-groups/requireadmin_1"
+        }
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "PartnerInvitationAdmission",
+      "package": "events",
+      "configuration": "PartnerInvitationAdmission",
+      "propertyPrefix": "partner-invitation-admission",
+      "credential": "partnerInvitationAdmissionToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "events:partner-invitation-admission",
+          "method": "POST",
+          "path": "/_internal/v1/events/partner-invitation-admission/claim"
+        }
+      ]
+    },
+    {
+      "domain": "events",
+      "api": "MingleEncounters",
+      "package": "events",
+      "configuration": "MingleEncounters",
+      "propertyPrefix": "mingle-encounters",
+      "credential": "mingleEncountersToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "integrations",
+        "feedback"
+      ]
+    },
+    {
+      "domain": "help",
+      "api": "PublicHelpContent",
+      "package": "help",
+      "configuration": "PublicHelpContent",
+      "propertyPrefix": "public-help-content",
+      "credential": "publicHelpContentToken",
+      "producerDomains": [
+        "content"
+      ]
+    },
+    {
+      "domain": "operator",
+      "api": "GlobalIdentityPrivacy",
+      "package": "operator",
+      "configuration": "GlobalIdentityPrivacy",
+      "propertyPrefix": "global-identity-privacy",
+      "credential": "globalIdentityPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "MeasurementEligibility",
+      "package": "accounts",
+      "configuration": "MeasurementEligibility",
+      "propertyPrefix": "measurement-eligibility",
+      "credential": "measurementEligibilityToken",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "operator",
+      "api": "MeasurementReports",
+      "providedApis": [
+        "RevenueReports"
+      ],
+      "package": "operator",
+      "configuration": "OperatorReports",
+      "propertyPrefix": "operator-reports",
+      "credential": "operatorReportsToken",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "operator:integration-reports",
+          "method": "POST",
+          "path": "/_internal/v1/operator/reports/measurements"
+        },
+        {
+          "audience": "operator:integration-reports",
+          "method": "POST",
+          "path": "/_internal/v1/operator/reports/revenue"
+        }
+      ]
+    },
+    {
+      "domain": "media",
+      "api": "MediaDeletionQueue",
+      "package": "media",
+      "configuration": "MediaDeletionQueue",
+      "propertyPrefix": "media-deletion",
+      "credential": "mediaDeletionToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "community",
+        "notifications"
+      ]
+    },
+    {
+      "domain": "feedback",
+      "api": "FeedbackMeasurement",
+      "package": "feedback",
+      "configuration": "FeedbackMeasurement",
+      "propertyPrefix": "feedback-measurement",
+      "credential": "feedbackMeasurementToken",
+      "credentialProperty": "read-token",
+      "producerDomains": [
+        "events"
+      ]
+    },
+    {
+      "domain": "feedback",
+      "api": "FeedbackPrivacy",
+      "package": "feedback",
+      "configuration": "FeedbackPrivacy",
+      "propertyPrefix": "feedback-privacy",
+      "credential": "feedbackPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "events"
+      ]
+    }
+  ],
+  "localBindings": [
+    {
+      "domain": "administration",
+      "api": "AdministratorClassification",
+      "configuration": "SharedProfilePoliciesConfiguration",
+      "reason": "Complete stateless classification is defined once in the canonical API; it has no owner database or runtime state."
+    },
+    {
+      "domain": "platform",
+      "api": "SchedulingPolicy",
+      "providedApis": [
+        "NotificationPolicy"
+      ],
+      "includeOwner": true,
+      "configuration": "SharedSchedulingConfiguration",
+      "reason": "The single canonical parameter reader uses ConfigurationCatalog and scoped JobGroupContext, with no persistence, workers or platform secrets. Reused in every consuming assembly; ConfigurationCatalog lists these consumer APIs for transport wiring."
+    },
+    {
+      "domain": "media",
+      "api": "MediaSessionAccess",
+      "configuration": "SharedMediaSessionConfiguration",
+      "reason": "The canonical HTTP cookie adapter uses native or remote account session operations; servlet request/response and Authentication never cross HTTP as serialized values. Media owner imports the same adapter through canonical MediaSessionConfiguration."
+    }
+  ]
+}

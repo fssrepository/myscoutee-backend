@@ -37,8 +37,7 @@ import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 
 @Service
 public class ActivitiesInviteCandidatesService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private Groups communityGroups;
+    private final Groups communityGroups;
     private final ProfileSummaries usersRepository;
     private final RatingDirectory userRatesRepository;
     private final ActivityMembersRepository activityMembersRepository;
@@ -56,7 +55,10 @@ public class ActivitiesInviteCandidatesService {
             ProfileCards profileCards,
             SelectedProfile selectedProfile,
             RatingProfiles ratingProfiles,
-            ContactDirectory navigatorContactsProfilesRepository) {
+            ContactDirectory navigatorContactsProfilesRepository,
+            Groups communityGroups) {
+        this.communityGroups = communityGroups;
+
         this.usersRepository = usersRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -371,7 +373,7 @@ public class ActivitiesInviteCandidatesService {
 
     private ActivityMemberEntryDto toInviteEntryFromMember(ActivityMember member, ProfileSummary user, UserDto card) {
         String userId = normalizeId(member == null ? null : member.getUserId());
-        if (!StringUtils.hasText(userId) || user == null) {
+        if (member == null || !StringUtils.hasText(userId) || user == null) {
             return null;
         }
         String actionAtIso = firstNonBlank(

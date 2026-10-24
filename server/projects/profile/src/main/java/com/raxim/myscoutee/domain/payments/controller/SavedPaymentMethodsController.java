@@ -37,7 +37,12 @@ public class SavedPaymentMethodsController {
             SavedPaymentMethodsService service,
             SelectedProfile homeUserProfileService,
             PaymentSimulatorRegistrationClient simulatorClient,
-            PaymentRefundService paymentRefundService) {
+            PaymentRefundService paymentRefundService,
+            com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService,
+            com.raxim.myscoutee.domain.payments.service.PaymentService payments) {
+        this.euroService = euroService;
+        this.payments = payments;
+
         this.service = service;
         this.homeUserProfileService = homeUserProfileService;
         this.simulatorClient = simulatorClient;
@@ -95,8 +100,7 @@ public class SavedPaymentMethodsController {
         service.delete(resolveCurrentUserId(userId), paymentMethodId);
     }
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
+    private final com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
 
     public record SummaryCurrencyRequest(String currency) {}
     @PostMapping("/summary-currency")
@@ -105,8 +109,7 @@ public class SavedPaymentMethodsController {
         return request;
     }
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.payments.service.PaymentService payments;
+    private final com.raxim.myscoutee.domain.payments.service.PaymentService payments;
 
     @PostMapping("/history/cash")
     public PaymentHistoryMutationDto cashReceipt(

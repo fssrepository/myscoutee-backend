@@ -9,9 +9,12 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 
 @Service
 public class MemberDirectoryService implements MemberDirectory {
-    @org.springframework.beans.factory.annotation.Autowired private org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final ActivityMembersRepository members;
-    public MemberDirectoryService(ActivityMembersRepository members) { this.members = members; }
+    public MemberDirectoryService(ActivityMembersRepository members,
+            org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        this.mongo = mongo;
+ this.members = members; }
     @Override public Optional<ActivityMember> findByOwnerTypeAndOwnerIdAndUserId(String type, String id, String user) { return members.findByOwnerTypeAndOwnerIdAndUserId(type, id, user); }
     @Override public List<ActivityMember> findByOwnerTypeAndOwnerId(String type, String id) { return members.findByOwnerTypeAndOwnerId(type, id); }
     @Override public java.util.List<ActivityMember> findByOwnerTypeAndUserId(String type, String user) { return members.findByOwnerTypeAndUserId(type, user); }

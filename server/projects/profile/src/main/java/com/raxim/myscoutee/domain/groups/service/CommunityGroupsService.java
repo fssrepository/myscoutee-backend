@@ -46,8 +46,7 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
             "profile.horoscope", "profile.details.interest", "profile.details.drinking", "profile.details.smoking", "profile.details.workout", "profile.details.pets",
             "profile.details.familyPlans", "profile.details.children", "profile.details.loveStyle", "profile.details.communicationStyle",
             "profile.details.sexualOrientation", "profile.gender", "profile.details.religion", "profile.details.values");
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.accounts.api.ProfileSummaries summaries;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileSummaries summaries;
     private final CommunityGroupsRepository groups;
     private final CommunityMemberships memberships;
     private final DiscoveryProfiles users;
@@ -58,13 +57,20 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
     private final CommunityReports reports;
     private final OperationalTelemetry telemetry;
     private final GroupCounters counters;
-    @org.springframework.beans.factory.annotation.Autowired
     private Optional<com.raxim.myscoutee.domain.community.api.CaseParticipants> caseParticipants = Optional.empty();
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setCaseParticipants(Optional<com.raxim.myscoutee.domain.community.api.CaseParticipants> caseParticipants) {
+        this.caseParticipants = caseParticipants;
+    }
     private final com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications;
     public CommunityGroupsService(CommunityGroupsRepository groups, CommunityMemberships memberships,
             DiscoveryProfiles users, SelectedProfile profiles, ProfileCards cards, AccountWorkspaces groupProfiles,
             ContentRegistration moderation, CommunityReports reports, OperationalTelemetry telemetry, GroupCounters counters,
-            com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications) {
+            com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications,
+            com.raxim.myscoutee.domain.accounts.api.ProfileSummaries summaries) {
+        this.summaries = summaries;
+
         this.groups = groups; this.memberships = memberships; this.users = users; this.profiles = profiles; this.cards = cards; this.groupProfiles = groupProfiles;
         this.moderation = moderation; this.reports = reports; this.telemetry = telemetry; this.counters = counters; this.notifications = notifications;
     }

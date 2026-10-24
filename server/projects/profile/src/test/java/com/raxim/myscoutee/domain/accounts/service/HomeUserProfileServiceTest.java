@@ -162,9 +162,9 @@ class HomeUserProfileServiceTest {
                 userExperienceProfilesRepository,
                 new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 userFriendshipsRepository,
-                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
-                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
-                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
+                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository, null),
+                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository, null),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository, null),
                 new com.raxim.myscoutee.domain.feedback.service.FeedbackDirectoryService(feedbackAnswersRepository),
                 scheduledMessageTaskService,
                 absoluteAffinityService,
@@ -172,11 +172,11 @@ class HomeUserProfileServiceTest {
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,
-                assetsService, affiliateService, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
+                assetsService, affiliateService, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class), null), null, null, null);
         submissions = new ModerationSubmissionService(new SelectedProfileService(usersRepository),
                 new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
-                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
-                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
+                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository, null),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository, null),
                 new com.raxim.myscoutee.domain.content.service.UserFeedbackService(userFeedbackSubmissionsRepository),
                 new com.raxim.myscoutee.domain.content.service.CommunityReportService(userReportSubmissionsRepository, adminTelemetryService),
                 adminTelemetryService);

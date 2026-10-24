@@ -1,24 +1,17 @@
 package com.raxim.myscoutee.common.config.repository;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.bson.Document;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.repository.Repository;
@@ -31,6 +24,7 @@ import tools.jackson.databind.ObjectMapper;
 
 public class MongoRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
 		extends RepositoryFactoryBeanSupport<T, S, ID> {
+	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MongoRepositoryFactoryBean.class);
 
 	private static final String PARAM_REGEX = "\"([:|\\?|I|M][^ ].*?)\"";
 
@@ -96,59 +90,30 @@ public class MongoRepositoryFactoryBean<T extends Repository<S, ID>, S, ID exten
 			if (classPathResource.exists()) {
 				System.out.println(repositoryName + " is being loaded!");
 
-				URI uri = classPathResource.getURI();
-
-				Path path;
-				if (uri.getScheme().equals("jar")) {
-					FileSystem fileSystem;
-					try {
-						fileSystem = FileSystems.getFileSystem(uri);
-					} catch (Exception e) {
-						System.out.println("Creating file system!");
-						fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
-					}
-
-					String subPath = uri.toString()
-							.replaceAll("!", "")
-							.split("jar/")[1];
-					path = fileSystem.getPath(subPath);
-				} else {
-					path = Paths.get(uri);
-				}
-
+				// Spring resolves both exploded classes and packaged (including nested) JAR resources.
+				// No shared ZIP filesystem is mounted or retained by the repository factory.
+				var resolver = new PathMatchingResourcePatternResolver(classPathResource.getClassLoader());
 				ObjectMapper objectMapper = new ObjectMapper();
-
-				try (Stream<Path> stream = Files.list(path)) {
-					stream
-							.filter(file -> !Files.isDirectory(file))
-							.forEach(file -> {
-								try {
-									try (Stream<String> lines = Files.lines(file, Charset.forName("UTF-8"))) {
-										String line = lines.collect(Collectors.joining());
-
-										List<Document> dStages = objectMapper.readValue(line,
-												new TypeReference<List<Document>>() {
-												});
-										String[] stages = dStages.stream()
-												.map(pipeline -> pipeline.toJson().replaceAll(PARAM_REGEX, "$1"))
-												.toArray(String[]::new);
-
-										String name = file.getFileName().toString();
-										String fName = name.substring(0, name.lastIndexOf("."));
-										queryMap.putIfAbsent(fName, stages);
-									}
-
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							});
+				for (Resource resource : resolver.getResources("classpath:/mongo/" + repositoryName + "/*")) {
+					if (!resource.isReadable()) continue;
+					try (InputStream input = resource.getInputStream()) {
+						List<Document> documents = objectMapper.readValue(input, new TypeReference<List<Document>>() {});
+						String[] stages = documents.stream()
+								.map(pipeline -> pipeline.toJson().replaceAll(PARAM_REGEX, "$1"))
+								.toArray(String[]::new);
+						String name = resource.getFilename();
+						Assert.notNull(name, "Query resource must have a filename");
+						queryMap.putIfAbsent(name.substring(0, name.lastIndexOf(".")), stages);
+					} catch (IOException e) {
+						LOGGER.warn("Cannot load Mongo query resource for repository {}", repositoryName);
+					}
 				}
 				System.out.println(repositoryName + " has been loaded!");
 			} else {
 				System.out.println(repositoryName + " hasn't any file to load!");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.warn("Cannot enumerate Mongo query resources");
 		}
 		return queryMap;
 	}

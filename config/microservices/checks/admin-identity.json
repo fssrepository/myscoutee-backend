@@ -1,0 +1,35 @@
+{
+  "routes": {
+    "dashboard": [
+      "activeAdmin",
+      "reportedUsers",
+      "feedback"
+    ],
+    "help": [
+      "revisions",
+      "availableLanguages",
+      "guideFields"
+    ],
+    "privacy": [
+      "revisions",
+      "availableLanguages"
+    ],
+    "terms": [
+      "revisions",
+      "availableLanguages"
+    ],
+    "explanation": [
+      "revisions",
+      "availableLanguages"
+    ],
+    "notifications": [
+      "rules",
+      "emailTemplates"
+    ],
+    "params": [
+      "sections"
+    ]
+  },
+  "administrator": "admin-demo-ava",
+  "absentAdministrator": "msc122-missing-admin-profile"
+}

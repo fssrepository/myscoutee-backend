@@ -131,14 +131,14 @@ class ChatServiceTest {
                 adminMenuCounterService,
                 accessControlService,
                 new ChatMapper(),
-                new ChatMessageMapper(profileDirectory()));
+                new ChatMessageMapper(profileDirectory()), null, null, null);
         support = new SupportConversationService(service, chatsRepository, chatMessagesRepository,
                 supportCaseCounters, new ChatMessageMapper(profileDirectory()), chatPushNotificationService,
                 accessControlService, adminTelemetryService);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "accountDevices", new com.raxim.myscoutee.domain.accounts.service.AccountDeviceService(usersRepository));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "chatCounters", new com.raxim.myscoutee.domain.accounts.service.AccountChatCounterService(mongoTemplate));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", selectedProfile);
-        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
+        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
         configureResources(eventOwner);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "pagePresentation",
@@ -1286,7 +1286,7 @@ class ChatServiceTest {
             assertThat(chat.getOwnerId()).isNull();
             assertThat(chat.getMemberIds()).containsExactly("target", "moderator");
         });
-        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, java.util.List.of(new com.raxim.myscoutee.domain.access.security.CaseChatPolicyRestriction(new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository))));
+        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository, null), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null), adminMenuCounterService, java.util.List.of(new com.raxim.myscoutee.domain.access.security.CaseChatPolicyRestriction(new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class), null, null), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null))));
         when(chatsRepository.findByChatId(chatId)).thenReturn(definitions.getValue());
         assertThat(access.canAccessChat(chatId, "app-admin")).isFalse();
         assertThat(access.canAccessChat(chatId, "other-group-profile")).isFalse();
@@ -1506,14 +1506,14 @@ class ChatServiceTest {
 
     private void configureResources(com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwner) {
         var assetOwner = com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongoTemplate);
-        var ratings = new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class));
+        var ratings = new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(ratings, "mongo", mongoTemplate);
         var campaigns = new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongoTemplate, ratings);
         var caseRepository = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class, call ->
                 "findById".equals(call.getMethod().getName())
                         ? java.util.Optional.ofNullable(mongoTemplate.findById(call.getArgument(0), com.raxim.myscoutee.domain.community.document.ServiceCase.class))
                         : org.mockito.Answers.RETURNS_DEFAULTS.answer(call));
-        var cases = new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(caseRepository);
+        var cases = new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(caseRepository, null, null);
         var announcements = new com.raxim.myscoutee.domain.community.service.AnnouncementDirectoryService(mongoTemplate);
         var groups = com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongoTemplate);
         resources = new ResourceConversationService(service, chatsRepository, mongoTemplate, profileDirectory(),
@@ -1525,12 +1525,12 @@ class ChatServiceTest {
                 new ResourceChatMemberPages(memberDirectory(), profileDirectory(), new ChatMapper()));
     }
     private com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService profileDirectory() {
-        var owner = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository);
+        var owner = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null);
         org.springframework.test.util.ReflectionTestUtils.setField(owner, "mongo", mongoTemplate);
         return owner;
     }
     private com.raxim.myscoutee.domain.events.api.MemberDirectory memberDirectory() {
-        var owner = new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository);
+        var owner = new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository, null);
         org.springframework.test.util.ReflectionTestUtils.setField(owner, "mongo", mongoTemplate);
         return owner;
     }

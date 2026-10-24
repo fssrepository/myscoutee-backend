@@ -39,7 +39,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.payments.api.CheckoutResults, com.raxim.myscoutee.domain.payments.api.CheckoutBaskets {
-    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+    private final PaymentJobQueries paymentJobs;
     private java.util.function.BooleanSupplier reservationsPresent = () -> true;
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     void watchScheduledWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
@@ -49,8 +49,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
                         Criteria.where("expiresAtIso").exists(true).nin("", null))), EventCheckoutBasketItem.class));
     }
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
     private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved", "pay");
@@ -73,7 +72,12 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
             MongoTemplate mongoTemplate,
             NotificationJobs notificationRuleRegistryService,
             org.springframework.beans.factory.ObjectProvider<CheckoutMemberships> membersService,
-            EventCheckoutPricingService checkoutPricing) {
+            EventCheckoutPricingService checkoutPricing,
+            PaymentJobQueries paymentJobs,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope) {
+        this.paymentJobs = paymentJobs;
+        this.jobGroupScope = jobGroupScope;
+
         this.membersService = membersService;
         this.checkoutPricing = checkoutPricing;
         this.repository = repository;
@@ -263,7 +267,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
     private EventCheckoutBasketDto saveBasketInGroup(EventCheckoutRequestDto request) {
         String normalizedUserId = normalizeId(request == null ? null : request.userId());
         String normalizedSourceId = normalizeId(request == null ? null : request.sourceId());
-        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
+        if (request == null || !StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
             return null;
         }
 
@@ -361,7 +365,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
     private EventCheckoutBasketDto updateBasketStateInGroup(EventCheckoutStateChangeRequestDto request) {
         String normalizedUserId = normalizeId(request == null ? null : request.userId());
         String normalizedSourceId = normalizeId(request == null ? null : request.sourceId());
-        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
+        if (request == null || !StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
             return null;
         }
         String checkoutState = normalizeStatus(request.checkoutState());

@@ -96,7 +96,7 @@ public class ResourceConversationService implements EventConversations, CaseConv
                         .distinct()
                         .sorted()
                         .toList();
-        if (!StringUtils.hasText(eventId) || memberUserIds.isEmpty()) {
+        if (event == null || !StringUtils.hasText(eventId) || memberUserIds.isEmpty()) {
             throw new IllegalStateException("A system event chat requires an event id and participants.");
         }
 
@@ -337,7 +337,7 @@ public class ResourceConversationService implements EventConversations, CaseConv
 
     private ChatDto ensureCaseChat(ChatServiceEnsureRequestDto request, String userId) {
         CaseConversation serviceCase = cases.conversation(normalizeId(request.caseId())).orElse(null);
-        if (!CaseChatAccessRestriction.caseChatAccess(serviceCase, chatService.findUser(userId), request.caseOfferId()))
+        if (serviceCase == null || !CaseChatAccessRestriction.caseChatAccess(serviceCase, chatService.findUser(userId), request.caseOfferId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
         syncCaseChat(serviceCase);
         List<Chat> copies = chatsRepository.findByChatId(StringUtils.hasText(request.caseOfferId())

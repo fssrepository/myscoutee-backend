@@ -180,14 +180,8 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
         item.setStatus(QualifiedMauReportOutboxItem.STATUS_PENDING);
         item.setNextRetryAt(null);
         item.setUpdatedAt(clock.instant().toString());
-        try {
-            return toReportDto(outboxRepository.save(item));
-        } catch (DataAccessException exception) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Measurement report changed concurrently; reload it and retry.",
-                    exception);
-        }
+        return OperatorReportDelivery.save(() -> toReportDto(outboxRepository.save(item)),
+                "Measurement report changed concurrently; reload it and retry.");
     }
 
     @Scheduled(
@@ -196,26 +190,8 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
             initialDelayString =
                     "${operator.measurement.reporter-initial-delay-ms:90000}")
     public void synchronizeScheduled() {
-        MongoSessionMode previous = MongoSessionModeContext.currentMode();
-        MongoSessionModeContext.set(MongoSessionMode.REAL);
-        try {
-            OperatorMeasurementSyncDto result = synchronize(
-                    MongoSessionMode.REAL,
-                    false);
-            if ("BLOCKED".equals(result.state())
-                    || "ERROR".equals(result.state())) {
-                LOGGER.warn(
-                        "Scheduled QMAU reporting is {} ({}).",
-                        result.state(),
-                        safeText(result.code()));
-            }
-        } catch (RuntimeException exception) {
-            LOGGER.warn(
-                    "Scheduled QMAU reporting failed; its durable outbox will be retried.",
-                    exception);
-        } finally {
-            MongoSessionModeContext.set(previous);
-        }
+        OperatorReportDelivery.synchronizeScheduled(() -> synchronize(MongoSessionMode.REAL, false),
+                OperatorMeasurementSyncDto::state, OperatorMeasurementSyncDto::code, LOGGER, "QMAU");
     }
 
     private OperatorMeasurementSyncDto synchronize(
@@ -450,6 +426,7 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
                 .findByDeploymentIdOrderByPeriodAscRevisionAsc(
                         runtime.state().deploymentId())
                 .stream()
+                .filter(Objects::nonNull)
                 .filter(item -> QualifiedMauReportOutboxItem.STATUS_PENDING
                         .equals(item.getStatus()))
                 .filter(item -> forceDelivery
@@ -620,6 +597,9 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
             RegisteredRuntime runtime,
             QualifiedMauReportOutboxItem item,
             RuntimeException exception) {
+        if (item == null) {
+            throw exception;
+        }
         QualifiedMauReportOutboxItem stored = outboxRepository
                 .findByIdAndDeploymentId(
                         item.getId(),
@@ -770,10 +750,8 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
 
     private OperatorMeasurementReportDto toReportDto(
             QualifiedMauReportOutboxItem item) {
-        Failure failure = item == null ? null : item.getLastFailure();
-        BatchResponse accepted = item == null
-                ? null
-                : item.getAcceptedResponse();
+        Failure failure = item.getLastFailure();
+        BatchResponse accepted = item.getAcceptedResponse();
         return new OperatorMeasurementReportDto(
                 item.getId(),
                 item.getPeriod(),
@@ -835,39 +813,15 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
     private boolean retryDue(
             QualifiedMauReportOutboxItem item,
             Instant now) {
-        if (!StringUtils.hasText(item.getNextRetryAt())) {
-            return true;
-        }
-        try {
-            return !Instant.parse(item.getNextRetryAt()).isAfter(now);
-        } catch (RuntimeException exception) {
-            return true;
-        }
+        return OperatorReportDelivery.retryDue(item.getNextRetryAt(), now);
     }
 
     private static boolean retryable(RuntimeException exception) {
-        if (exception instanceof RegistryHttpException http) {
-            return http.getStatusCode() == 0
-                    || http.getStatusCode() == 408
-                    || http.getStatusCode() == 425
-                    || http.getStatusCode() == 429
-                    || http.getStatusCode() >= 500;
-        }
-        return exception instanceof DataAccessException;
+        return OperatorReportDelivery.retryable(exception);
     }
 
     private static String failureCode(RuntimeException exception) {
-        if (exception instanceof RegistryHttpException http
-                && StringUtils.hasText(http.getErrorCode())) {
-            return http.getErrorCode();
-        }
-        if (exception instanceof DataAccessException) {
-            return "MEASUREMENT_PERSISTENCE_RETRY";
-        }
-        if (exception instanceof IllegalStateException) {
-            return "INVALID_QMAU_RECEIPT";
-        }
-        return "MEASUREMENT_REJECTED";
+        return OperatorReportDelivery.failureCode(exception, "MEASUREMENT_PERSISTENCE_RETRY", "INVALID_QMAU_RECEIPT", "MEASUREMENT_REJECTED");
     }
 
     private static void validateActionCounts(

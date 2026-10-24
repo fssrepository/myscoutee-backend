@@ -184,7 +184,7 @@ class AdminNotificationServiceTest {
                 new com.raxim.myscoutee.domain.email.service.EmailProcessCatalogService(emailTemplatesRepository, tasks),
                 mock(EventScheduler.class),
                 moderation,
-                mock(AdminTelemetryService.class));
+                mock(AdminTelemetryService.class), null, null);
     }
 
     private NotificationRuleConfig rule(

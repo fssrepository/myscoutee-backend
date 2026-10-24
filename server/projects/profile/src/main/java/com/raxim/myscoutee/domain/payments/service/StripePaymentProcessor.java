@@ -295,35 +295,38 @@ public class StripePaymentProcessor implements PaymentProcessor {
     }
 
     public AuthorizationResult toAuthorizationResult(String checkoutId, PaymentIntent intent) {
-        AuthorizationStatus status = switch (safeLower(intent == null ? null : intent.getStatus())) {
+        if (intent == null) {
+            return new AuthorizationResult(getType(), checkoutId, null,
+                    AuthorizationStatus.AUTHORIZATION_PENDING, fromMinorUnits(0L, null), null, null, null, null);
+        }
+        AuthorizationStatus status = switch (safeLower(intent.getStatus())) {
             case "requires_action" -> AuthorizationStatus.CUSTOMER_ACTION_REQUIRED;
             case "requires_capture" -> AuthorizationStatus.AUTHORIZED;
             case "succeeded" -> AuthorizationStatus.CAPTURED;
             case "canceled" -> "abandoned".equals(safeLower(intent.getCancellationReason()))
                     ? AuthorizationStatus.EXPIRED
                     : AuthorizationStatus.RELEASED;
-            case "requires_payment_method" -> intent != null && intent.getLastPaymentError() != null
+            case "requires_payment_method" -> intent.getLastPaymentError() != null
                     ? AuthorizationStatus.FAILED
                     : AuthorizationStatus.AUTHORIZATION_PENDING;
             default -> AuthorizationStatus.AUTHORIZATION_PENDING;
         };
-        String actionUrl = intent != null
-                && intent.getNextAction() != null
+        String actionUrl = intent.getNextAction() != null
                 && intent.getNextAction().getRedirectToUrl() != null
                 ? intent.getNextAction().getRedirectToUrl().getUrl()
                 : null;
-        String currency = intent == null ? null : intent.getCurrency();
-        long minorAmount = intent == null || intent.getAmount() == null ? 0L : intent.getAmount();
+        String currency = intent.getCurrency();
+        long minorAmount = intent.getAmount() == null ? 0L : intent.getAmount();
         return new AuthorizationResult(
                 getType(),
                 checkoutId,
-                intent == null ? null : intent.getId(),
+                intent.getId(),
                 status,
                 fromMinorUnits(minorAmount, currency),
                 currency,
                 actionUrl,
                 null,
-                intent == null ? null : intent.getStatus());
+                intent.getStatus());
     }
 
     private RequestOptions requestOptions(String apiKey, String idempotencyKey) {

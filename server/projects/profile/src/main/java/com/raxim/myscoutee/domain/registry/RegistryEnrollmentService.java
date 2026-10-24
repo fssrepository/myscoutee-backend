@@ -479,7 +479,8 @@ public class RegistryEnrollmentService {
     }
 
     private String safeMessage(Exception exception) {
-        String message = exception == null ? "" : safeText(exception.getMessage());
+        if (exception == null) return "";
+        String message = safeText(exception.getMessage());
         return StringUtils.hasText(message) ? message : exception.getClass().getSimpleName();
     }
 

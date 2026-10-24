@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "outputDirectory": "frontend/src/assets/help-center/explanations",
+  "languages": [
+    "en",
+    "hu"
+  ],
+  "contexts": {
+    "profile-editor": [
+      "profile-editor-basics",
+      "profile-editor-media",
+      "profile-editor-details",
+      "profile-editor-save"
+    ],
+    "profile-view": [
+      "profile-view-overview",
+      "profile-view-photos",
+      "profile-view-actions"
+    ],
+    "feedback": [
+      "feedback-entry",
+      "feedback-categories",
+      "feedback-save"
+    ],
+    "home-game": [
+      "affinity",
+      "affinity-network",
+      "profile",
+      "filters",
+      "history"
+    ],
+    "activities-rates": [
+      "activity-rate-filter",
+      "activity-header-controls",
+      "activity-score-badge",
+      "activity-fullscreen"
+    ],
+    "chats": [
+      "activity-chat-list",
+      "activity-chat-card",
+      "activity-chat-channels",
+      "activity-chat-message-window",
+      "activity-chat-tools"
+    ],
+    "contacts": [
+      "contacts-list",
+      "contacts-card",
+      "contacts-private-methods"
+    ],
+    "events": [
+      "activity-event-entry",
+      "activity-event-card",
+      "activity-event-actions",
+      "activity-event-join",
+      "activity-event-hosting"
+    ],
+    "assets": [
+      "assets-entry",
+      "assets-card",
+      "assets-editor",
+      "assets-requests",
+      "assets-scope"
+    ],
+    "assets-car": [
+      "assets-entry",
+      "assets-card",
+      "assets-editor",
+      "assets-requests",
+      "assets-scope"
+    ],
+    "assets-accommodation": [
+      "assets-entry",
+      "assets-card",
+      "assets-editor",
+      "assets-requests",
+      "assets-scope"
+    ],
+    "assets-supplies": [
+      "assets-entry",
+      "assets-card",
+      "assets-editor",
+      "assets-requests",
+      "assets-scope"
+    ],
+    "assets-tickets": [
+      "assets-tickets",
+      "assets-ticket-card",
+      "assets-ticket-scanner"
+    ],
+    "event-editor": [
+      "event-editor-main",
+      "event-editor-switches",
+      "event-editor-schedule",
+      "event-editor-subevents",
+      "event-editor-members",
+      "event-editor-assets"
+    ]
+  },
+  "labels": {
+    "en": {
+      "affinity": "Affinity slider",
+      "affinity-network": "Affinity and group chat",
+      "profile": "Profile and photos",
+      "filters": "Filters and modes",
+      "history": "History",
+      "activity-rate-filter": "Rating filter menu",
+      "activity-header-controls": "Order and view",
+      "activity-score-badge": "Card rating",
+      "activity-fullscreen": "Fullscreen rating",
+      "activity-chat-list": "Chat list filters",
+      "activity-chat-card": "One chat row",
+      "activity-chat-channels": "Channel types",
+      "activity-chat-message-window": "Message window",
+      "activity-chat-tools": "Chat tools",
+      "contacts-list": "Contacts list",
+      "contacts-card": "One contact card",
+      "contacts-private-methods": "Private contact methods",
+      "assets-entry": "Asset type menu",
+      "assets-card": "One asset card",
+      "assets-editor": "Asset editor",
+      "assets-requests": "Requests and helpers",
+      "assets-scope": "Discovery and assignment",
+      "assets-tickets": "Tickets",
+      "assets-ticket-card": "Ticket card",
+      "assets-ticket-scanner": "Ticket scanner",
+      "event-editor-main": "Main event form",
+      "event-editor-switches": "Visibility and join rules",
+      "event-editor-schedule": "Time, price, rules",
+      "event-editor-subevents": "Sub events and tournaments",
+      "event-editor-members": "Members and roles",
+      "event-editor-assets": "Assigned resources",
+      "activity-event-entry": "Event list controls",
+      "activity-event-card": "One event card",
+      "activity-event-actions": "Event card actions",
+      "activity-event-join": "Joining flow",
+      "activity-event-hosting": "Hosting options"
+    },
+    "hu": {
+      "affinity": "Szimpátia sáv",
+      "affinity-network": "Szimpátia és csoportchat",
+      "profile": "Profil és képek",
+      "filters": "Szűrők és módok",
+      "history": "Előzmények",
+      "activity-rate-filter": "Értékelési szűrő",
+      "activity-header-controls": "Sorrend és nézet",
+      "activity-score-badge": "Kártya pontozása",
+      "activity-fullscreen": "Teljes képernyős pontozás",
+      "activity-chat-list": "Chatlista szűrők",
+      "activity-chat-card": "Egy chat sor",
+      "activity-chat-channels": "Csatornatípusok",
+      "activity-chat-message-window": "Üzenetablak",
+      "activity-chat-tools": "Chat eszközök",
+      "contacts-list": "Kapcsolatlista",
+      "contacts-card": "Egy kapcsolatkártya",
+      "contacts-private-methods": "Privátabb elérési módok",
+      "assets-entry": "Eszköztípus menü",
+      "assets-card": "Egy eszközkártya",
+      "assets-editor": "Eszközszerkesztő",
+      "assets-requests": "Kérések és segítők",
+      "assets-scope": "Felfedezés és hozzárendelés",
+      "assets-tickets": "Jegyek",
+      "assets-ticket-card": "Jegykártya",
+      "assets-ticket-scanner": "Jegyszkenner",
+      "event-editor-main": "Fő esemény űrlap",
+      "event-editor-switches": "Láthatóság és csatlakozás",
+      "event-editor-schedule": "Időpont, ár, szabályok",
+      "event-editor-subevents": "Alesemények és bajnokság",
+      "event-editor-members": "Tagok és szerepek",
+      "event-editor-assets": "Hozzárendelt erőforrások",
+      "activity-event-entry": "Eseménylista vezérlők",
+      "activity-event-card": "Egy eseménykártya",
+      "activity-event-actions": "Eseménykártya műveletek",
+      "activity-event-join": "Csatlakozási folyamat",
+      "activity-event-hosting": "Szervezői lehetőségek"
+    }
+  }
+}

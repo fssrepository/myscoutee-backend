@@ -215,4 +215,16 @@ class OperatorQualifiedMauReportServiceTest {
                 "sha256:" + "e".repeat(64),
                 "rkey_" + "e".repeat(32));
     }
+
+    @Test
+    void absentReportCannotReplaceTheOriginalDeliveryFailureWithANullPointerException() {
+        var outbox = mock(QualifiedMauReportOutboxRepository.class);
+        var service = service(RegistryRuntimeTestSupport.resolver(), mock(OperatorQualifiedMauCalculator.class), outbox);
+        var original = new IllegalStateException("Stored measurement report is missing.");
+        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
+                org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                        service, "recordFailure", null, null, original)).isSameAs(original);
+        verifyNoInteractions(outbox);
+    }
+
 }

@@ -32,7 +32,7 @@ public class AssetPrivacyService implements AssetPrivacy {
                 Query.query(Criteria.where("requests.userId").is(userId)),
                 Asset.class);
         List<Asset> changedAssets = new ArrayList<>();
-        for (Asset asset : assetsWithRequests == null ? List.<Asset>of() : assetsWithRequests) {
+        for (Asset asset : assetsWithRequests) {
             if (asset == null || asset.getRequests() == null || asset.getRequests().isEmpty()) {
                 continue;
             }

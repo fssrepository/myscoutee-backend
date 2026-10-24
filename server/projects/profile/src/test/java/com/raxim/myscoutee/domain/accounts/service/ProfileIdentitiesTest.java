@@ -23,7 +23,7 @@ class ProfileIdentitiesTest {
         profile.setName("Private name");
         when(users.findByUserId("workspace-profile")).thenReturn(Optional.of(profile));
         when(users.findByUserId("missing")).thenReturn(Optional.empty());
-        var directory = new ProfileDirectoryService(users);
+        var directory = new ProfileDirectoryService(users, null);
         var identity = directory.findIdentityByUserId("workspace-profile").orElseThrow();
         assertEquals(new ProfileIdentityDto("workspace-profile", "account", "work"), identity);
         var json = new JsonMapper().valueToTree(identity);

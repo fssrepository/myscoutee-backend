@@ -72,7 +72,7 @@ class EventSchedulerTest {
     @Mock private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groupsRepository;
     private EventJobQueries jobScope() {
         var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
-        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository);
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository, null);
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
         var scope = new JobGroupScopeService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class),
                 java.util.Optional.of(directory), java.util.List.of());
@@ -1981,10 +1981,10 @@ class EventSchedulerTest {
                         anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(2));
         EventScheduler scheduler = new EventScheduler(
-                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
+                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository, null),
                 affinityEdgeService,
-                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository),
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository, null),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                 new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 activityEventsRepository,
                 activityMainEventRuntimeRepository,
@@ -1999,7 +1999,7 @@ class EventSchedulerTest {
                 notificationRuleRegistryService,
                 platformParametersService,
                 notificationOutboxService,
-                new com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper());
+                new com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper(), null);
         scheduler.setActivitySubEventStageRuntimeRepository(activitySubEventStageRuntimeRepository);
         org.springframework.test.util.ReflectionTestUtils.setField(scheduler, "jobGroupScope", jobScope());
         return scheduler;

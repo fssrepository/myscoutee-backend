@@ -39,7 +39,7 @@ class OperatorGlobalIdentityServiceTest {
                 new OperatorGlobalIdentityService(
                         RegistryRuntimeTestSupport.resolver(),
                         linkRepository,
-                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
                         new com.raxim.myscoutee.domain.accounts.service.AccountConsentService(privacyConsentsRepository),
                         mock(ObjectMapper.class),
                         voprfClient,

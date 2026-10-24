@@ -14,6 +14,7 @@ import java.io.IOException;
  * See also http://stackoverflow.com/a/35962718/368220.
  */
 public class ClosableCallback implements FutureCallback<HttpResponse> {
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ClosableCallback.class);
 
     private final CloseableHttpAsyncClient closeableHttpAsyncClient;
 
@@ -40,7 +41,7 @@ public class ClosableCallback implements FutureCallback<HttpResponse> {
         try {
             closeableHttpAsyncClient.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("HTTP callback client could not be closed");
         }
     }
 }

@@ -55,14 +55,26 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api.Ratings {
-    @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
+
     @org.springframework.beans.factory.annotation.Autowired
+    void setGroupDirectory(GroupDirectory groupDirectory) {
+        this.groupDirectory = groupDirectory;
+    }
     private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setCampaignCatalog(com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog) {
+        this.campaignCatalog = campaignCatalog;
+    }
     private static final RateDistance ZERO_DISTANCE = new RateDistance(0);
 
-    @Autowired
     private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
+
+    @Autowired
+    void setAccountProjections(com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections) {
+        this.accountProjections = accountProjections;
+    }
     private final UserRatesRepository userRatesRepository;
     private final RatingProfiles ratingProfiles;
     private final RatingSession ratingSession;
@@ -75,7 +87,12 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final NotificationDelivery notificationOutboxService;
     private final FollowingEvents organizerFollowingService;
-    @Autowired private com.raxim.myscoutee.domain.accounts.api.FriendshipProjections friendships;
+    private com.raxim.myscoutee.domain.accounts.api.FriendshipProjections friendships;
+
+    @Autowired
+    void setFriendships(com.raxim.myscoutee.domain.accounts.api.FriendshipProjections friendships) {
+        this.friendships = friendships;
+    }
 
     @Autowired
     public UserRatesService(
@@ -657,7 +674,8 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
                     item.scoreGiven(), item.scoreReceived(), item.eventName(), item.happenedAt(), item.distanceMetersExact(),
                     item.met(), item.ratingSnapshot(), null));
         }
-        String workspaceId = currentUser.identity().workspaceGroupId();
+        String workspaceId = currentUser == null || currentUser.identity() == null
+                ? null : currentUser.identity().workspaceGroupId();
         var group = StringUtils.hasText(workspaceId) ? groupDirectory.findById(workspaceId).orElse(null) : null;
         String defaultDomain = group == null ? "dating" : "work".equals(group.effectiveType()) ? "work"
                 : "community".equals(group.effectiveType()) ? "service-interest" : "dating";

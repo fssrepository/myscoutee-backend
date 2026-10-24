@@ -57,14 +57,14 @@ class ActivitiesInviteCandidatesServiceTest {
     @BeforeEach
     void setUp() {
         service = new ActivitiesInviteCandidatesService(
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
-                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null),
+                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository, null),
                 activityMembersRepository,
                 activitiesMembersService,
                 homeUserProfileService,
                 selectedProfile,
                 homeUserProfileService,
-                new com.raxim.myscoutee.domain.accounts.service.ContactDirectoryService(navigatorContactsProfilesRepository));
+                new com.raxim.myscoutee.domain.accounts.service.ContactDirectoryService(navigatorContactsProfilesRepository), null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "communityGroups", communityGroups);
     }
 

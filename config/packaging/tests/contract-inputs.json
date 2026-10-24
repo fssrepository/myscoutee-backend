@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "contracts": {
+    "mobile-qa-isolation-test": {
+      "inputs": {
+        "Notifications_tools_mobile_webview_builds_mjs": "tests/qa/categories/Notifications/tools/mobile-webview-builds.mjs"
+      }
+    },
+    "compact-guide-migration-test": {
+      "inputs": {
+        "conf_mongodb_myscoutee_db": "server/docker/conf/mongodb/myscoutee_db",
+        "packaging_migrations_011_granular_rating_guides_js": "config/packaging/migrations/011-granular-rating-guides.js",
+        "packaging_migrations_010_compact_explanation_guides_js": "config/packaging/migrations/010-compact-explanation-guides.js"
+      },
+      "expectations": {
+        "compactRevisionCount": 90,
+        "ratingGuideFieldCount": 2
+      }
+    },
+    "default-help-migration-test": {
+      "inputs": {
+        "packaging_migrations_008_default_help_v3_js": "config/packaging/migrations/008-default-help-v3.js",
+        "seeds_008_default_help_v3_helpCenterRevisions_json": "config/packaging/migrations/seeds/008-default-help-v3/helpCenterRevisions.json",
+        "mongodb_myscoutee_db_helpCenterRevisions_json": "server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json"
+      },
+      "expectations": {
+        "activeHelpCount": 2
+      }
+    },
+    "default-help-v5-migration-test": {
+      "inputs": {
+        "packaging_migrations_013_default_help_v5_js": "config/packaging/migrations/013-default-help-v5.js",
+        "seeds_013_default_help_v5_helpCenterRevisions_json": "config/packaging/migrations/seeds/013-default-help-v5/helpCenterRevisions.json"
+      },
+      "expectations": {
+        "activeHelpCount": 6
+      }
+    },
+    "four-language-content-test": {
+      "inputs": {
+        "seeds_020_four_language_content_catalog_updates_json": "config/packaging/migrations/seeds/020-four-language-content/catalog-updates.json",
+        "mongodb_myscoutee_db_helpCenterRevisions_json": "server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json",
+        "seeds_021_location_setup_guidance_catalog_updates_json": "config/packaging/migrations/seeds/021-location-setup-guidance/catalog-updates.json",
+        "conf_mongodb_myscoutee_db": "server/docker/conf/mongodb/myscoutee_db/",
+        "docker_conf_mongodb": "server/docker/conf/mongodb/",
+        "packaging_migrations_020_four_language_content_js": "config/packaging/migrations/020-four-language-content.js"
+      },
+      "expectations": {
+        "additionalLanguages": [
+          "de",
+          "es"
+        ]
+      }
+    },
+    "release-catalog-parity-runtime-test": {
+      "inputs": {
+        "migrations_seeds_016_release_catalog_parity": "config/packaging/migrations/seeds/016-release-catalog-parity",
+        "seeds_017_release_catalog_refresh_catalog_updates_json": "config/packaging/migrations/seeds/017-release-catalog-refresh/catalog-updates.json",
+        "mongodb_myscoutee_db__name_json": "server/docker/conf/mongodb/myscoutee_db/{name}.json"
+      }
+    },
+    "release-catalog-parity-test": {
+      "inputs": {
+        "packaging_migrations_016_release_catalog_parity_js": "config/packaging/migrations/016-release-catalog-parity.js",
+        "migrations_seeds_016_release_catalog_parity": "config/packaging/migrations/seeds/016-release-catalog-parity/",
+        "packaging_migrations_017_release_catalog_refresh_js": "config/packaging/migrations/017-release-catalog-refresh.js",
+        "seeds_017_release_catalog_refresh_catalog_updates_json": "config/packaging/migrations/seeds/017-release-catalog-refresh/catalog-updates.json",
+        "seeds_020_four_language_content_catalog_updates_json": "config/packaging/migrations/seeds/020-four-language-content/catalog-updates.json",
+        "seeds_021_location_setup_guidance_catalog_updates_json": "config/packaging/migrations/seeds/021-location-setup-guidance/catalog-updates.json",
+        "mongodb_myscoutee_db_helpCenterGuideFields_json": "server/docker/conf/mongodb/myscoutee_db/helpCenterGuideFields.json",
+        "mongodb_myscoutee_db_helpCenterRevisions_json": "server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json",
+        "seeds_023_seeded_image_webp_image_replacements_json": "config/packaging/migrations/seeds/023-seeded-image-webp/image-replacements.json",
+        "packaging_migrations_023_seeded_image_webp_js": "config/packaging/migrations/023-seeded-image-webp.js",
+        "conf_mongodb_myscoutee_db": "server/docker/conf/mongodb/myscoutee_db/"
+      }
+    },
+    "deployment-configuration-migration-test": {
+      "inputs": {
+        "packaging_migrations_004_deployment_configuration_js": "config/packaging/migrations/004-deployment-configuration.js",
+        "packaging_migrations_005_deployment_configuration_integration_js": "config/packaging/migrations/005-deployment-configuration-integration.js"
+      }
+    },
+    "exchange-rate-configuration-test": {
+      "inputs": {
+        "packaging_templates_myscoutee_env": "config/packaging/templates/myscoutee.env",
+        "conf_mongodb_mongo_seed_policy_inc": "server/docker/conf/mongodb/mongo-seed-policy.inc",
+        "mongodb__mode__exchangeRates_json": "server/docker/conf/mongodb/{mode}/exchangeRates.json",
+        "mongodb__name__deploymentConfigurations_json": "server/docker/conf/mongodb/{name}/deploymentConfigurations.json"
+      },
+      "expectations": {
+        "demoExchangeRateUrl": "http://payment-simulator:18082/exchange-rates/eurofxref.xml",
+        "productionExchangeRateUrl": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml",
+        "requiredProductionCollections": [
+          "deploymentConfigurations",
+          "exchangeRates"
+        ]
+      }
+    },
+    "feedback-access-migration-test": {
+      "inputs": {
+        "seeds_019_feedback_access_policies_accessPolicyDefinitions_json": "config/packaging/migrations/seeds/019-feedback-access-policies/accessPolicyDefinitions.json",
+        "mongodb_myscoutee_db_accessPolicyDefinitions_json": "server/docker/conf/mongodb/myscoutee_db/accessPolicyDefinitions.json",
+        "packaging_migrations_019_feedback_access_policies_js": "config/packaging/migrations/019-feedback-access-policies.js"
+      }
+    },
+    "release-system-defaults-test": {
+      "inputs": {
+        "packaging_migrations_006_release_system_defaults_js": "config/packaging/migrations/006-release-system-defaults.js"
+      }
+    },
+    "demo-location-seed-test": {
+      "inputs": {
+        "seeds_022_demo_profile_locations_users_json": "config/packaging/migrations/seeds/022-demo-profile-locations/users.json",
+        "packaging_migrations_022_demo_profile_locations_js": "config/packaging/migrations/022-demo-profile-locations.js",
+        "mongodb_demo_db_users_json": "server/docker/conf/mongodb/demo_db/users.json"
+      }
+    },
+    "demo-profile-details-migration-test": {
+      "inputs": {
+        "packaging_migrations_009_demo_profile_details_js": "config/packaging/migrations/009-demo-profile-details.js",
+        "mongodb_demo_db_users_json": "server/docker/conf/mongodb/demo_db/users.json"
+      }
+    },
+    "demo-profile-lifecycle-test": {
+      "inputs": {
+        "seeds_025_demo_profile_lifecycle_users_json": "config/packaging/migrations/seeds/025-demo-profile-lifecycle/users.json",
+        "mongodb_myscoutee_db_users_json": "server/docker/conf/mongodb/myscoutee_db/users.json",
+        "packaging_migrations_025_demo_profile_lifecycle_js": "config/packaging/migrations/025-demo-profile-lifecycle.js"
+      }
+    },
+    "runtime-index-parity-test": {
+      "inputs": {
+        "seeds_015_runtime_index_parity_runtime_indexes_json": "config/packaging/migrations/seeds/015-runtime-index-parity/runtime-indexes.json",
+        "seeds_018_feedback_and_worker_indexes_runtime_indexes_json": "config/packaging/migrations/seeds/018-feedback-and-worker-indexes/runtime-indexes.json",
+        "packaging_migrations_015_runtime_index_parity_js": "config/packaging/migrations/015-runtime-index-parity.js",
+        "packaging_migrations_018_feedback_and_worker_indexes_js": "config/packaging/migrations/018-feedback-and-worker-indexes.js",
+        "conf_mongodb_db_init_js": "server/docker/conf/mongodb/db_init.js",
+        "conf_mongodb_mongo_seed_policy_inc": "server/docker/conf/mongodb/mongo-seed-policy.inc"
+      }
+    },
+    "seeded-image-migration-test": {
+      "inputs": {
+        "packaging_migrations_023_seeded_image_webp_js": "config/packaging/migrations/023-seeded-image-webp.js",
+        "seeds_023_seeded_image_webp_image_replacements_json": "config/packaging/migrations/seeds/023-seeded-image-webp/image-replacements.json"
+      }
+    },
+    "seeded-media-integration-test": {
+      "inputs": {
+        "seeds_023_seeded_image_webp_image_replacements_json": "config/packaging/migrations/seeds/023-seeded-image-webp/image-replacements.json"
+      }
+    },
+    "migration-chain-test": {
+      "inputs": {
+        "packaging_migrations_seeds": "config/packaging/migrations/seeds",
+        "mongodb_myscoutee_db_helpCenterRevisions_json": "server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json",
+        "mongodb_myscoutee_db_helpCenterGuideFields_json": "server/docker/conf/mongodb/myscoutee_db/helpCenterGuideFields.json"
+      }
+    },
+    "owner-version-import-test": {
+      "inputs": {
+        "conf_mongodb_mongo_import_sh": "server/docker/conf/mongodb/mongo_import.sh"
+      }
+    }
+  }
+}

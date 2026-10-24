@@ -9,7 +9,7 @@ public interface MemberDirectory {
     java.util.List<? extends Member> findAll();
     Optional<? extends Member> findByOwnerTypeAndOwnerIdAndUserId(String ownerType, String ownerId, String userId);
     List<? extends Member> findByOwnerTypeAndOwnerId(String ownerType, String ownerId);
-    interface Member {
+    interface Member extends com.raxim.myscoutee.common.dto.AuditFields {
         String getSuppressionRootOwnerId(); String getStatusBeforeSuppression();
         String getRequestKind(); String getManagerGrantedByUserId();
         String getId();
@@ -19,10 +19,10 @@ public interface MemberDirectory {
         String getInvitedByUserId();
         String getMetAtIso();
         String getActionAtIso();
-        String getCreatedDate();
-        String getCreatedUser();
-        String getUpdatedDate();
-        String getUpdatedUser(); String getUserId(); String getRole(); String getStatus(); }
+
+        
+
+         String getUserId(); String getRole(); String getStatus(); }
     List<? extends Member> findAcceptedByOwnerTypeOwnerIdInAndUserId(String type, java.util.Collection<String> ids, String userId, String status);
     com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto vipPricingOffer(String sourceId, String userId);
     record Page(long total, List<? extends Member> items) {}

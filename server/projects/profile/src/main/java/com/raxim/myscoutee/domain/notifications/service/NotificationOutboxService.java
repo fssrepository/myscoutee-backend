@@ -80,11 +80,19 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
     private static final int DEFAULT_TOPIC_THRESHOLD = 1000;
     private static final int DEFAULT_COLLAPSE_WINDOW_SECONDS = 300;
 
-    @Autowired
     private JobAudience jobGroupScope;
 
-    @org.springframework.beans.factory.annotation.Autowired
+    @Autowired
+    void setJobGroupScope(JobAudience jobGroupScope) {
+        this.jobGroupScope = jobGroupScope;
+    }
+
     private ObjectProvider<com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents> integrationWebhooks;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setIntegrationWebhooks(ObjectProvider<com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents> integrationWebhooks) {
+        this.integrationWebhooks = integrationWebhooks;
+    }
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final NotificationPolicy platformParametersService;
@@ -95,8 +103,12 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
     private MongoTemplate mongoTemplate;
     private AuthenticationMode configProperties;
     private AccountNotifications accounts;
-    @org.springframework.beans.factory.annotation.Autowired(required = false)
     private com.raxim.myscoutee.domain.platform.api.WorkspaceNames workspaceNames;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setWorkspaceNames(com.raxim.myscoutee.domain.platform.api.WorkspaceNames workspaceNames) {
+        this.workspaceNames = workspaceNames;
+    }
     private ChatPresence chatWebSocketSessionRegistry;
 
     @Autowired
@@ -585,7 +597,7 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
         String normalizedType = safeText(type)
                 .toLowerCase(java.util.Locale.ROOT)
                 .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("^-+|-+$", "");
+                .transform(edgeText -> org.springframework.util.StringUtils.trimLeadingCharacter(org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '-'), '-'));
         return "notification.kind." + normalizedType + "." + field;
     }
 

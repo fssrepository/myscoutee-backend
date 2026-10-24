@@ -51,24 +51,10 @@ public class AccountInactivityService implements AccountInactivity {
         return latest;
     }
     private Instant max(Instant left, Instant right) {
-        if (left == null) {
-            return right;
-        }
-        if (right == null) {
-            return left;
-        }
-        return left.isAfter(right) ? left : right;
+        return com.raxim.myscoutee.common.util.TimeValues.max(left, right);
     }
     private Instant parseInstant(String value) {
-        String normalized = safeText(value);
-        if (!StringUtils.hasText(normalized)) {
-            return null;
-        }
-        try {
-            return Instant.parse(normalized);
-        } catch (DateTimeParseException exception) {
-            return null;
-        }
+        return com.raxim.myscoutee.common.util.TimeValues.parseInstant(value);
     }
     private String normalizeId(String value) {
         return safeText(value);

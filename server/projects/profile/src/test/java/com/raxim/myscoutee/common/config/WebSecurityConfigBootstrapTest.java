@@ -38,6 +38,20 @@ import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 @org.junit.jupiter.api.Tag("embedded")
 class WebSecurityConfigBootstrapTest {
     @Test
+    void browserCookiesCannotAuthenticateProtectedMutations() throws Exception {
+        try (TestContext context = context(false, "")) {
+            for (String method : List.of("POST", "PUT", "PATCH", "DELETE")) {
+                context.mockMvc().perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                                .request(org.springframework.http.HttpMethod.valueOf(method), "/admin/probe")
+                                .cookie(new jakarta.servlet.http.Cookie("JSESSIONID", "untrusted-session"),
+                                        new jakarta.servlet.http.Cookie("myscoutee_media_session", "untrusted-media"))
+                                .header("Origin", "https://foreign.example.invalid"))
+                        .andExpect(status().isForbidden());
+            }
+        }
+    }
+
+    @Test
     void bootstrapSecuresRealRequestsWhenFirebaseIsDisabled()
             throws Exception {
         try (TestContext context = context(true)) {
@@ -151,9 +165,9 @@ class WebSecurityConfigBootstrapTest {
         applicationContext.registerBean(
                 IntegrationTokenAuthenticationFilter.class,
                 () -> new IntegrationTokenAuthenticationFilter(mock(
-                        com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)),
+                        com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class), null),
                         mock(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.class),
-                        mock(com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService.class)));
+                        mock(com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService.class), null, null));
         applicationContext.registerBean(AdminClientAuthenticationFilter.class,
                 () -> new AdminClientAuthenticationFilter(mock(com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class),
                         mock(com.raxim.myscoutee.domain.integrations.service.AdminClientAccessService.class)));

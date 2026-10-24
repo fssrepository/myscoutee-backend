@@ -3,16 +3,14 @@ package com.raxim.myscoutee.domain.registry.api;
 import java.nio.file.Path;
 import java.time.Duration;
 
-
-public class RegistryConfiguration {
+@lombok.Getter
+public class RegistryConfiguration extends RegistryConnectionConfiguration {
+    public RegistryConfiguration() {
+        super(Path.of("/etc/myscoutee/registry/deployment-private-key.pem"), Path.of("/etc/myscoutee/registry/deployment-public-key.der"), Path.of("/var/lib/myscoutee/registry"));
+    }
     private boolean enabled;
     private boolean outboundAllowed;
     private boolean operatorRegistrationConfirmed;
-    private String baseUrl = "";
-    private String registryScope = "";
-    private Path privateKeyPath = Path.of("/etc/myscoutee/registry/deployment-private-key.pem");
-    private Path publicKeyPath = Path.of("/etc/myscoutee/registry/deployment-public-key.der");
-    private Path stateDir = Path.of("/var/lib/myscoutee/registry");
     private Path packageSigningPublicKeyPath =
             Path.of("/etc/myscoutee/update/release-public-key.pem");
     private Duration connectTimeout = Duration.ofSeconds(5);
@@ -22,27 +20,13 @@ public class RegistryConfiguration {
     private String softwareVersion = "unknown";
     private String expectedRegistryKeyFingerprint = "";
     private boolean trustOnFirstUse;
-    private boolean allowInsecureHttp;
-    private String insecureHttpAllowedHosts = "";
-
-    public boolean isEnabled() {
-        return enabled;
-    }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    public boolean isOutboundAllowed() {
-        return outboundAllowed;
-    }
-
     public void setOutboundAllowed(boolean outboundAllowed) {
         this.outboundAllowed = outboundAllowed;
-    }
-
-    public boolean isOperatorRegistrationConfirmed() {
-        return operatorRegistrationConfirmed;
     }
 
     /**
@@ -57,64 +41,10 @@ public class RegistryConfiguration {
         this.operatorRegistrationConfirmed = operatorRegistrationConfirmed;
     }
 
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl == null ? "" : baseUrl.trim();
-    }
-
-    public String getRegistryScope() {
-        return registryScope;
-    }
-
-    public void setRegistryScope(String registryScope) {
-        this.registryScope = registryScope == null ? "" : registryScope.trim();
-    }
-
-    public Path getPrivateKeyPath() {
-        return privateKeyPath;
-    }
-
-    public void setPrivateKeyPath(Path privateKeyPath) {
-        if (privateKeyPath != null) {
-            this.privateKeyPath = privateKeyPath;
-        }
-    }
-
-    public Path getPublicKeyPath() {
-        return publicKeyPath;
-    }
-
-    public void setPublicKeyPath(Path publicKeyPath) {
-        if (publicKeyPath != null) {
-            this.publicKeyPath = publicKeyPath;
-        }
-    }
-
-    public Path getStateDir() {
-        return stateDir;
-    }
-
-    public Path getPackageSigningPublicKeyPath() {
-        return packageSigningPublicKeyPath;
-    }
-
     public void setPackageSigningPublicKeyPath(Path packageSigningPublicKeyPath) {
         if (packageSigningPublicKeyPath != null) {
             this.packageSigningPublicKeyPath = packageSigningPublicKeyPath;
         }
-    }
-
-    public void setStateDir(Path stateDir) {
-        if (stateDir != null) {
-            this.stateDir = stateDir;
-        }
-    }
-
-    public Duration getConnectTimeout() {
-        return connectTimeout;
     }
 
     public void setConnectTimeout(Duration connectTimeout) {
@@ -123,18 +53,10 @@ public class RegistryConfiguration {
         }
     }
 
-    public Duration getRequestTimeout() {
-        return requestTimeout;
-    }
-
     public void setRequestTimeout(Duration requestTimeout) {
         if (requestTimeout != null && !requestTimeout.isNegative() && !requestTimeout.isZero()) {
             this.requestTimeout = requestTimeout;
         }
-    }
-
-    public Duration getRetryDelay() {
-        return retryDelay;
     }
 
     public void setRetryDelay(Duration retryDelay) {
@@ -143,24 +65,12 @@ public class RegistryConfiguration {
         }
     }
 
-    public int getMaxResponseBytes() {
-        return maxResponseBytes;
-    }
-
     public void setMaxResponseBytes(int maxResponseBytes) {
         this.maxResponseBytes = Math.max(1_024, Math.min(4_194_304, maxResponseBytes));
     }
 
-    public String getSoftwareVersion() {
-        return softwareVersion;
-    }
-
     public void setSoftwareVersion(String softwareVersion) {
         this.softwareVersion = softwareVersion == null ? "unknown" : softwareVersion.trim();
-    }
-
-    public String getExpectedRegistryKeyFingerprint() {
-        return expectedRegistryKeyFingerprint;
     }
 
     public void setExpectedRegistryKeyFingerprint(String expectedRegistryKeyFingerprint) {
@@ -168,29 +78,8 @@ public class RegistryConfiguration {
                 expectedRegistryKeyFingerprint == null ? "" : expectedRegistryKeyFingerprint.trim();
     }
 
-    public boolean isTrustOnFirstUse() {
-        return trustOnFirstUse;
-    }
-
     public void setTrustOnFirstUse(boolean trustOnFirstUse) {
         this.trustOnFirstUse = trustOnFirstUse;
-    }
-
-    public boolean isAllowInsecureHttp() {
-        return allowInsecureHttp;
-    }
-
-    public void setAllowInsecureHttp(boolean allowInsecureHttp) {
-        this.allowInsecureHttp = allowInsecureHttp;
-    }
-
-    public String getInsecureHttpAllowedHosts() {
-        return insecureHttpAllowedHosts;
-    }
-
-    public void setInsecureHttpAllowedHosts(String insecureHttpAllowedHosts) {
-        this.insecureHttpAllowedHosts =
-                insecureHttpAllowedHosts == null ? "" : insecureHttpAllowedHosts.trim();
     }
 
     public boolean isActive() {
@@ -198,10 +87,10 @@ public class RegistryConfiguration {
     }
 
     public Path statePath() {
-        return stateDir.resolve("deployment-state.json");
+        return getStateDir().resolve("deployment-state.json");
     }
 
     public Path receiptDirectory() {
-        return stateDir.resolve("receipts");
+        return getStateDir().resolve("receipts");
     }
 }

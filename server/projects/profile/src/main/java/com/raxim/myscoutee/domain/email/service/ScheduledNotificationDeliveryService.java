@@ -122,7 +122,7 @@ public class ScheduledNotificationDeliveryService {
         if (ctaPath.startsWith("http://") || ctaPath.startsWith("https://")) {
             return ctaPath;
         }
-        String baseUrl = firstNonBlank(emailProperties.getBaseUrl(), "http://localhost:4200").replaceAll("/+$", "");
+        String baseUrl = firstNonBlank(emailProperties.getBaseUrl(), "http://localhost:4200").transform(edgeText -> org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '/'));
         return baseUrl + (ctaPath.startsWith("/") ? ctaPath : "/" + ctaPath);
     }
 

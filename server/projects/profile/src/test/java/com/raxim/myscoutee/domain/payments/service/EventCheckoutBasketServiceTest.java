@@ -53,7 +53,7 @@ class EventCheckoutBasketServiceTest {
                 mongoTemplate,
                 notificationRuleRegistryService,
                 mock(org.springframework.beans.factory.ObjectProvider.class),
-                checkoutPricing);
+                checkoutPricing, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
             com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(

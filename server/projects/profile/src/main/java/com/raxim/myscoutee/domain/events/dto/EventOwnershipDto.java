@@ -68,7 +68,7 @@ public record EventOwnershipDto(
         String creatorUserId,
         String workspaceGroupId,
         String updatedDate,
-        List<String> admins, List<String> pendingMemberUserIds) implements EventOwnership.Event {
+        List<String> admins, List<String> pendingMemberUserIds) implements EventOwnership.Event, com.raxim.myscoutee.common.dto.EntityIdentity.RecordFields {
     public EventOwnershipDto {
         if (pendingMemberUserIds != null) pendingMemberUserIds = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(pendingMemberUserIds));
         if (acceptedMemberUserIds != null) acceptedMemberUserIds = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(acceptedMemberUserIds));
@@ -181,7 +181,6 @@ public record EventOwnershipDto(
     @Override public Boolean getPublished() { return published; }
     @Override public String getCampaignId() { return campaignId; }
     @Override public String getId() { return id; }
-    @Override public String getSyncKey() { return syncKey; }
     @Override public String getSourceId() { return sourceId; }
     @Override public String getOwnerUserId() { return ownerUserId; }
     @Override public String getTitle() { return title; }

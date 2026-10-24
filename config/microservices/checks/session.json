@@ -1,0 +1,42 @@
+{
+  "readRoutes": [
+    [
+      "identity",
+      "/api/auth/me"
+    ],
+    [
+      "identity",
+      "/api/auth/me/profile-ext?userId={user}"
+    ],
+    [
+      "community",
+      "/api/activities/events?limit=5&userId={user}"
+    ],
+    [
+      "communication",
+      "/api/notifications?limit=5&userId={user}"
+    ],
+    [
+      "assets",
+      "/api/assets?userId={user}"
+    ],
+    [
+      "payments",
+      "/api/payment-methods?userId={user}"
+    ],
+    [
+      "affinity",
+      "/api/activities/rates?userId={user}"
+    ]
+  ],
+  "publicDocuments": {
+    "documents": [
+      "help",
+      "privacy",
+      "terms",
+      "explanation"
+    ],
+    "language": "en",
+    "contextKey": "profile.editor"
+  }
+}

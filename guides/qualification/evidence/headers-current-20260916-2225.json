@@ -1,9 +1,0 @@
-{
-  "Strict-Transport-Security": "max-age=31536000",
-  "X-Content-Type-Options": null,
-  "X-Frame-Options": null,
-  "Content-Security-Policy": null,
-  "Referrer-Policy": null,
-  "Access-Control-Allow-Origin": null,
-  "Server": "nginx/1.29.6"
-}

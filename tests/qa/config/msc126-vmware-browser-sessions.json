@@ -1,0 +1,27 @@
+{
+  "defaults": {
+    "storageScope": "demo",
+    "bootstrapEntryConsent": false,
+    "ignoreCertificateErrors": true,
+    "screenWidth": 541,
+    "screenHeight": 950
+  },
+  "checkpoints": {
+    "MSC126-VMWARE-BACKEND-OFFLINE": {
+      "description": "Anonymous mobile entry on the existing VMware deployment, with only profilemanagement stopped by the operator. Browser networking stays online.",
+      "entryUrl": "https://localhost:8443/entry",
+      "targetUrl": "https://localhost:8443/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": { "columns": 1 },
+      "sessions": [
+        {
+          "actor": "MSC126 backend offline",
+          "expectedName": "VMware entry with backend unavailable",
+          "sessionKind": "anonymous",
+          "window": { "x": 0, "y": 0, "width": 541, "height": 950 }
+        }
+      ]
+    }
+  }
+}

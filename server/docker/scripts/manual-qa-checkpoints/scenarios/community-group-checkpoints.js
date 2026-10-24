@@ -1598,7 +1598,7 @@
       savepoint = {name, capturedAtIso: Q.nowIso(), adapter: "http", resumeBlock: boundaries[name],
         phase: state.phase, joinPrepared: state.joinPrepared === true,
         snapshots: Q.snapshotSpecs([...snapshots, ...(state.badgeSnapshots || [])]),
-        evidence: "guides/qa/evidence/GROUP-LIFECYCLE-001-20260926.md"};
+        evidence: ".e2e-artifacts/qa/GROUP-LIFECYCLE-001-20260926.md"};
       Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {savepoints: savepoint}});
     } else {
       if (!savepoint) Q.fail("Savepoint has not been captured.");

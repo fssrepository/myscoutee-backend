@@ -284,6 +284,9 @@ public class AffinityRecomputeWorkerService {
     }
 
     private void processLeasedTask(AffinityRecomputeTask task) {
+        if (task == null) {
+            return;
+        }
         try {
             processTarget(task);
             finish(task);

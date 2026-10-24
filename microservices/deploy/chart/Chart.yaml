@@ -1,6 +1,0 @@
-apiVersion: v2
-name: myscoutee-microservices
-description: Production-style domain assemblies for the explicitly started MSC-121 lab.
-type: application
-version: 0.1.0
-appVersion: "0.1.0"

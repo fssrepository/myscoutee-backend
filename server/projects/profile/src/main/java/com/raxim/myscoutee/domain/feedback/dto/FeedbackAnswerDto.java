@@ -4,7 +4,7 @@ import java.util.List;
 import com.raxim.myscoutee.domain.feedback.api.FeedbackDirectory;
 
 /** Detached form of the existing feedback directory projection. */
-public record FeedbackAnswerDto(String id, String syncKey, String viewerUserId, String eventId, String cardId, String kind, String targetUserId, String targetRole, String primaryValue, String secondaryValue, String eventComment, List<String> personalityTraitIds, List<String> tags, String submittedAtIso, String createdDate, String createdUser, String updatedDate, String updatedUser) implements FeedbackDirectory.Answer {
+public record FeedbackAnswerDto(String id, String syncKey, String viewerUserId, String eventId, String cardId, String kind, String targetUserId, String targetRole, String primaryValue, String secondaryValue, String eventComment, List<String> personalityTraitIds, List<String> tags, String submittedAtIso, String createdDate, String createdUser, String updatedDate, String updatedUser) implements FeedbackDirectory.Answer, com.raxim.myscoutee.common.dto.AuditFields.RecordFields {
     public FeedbackAnswerDto {
         if (personalityTraitIds != null) personalityTraitIds = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(personalityTraitIds));
         if (tags != null) tags = java.util.Collections.unmodifiableList(new java.util.ArrayList<>(tags));
@@ -26,8 +26,4 @@ public record FeedbackAnswerDto(String id, String syncKey, String viewerUserId, 
     @Override public List<String> getPersonalityTraitIds() { return personalityTraitIds; }
     @Override public List<String> getTags() { return tags; }
     @Override public String getSubmittedAtIso() { return submittedAtIso; }
-    @Override public String getCreatedDate() { return createdDate; }
-    @Override public String getCreatedUser() { return createdUser; }
-    @Override public String getUpdatedDate() { return updatedDate; }
-    @Override public String getUpdatedUser() { return updatedUser; }
 }

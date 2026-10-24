@@ -57,8 +57,8 @@ class AdminGraphScienceServiceTest {
         var snapshot = new AdminGraphScienceService(
                 userAffinityEdgesRepository,
                 userRatesRepository,
-                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository))
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository, null),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null))
                 .refresh(null, Map.of());
 
         assertThat(snapshot.healthScore()).isBetween(20, 100);
@@ -100,8 +100,8 @@ class AdminGraphScienceServiceTest {
         var snapshot = new AdminGraphScienceService(
                 userAffinityEdgesRepository,
                 userRatesRepository,
-                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository))
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository, null),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository, null))
                 .refresh(null, existing);
 
         assertThat(snapshot.dailyGraphActivity()).hasSize(14);

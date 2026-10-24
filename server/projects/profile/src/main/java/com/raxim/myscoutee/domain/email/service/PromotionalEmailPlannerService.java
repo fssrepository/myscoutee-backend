@@ -46,12 +46,9 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class PromotionalEmailPlannerService {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PromotionalEmailPlannerService.class);
     private static final String UPDATED_BY = "email-planner";
@@ -93,7 +90,14 @@ public class PromotionalEmailPlannerService {
             ScheduledMessageAuditService scheduledMessageAuditService,
             EmailTemplateRenderer emailTemplateRenderer,
             PromotionalEmailRuleEvaluator ruleEvaluator,
-            EmailProviderGateway emailProviderGateway) {
+            EmailProviderGateway emailProviderGateway,
+            com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases) {
+        this.groupRules = groupRules;
+        this.jobGroupScope = jobGroupScope;
+        this.groupDatabases = groupDatabases;
+
         this.emailProperties = emailProperties;
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.emailCampaignRulesRepository = emailCampaignRulesRepository;
@@ -576,17 +580,7 @@ public class PromotionalEmailPlannerService {
         item.setRuleKey(safeText(rule.getRuleKey()));
         item.setCategory("promotional");
         item.setProvider(emailProviderGateway.currentProviderKey());
-        item.setStatus(EmailOutboxStatus.PENDING);
-        item.setSubject(subject);
-        item.setHtmlBody(htmlBody);
-        item.setTextBody(textBody);
-        item.setTemplateVariables(variables);
-        item.setScheduledAt(nowIso);
-        item.setAttemptCount(0);
-        item.setCreatedDate(nowIso);
-        item.setCreatedUser(UPDATED_BY);
-        item.setUpdatedDate(nowIso);
-        item.setUpdatedUser(UPDATED_BY);
+        EmailOutboxDraft.initialize(item, subject, htmlBody, textBody, variables, nowIso, UPDATED_BY);
         return item;
     }
 

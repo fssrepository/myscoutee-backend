@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "seedRoot": "server/docker/conf/mongodb",
+  "databases": [
+    "demo_db",
+    "e2e_db"
+  ],
+  "channelOwnerTypes": [
+    [
+      "mainEvent",
+      "event"
+    ],
+    [
+      "optionalSubEvent",
+      "subEvent"
+    ],
+    [
+      "groupSubEvent",
+      "group"
+    ]
+  ],
+  "files": {
+    "chats": "chats.json",
+    "chatMessages": "chatMessages.json",
+    "activityMembers": "activityMembers.json",
+    "events": "events.json",
+    "users": "users.json"
+  }
+}

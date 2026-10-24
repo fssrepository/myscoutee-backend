@@ -162,7 +162,7 @@ public class PromotionalEmailRuleEvaluator {
         String ctaPath = rule == null ? "" : safeText(rule.getCtaPath());
         String rawUrl = ctaPath.startsWith("http://") || ctaPath.startsWith("https://")
                 ? ctaPath
-                : normalizedBaseUrl.replaceAll("/+$", "") + (ctaPath.startsWith("/") ? ctaPath : "/" + firstNonBlank(ctaPath, "game"));
+                : normalizedBaseUrl.transform(edgeText -> org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '/')) + (ctaPath.startsWith("/") ? ctaPath : "/" + firstNonBlank(ctaPath, "game"));
         String separator = rawUrl.contains("?") ? "&" : "?";
         return rawUrl + separator + "utm_source=email&utm_medium=promotional&utm_campaign=" + safeText(rule == null ? null : rule.getRuleKey());
     }

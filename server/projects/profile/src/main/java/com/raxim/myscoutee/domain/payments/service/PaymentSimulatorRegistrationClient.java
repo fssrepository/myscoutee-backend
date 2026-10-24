@@ -212,7 +212,7 @@ public class PaymentSimulatorRegistrationClient implements com.raxim.myscoutee.d
     }
 
     private static String trimTrailingSlash(String value) {
-        return safeText(value).replaceAll("/+$", "");
+        return safeText(value).transform(edgeText -> org.springframework.util.StringUtils.trimTrailingCharacter(edgeText, '/'));
     }
 
     private static String safeText(String value) {

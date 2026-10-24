@@ -169,7 +169,7 @@ public class EventSlotReadModelService {
 
     private EventSlotOccurrenceDto toSlotOccurrence(ActivityEvent parent, ActivityEvent item) {
         String sourceId = normalizeId(item == null ? null : item.getSourceId());
-        if (!StringUtils.hasText(sourceId)) {
+        if (item == null || !StringUtils.hasText(sourceId)) {
             return null;
         }
         int acceptedMembers = acceptedMembersIncludingParentAdmins(parent, item);
@@ -229,14 +229,14 @@ public class EventSlotReadModelService {
         return capacityTotal;
     }
 
-    private boolean slotParentFull(List<EventSlotOccurrenceDto> slots) {
+    public static boolean slotParentFull(List<EventSlotOccurrenceDto> slots) {
         if (slots == null || slots.isEmpty()) {
             return true;
         }
-        return slots.stream().allMatch(this::slotOccurrenceFull);
+        return slots.stream().allMatch(EventSlotReadModelService::slotOccurrenceFull);
     }
 
-    private boolean slotOccurrenceFull(EventSlotOccurrenceDto slot) {
+    public static boolean slotOccurrenceFull(EventSlotOccurrenceDto slot) {
         if (slot == null) {
             return false;
         }
@@ -283,25 +283,10 @@ public class EventSlotReadModelService {
     }
 
     private long toSortableDate(String value) {
-        if (!StringUtils.hasText(value)) {
-            return 0L;
-        }
-        try {
-            return Instant.parse(value.trim()).toEpochMilli();
-        } catch (DateTimeParseException ignored) {
-            try {
-                return LocalDateTime.parse(value.trim()).toInstant(ZoneOffset.UTC).toEpochMilli();
-            } catch (DateTimeParseException secondIgnored) {
-                try {
-                    return LocalDate.parse(value.trim()).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
-                } catch (DateTimeParseException thirdIgnored) {
-                    return 0L;
-                }
-            }
-        }
+        return com.raxim.myscoutee.common.util.TimeValues.sortableDate(value);
     }
 
-    private int normalizeCount(Number value) {
+    private static int normalizeCount(Number value) {
         if (value == null) {
             return 0;
         }

@@ -255,21 +255,7 @@ public class ActivityEventMapper {
     }
 
     private int aggregateRuntimeActivity(ActivityEvent record) {
-        int pending = 0;
-        for (SubEventItem item : record == null || record.getSubEvents() == null
-                ? List.<SubEventItem>of()
-                : record.getSubEvents()) {
-            if (item == null) {
-                continue;
-            }
-            if (Boolean.TRUE.equals(item.optional())) {
-                pending += normalizeCount(item.membersPending());
-            }
-            pending += normalizeCount(item.carsPending());
-            pending += normalizeCount(item.accommodationPending());
-            pending += normalizeCount(item.suppliesPending());
-        }
-        return Math.max(normalizeCount(record == null ? null : record.getActivity()), pending);
+        return ActivityEventDetailMapper.aggregateRuntimeActivity(record);
     }
 
     private String resolveCheckoutResultState(ActivityEvent record, MappingContext context) {
@@ -362,7 +348,7 @@ public class ActivityEventMapper {
                 : normalizeIds(snapshot.pendingRequestMemberUserIds());
     }
 
-    private Integer resolveDistanceMetersExact(LocationCoordinatesDto viewerCoordinates, ActivityEvent record) {
+    public static Integer resolveDistanceMetersExact(LocationCoordinatesDto viewerCoordinates, ActivityEvent record) {
         LocationCoordinatesDto eventCoordinates = record == null ? null : cloneLocation(record.getLocationCoordinates());
         if (viewerCoordinates == null || eventCoordinates == null) {
             Double fallbackDistanceKm = record == null ? null : record.getDistanceKm();
@@ -374,21 +360,12 @@ public class ActivityEventMapper {
         return haversineDistanceMeters(viewerCoordinates, eventCoordinates);
     }
 
-    private int haversineDistanceMeters(LocationCoordinatesDto from, LocationCoordinatesDto to) {
-        double earthRadiusMeters = 6_371_000d;
-        double latitudeDelta = Math.toRadians(to.latitude() - from.latitude());
-        double longitudeDelta = Math.toRadians(to.longitude() - from.longitude());
-        double fromLatitude = Math.toRadians(from.latitude());
-        double toLatitude = Math.toRadians(to.latitude());
-        double sinLatitude = Math.sin(latitudeDelta / 2d);
-        double sinLongitude = Math.sin(longitudeDelta / 2d);
-        double a = (sinLatitude * sinLatitude)
-                + (Math.cos(fromLatitude) * Math.cos(toLatitude) * sinLongitude * sinLongitude);
-        double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1d - a));
-        return Math.max(0, (int) Math.round(earthRadiusMeters * c));
+    private static int haversineDistanceMeters(LocationCoordinatesDto from, LocationCoordinatesDto to) {
+        return com.raxim.myscoutee.common.util.DistanceUtil.haversineMeters(
+                from.latitude(), from.longitude(), to.latitude(), to.longitude());
     }
 
-    private LocationCoordinatesDto cloneLocation(LocationCoordinatesDto value) {
+    private static LocationCoordinatesDto cloneLocation(LocationCoordinatesDto value) {
         if (value == null || value.latitude() == null || value.longitude() == null) {
             return null;
         }
@@ -418,17 +395,7 @@ public class ActivityEventMapper {
     }
 
     private List<String> normalizeStrings(Collection<String> values) {
-        if (values == null) {
-            return List.of();
-        }
-        List<String> normalized = new ArrayList<>();
-        for (String value : values) {
-            String text = safeText(value);
-            if (StringUtils.hasText(text)) {
-                normalized.add(text);
-            }
-        }
-        return normalized;
+        return com.raxim.myscoutee.common.util.TextValues.trimmedStrings(values);
     }
 
     private List<String> normalizeIds(Collection<String> values) {
@@ -445,27 +412,27 @@ public class ActivityEventMapper {
         return new ArrayList<>(normalized);
     }
 
-    private int normalizeCount(Number value) {
+    public static int normalizeCount(Number value) {
         if (value == null) {
             return 0;
         }
         return Math.max(0, (int) Math.floor(value.doubleValue()));
     }
 
-    private Integer nullableCount(Number value) {
+    public static Integer nullableCount(Number value) {
         return value == null ? null : Math.max(0, (int) Math.floor(value.doubleValue()));
     }
 
-    private double safeDouble(Number value) {
+    public static double safeDouble(Number value) {
         return value == null ? 0d : value.doubleValue();
     }
 
-    private String normalizeId(String value) {
+    public static String normalizeId(String value) {
         String normalized = safeText(value);
         return StringUtils.hasText(normalized) ? normalized : null;
     }
 
-    private String safeText(String value) {
+    public static String safeText(String value) {
         return value == null ? "" : value.trim();
     }
 }

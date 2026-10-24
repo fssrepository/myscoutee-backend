@@ -13,9 +13,12 @@ import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 
 @Service
 public class AssetOwnershipService implements AssetOwnership {
-    @org.springframework.beans.factory.annotation.Autowired private MongoTemplate mongo;
+    private final MongoTemplate mongo;
     private final AssetsRepository assets;
-    public AssetOwnershipService(AssetsRepository assets) { this.assets = assets; }
+    public AssetOwnershipService(AssetsRepository assets,
+            MongoTemplate mongo) {
+        this.mongo = mongo;
+ this.assets = assets; }
     @Override public Optional<com.raxim.myscoutee.domain.assets.document.Asset> findByAssetId(String assetId) { return assets.findByAssetId(assetId); }
     @Override public java.util.List<com.raxim.myscoutee.domain.assets.document.Asset> findByAssetIdIn(java.util.Collection<String> ids) { return assets.findByAssetIdIn(ids); }
     @Override public java.util.List<com.raxim.myscoutee.domain.assets.document.Asset> findByOwnerUserId(String id) { return assets.findByOwnerUserId(id); }
@@ -63,26 +66,8 @@ public class AssetOwnershipService implements AssetOwnership {
         return asset != null && updateStatusVersionIfCurrent(new AssetVersionDto(asset.getId(), asset.getUpdatedDate()), nextStatus, previousStatus);
     }
     @Override public boolean updateStatusVersionIfCurrent(AssetVersionDto version, String nextStatus, String previousStatus) {
-        if (version == null) {
-            return false;
-        }
-        String id = normalizeId(version.id());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(version.updatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        Update update = new Update().set("status", nextStatus);
-        if (StringUtils.hasText(previousStatus)) {
-            update.set("statusBeforeSuppression", previousStatus);
-        } else {
-            update.unset("statusBeforeSuppression");
-        }
-        UpdateResult result = mongo.updateFirst(new Query(criteria), update, com.raxim.myscoutee.domain.assets.document.Asset.class);
-        return result.getMatchedCount() > 0;
+        return version != null && com.raxim.myscoutee.common.config.mongo.MongoStatusUpdates.updateIfCurrent(
+                mongo, com.raxim.myscoutee.domain.assets.document.Asset.class, version.id(), version.updatedDate(), nextStatus, previousStatus);
     }
     @Override public AssetJobScopeDto findJobScope(String id) {
         var record = mongo.findOne(Query.query(Criteria.where("assetId").is(id)), org.bson.Document.class, "assets");

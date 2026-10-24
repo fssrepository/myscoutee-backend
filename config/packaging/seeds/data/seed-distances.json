@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    "server/docker/conf/mongodb/demo_db/userRates.json",
+    "server/docker/conf/mongodb/e2e_db/userRates.json"
+  ],
+  "hashModulus": 104729,
+  "salt": "rate-distance:",
+  "minimumKilometers": 2,
+  "kilometerRange": 33,
+  "meterRange": 1000,
+  "identity": {
+    "preferred": "syncKey",
+    "fallback": [
+      "_id.$oid",
+      "ownerUserId",
+      "relatedUserId",
+      "secondaryRelatedUserId",
+      "createdDate"
+    ]
+  },
+  "targetField": "distanceMetersExact"
+}

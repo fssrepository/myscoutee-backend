@@ -13,7 +13,10 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 @Service
 public class ProfileDirectoryService implements ProfileDirectory, com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles, com.raxim.myscoutee.domain.accounts.api.ScoringProfiles, com.raxim.myscoutee.domain.accounts.api.AssetProfiles, ProfileIdentities, com.raxim.myscoutee.domain.accounts.api.EmailProfiles, com.raxim.myscoutee.domain.accounts.api.ProfileSummaries, com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads {
     private final UsersRepository users;
-    public ProfileDirectoryService(UsersRepository users) { this.users = users; }
+    public ProfileDirectoryService(UsersRepository users,
+            org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        this.mongo = mongo;
+ this.users = users; }
     @Override public Optional<ProfileIdentityDto> findIdentityByUserId(String userId) {
         return users.findByUserId(userId).map(this::identityDto);
     }
@@ -34,7 +37,7 @@ public class ProfileDirectoryService implements ProfileDirectory, com.raxim.mysc
     @Override public List<Users> findByUserIdIn(Collection<String> userIds) { return users.findByUserIdIn(userIds); }
     @Override public java.util.List<Users> findByProfileStatus(String status) { return users.findByProfileStatus(status); }
     @Override public List<Users> findByAccountUserId(String id) { return users.findByAccountUserId(id); }
-    @org.springframework.beans.factory.annotation.Autowired private org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
     @Override public Users findFirstByUserId(String id) { return mongo.findOne(org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").is(id)), Users.class); }
     @Override public boolean existsNotDeleted(String id) { return mongo.exists(org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").is(id).and("deletedAtIso").in(null, "")), Users.class); }
     @Override public List<Users> findNotDeletedByUserIdIn(Collection<String> ids) { return mongo.find(org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").in(ids).and("deletedAtIso").in(null, "")), Users.class); }

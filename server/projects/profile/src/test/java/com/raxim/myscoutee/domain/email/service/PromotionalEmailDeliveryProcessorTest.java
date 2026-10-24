@@ -64,7 +64,7 @@ class PromotionalEmailDeliveryProcessorTest {
                         properties,
                         repository,
                         mongoTemplate,
-                        gateway);
+                        gateway, null, null, null);
 
         int sent = processor.processPendingDeliveries();
 

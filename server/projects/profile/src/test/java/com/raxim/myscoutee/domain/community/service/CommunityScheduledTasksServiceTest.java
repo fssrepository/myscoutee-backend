@@ -27,10 +27,10 @@ class CommunityScheduledTasksServiceTest {
         var groups = mock(CommunityGroupsRepository.class);
         var members = mock(ActivityMembersRepository.class);
         var notifier = mock(CommunityCasesService.class);
-        var service = new CommunityScheduledTasksService(tasks, cases, mock(CommunityAccessService.class), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups), new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members), notifier);
+        var service = new CommunityScheduledTasksService(tasks, cases, mock(CommunityAccessService.class), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups, null), new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members, null, null), notifier, null, null);
         var counterWork = new CommunityCaseCounterWork(cases,
                 mock(com.raxim.myscoutee.domain.accounts.api.MenuCounterUpdates.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class),
-                mock(org.springframework.data.mongodb.core.MongoTemplate.class), mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class));
+                mock(org.springframework.data.mongodb.core.MongoTemplate.class), mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(counterWork, "tasks", tasks);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", counterWork);
         when(tasks.save(any())).thenAnswer(call -> call.getArgument(0));
@@ -72,7 +72,7 @@ class CommunityScheduledTasksServiceTest {
         var tasks = mock(CommunityScheduledTasksRepository.class);
         var access = mock(com.raxim.myscoutee.domain.groups.api.CommunityAuthority.class);
         var service = new CommunityScheduledTasksService(tasks, mock(ServiceCasesRepository.class), access,
-                mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class), mock(CommunityCasesService.class));
+                mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class), mock(com.raxim.myscoutee.domain.events.api.CommunityMemberships.class), mock(CommunityCasesService.class), null, null);
         var counterWork = mock(CommunityCaseCounterWork.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", counterWork);
         var current = new CommunityScheduledTask("task", CommunityGroup.COMMUNITY_BASE_ID, null, "owner", "Current title", "Current description", "maintenance",

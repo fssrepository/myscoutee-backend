@@ -4,7 +4,7 @@ import java.util.List;
 import com.raxim.myscoutee.common.dto.SharedDtos.*;
 
 public interface EventOwnership extends EventJobScopes, EventMembershipFacts, EventHomeReads, EventOwnershipReads, EventDerivedUpdates {
-    interface Event extends EventChatContext, EventChangeView, EventMembershipFacts.Event, EventHomeReads.Event, OrganizerEventReads.Event {
+    interface Event extends EventChatContext, EventChangeView, EventMembershipFacts.Event, EventHomeReads.Event, OrganizerEventReads.Event, com.raxim.myscoutee.common.dto.EntityIdentity {
         List<String> getPendingMemberUserIds(); List<String> getAcceptedMemberUserIds(); List<String> getInvitedMemberUserIds(); List<String> getPendingRequestMemberUserIds(); String getStatusBeforeSuppression(); Boolean getTicketing();
     public static final String STATUS_ACTIVE = "A";
     public static final String STATUS_DRAFT = "DR";
@@ -28,8 +28,8 @@ public interface EventOwnership extends EventJobScopes, EventMembershipFacts, Ev
         Boolean getIsAdmin(); String getCreatorName(); String getCreatorInitials(); Double getDistanceKm(); String getEndAtIso();
         String getTimeframe(); String getImageUrl(); String getSourceLink(); Boolean getPublished();
         String getCampaignId();
-        String getId();
-        String getSyncKey();
+
+        
         String getSourceId();
         String getOwnerUserId();
         String getTitle();
@@ -62,4 +62,18 @@ public interface EventOwnership extends EventJobScopes, EventMembershipFacts, Ev
     @Override List<? extends Event> findHomeGameMemberProjections();
     boolean updateAffinity(Event value, double affinity, double boost);
     boolean updateStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus);
+
+    static String normalizedStatus(String value) {
+        String normalized = value == null ? "" : value.trim();
+        return switch (normalized) {
+            case "active" -> Event.STATUS_ACTIVE;
+            case "draft" -> Event.STATUS_DRAFT;
+            case "trashed", "trash" -> Event.STATUS_TRASHED;
+            case "under-review", "under review" -> Event.STATUS_UNDER_REVIEW;
+            case "blocked" -> Event.STATUS_BLOCKED;
+            case "deleted" -> Event.STATUS_DELETED;
+            case "inactive" -> Event.STATUS_INACTIVE;
+            default -> normalized.toUpperCase();
+        };
+    }
 }

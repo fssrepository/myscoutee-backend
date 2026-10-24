@@ -44,10 +44,8 @@ import com.raxim.myscoutee.domain.events.api.RandomGroupAssignment;
 
 @Service
 public class AdminNotificationService implements com.raxim.myscoutee.domain.notifications.api.NotificationAdministration {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh exchangeRateJob;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.media.api.MediaDeletionQueue mediaDeletions;
+    private final com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh exchangeRateJob;
+    private final com.raxim.myscoutee.domain.media.api.MediaDeletionQueue mediaDeletions;
     private static final long MIN_EXPECTED_RANDOM_RUN_MILLIS = 1_000L;
     private static final long MAX_EXPECTED_RANDOM_RUN_MILLIS = 60_000L;
     private static final long DEFAULT_EXPECTED_RANDOM_RUN_MILLIS = 5_000L;
@@ -84,7 +82,12 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
             EmailProcessCatalog emailCatalog,
             RandomGroupAssignment eventScheduler,
             AdministrativeActors adminModerationService,
-            OperationalTelemetry adminTelemetryService) {
+            OperationalTelemetry adminTelemetryService,
+            com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh exchangeRateJob,
+            com.raxim.myscoutee.domain.media.api.MediaDeletionQueue mediaDeletions) {
+        this.exchangeRateJob = exchangeRateJob;
+        this.mediaDeletions = mediaDeletions;
+
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailCatalog = emailCatalog;
         this.eventScheduler = eventScheduler;
@@ -367,6 +370,7 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
         private final String ruleKey;
         private final Instant startedAt = Instant.now();
         private final NotificationRuleConfig.RunState runtimeState = new NotificationRuleConfig.RunState();
+        private final Object stateLock = new Object();
         private final long expectedMillis = clampExpectedRandomRunMillis(expectedRandomRunMillis.get());
         private final AtomicInteger latestPercent = new AtomicInteger(0);
         private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual matched room assignment started.");
@@ -405,7 +409,7 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
             if (source == null) {
                 return;
             }
-            synchronized (runtimeState) {
+            synchronized (stateLock) {
                 runtimeState.setLastRunAtIso(source.getLastRunAtIso());
                 runtimeState.setLastRunStatus(source.getLastRunStatus());
                 runtimeState.setLastRunDetail(source.getLastRunDetail());
@@ -437,16 +441,25 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
             try {
                 latestPercent.updateAndGet(current -> Math.max(current, timedProgressPercent()));
                 long elapsedSeconds = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toSeconds());
-                publishInMemoryRunProgress(
-                        ruleKey,
-                        adminUserId,
-                        runtimeState,
-                        runtimeHistory,
-                        latestPercent.get(),
-                        latestDetail.get() + " Running for " + elapsedSeconds + "s.",
-                        startedAt);
+                publishProgress(latestPercent.get(),
+                        latestDetail.get() + " Running for " + elapsedSeconds + "s.");
             } catch (Exception ignored) {
                 // Keep the progress heartbeat alive; the worker records the final run status.
+            }
+        }
+
+        private void publishProgress(int progressPercent, String detail) {
+            synchronized (stateLock) {
+                long elapsedMillis = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toMillis());
+                runtimeState.setCurrentStatus("running");
+                runtimeState.setProgressPercent(Math.max(0, Math.min(99, progressPercent)));
+                runtimeState.setProgressDetail(safeText(detail).isEmpty() ? "Scheduled process is running." : safeText(detail));
+                runtimeState.setStartedAtIso(safeText(runtimeState.getStartedAtIso()).isEmpty()
+                        ? startedAt.toString()
+                        : runtimeState.getStartedAtIso());
+                runtimeState.setFinishedAtIso("");
+                runtimeState.setDurationMillis(elapsedMillis);
+                notificationRuleRegistryService.broadcastRunProgress(ruleKey, runtimeState, runtimeHistory, adminUserId);
             }
         }
 
@@ -466,28 +479,6 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
             closed = true;
             heartbeat.cancel(false);
             recordRandomRunMillis(java.time.Duration.between(startedAt, Instant.now()).toMillis());
-        }
-    }
-
-    private void publishInMemoryRunProgress(
-            String ruleKey,
-            String adminUserId,
-            NotificationRuleConfig.RunState runtimeState,
-            List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory,
-            int progressPercent,
-            String detail,
-            Instant startedAt) {
-        synchronized (runtimeState) {
-            long elapsedMillis = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toMillis());
-            runtimeState.setCurrentStatus("running");
-            runtimeState.setProgressPercent(Math.max(0, Math.min(99, progressPercent)));
-            runtimeState.setProgressDetail(safeText(detail).isEmpty() ? "Scheduled process is running." : safeText(detail));
-            runtimeState.setStartedAtIso(safeText(runtimeState.getStartedAtIso()).isEmpty()
-                    ? startedAt.toString()
-                    : runtimeState.getStartedAtIso());
-            runtimeState.setFinishedAtIso("");
-            runtimeState.setDurationMillis(elapsedMillis);
-            notificationRuleRegistryService.broadcastRunProgress(ruleKey, runtimeState, runtimeHistory, adminUserId);
         }
     }
 

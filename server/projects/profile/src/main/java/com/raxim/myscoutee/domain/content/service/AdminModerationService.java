@@ -45,7 +45,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private final com.raxim.myscoutee.domain.administration.api.AdministrativeActors adminActors;
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileModeration profileModeration;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileModeration profileModeration;
     private final UserReportSubmissionsRepository reportsRepository;
     private final UserFeedbackSubmissionsRepository feedbackRepository;
     private final ProfileSummaries usersRepository;
@@ -69,7 +69,10 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
             SupportCaseCounters supportCaseCounters,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
-            NotificationDelivery notificationOutboxService) {
+            NotificationDelivery notificationOutboxService,
+            com.raxim.myscoutee.domain.accounts.api.ProfileModeration profileModeration) {
+        this.profileModeration = profileModeration;
+
         this.groups = groups;
         this.adminActors = adminActors;
         this.reportsRepository = reportsRepository;
@@ -335,7 +338,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private void enqueueFeedbackResolvedNotification(UserFeedbackSubmission feedback, AdminUserDto admin) {
         String targetUserId = normalize(feedback == null ? null : feedback.getUserId());
         String feedbackId = normalize(feedback == null ? null : feedback.getId());
-        if (!StringUtils.hasText(targetUserId) || !StringUtils.hasText(feedbackId)) {
+        if (feedback == null || !StringUtils.hasText(targetUserId) || !StringUtils.hasText(feedbackId)) {
             return;
         }
         String subject = normalize(feedback.getSubject());

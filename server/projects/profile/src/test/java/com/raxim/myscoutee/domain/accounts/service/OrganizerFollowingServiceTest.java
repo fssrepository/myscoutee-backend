@@ -99,7 +99,7 @@ class OrganizerFollowingServiceTest {
     }
 
     private OrganizerFollowingService service(MongoTemplate mongo, FriendshipFacts friends) {
-        var service = new OrganizerFollowingService(mongo, friends);
+        var service = new OrganizerFollowingService(mongo, friends, null, null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(null, mongo));
         return service;
     }

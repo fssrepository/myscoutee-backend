@@ -139,7 +139,7 @@ class AffinityRecomputeChangeStreamServiceTest {
         var worker = mock(AffinityRecomputeWorkerService.class);
         var properties = new AffinityRecomputeProperties();
         properties.setChangeStreamWakeupCoalesce(Duration.ZERO);
-        var service = new AffinityRecomputeChangeStreamService(mongo, worker, properties, new AffinityRecomputeMetricsService());
+        var service = new AffinityRecomputeChangeStreamService(mongo, worker, properties, new AffinityRecomputeMetricsService(), null);
         var pending = task(AffinityRecomputeTaskService.STATUS_PENDING, Instant.now().minusSeconds(1));
         pending.setBaseGroupId("reconnect-workspace");
         org.mockito.Mockito.when(mongo.stream(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(AffinityRecomputeTask.class)))
@@ -168,7 +168,7 @@ class AffinityRecomputeChangeStreamServiceTest {
         var properties = new AffinityRecomputeProperties();
         properties.setChangeStreamWakeupCoalesce(Duration.ZERO);
         properties.setChangeStreamReconnectDelay(Duration.ofMillis(20));
-        var service = new AffinityRecomputeChangeStreamService(mongo, worker, properties, new AffinityRecomputeMetricsService());
+        var service = new AffinityRecomputeChangeStreamService(mongo, worker, properties, new AffinityRecomputeMetricsService(), null);
         var pending = task(AffinityRecomputeTaskService.STATUS_PENDING, Instant.now().minusSeconds(1));
         org.mockito.Mockito.when(mongo.findOne(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(AffinityRecomputeTask.class)))
                 .thenReturn(pending, (AffinityRecomputeTask) null);
@@ -197,7 +197,7 @@ class AffinityRecomputeChangeStreamServiceTest {
                 mock(MongoTemplate.class),
                 worker,
                 properties,
-                metrics);
+                metrics, null);
     }
 
     private AffinityRecomputeTask task(String status, Instant availableAt) {

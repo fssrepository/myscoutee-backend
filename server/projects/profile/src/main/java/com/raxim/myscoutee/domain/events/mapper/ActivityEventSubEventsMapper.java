@@ -410,7 +410,7 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
             return count;
         }
         Set<Long> removed = new LinkedHashSet<>();
-        long offsetMinutes = ChronoUnit.MINUTES.between(plan.parentStart(), plan.templateStart());
+        long offsetMinutes = ChronoUnit.MINUTES.between(plan.parentStart().toInstant(ZoneOffset.UTC), plan.templateStart().toInstant(ZoneOffset.UTC));
         for (LocalDate overrideDate : plan.overrideDates()) {
             LocalDateTime target = overrideDate.atTime(plan.parentStart().toLocalTime()).plusMinutes(offsetMinutes);
             long candidate = indexAtOrAfter(plan.frequency(), plan.templateStart(), target.minusDays(2));
@@ -950,7 +950,7 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
             return 0L;
         }
         if (isOneTime(normalizedFrequency(parentRecord.getFrequency()))) {
-            return Math.max(0L, ChronoUnit.MINUTES.between(slotStart, parentEnd));
+            return Math.max(0L, ChronoUnit.MINUTES.between(slotStart.toInstant(ZoneOffset.UTC), parentEnd.toInstant(ZoneOffset.UTC)));
         }
         long duration = ChronoUnit.MINUTES.between(parentStart.toLocalTime(), parentEnd.toLocalTime());
         return duration > 0L ? duration : duration + (24L * 60L);
@@ -1078,10 +1078,10 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
             return true;
         }
         if ("weekly".equals(frequency)) {
-            return date.getDayOfWeek() == templateStart.getDayOfWeek();
+            return date.getDayOfWeek().equals(templateStart.getDayOfWeek());
         }
         if ("bi-weekly".equals(frequency) || "biweekly".equals(frequency)) {
-            if (date.getDayOfWeek() != templateStart.getDayOfWeek()) {
+            if (!date.getDayOfWeek().equals(templateStart.getDayOfWeek())) {
                 return false;
             }
             long weeksBetween = ChronoUnit.WEEKS.between(templateStart.toLocalDate(), date);
@@ -1162,7 +1162,7 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
         if (occurrenceStart == null || templateStart == null || parentStart == null) {
             return null;
         }
-        long templateOffsetMinutes = ChronoUnit.MINUTES.between(parentStart, templateStart);
+        long templateOffsetMinutes = ChronoUnit.MINUTES.between(parentStart.toInstant(ZoneOffset.UTC), templateStart.toInstant(ZoneOffset.UTC));
         return occurrenceStart.minusMinutes(templateOffsetMinutes).toLocalDate();
     }
 
@@ -1244,15 +1244,15 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
     private SubEventItemDto toSlotMainEventItem(
             SubEventsSlotSource source,
             ActivityEvent parentRecord) {
-        String slotSourceId = normalizeId(source == null ? null : source.slotSourceId());
+        String slotSourceId = normalizeId(source.slotSourceId());
         String eventId = firstNonBlank(
-                source == null ? null : source.parentEventId(),
+                source.parentEventId(),
                 parentRecord == null ? null : parentRecord.getSourceId());
         String startAt = firstNonBlank(
-                source == null ? null : source.startAt(),
+                source.startAt(),
                 parentRecord == null ? null : parentRecord.getStartAtIso());
         String endAt = firstNonBlank(
-                source == null ? null : source.endAt(),
+                source.endAt(),
                 parentRecord == null ? null : parentRecord.getEndAtIso(),
                 startAt);
         long startMs = toSortableDate(startAt);
@@ -1435,7 +1435,7 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
                 item.eventId());
     }
 
-    private List<SubEventDefinitionTimelineEntry> subEventDefinitionTimeline(List<SubEventDefinitionDto> items) {
+    public static List<SubEventDefinitionTimelineEntry> subEventDefinitionTimeline(List<SubEventDefinitionDto> items) {
         List<SubEventDefinitionTimelineEntry> timeline = new ArrayList<>();
         int previousStartOffsetMinutes = 0;
         int previousEndOffsetMinutes = 0;
@@ -1460,8 +1460,8 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
         return timeline;
     }
 
-    private String normalizeSubEventDefinitionTiming(String value) {
-        String normalized = safeText(value).toLowerCase(java.util.Locale.ROOT);
+    public static String normalizeSubEventDefinitionTiming(String value) {
+        String normalized = (value == null ? "" : value.trim()).toLowerCase(java.util.Locale.ROOT);
         if ("before".equals(normalized)) {
             return "Before";
         }
@@ -1679,7 +1679,7 @@ public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.
             List<SubEventStageRuntimeLookup> stageRuntimeLookups) {
     }
 
-    private record SubEventDefinitionTimelineEntry(
+    public record SubEventDefinitionTimelineEntry(
             SubEventDefinitionDto item,
             int startOffsetMinutes,
             int durationMinutes) {

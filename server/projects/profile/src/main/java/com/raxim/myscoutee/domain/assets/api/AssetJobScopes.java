@@ -9,10 +9,7 @@ public interface AssetJobScopes extends com.raxim.myscoutee.domain.platform.api.
     @Override
     default String jobGroupForTarget(String id, java.util.function.Function<String, String> workspaceGroup,
             java.util.function.Function<String, String> userGroup) {
-        var record = findJobScope(id);
-        if (record == null) return com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId();
-        if (record.workspaceGroupId() != null) return workspaceGroup.apply(record.workspaceGroupId());
-        String owner = record.ownerUserId() == null ? record.creatorUserId() : record.ownerUserId();
-        return owner == null ? null : userGroup.apply(owner);
+        return com.raxim.myscoutee.domain.platform.api.JobTargetResolver.groupForScope(
+                findJobScope(id), workspaceGroup, userGroup);
     }
 }

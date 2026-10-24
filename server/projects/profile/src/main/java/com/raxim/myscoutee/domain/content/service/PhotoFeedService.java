@@ -23,15 +23,18 @@ import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetai
 
 @Service
 public class PhotoFeedService {
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private ContentModerationService contentModeration;
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.context.annotation.Lazy
-    private FeedEvents events;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.FeedCounts feedCounts;
+    private final ContentModerationService contentModeration;
+    private final FeedEvents events;
+    private final com.raxim.myscoutee.domain.accounts.api.FeedCounts feedCounts;
     private final PhotoFeedRepository posts;
-    public PhotoFeedService(PhotoFeedRepository posts) { this.posts = posts; }
+    public PhotoFeedService(PhotoFeedRepository posts,
+            @org.springframework.context.annotation.Lazy ContentModerationService contentModeration,
+            @org.springframework.context.annotation.Lazy FeedEvents events,
+            com.raxim.myscoutee.domain.accounts.api.FeedCounts feedCounts) {
+        this.contentModeration = contentModeration;
+        this.events = events;
+        this.feedCounts = feedCounts;
+ this.posts = posts; }
     public Post create(DiscoveryProfile actor, Create request) {
         try { UUID.fromString(request.id()); } catch (RuntimeException ex) { throw badRequest(); }
         var coordinates = coordinates(actor);

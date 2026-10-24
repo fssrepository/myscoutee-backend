@@ -1,0 +1,77 @@
+<!-- myscoutee-facebook-coming-soon-patch:start -->
+<style id="myscoutee-facebook-coming-soon-style">
+app-entry-firebase-auth-popup .firebase-auth-provider-btn.facebook-coming-soon-patched {
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  background: rgba(239, 244, 250, 0.92) !important;
+  border-color: rgba(44, 74, 121, 0.18) !important;
+  color: rgba(47, 63, 89, 0.78) !important;
+}
+
+app-entry-firebase-auth-popup .facebook-coming-soon-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(47, 95, 164, 0.11);
+  color: rgba(39, 73, 121, 0.88);
+  padding: 0.15rem 0.42rem;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+</style>
+<script id="myscoutee-facebook-coming-soon-patch">
+(() => {
+  const patchFacebookLogin = () => {
+    document.querySelectorAll('app-entry-firebase-auth-popup .firebase-auth-provider-btn').forEach((button) => {
+      const label = Array.from(button.querySelectorAll('span'))
+        .map((span) => (span.textContent || '').trim())
+        .join(' ');
+
+      if (!/\bFacebook\b/i.test(label)) {
+        return;
+      }
+
+      button.disabled = true;
+      button.setAttribute('disabled', '');
+      button.setAttribute('aria-disabled', 'true');
+      button.setAttribute('title', 'Facebook login is coming soon');
+      button.classList.add('facebook-coming-soon-patched');
+
+      const firstLabel = button.querySelector('span');
+      if (firstLabel) {
+        firstLabel.textContent = 'Facebook';
+      }
+
+      button.querySelectorAll('.facebook-coming-soon-badge').forEach((badge, index) => {
+        if (index > 0) {
+          badge.remove();
+        }
+      });
+
+      if (!button.querySelector('.facebook-coming-soon-badge')) {
+        const badge = document.createElement('span');
+        badge.className = 'facebook-coming-soon-badge';
+        badge.textContent = 'Coming soon';
+        button.appendChild(badge);
+      }
+    });
+  };
+
+  const start = () => {
+    patchFacebookLogin();
+    new MutationObserver(patchFacebookLogin).observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start, { once: true });
+  } else {
+    start();
+  }
+})();
+</script>
+<!-- myscoutee-facebook-coming-soon-patch:end -->

@@ -66,22 +66,22 @@ class UserActivityCountersServiceTest {
 
     @BeforeEach
     void setUp() {
-        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository);
+        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository, null);
         org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
-        var eligibility = new com.raxim.myscoutee.domain.feedback.service.FeedbackEligibilityService(eventOwner, feedbackStatesRepository, mongoTemplate);
+        var eligibility = new com.raxim.myscoutee.domain.feedback.service.FeedbackEligibilityService(eventOwner, feedbackStatesRepository, mongoTemplate, null);
         @SuppressWarnings("unchecked") var counterProvider = (org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters>) org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
         org.mockito.Mockito.lenient().when(counterProvider.getObject()).thenAnswer(call -> service);
         var work = new com.raxim.myscoutee.domain.feedback.service.FeedbackCounterWork(feedbackStatesRepository, mongoTemplate, counterProvider, null);
         org.springframework.test.util.ReflectionTestUtils.setField(eligibility, "counterWork", work);
         service = new UserActivityCountersService(
                 usersRepository,
-                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
-                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
-                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
+                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository, null),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository, null),
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository, null),
                 eligibility,
                 new com.raxim.myscoutee.domain.events.service.EventWatchDirectoryService(eventWatchSubscriptionsRepository),
                 eventParticipationTicketService,
-                mongoTemplate, org.mockito.Mockito.mock(OrganizerFollowingService.class));
+                mongoTemplate, org.mockito.Mockito.mock(OrganizerFollowingService.class), null);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "contentStatistics", new com.raxim.myscoutee.domain.content.service.ContentStatisticsService(mongoTemplate));
     }
 

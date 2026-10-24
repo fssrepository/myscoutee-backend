@@ -44,9 +44,9 @@ public class WebSecurityConfig {
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
-    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles;
-    @Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
-    @Autowired private AdminClientAuthenticationFilter adminClientAuthenticationFilter;
+    private final org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
+    private final AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
@@ -56,7 +56,16 @@ public class WebSecurityConfig {
             ConfigProperties configProperties,
             UserLoginSessionService userLoginSessionService,
             MediaSessionAccessService mediaSessionAccess,
-            IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter) {
+            IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter,
+            org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles,
+            com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication,
+            AdminClientAuthenticationFilter adminClientAuthenticationFilter,
+            org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.common.security.http.HttpSecurityContribution> securityContributions) {
+        this.groupProfiles = groupProfiles;
+        this.profileAuthentication = profileAuthentication;
+        this.adminClientAuthenticationFilter = adminClientAuthenticationFilter;
+        this.securityContributions = securityContributions;
+
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
@@ -73,9 +82,11 @@ public class WebSecurityConfig {
         auth.authenticationProvider(firebaseProvider);
     }
 
-    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.common.security.http.HttpSecurityContribution> securityContributions;
+    private final org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.common.security.http.HttpSecurityContribution> securityContributions;
 
     @Bean
+    // Authentication for mutations is header-based; media cookies are GET/HEAD-only. See WebSecurityConfigBootstrapTest and FirebaseFilterPublicDocumentsTest.
+    @SuppressWarnings("java:S4502")
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(sessionMongoRoutingFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(

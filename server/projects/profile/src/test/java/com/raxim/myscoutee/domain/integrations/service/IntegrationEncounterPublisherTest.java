@@ -45,7 +45,7 @@ class IntegrationEncounterPublisherTest {
     void wireScope() {
         publisher = new IntegrationEncounterPublisher(
             new com.raxim.myscoutee.domain.events.service.MingleEncounterService(null, null, mongo, jobGroupScope),
-            new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events), queries, webhooks);
+            new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events, null), queries, webhooks, null, null);
         jobs = mock(NotificationJobs.class, CALLS_REAL_METHODS);
         when(jobs.configuredGroupIds(any())).thenReturn(java.util.Arrays.asList((String) null));
         lenient().when(jobs.beginScheduledRun(any(), any(), any(), any())).thenReturn(mock(NotificationJobs.Configuration.class));

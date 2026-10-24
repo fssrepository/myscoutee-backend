@@ -727,7 +727,7 @@ public class OperatorRevenueService {
     }
 
     private static String firstNonBlank(String first, String second) {
-        return StringUtils.hasText(safeText(first))
+        return first != null && StringUtils.hasText(first)
                 ? first.trim()
                 : safeText(second);
     }

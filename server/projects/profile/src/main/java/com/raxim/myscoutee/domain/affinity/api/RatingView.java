@@ -1,13 +1,13 @@
 package com.raxim.myscoutee.domain.affinity.api;
-public interface RatingView {
+public interface RatingView extends com.raxim.myscoutee.common.dto.AuditFields, com.raxim.myscoutee.common.dto.EntityIdentity {
     String getCampaignId();
-    String getId();
-    String getSyncKey();
+
+    
     String getMode();
-    String getCreatedDate();
-    String getCreatedUser();
-    String getUpdatedDate();
-    String getUpdatedUser();
+
+    
+
+    
     String getOwnerUserId();
     String getRelatedUserId();
     String getSecondaryRelatedUserId();

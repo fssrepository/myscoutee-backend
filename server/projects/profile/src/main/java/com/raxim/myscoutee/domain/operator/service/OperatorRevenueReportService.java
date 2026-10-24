@@ -173,14 +173,8 @@ public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.
         item.setStatus(RevenueReportOutboxItem.STATUS_PENDING);
         item.setNextRetryAt(null);
         item.setUpdatedAt(clock.instant().toString());
-        try {
-            return toReportDto(outboxRepository.save(item));
-        } catch (DataAccessException exception) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Revenue report changed concurrently; reload it and retry.",
-                    exception);
-        }
+        return OperatorReportDelivery.save(() -> toReportDto(outboxRepository.save(item)),
+                "Revenue report changed concurrently; reload it and retry.");
     }
 
     @Scheduled(
@@ -189,26 +183,8 @@ public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.
             initialDelayString =
                     "${operator.revenue.reporter-initial-delay-ms:60000}")
     public void synchronizeScheduled() {
-        MongoSessionMode previous = MongoSessionModeContext.currentMode();
-        MongoSessionModeContext.set(MongoSessionMode.REAL);
-        try {
-            OperatorRevenueSyncDto result = synchronize(
-                    MongoSessionMode.REAL,
-                    false);
-            if ("BLOCKED".equals(result.state())
-                    || "ERROR".equals(result.state())) {
-                LOGGER.warn(
-                        "Scheduled revenue reporting is {} ({}).",
-                        result.state(),
-                        safeText(result.code()));
-            }
-        } catch (RuntimeException exception) {
-            LOGGER.warn(
-                    "Scheduled revenue reporting failed; its durable outbox will be retried.",
-                    exception);
-        } finally {
-            MongoSessionModeContext.set(previous);
-        }
+        OperatorReportDelivery.synchronizeScheduled(() -> synchronize(MongoSessionMode.REAL, false),
+                OperatorRevenueSyncDto::state, OperatorRevenueSyncDto::code, LOGGER, "revenue");
     }
 
     private OperatorRevenueSyncDto synchronize(

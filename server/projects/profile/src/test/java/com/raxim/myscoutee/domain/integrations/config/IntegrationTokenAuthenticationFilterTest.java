@@ -22,8 +22,8 @@ class IntegrationTokenAuthenticationFilterTest {
     private final IntegrationTokenService tokenService = org.mockito.Mockito.mock(IntegrationTokenService.class);
     private final com.raxim.myscoutee.domain.accounts.repository.UsersRepository users = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class);
     private final com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService profiles = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.class);
-    private final IntegrationTokenAuthenticationFilter filter = new IntegrationTokenAuthenticationFilter(tokenService, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  profiles,
-            new com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService(null, null));
+    private final IntegrationTokenAuthenticationFilter filter = new IntegrationTokenAuthenticationFilter(tokenService, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users, null),  profiles,
+            new com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService(null, null), null, null);
 
     @Test void oauthUsesTheSameIntegrationAuthorityAndNeverFallsBackToApiKeys() throws Exception {
         var oauth = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.integrations.service.McpAuthorizationService.class);

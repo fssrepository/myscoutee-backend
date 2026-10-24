@@ -1,0 +1,250 @@
+# The City Between Us — production package
+
+Series position: **MyScoutee — The Story · Part I**. This entire directory is
+the independent book, video, storyboard, prompt, asset and render package for
+the trilogy's first part. The [series hub](../../../README.md) is at the story
+package root.
+
+Status: **book, script, storyboard and prompts synchronized for direct Veo 3.1
+Lite production**, not a statement of user traction or product-market fit.
+
+Production lock: **2026-08-09**. Generate every motion interval in Google Flow
+with **Veo 3.1 Lite**, exact first and last frames, eight seconds and 9:16. Do
+not spend credits on another model or character comparison in this production
+pass.
+
+## Outcome
+
+This directory specifies a complete 03:12 MyScoutee hero film:
+
+- working title: **The City Between Us**;
+- master language: English, for an international operator/community audience;
+- format: mobile-first 9:16 cinematic 2.5D animation with hand-drawn character treatment inside
+  dimensional city sets;
+- story: a Founder with rural small-producer roots finishes university in 2004
+  after studies joining economics, programming and mathematics. A delayed
+  dissertation makes 2005 the earliest possible diploma year, while one missing
+  language certificate delays actual receipt considerably longer. He reaches
+  beautiful Budapest.
+  Even professional work leads through a workers' hostel and unstable rooms before
+  his parents help him secure a flat and avoid the foreign-currency-mortgage
+  route. After the American work-pressure and health threshold, he goes to
+  London in 2011, receives medical care, and finds work within two weeks despite weak English,
+  works as a programmer in a multicultural Soho office and hides hunger and
+  isolation behind a competent public self. He briefly takes the Victoria line
+  toward a low-rise, flat-roofed shared home beside the canal and Lee Valley
+  wetlands near Mansfield Park. At its busiest, the Founder and nine other Hungarian adults
+  share one full bathroom and a separate WC; he also shares his bedroom. London
+  outside the house remains culturally expansive. The rent saved by sharing
+  pays for low-cost journeys and builds savings. By December 2015, the savings
+  mean financial independence in lower-cost Budapest, where the flat his parents
+  helped provide has stood empty through the London years, but never in London.
+  Normal London housing would erode that position; permanent room-sharing is no
+  longer viable, so housing becomes his stop-loss.
+  Nearly fifty countries still do not cure
+  loneliness, so he comes home
+  deliberately to look for a partner. After trying online and
+  real-world routes, he recognizes the missing bridge between encounter and a
+  meaningful shared meeting. He sees that screens encourage verdicts before
+  people gain common human context. Budapest-cost financial independence gives
+  him sustained work periods that ordinary employment would not have left; later
+  AI assistance accelerates implementation. He gives the problem his full focus
+  and builds MyScoutee as a full relationship-lifecycle and event system. Technically
+  capable local operators can test the shared core under their own brands and
+  cultural contexts while cooperating through a voluntary server network;
+- ending: constructive and accountable — the product follows strangers from
+  editable priority through group, chat and a first event; after meeting they
+  can be invited again, repeated events can form community, and later priority
+  changes alter the chance of meeting again. The core then passes through one
+  verified technical handoff rather than indiscriminate distribution.
+
+The film does **not** claim that every app, class, event, or date fails. It does
+not blame women or men. It shows two different scarcity problems: too little
+attention and too much unmanageable attention. It presents group-first meetings
+as an available, lower-pressure path, not as a guaranteed romantic result.
+
+## Public story book
+
+The English-first memoir and product-origin companion is **MyScoutee — The
+Story**, Part **I** of the planned trilogy, with **The City Between Us** as its
+literary subtitle. The current artifact is the **first illustrated public
+edition**, published on 20 August 2026. Its source manuscript and independent
+draft export remain editable, while each
+hash-checked published PDF remains immutable. Its cover uses
+the same wordmark contract as the official manuals: the original mark replaces
+the initial `M`, followed only by `yScoutee`. It never displays the mark beside
+the complete word and never duplicates the `M`.
+
+- [English manuscript](../../../books/trilogy/01-the-city-between-us/THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md)
+- [book build and illustration contract](../../../books/trilogy/01-the-city-between-us/README.md)
+- [book version source](../../../books/trilogy/01-the-city-between-us/version.json)
+- [book document metadata](../../../books/trilogy/01-the-city-between-us/metadata.json)
+- [book changelog](../../../books/trilogy/01-the-city-between-us/CHANGELOG.md)
+- [browser edition](../../../books/trilogy/01-the-city-between-us/MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html)
+- [current editable v1.0.0 PDF](../../../books/trilogy/01-the-city-between-us/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf)
+- [published-artifact contract](../../../books/trilogy/01-the-city-between-us/README.md) — separates the online
+  and paperback editions and contains the
+  locked v1.0.0 PDF with SHA-256 checksum and publication manifest
+
+The illustrated edition contains text-wrapped portraits, portrait sets and wide
+character montages from the same locked character references.
+The exact Part I identity contract is
+[`assets/characters/CHARACTER_MAP.md`](assets/characters/CHARACTER_MAP.md).
+
+## Recommended production route
+
+For the locked cost/control balance, use the direct Veo 3.1 Lite route:
+
+1. Lock the story, voice and timing with [SCRIPT.md](film/SCRIPT.md).
+2. Follow the purchase gates and credit limits in
+   TWO_FILM_CREDIT_SAVER_PLAN.md.
+3. Preserve the locked recurring identities and approved book-character designs.
+4. Build and approve the founder, supporting cast, locations, props and style frames from
+   [the creative bible](film/CREATIVE_BIBLE.md).
+5. Generate each exact endpoint pair, then exactly one eight-second Veo 3.1 Lite
+   motion result per interval.
+6. Assemble at 720×1280 with CPU FFmpeg: picture, voice, one continuous score,
+   foley, brand, title and subtitles. The
+   master should not depend on generated on-screen text.
+7. Keep the 370-credit reserve for controlled repairs; do not switch models in
+   this production pass.
+
+Older OpenArt and Higgsfield notes remain only as inactive research history.
+They are not alternative routes for the current films. `SHOT_MANIFEST.csv`
+contains the locked Veo Lite production filenames.
+
+## Files
+
+| File | Use |
+| --- | --- |
+| [START_HERE.md](overview/START_HERE.md) | One recommended route from an empty folder to a playable, checked master |
+| [PRODUCT_AND_RESEARCH.md](../../../books/product-and-sources.md) | Shared product truth, meeting-path context, research and claim boundaries |
+| [CREATIVE_BIBLE.md](film/CREATIVE_BIBLE.md) | Theme, audience, world, characters, look, light, camera, acting and motifs |
+| [SCRIPT.md](film/SCRIPT.md) | Time-coded English narration, dialogue, titles and subtitle rules |
+| [STORYBOARD.md](storyboard/STORYBOARD.md) | Shot-by-shot blocking, camera, light, expression, sound and transition |
+| [PROMPT_PACK.md](prompts/PROMPT_PACK.md) | Character/world prompts, continuity lock, negative constraints and shot prompts |
+| [GOOGLE_FLOW.md](../production.md) | Shared Flow asset, Ingredients, Frames, Veo and Scenebuilder workflow |
+| [AUDIO_EDIT_DELIVERY.md](film/AUDIO_EDIT_DELIVERY.md) | Current CPU audio, edit, brand, subtitle and delivery specification |
+| [PRODUCTION_CHECKLIST.md](production/PRODUCTION_CHECKLIST.md) | Asset, continuity, claim, release and mobile-QA checks |
+| COST_AND_MODEL_DECISION.md | Current shared model choice and purchase boundary |
+| TWO_FILM_CREDIT_SAVER_PLAN.md | Shared Veo Lite credit, character, audio and CPU-post plan |
+| [STANDALONE_FILM_AND_SEQUEL_BRIDGE.md](film/STANDALONE_FILM_AND_SEQUEL_BRIDGE.md) | Film 1 boundary and future Film 2 handoff |
+| [STORY_AND_PROMPT_COVERAGE.md](production/STORY_AND_PROMPT_COVERAGE.md) | Canonical coverage map across book, film, prompts, evidence and future work |
+| [TODO.md](production/TODO.md) | Narrative-first approval gate and all deferred generation work |
+| [THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md](../../../books/trilogy/01-the-city-between-us/THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md) | English first-person book draft |
+| [book build contract](../../../books/trilogy/01-the-city-between-us/README.md) | Reproducible PDF build, wordmark and optional illustration contract |
+| [SOURCES.md](../../../books/trilogy/01-the-city-between-us/research/SOURCES.md) | Project evidence and external research/platform sources |
+| [SHOT_MANIFEST.csv](production/tracking/SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings and approved filenames |
+
+No slideshow, animatic or cross-model test is part of the active production
+route. After written closure, production begins directly with the two exact
+9:16 endpoints and matching Veo 3.1 Lite prompt for Part I S01.
+
+The `prompts/` directory contains plain-text copy blocks. Do not edit a master
+prompt for an individual shot; add the shot-specific block after the shared
+continuity prefix so that global visual rules remain stable.
+
+Current standalone planning prompts:
+
+- [Hungarian origin, workers'-hostel and Budapest housing memory board](prompts/hungarian-origin-rural-budapest-memory-board.txt);
+- [first Budapest attempt and reimbursed interview journeys memory board](prompts/budapest-first-attempt-and-interview-journeys-memory-board.txt);
+- [cornfield-to-Trivandrum first assignment and practical-English memory board](prompts/cornfield-to-trivandrum-first-assignment-memory-board.txt);
+- [pre-London work breakdown, unemployment and rapid London entry memory board](prompts/pre-london-work-breakdown-and-exit-memory-board.txt);
+- [United States assignment, borrowed-home and work-pressure memory board](prompts/united-states-assignment-dream-and-pressure-memory-board.txt);
+- [Budapest relationships before and during London, plus acceptance memory board](prompts/budapest-before-london-relationship-memory-board.txt);
+- [2017 photograph, date and unfinished-return memory board](prompts/budapest-2017-photo-match-and-unfinished-return-memory-board.txt);
+- [five-year Hungarian household character board](prompts/london-hmo-residents-character-board.txt);
+- [dense five-year London sequence](prompts/london-five-year-dense-sequence.txt);
+- [UK adventure and availability memory board](prompts/uk-adventure-availability-memory-board.txt);
+- [six-day Egypt human-network memory board](prompts/egypt-six-day-human-network-memory-board.txt);
+- [India 2016 human-bridge memory board](prompts/india-2016-human-bridge-memory-board.txt);
+- [Thailand/Cambodia human-bridge memory board](prompts/thailand-cambodia-human-bridge-memory-board.txt);
+- [Russia arrival human-bridge memory board](prompts/russia-arrival-human-bridge-memory-board.txt);
+- [European wonder and empty-capacity memory board](prompts/europe-wonder-empty-capacity-memory-board.txt);
+- [Central-European one-day bus and localization memory board](prompts/central-europe-one-day-bus-localization-memory-board.txt);
+- [Istanbul–Dubai hospitality memory board](prompts/istanbul-dubai-hospitality-memory-board.txt);
+- [human-bridge product lifecycle](prompts/product-human-bridge-lifecycle-sequence.txt).
+
+## The creative sentence
+
+> A city can be full of people and still be missing the path between them.
+
+The autobiographical hinges are:
+
+> **The shared room paid for journeys and a Budapest exit. The hunger stayed hidden.**
+
+> **I went out to make a living. I came home to find a partner.**
+
+## The product sentence
+
+> MyScoutee turns private editable 1–10 priorities and reciprocal/contextual
+> evidence — including real people, places or events in common — into balanced
+> groups of strangers, carries them through chat and a managed real-world event,
+> then lets the resulting contacts meet again and evolve. Shared context is not
+> a public rating, endorsement or guarantee.
+
+## The operator sentence
+
+> Technically capable operators can run the shared core on independent local
+> servers under their own brands, test it across different communities and
+> cultures, and cooperate through a voluntary network/virtual enterprise with
+> opt-out — addressing the same unsolved relationship-to-meeting problem without
+> rebuilding the whole path alone.
+
+Use “designed to,” “can,” and “operator model” where the result is a product
+intent rather than established market evidence. Never say that MyScoutee has
+proven superior matching, solved loneliness, produced revenue, or guaranteed a
+safe or successful meeting.
+
+## Non-negotiable creative boundaries
+
+- The protagonist is persistent, observant and capable — never a defeated or
+  resentful figure.
+- Women and men are not opposing teams. Overload, scarcity, safety, time and
+  ambiguity affect people differently.
+- The dance scene is a personal memory: a busy beginner floor, a thin advanced
+  class, and a boundary becoming clear when a partner arrives. No narrator
+  universalizes this into a claim about women.
+- Bad dates fail because the setting and format create friction: noise,
+  performance pressure, travel, weather, cost or lack of an easy exit. The other
+  person is never the punchline.
+- A 1–10 priority is not a public human score. It is an editable, contextual
+  signal of the user's own attention and intent.
+- The group is a lower-pressure first context and a path to shared activity. It
+  is not a compulsory group date and does not manufacture chemistry.
+- Product UI shown in generated plates must be abstract. Capture the real UI or
+  rebuild clean motion graphics in post; do not publish AI-generated gibberish.
+- Use the unmodified original `frontend/src/assets/logo/heart.png`. It is the
+  repository's high-resolution logo asset. Do not recolor, redraw, crop, glow or
+  AI-regenerate it. Keep **MyScoutee** as separate editable text in post rather
+  than creating a new combined bitmap.
+- Show the original logo briefly in S01, at the common MyScoutee Network core in
+  S22 and fully in E01. Do not keep a permanent corner watermark through the
+  emotional middle of the film. The helmet–star–heart reading is visual intent,
+  not a safety certification.
+
+## Master settings
+
+| Setting | Master |
+| --- | --- |
+| Runtime | 03:12.000 |
+| Frame rate | 24 fps constant |
+| Raster | **720×1280 primary mobile master**; optional 1080×1920 only after a phone QA failure |
+| Aspect | **9:16 portrait**; important faces/text stay clear of the top/bottom platform UI zones |
+| Shutter language | natural 180-degree motion; no smeary low-shutter look |
+| Dialogue | 48 kHz / 24-bit WAV, mono voice stems |
+| Mix | 48 kHz / 24-bit stereo master plus separate M&E and dialogue stems |
+| Loudness | platform master around -14 LUFS integrated, true peak ≤ -1 dBTP; keep a -16 LUFS alternate |
+| Captions | English SRT plus textless clean master |
+| Accessibility | never rely on color alone; captions identify off-screen dialogue and key sound cues |
+
+Cost rule: storyboard stills first, motion draft second, approved 720p final
+third. Never render the whole film on all three platforms and never upscale just
+because a larger number is available. On the intended phone/platform, 720×1280
+is the acceptance target.
+
+## First action
+
+Open TWO_FILM_CREDIT_SAVER_PLAN.md,
+then prepare the exact Part I S01 endpoint pair. Provide both absolute paths and
+the copy/paste Veo 3.1 Lite prompt before spending the first ten motion credits.

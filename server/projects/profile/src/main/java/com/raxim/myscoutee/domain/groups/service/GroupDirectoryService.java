@@ -7,11 +7,13 @@ import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
 
 @Service
 public class GroupDirectoryService implements GroupDirectory {
-    @org.springframework.beans.factory.annotation.Autowired
-    private org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final CommunityGroupsRepository groups;
 
-    public GroupDirectoryService(CommunityGroupsRepository groups) {
+    public GroupDirectoryService(CommunityGroupsRepository groups,
+            org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        this.mongo = mongo;
+
         this.groups = groups;
     }
 

@@ -16,7 +16,7 @@ import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 /** Coordinates the existing API and MCP settings into one load/save boundary. */
 @Service
 public class IntegrationSettingsService {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountIntegrationAccess accountIntegrationAccess;
+    private final com.raxim.myscoutee.domain.accounts.api.AccountIntegrationAccess accountIntegrationAccess;
     private final IntegrationTokenService tokens;
     private final McpAuthorizationService mcp;
     private final ProfileDirectory users;
@@ -24,7 +24,10 @@ public class IntegrationSettingsService {
     private final IntegrationPublicEndpointResolver endpoint;
 
     public IntegrationSettingsService(IntegrationTokenService tokens, McpAuthorizationService mcp,
-            ProfileDirectory users, Optional<IntegrationAccountSummaries> summaries, IntegrationPublicEndpointResolver endpoint) {
+            ProfileDirectory users, Optional<IntegrationAccountSummaries> summaries, IntegrationPublicEndpointResolver endpoint,
+            com.raxim.myscoutee.domain.accounts.api.AccountIntegrationAccess accountIntegrationAccess) {
+        this.accountIntegrationAccess = accountIntegrationAccess;
+
         this.tokens = tokens; this.mcp = mcp; this.users = users;
         this.summaries = summaries.orElse(null); this.endpoint = endpoint;
     }

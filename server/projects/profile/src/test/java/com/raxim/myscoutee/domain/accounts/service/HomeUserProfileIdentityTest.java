@@ -29,6 +29,12 @@ class HomeUserProfileIdentityTest {
     @InjectMocks
     private HomeUserProfileService service;
 
+    @org.junit.jupiter.api.BeforeEach
+    void wireSelectionOwner() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile",
+                new SelectedProfileService(usersRepository));
+    }
+
     @AfterEach
     void clearAuthentication() {
         SecurityContextHolder.clearContext();

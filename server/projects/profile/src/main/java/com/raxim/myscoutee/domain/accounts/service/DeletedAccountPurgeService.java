@@ -46,16 +46,12 @@ import com.raxim.myscoutee.domain.operator.api.GlobalIdentityPrivacy;
 
 @Service
 public class DeletedAccountPurgeService {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.integrations.api.IntegrationPrivacy integrationPrivacy;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.help.api.HelpPrivacy helpPrivacy;
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.email.api.EmailPrivacy emailPrivacy;
+    private final com.raxim.myscoutee.domain.integrations.api.IntegrationPrivacy integrationPrivacy;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
+    private final com.raxim.myscoutee.domain.help.api.HelpPrivacy helpPrivacy;
+    private final com.raxim.myscoutee.domain.email.api.EmailPrivacy emailPrivacy;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
+    private final com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
     private static final int DELETE_GRACE_DAYS = 30;
     private static final Duration PURGE_JOB_LEASE = Duration.ofMinutes(30);
@@ -84,7 +80,18 @@ public class DeletedAccountPurgeService {
             AccountPurgeJobsRepository accountPurgeJobsRepository,
             MediaCleanup mediaStorageService,
             MongoTemplate mongoTemplate,
-            SchedulingPolicy platformParametersService) {
+            SchedulingPolicy platformParametersService,
+            com.raxim.myscoutee.domain.integrations.api.IntegrationPrivacy integrationPrivacy,
+            com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy,
+            com.raxim.myscoutee.domain.help.api.HelpPrivacy helpPrivacy,
+            com.raxim.myscoutee.domain.email.api.EmailPrivacy emailPrivacy,
+            com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope) {
+        this.integrationPrivacy = integrationPrivacy;
+        this.notificationPrivacy = notificationPrivacy;
+        this.helpPrivacy = helpPrivacy;
+        this.emailPrivacy = emailPrivacy;
+        this.jobGroupScope = jobGroupScope;
+
         this.usersRepository = usersRepository;
         this.chatPrivacy = chatPrivacy;
         var actions = new EnumMap<Action, Consumer<Context>>(Action.class);
@@ -182,7 +189,7 @@ public class DeletedAccountPurgeService {
         int purgedCount = 0;
         List<Users> users = usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(profileStatus, purgeBeforeIso);
         for (Users user : users == null ? List.<Users>of() : users) {
-            if (user != null && JobGroupContext.isActive() && !jobGroupScope.matchesWorkspace(user.getWorkspaceGroupId())) continue;
+            if (user == null || (JobGroupContext.isActive() && !jobGroupScope.matchesWorkspace(user.getWorkspaceGroupId()))) continue;
             if (purgeUser(user, null, now)) {
                 purgedCount += 1;
             }
@@ -222,7 +229,7 @@ public class DeletedAccountPurgeService {
 
     private boolean purgeUser(Users user, AccountPurgeJob existingJob, Instant now) {
         String userId = user == null ? "" : safeText(user.getId());
-        if (!StringUtils.hasText(userId)) {
+        if (user == null || !StringUtils.hasText(userId)) {
             return false;
         }
         AccountPurgeJob job = existingJob == null ? loadOrCreatePurgeJob(userId, now) : existingJob;
@@ -290,7 +297,7 @@ public class DeletedAccountPurgeService {
 
     private AccountPurgeJob loadOrCreatePurgeJob(String userId, Instant now) {
         java.util.Optional<AccountPurgeJob> existing = accountPurgeJobsRepository.findByUserId(userId);
-        if (existing != null && existing.isPresent()) {
+        if (existing.isPresent()) {
             return existing.get();
         }
         AccountPurgeJob job = new AccountPurgeJob();
@@ -304,7 +311,7 @@ public class DeletedAccountPurgeService {
         job.setCreatedDate(nowIso);
         job.setUpdatedDate(nowIso);
         AccountPurgeJob saved = accountPurgeJobsRepository.save(job);
-        return saved == null ? job : saved;
+        return saved;
     }
 
     private boolean shouldRunPurgeJob(AccountPurgeJob job, Instant now) {
@@ -370,7 +377,7 @@ public class DeletedAccountPurgeService {
 
     private AccountPurgeJob saveJob(AccountPurgeJob job) {
         AccountPurgeJob saved = accountPurgeJobsRepository.save(job);
-        return saved == null ? job : saved;
+        return saved;
     }
 
     private Duration retryDelay(int retryCount) {
@@ -535,34 +542,11 @@ public class DeletedAccountPurgeService {
     }
 
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {
-        if (!StringUtils.hasText(collectionName) || fields == null || fields.isEmpty() || !StringUtils.hasText(userId)) {
-            return;
-        }
-        List<Criteria> criteria = fields.stream()
-                .filter(StringUtils::hasText)
-                .map(field -> Criteria.where(field).is(userId))
-                .toList();
-        if (criteria.isEmpty()) {
-            return;
-        }
-        mongoTemplate.remove(Query.query(new Criteria().orOperator(criteria.toArray(Criteria[]::new))), collectionName);
+        com.raxim.myscoutee.common.config.mongo.MongoPrivacyOperations.deleteDocumentsByAnyField(mongoTemplate, collectionName, fields, userId);
     }
 
     private void anonymizeUserFieldsByAnyField(String collectionName, List<String> fields, String userId) {
-        if (!StringUtils.hasText(collectionName) || fields == null || fields.isEmpty() || !StringUtils.hasText(userId)) {
-            return;
-        }
-        List<String> fieldNames = fields.stream()
-                .filter(StringUtils::hasText)
-                .toList();
-        if (fieldNames.isEmpty()) {
-            return;
-        }
-        for (String field : fieldNames) {
-            Update update = new Update();
-            update.set(field, "deleted-user");
-            mongoTemplate.updateMulti(Query.query(Criteria.where(field).is(userId)), update, collectionName);
-        }
+        com.raxim.myscoutee.common.config.mongo.MongoPrivacyOperations.anonymizeUserFieldsByAnyField(mongoTemplate, collectionName, fields, userId);
     }
 
     private String safeText(String value) {

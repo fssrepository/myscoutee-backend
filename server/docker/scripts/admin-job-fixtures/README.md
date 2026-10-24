@@ -2,7 +2,7 @@
 
 This folder creates small, repeatable demo/e2e data states for manually checking every Admin Job and the rating/feedback bell flow. It is deliberately separate from the application seeds and production behavior.
 
-The cross-surface test contract, historical manual status, Statistics/Monitoring/Affinity Graph expectations, parameter tests, and XLSX execution tracker are in the [Admin dynamic surfaces manual QA plan](../../../../guides/qa/manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md).
+The cross-surface test contract, historical manual status, Statistics/Monitoring/Affinity Graph expectations, parameter tests, and XLSX execution tracker are in the [Admin dynamic surfaces manual QA plan](../../../../tests/qa/README.md).
 
 The toolkit:
 
@@ -28,7 +28,7 @@ rules is running, and it guards every rule write against a scheduler starting
 concurrently. Wait for the rule to finish and repeat the command if that guard
 fires.
 
-The entire `admin-job-fixtures` directory is excluded from both production Docker build contexts and from `package-production.sh`; the production Compose stack does not mount the development scripts directory; it is not installed by the Debian package and is never exposed as an application endpoint. `packaging/tests/package-content-test.sh` fails if any path from this directory enters a production package or if production Compose exposes the development scripts directory.
+The entire `admin-job-fixtures` directory is excluded from both production Docker build contexts and from `package-production.sh`; the production Compose stack does not mount the development scripts directory; it is not installed by the Debian package and is never exposed as an application endpoint. `tests/packaging/release/package-content-test.sh` fails if any path from this directory enters a production package or if production Compose exposes the development scripts directory.
 
 ## Admin Job inventory and controls
 
@@ -339,7 +339,7 @@ Expected:
 Any pre-existing due event/ticket rows are snapshotted and temporarily marked expired so the pass remains fixture-only; reset restores them exactly.
 
 For the scoped Past badge regression, prepare `end-boundary`, then run
-`python3 guides/qa/tools/verify-event-past-badges-http.py before` from the repository
+`python3 tests/qa/categories/Event/tools/verify-event-past-badges-http.py before` from the repository
 root within its 90-second window: stored All/Hosting must be 2. After the actual
 end boundary, `trigger event-counter-expiry` makes the existing scheduler due;
 wait for `status` to report `firstPassComplete`. Run the HTTP helper with `after`:

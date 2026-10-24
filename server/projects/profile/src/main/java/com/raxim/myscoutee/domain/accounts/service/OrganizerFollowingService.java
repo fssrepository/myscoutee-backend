@@ -21,12 +21,17 @@ import com.raxim.myscoutee.domain.accounts.api.Friendships;
  * Reads return the stored state. Event mutations and the existing expiry worker own updates. */
 @Service
 public class OrganizerFollowingService implements com.raxim.myscoutee.domain.accounts.api.FollowingEvents {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.OrganizerEventReads eventOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.service.AccountJobQueries jobGroupScope;
+    private final com.raxim.myscoutee.domain.events.api.OrganizerEventReads eventOwnership;
+    private final com.raxim.myscoutee.domain.accounts.service.AccountJobQueries jobGroupScope;
 
     private final MongoTemplate mongo;
     private final Friendships friendships;
-    public OrganizerFollowingService(MongoTemplate mongo, Friendships friendships) {
+    public OrganizerFollowingService(MongoTemplate mongo, Friendships friendships,
+            com.raxim.myscoutee.domain.events.api.OrganizerEventReads eventOwnership,
+            com.raxim.myscoutee.domain.accounts.service.AccountJobQueries jobGroupScope) {
+        this.eventOwnership = eventOwnership;
+        this.jobGroupScope = jobGroupScope;
+
         this.mongo = mongo;
         this.friendships = friendships;
     }

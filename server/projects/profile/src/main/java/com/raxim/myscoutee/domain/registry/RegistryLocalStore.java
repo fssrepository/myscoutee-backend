@@ -1050,17 +1050,7 @@ public final class RegistryLocalStore {
         Path temporary = Files.createTempFile(parent, "." + target.getFileName() + ".", ".tmp");
         boolean moved = false;
         try {
-            setPosixPermissions(temporary, FILE_PERMISSIONS);
-            try (FileChannel channel = FileChannel.open(
-                    temporary,
-                    StandardOpenOption.WRITE,
-                    StandardOpenOption.TRUNCATE_EXISTING)) {
-                ByteBuffer buffer = ByteBuffer.wrap(bytes);
-                while (buffer.hasRemaining()) {
-                    channel.write(buffer);
-                }
-                channel.force(true);
-            }
+            writeTemporaryContents(temporary, bytes);
             try {
                 Files.move(
                         temporary,
@@ -1085,17 +1075,7 @@ public final class RegistryLocalStore {
         Path temporary = Files.createTempFile(parent, "." + target.getFileName() + ".", ".tmp");
         boolean moved = false;
         try {
-            setPosixPermissions(temporary, FILE_PERMISSIONS);
-            try (FileChannel channel = FileChannel.open(
-                    temporary,
-                    StandardOpenOption.WRITE,
-                    StandardOpenOption.TRUNCATE_EXISTING)) {
-                ByteBuffer buffer = ByteBuffer.wrap(bytes);
-                while (buffer.hasRemaining()) {
-                    channel.write(buffer);
-                }
-                channel.force(true);
-            }
+            writeTemporaryContents(temporary, bytes);
             if (Files.exists(target, LinkOption.NOFOLLOW_LINKS)) {
                 throw new IOException("Registry receipt already exists: " + target);
             }
@@ -1202,4 +1182,19 @@ public final class RegistryLocalStore {
     private static String emptyToNull(String value) {
         return value == null || value.isBlank() ? null : value;
     }
+
+    private void writeTemporaryContents(Path temporary, byte[] bytes) throws IOException {
+        setPosixPermissions(temporary, FILE_PERMISSIONS);
+        try (FileChannel channel = FileChannel.open(
+                temporary,
+                StandardOpenOption.WRITE,
+                StandardOpenOption.TRUNCATE_EXISTING)) {
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            while (buffer.hasRemaining()) {
+                channel.write(buffer);
+            }
+            channel.force(true);
+        }
+    }
+
 }

@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.domain.community.document.CommunityScheduledTask;
 
 public interface CommunityScheduledTasksRepository extends MongoRepository<CommunityScheduledTask, String> {
-    String VISIBLE = "{'baseGroupId':?0,'$or':[{'communityId':null,'ownerAccountId':?1},{'communityId':{'$in':?2}},{'communityId':{'$in':?3},'$or':[{'audienceAll':true},{'audienceAccountIds':?1}]}]}";
-    @Query("{'$and':[" + VISIBLE + ",?4]}")
+    String VISIBILITY_QUERY = "{'baseGroupId':?0,'$or':[{'communityId':null,'ownerAccountId':?1},{'communityId':{'$in':?2}},{'communityId':{'$in':?3},'$or':[{'audienceAll':true},{'audienceAccountIds':?1}]}]}";
+    @Query("{'$and':[" + VISIBILITY_QUERY + ",?4]}")
     List<CommunityScheduledTask> visible(String baseId, String actor, Collection<String> managed, Collection<String> joined, Document status, Pageable page);
     List<CommunityScheduledTask> findByCommunityId(String communityId, Pageable page);
     @Query("{'baseGroupId':?0,'enabled':true,'deleted':{'$ne':true},'nextDueAtIso':{'$ne':null}}")

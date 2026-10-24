@@ -43,7 +43,7 @@ class IntegrationWebhookIdlePollingTest {
                     return null;
                 }).when(jobs).runScheduledGroups(eq("integration-webhooks"), any(Runnable.class));
                 var service = new IntegrationWebhookService(null, null, null, null, null,
-                        routed, new ObjectMapper(), false, false, 1, 1);
+                        routed, new ObjectMapper(), false, false, 1, 1, null, null, null, null, null, null, null);
                 ReflectionTestUtils.setField(service, "groupRules", jobs);
                 ReflectionTestUtils.setField(service, "groupDatabases", new ScheduledMongoSessionRunner("real", "demo"));
                 MongoSessionModeContext.set(MongoSessionMode.DEMO);

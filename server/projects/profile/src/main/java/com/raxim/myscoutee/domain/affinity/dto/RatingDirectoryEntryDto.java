@@ -26,18 +26,12 @@ public record RatingDirectoryEntryDto(
         Boolean met,
         String metEventId,
         String eventName,
-        Integer distanceMetersExact) implements RatingView {
+        Integer distanceMetersExact) implements RatingView, com.raxim.myscoutee.common.dto.AuditFields.RecordFields, com.raxim.myscoutee.common.dto.EntityIdentity.RecordFields {
     public static RatingDirectoryEntryDto from(RatingView rating) {
         return new RatingDirectoryEntryDto(rating.getCampaignId(), rating.getId(), rating.getSyncKey(), rating.getMode(), rating.getCreatedDate(), rating.getCreatedUser(), rating.getUpdatedDate(), rating.getUpdatedUser(), rating.getOwnerUserId(), rating.getRelatedUserId(), rating.getSecondaryRelatedUserId(), rating.getScoreGiven(), rating.getScoreReceived(), rating.getAffinityScore(), rating.getEvidenceConfidence(), rating.getMutuallyRated(), rating.getSocialContext(), rating.getBridgeUserId(), rating.getBridgeCount(), rating.getMet(), rating.getMetEventId(), rating.getEventName(), rating.getDistanceMetersExact());
     }
     @Override public String getCampaignId() { return campaignId; }
-    @Override public String getId() { return id; }
-    @Override public String getSyncKey() { return syncKey; }
     @Override public String getMode() { return mode; }
-    @Override public String getCreatedDate() { return createdDate; }
-    @Override public String getCreatedUser() { return createdUser; }
-    @Override public String getUpdatedDate() { return updatedDate; }
-    @Override public String getUpdatedUser() { return updatedUser; }
     @Override public String getOwnerUserId() { return ownerUserId; }
     @Override public String getRelatedUserId() { return relatedUserId; }
     @Override public String getSecondaryRelatedUserId() { return secondaryRelatedUserId; }

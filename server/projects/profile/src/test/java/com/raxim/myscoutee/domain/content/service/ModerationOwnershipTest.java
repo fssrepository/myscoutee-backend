@@ -41,7 +41,7 @@ class ModerationOwnershipTest {
         var record = new Document("_id", "row").append("status", current);
         if (current.equals("B")) record.append("moderationPreviousStatus", "A");
         when(mongo.find(any(Query.class), eq(Document.class), eq(collection))).thenReturn(List.of(record));
-        if (collection.equals("events")) new EventModerationService(mongo).apply("resource", 7L, decision);
+        if (collection.equals("events")) new EventModerationService(mongo, null).apply("resource", 7L, decision);
         else new AssetModerationProjectionService(mongo).apply("resource", 7L, decision);
         var query = ArgumentCaptor.forClass(Query.class); var update = ArgumentCaptor.forClass(Update.class);
         verify(mongo).updateFirst(query.capture(), update.capture(), eq(collection));

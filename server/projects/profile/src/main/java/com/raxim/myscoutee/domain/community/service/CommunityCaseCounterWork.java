@@ -19,8 +19,7 @@ import org.springframework.data.domain.Sort;
 /** Case writes retain their counter intent, using the Campaign/Feedback durable-work pattern. */
 @Service
 public class CommunityCaseCounterWork {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.repository.CommunityScheduledTasksRepository tasks;
+    private final com.raxim.myscoutee.domain.community.repository.CommunityScheduledTasksRepository tasks;
 
     public CommunityScheduledTask saveTask(CommunityScheduledTask next, CommunityScheduledTask previous) {
         finishTask(previous);
@@ -38,6 +37,8 @@ public class CommunityCaseCounterWork {
         var recipients = new LinkedHashMap<>(before);
         var affected = new LinkedHashSet<>(before.keySet()); affected.addAll(visible);
         var pending = new ArrayList<MenuCounterUpdates.Change>();
+        // Stable persisted receipt/counter identity; never a password, signature or integrity proof.
+        @SuppressWarnings("java:S4790")
         String source = "scheduled-" + org.springframework.util.DigestUtils.md5DigestAsHex(next.id().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         for (var account : affected) {
             var old = before.get(account);
@@ -78,7 +79,10 @@ public class CommunityCaseCounterWork {
     private final MongoTemplate mongo;
     private final GroupDirectory groups;
     public CommunityCaseCounterWork(ServiceCasesRepository cases, MenuCounterUpdates counters,
-            CommunityMemberships memberships, MongoTemplate mongo, GroupDirectory groups) {
+            CommunityMemberships memberships, MongoTemplate mongo, GroupDirectory groups,
+            com.raxim.myscoutee.domain.community.repository.CommunityScheduledTasksRepository tasks) {
+        this.tasks = tasks;
+
         this.cases = cases; this.counters = counters; this.memberships = memberships; this.mongo = mongo; this.groups = groups;
     }
     public Saved save(ServiceCase next, ServiceCase previous) {
@@ -113,6 +117,8 @@ public class CommunityCaseCounterWork {
         var recipients = new LinkedHashMap<>(before);
         var affected = new LinkedHashSet<>(before.keySet()); affected.addAll(visible);
         var pending = new ArrayList<MenuCounterUpdates.Change>();
+        // Stable persisted receipt/counter identity; never a password, signature or integrity proof.
+        @SuppressWarnings("java:S4790")
         String source = "case-" + org.springframework.util.DigestUtils.md5DigestAsHex(
                 next.id().getBytes(java.nio.charset.StandardCharsets.UTF_8));
         for (var account : affected) {

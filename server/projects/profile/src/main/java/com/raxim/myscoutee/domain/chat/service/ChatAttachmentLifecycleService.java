@@ -18,10 +18,13 @@ public class ChatAttachmentLifecycleService implements com.raxim.myscoutee.domai
     private static final String STATUS_AVAILABLE = "available";
     private static final String STATUS_UNAVAILABLE = "unavailable";
 
-    @org.springframework.beans.factory.annotation.Autowired private org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final ChatMessagesRepository chatMessagesRepository;
 
-    public ChatAttachmentLifecycleService(ChatMessagesRepository chatMessagesRepository) {
+    public ChatAttachmentLifecycleService(ChatMessagesRepository chatMessagesRepository,
+            org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        this.mongo = mongo;
+
         this.chatMessagesRepository = chatMessagesRepository;
     }
 

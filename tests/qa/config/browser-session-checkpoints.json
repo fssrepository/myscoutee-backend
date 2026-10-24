@@ -1,0 +1,3115 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "targetUrl": "http://localhost/game",
+    "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+    "storageScope": "http",
+    "bootstrapEntryConsent": true,
+    "geolocation": {
+      "latitude": 30.2672,
+      "longitude": -97.7431,
+      "accuracy": 10
+    },
+    "screenWidth": 1920,
+    "screenHeight": 1000,
+    "sessionKind": "demo",
+    "ignoreCertificateErrors": true
+  },
+  "launcher": {
+    "projectRoot": "../../..",
+    "runtimeNamespace": "myscoutee-qa-browser-sessions",
+    "chromeBinary": "/opt/google/chrome/chrome",
+    "fixtureHarness": {
+      "default": "server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh",
+      "modeEnvironment": "MANUAL_QA_MONGO_MODE",
+      "modes": {
+        "kvm": "server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh"
+      }
+    },
+    "deviceHelper": "tests/qa/categories/Notifications/tools/mobile-webview-device.mjs",
+    "preflightHelper": "tests/qa/categories/Notifications/tools/verify-ui-poll-sessions.mjs"
+  },
+  "application": {
+    "storage": {
+      "session": "myscoutee.{scope}.session.v1",
+      "activeUser": "myscoutee.{scope}.demo.active-user.v1",
+      "consent": "myscoutee.{scope}.entry.gdpr-consent.v1",
+      "operatorPrefix": "myscoutee.{scope}.operator-bootstrap"
+    },
+    "routes": {
+      "login": "/api/auth/session/login",
+      "logout": "/api/auth/me/logout",
+      "identity": "/api/auth/me?userId=",
+      "workspaces": "/api/groups/workspaces?userId=",
+      "realtime": "/api/auth/me/realtime/long-poll",
+      "operatorLogin": "/api/auth/operator-bootstrap",
+      "operatorPage": "/operator"
+    },
+    "headers": {
+      "sessionId": "X-App-Session-Id",
+      "sessionKind": "X-App-Session-Kind",
+      "userId": "X-Demo-User-Id"
+    },
+    "selectors": {
+      "operatorPage": "app-operator-page",
+      "consentActions": ".document-viewer-actions",
+      "consentButton": "button:not([disabled])",
+      "guide": "app-explanation-popup .ui-popup",
+      "guideClose": "button.ui-popup__close:not([disabled])"
+    },
+    "fixture": {
+      "executable": "bash",
+      "readyAction": "ready",
+      "prepareAction": "prepare",
+      "browserScenario": "browser-sessions",
+      "userIdsEnvironment": "MANUAL_QA_BROWSER_USER_IDS",
+      "deploymentReadyPhase": "baseline-ready",
+      "defaultAuthenticationMode": "firebase",
+      "authenticationReadyFields": {
+        "firebase": "firebaseActive",
+        "demo": "demoActive"
+      }
+    }
+  },
+  "checkpoints": {
+    "INTEGRATION-ACCESS-LOCAL-001": {
+      "preserveOtherSessions": true,
+      "storageScope": "demo",
+      "entryUrl": "http://localhost/entry",
+      "targetUrl": "http://localhost/entry",
+      "bootstrapEntryConsent": true,
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC116 local Alex", "sessionKind": "anonymous", "expectedName": "Clean local Alex baseline", "autoDismissExplanationGuide": true },
+        { "actor": "MSC116 local Maya", "sessionKind": "anonymous", "expectedName": "Clean local Maya baseline", "autoDismissExplanationGuide": true }
+      ]
+    },
+    "INTEGRATION-ACCESS-001": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC116 Alex manager", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner", "autoDismissExplanationGuide": true },
+        { "actor": "MSC116 Maya member", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone", "autoDismissExplanationGuide": true }
+      ]
+    },
+    "MSC122-COMPONENTS-SUBMODULE": {
+      "preserveOtherSessions": true,
+      "geolocation": { "latitude": 47.5075, "longitude": 19.0354, "accuracy": 10 },
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "Components submodule regression",
+        "sessionKind": "anonymous",
+        "expectedName": "MSC-122 isolated component regression"
+      }]
+    },
+    "CHAT-CALL-001": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "chat-call",
+      "fixtureCheckpointId": "CHAT-CALL-001",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "WebRTC Alice",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c1",
+          "expectedName": "WebRTC Alice",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        },
+        {
+          "actor": "WebRTC Bob",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c2",
+          "expectedName": "WebRTC Bob",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        }
+      ]
+    },
+    "CHAT-CALL-001-GROUP": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "chat-call",
+      "fixtureCheckpointId": "CHAT-CALL-001",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "WebRTC Alice",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c1",
+          "expectedName": "WebRTC Alice",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        },
+        {
+          "actor": "WebRTC Bob",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c2",
+          "expectedName": "WebRTC Bob",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        },
+        {
+          "actor": "WebRTC Carol",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c3",
+          "expectedName": "WebRTC Carol",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        }
+      ]
+    },
+    "CHAT-CALL-001-PAGING": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "chat-call",
+      "fixtureCheckpointId": "CHAT-CALL-001",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 3 },
+      "sessions": [
+        { "actor": "WebRTC Alice", "sessionKind": "demo", "userId": "6500000000000000000000c1", "expectedName": "WebRTC Alice", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Bob", "sessionKind": "demo", "userId": "6500000000000000000000c2", "expectedName": "WebRTC Bob", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Carol", "sessionKind": "demo", "userId": "6500000000000000000000c3", "expectedName": "WebRTC Carol", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC David", "sessionKind": "demo", "userId": "6500000000000000000000c4", "expectedName": "WebRTC David", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Emma", "sessionKind": "demo", "userId": "6500000000000000000000c5", "expectedName": "WebRTC Emma", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Frank", "sessionKind": "demo", "userId": "6500000000000000000000c6", "expectedName": "WebRTC Frank", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true },
+        { "actor": "WebRTC Grace", "sessionKind": "demo", "userId": "6500000000000000000000c7", "expectedName": "WebRTC Grace", "fakeMediaStream": true, "microphonePermission": "granted", "cameraPermission": "granted", "autoDismissExplanationGuide": true }
+      ]
+    },
+    "MSC115-WORK-COMMUNITY": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC115 Farkas Anna", "sessionKind": "demo", "userId": "bf057de7c586eede7e84bdc7", "expectedName": "Farkas Anna" },
+        { "actor": "MSC115 Maya Stone", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone" }
+      ]
+    },
+    "MSC115-SERVICE": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC115 service provider Anna", "sessionKind": "demo", "userId": "bf057de7c586eede7e84bdc7", "expectedName": "Farkas Anna" },
+        { "actor": "MSC115 service customer Alex", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner" }
+      ]
+    },
+    "MSC115-CASE": {
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 3 },
+      "sessions": [
+        { "actor": "MSC115 case admin Alex", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner" },
+        { "actor": "MSC115 case member Maya", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone" },
+        { "actor": "MSC115 unrelated case control Anna", "sessionKind": "demo", "userId": "bf057de7c586eede7e84bdc7", "expectedName": "Farkas Anna" }
+      ]
+    },
+    "MSC115-MIXING": {
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": { "columns": 2 },
+      "sessions": [
+        { "actor": "MSC115 mixing admin Alex", "sessionKind": "demo", "userId": "af0436815ab38f4864dd1e24", "expectedName": "Alex Turner" },
+        { "actor": "MSC115 mixing member Maya", "sessionKind": "demo", "userId": "1b1c70be2349b3359a8f6f94", "expectedName": "Maya Stone" }
+      ]
+    },
+    "MSC115-APP-ADMIN": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "MSC115 App Admin Ava",
+        "sessionKind": "demo",
+        "userId": "admin-demo-ava",
+        "autoDismissExplanationGuide": false,
+        "expectedName": "Ava Moderation"
+      }]
+    },
+    "MSC115-UI-REGRESSION": {
+      "preserveOtherSessions": true,
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "Codex isolated Community UI check",
+        "sessionKind": "anonymous",
+        "expectedName": "Isolated Community layout regression session"
+      }]
+    },
+    "GROUP-LIFECYCLE-001-CONTACT-INVITEES": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ethan Rivera contact invitee",
+          "sessionKind": "demo",
+          "userId": "f6f22ba0a6f14cfcf4585d47",
+          "expectedName": "Ethan Rivera",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 30,
+            "y": 30
+          }
+        },
+        {
+          "actor": "Nora Hale contact invitee",
+          "sessionKind": "demo",
+          "userId": "9184901a15076d32ea8b626f",
+          "expectedName": "Nora Hale",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-CONTACTS": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Milo contact recipient",
+          "sessionKind": "demo",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "expectedName": "Milo Grant",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        },
+        {
+          "actor": "Alex contact owner",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 30,
+            "y": 30
+          }
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-CASH": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Milo cash payer",
+          "sessionKind": "demo",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "expectedName": "Milo Grant",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        },
+        {
+          "actor": "Alex cash recipient",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 30,
+            "y": 30
+          }
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-APP-ADMIN": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava Group moderation administrator",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "window": {
+            "width": 780,
+            "height": 900,
+            "x": 600,
+            "y": 30
+          },
+          "expectedName": "Ava Moderation",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-ENTRY-BLOCK19": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Group block 19 entry",
+          "sessionKind": "anonymous",
+          "expectedName": "Signed-out Group admission",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          },
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 80,
+            "y": 40
+          }
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Alex Turner",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nagy Eszter",
+          "sessionKind": "demo",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "expectedName": "Nagy Eszter",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Maya Stone",
+          "sessionKind": "demo",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "expectedName": "Maya Stone",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "INTEGRATION-API-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey API resource owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nova event participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "NOTIFICATION-ADMIN-LIFECYCLE-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Nova",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "MOBILE-PUSH-LIFECYCLE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey Push sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "x": 0,
+            "y": 68,
+            "width": 960,
+            "height": 950
+          }
+        },
+        {
+          "actor": "Nova foreground control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "x": 960,
+            "y": 68,
+            "width": 960,
+            "height": 950
+          }
+        }
+      ]
+    },
+    "MOBILE-WEBVIEW-LIFECYCLE-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey desktop control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "x": 107,
+            "y": 68,
+            "width": 1180,
+            "height": 950
+          }
+        }
+      ]
+    },
+    "UI-POLL-JANK-001": {
+      "layout": {
+        "columns": 3
+      },
+      "startupOracle": "ui-poll",
+      "additionalDemoUserIds": [
+        "650000000000000000000062"
+      ],
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "autoDismissExplanationGuide": false,
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin"
+        },
+        {
+          "actor": "Casey A",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 first session"
+        },
+        {
+          "actor": "Casey B",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 second session"
+        }
+      ]
+    },
+    "QA-RESET-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova reset recheck",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "JOB-PURGE": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava account-purge observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 scheduled account-purge observer"
+        }
+      ]
+    },
+    "EVENT-SCHEDULERS-001": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava Event scheduler observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 Event scheduler observer"
+        },
+        {
+          "actor": "Sophia random-room participant",
+          "sessionKind": "demo",
+          "userId": "0216b1ceb256d6f2c89073b8",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Sophia Lane \u00b7 random-room Event and Chat observer"
+        }
+      ]
+    },
+    "EVENT-SCHEDULERS-001-COUNTER-EXPIRY": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava counter-expiry observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 Close past events observer"
+        },
+        {
+          "actor": "Nova counter-expiry participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "autoDismissExplanationGuide": false,
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Nova Social \u00b7 expiring Event participant observer"
+        }
+      ]
+    },
+    "EVENT-SCHEDULERS-001-BASKET-PURGE": {
+      "targetUrl": "http://localhost/admin",
+      "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava basket-purge observer",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 Delete expired baskets observer"
+        },
+        {
+          "actor": "Nova basket-purge participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "autoDismissExplanationGuide": false,
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Nova Social \u00b7 expiring checkout basket observer",
+          "localStorage": {
+            "myscoutee.http.event.checkout.drafts.v1": {
+              "650000000000000000000062::manual-qa-checkpoint:v1:event-schedulers:basket-purge:event": {
+                "userId": "650000000000000000000062",
+                "sourceId": "manual-qa-checkpoint:v1:event-schedulers:basket-purge:event",
+                "eventTitle": "Manual QA expiring checkout basket",
+                "eventTimeframe": "Manual QA \u00b7 upcoming",
+                "slotSourceId": null,
+                "selectedDateKey": null,
+                "optionalSubEventIds": [],
+                "acceptedPolicyIds": [],
+                "appliedPromoCodes": [],
+                "basketItems": [
+                  {
+                    "id": "manual-qa-checkpoint:v1:event-schedulers:basket-purge:expired",
+                    "kind": "event",
+                    "sourceId": "manual-qa-checkpoint:v1:event-schedulers:basket-purge:event",
+                    "slotSourceId": null,
+                    "slotTemplateId": null,
+                    "selectedDateKey": null,
+                    "subEventId": null,
+                    "resourceType": null,
+                    "label": "Manual QA expiring checkout basket",
+                    "detail": "",
+                    "amount": 12.5,
+                    "currency": "EUR",
+                    "quantity": 1,
+                    "status": "confirmed",
+                    "resultState": "pending",
+                    "pricingSummaryRows": [],
+                    "checkoutSessionId": null,
+                    "createdAtIso": "2026-09-02T04:00:00.000Z",
+                    "updatedAtIso": "2026-09-02T04:00:00.000Z",
+                    "expiresAtIso": "2026-09-02T04:15:00.000Z"
+                  }
+                ],
+                "pricingSummaryRows": [],
+                "checkoutState": "confirmed",
+                "lineItems": [
+                  {
+                    "id": "manual-qa-expiring-event",
+                    "kind": "event",
+                    "label": "Manual QA expiring checkout basket",
+                    "detail": "",
+                    "amount": 12.5,
+                    "currency": "EUR"
+                  }
+                ],
+                "totalAmount": 12.5,
+                "currency": "EUR",
+                "checkoutSessionId": null,
+                "expiresAtIso": "2026-09-02T04:15:00.000Z",
+                "pendingReason": null,
+                "basketChanged": false,
+                "updatedAtMs": 1788322500000
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ROLE-TRIAD-CORE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Kai controlled member",
+          "sessionKind": "demo",
+          "userId": "7822c5f99eff99d63abe8933",
+          "expectedName": "Kai Morgan \u00b7 member authorization and moderation target"
+        },
+        {
+          "actor": "Ava moderation admin",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 admin moderation actor"
+        },
+        {
+          "actor": "Deployment operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Demo Operator \u00b7 operator-only branding actor"
+        }
+      ]
+    },
+    "ENTRY-DEMO-REG-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Disposable member",
+          "sessionKind": "anonymous",
+          "expectedName": "Unauthenticated registration entry"
+        }
+      ]
+    },
+    "ENTRY-CONSENT-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Disposable consent member",
+          "sessionKind": "anonymous",
+          "expectedName": "Unauthenticated controlled-consent entry"
+        }
+      ]
+    },
+    "ENTRY-CONSENT-002": {
+      "additionalDemoUserIds": [
+        "650000000000000000000062"
+      ],
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova revision consent",
+          "sessionKind": "anonymous",
+          "expectedName": "Anonymous rejection then Nova revision reconsent"
+        }
+      ]
+    },
+    "ENTRY-CONSENT-003": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova consent inheritance",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova v4 choices carried into a new v5 revision"
+        }
+      ]
+    },
+    "LANDING-ELIGIBILITY-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": true,
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Budapest eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Eligible country:hu landing control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "London eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Eligible country:gb landing control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 51.5074,
+            "longitude": -0.1278,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "Paris eligibility",
+          "sessionKind": "anonymous",
+          "expectedName": "Not-yet-enabled country:fr and permission-denied control",
+          "geolocationPermission": "granted",
+          "geolocation": {
+            "latitude": 48.8566,
+            "longitude": 2.3522,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "CHAT-LIST-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey controlled chat-list reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 four controlled Chat contexts"
+        }
+      ]
+    },
+    "CHAT-FLOW-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-flow sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 controlled Group sender"
+        },
+        {
+          "actor": "Nova chat-flow live reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 open live reader"
+        },
+        {
+          "actor": "Riley chat-flow recovery reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 closed/reload reader"
+        }
+      ]
+    },
+    "CHAT-ACTIONS-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-actions message owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 reply/edit/pin/unsend owner"
+        },
+        {
+          "actor": "Nova chat-actions participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 reaction and non-owner denial actor"
+        },
+        {
+          "actor": "Riley chat-actions participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 reaction add/remove actor"
+        }
+      ]
+    },
+    "CHAT-CONTENT-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey chat-content sender",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 image, voice, poll and share-card sender",
+          "microphonePermission": "granted",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "Nova chat-content live participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 live reader, denied-recorder control and voter",
+          "microphonePermission": "denied"
+        },
+        {
+          "actor": "Riley chat-content recovery participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 closed unread/reconnect reader and voter"
+        }
+      ]
+    },
+    "CHAT-GOVERNANCE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey governance admin reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Casey Bridge \u00b7 Event/Group member inspection and Admin report review"
+        },
+        {
+          "actor": "Nova governance reporter",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 accepted member and idempotent report submitter"
+        },
+        {
+          "actor": "Riley governance report target",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 accepted member and reported message author"
+        }
+      ]
+    },
+    "TOURNAMENT-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "TOURNAMENT-002": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 grouping actor"
+        },
+        {
+          "actor": "Nova tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 accepted participant"
+        },
+        {
+          "actor": "Riley tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 accepted participant"
+        }
+      ]
+    },
+    "TOURNAMENT-003": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 stage finalizer"
+        },
+        {
+          "actor": "Nova tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 qualifier non-advancer"
+        },
+        {
+          "actor": "Riley tournament participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 qualifier advancer"
+        }
+      ]
+    },
+    "TOURNAMENT-004": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 Final start actor"
+        },
+        {
+          "actor": "Nova tournament control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 excluded participant control"
+        },
+        {
+          "actor": "Riley tournament finalist",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 Final participant"
+        }
+      ]
+    },
+    "TOURNAMENT-SCORE-REOPEN-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey corrected-score reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 score correction actor"
+        },
+        {
+          "actor": "Nova corrected advancer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 revision 1 non-advancer, revision 2 advancer"
+        },
+        {
+          "actor": "Riley stable advancer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 unchanged advancer control"
+        }
+      ]
+    },
+    "TOURNAMENT-SCORE-REOPEN-002": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey late-correction guard reviewer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 late Reopen guard actor"
+        },
+        {
+          "actor": "Nova corrected advancer control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 corrected Final member control"
+        },
+        {
+          "actor": "Riley stable advancer control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 stable Final member control"
+        }
+      ]
+    },
+    "TOURNAMENT-ROOM-LIFE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey nested tournament reader",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 parent Admin and accepted-group reader"
+        },
+        {
+          "actor": "Nova Group A accepted control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 unchanged Group A member/chat control"
+        },
+        {
+          "actor": "Riley Group B control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 unchanged R2 control"
+        }
+      ]
+    },
+    "TOURNAMENT-CARD-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament-card Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 Qualifiers Finalize actor"
+        },
+        {
+          "actor": "Nova tournament-card observer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 parent-card transition observer"
+        },
+        {
+          "actor": "Riley tournament-card observer",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 reload persistence observer"
+        }
+      ]
+    },
+    "TOURNAMENT-ADMISSION-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey admission Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 unchanged tournament Admin control"
+        },
+        {
+          "actor": "Nova admitted participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 accepted before first-stage Start"
+        },
+        {
+          "actor": "Riley late admission actor",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 post-Start join/invitation/approval actor"
+        }
+      ]
+    },
+    "TOURNAMENT-MEMBER-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 first-stage Start actor"
+        },
+        {
+          "actor": "Nova accepted-before-Start participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 accepts the controlled parent invitation"
+        },
+        {
+          "actor": "Riley pending parent control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 invitation stays pending"
+        }
+      ]
+    },
+    "TOURNAMENT-MEMBER-002": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 removes Nova once"
+        },
+        {
+          "actor": "Nova removed active participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 active Group A member before Remove"
+        },
+        {
+          "actor": "Riley unchanged room control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 Group B remains active and receives the parent-event notice"
+        }
+      ]
+    },
+    "TOURNAMENT-MEMBER-003": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 removes Nova and receives no notification"
+        },
+        {
+          "actor": "Nova removed room member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 receives the self-removal notification"
+        },
+        {
+          "actor": "Riley event participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 receives the event-participant notification; Lina is verified by the persisted oracle"
+        }
+      ]
+    },
+    "TOURNAMENT-DQ-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Tournament host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 disqualifies and reinstates Nova"
+        },
+        {
+          "actor": "Nova affected participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 keeps membership, score and chat access while DQ"
+        },
+        {
+          "actor": "Riley active participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 active-order and participant-notification control; Lina is persisted-oracle only"
+        }
+      ]
+    },
+    "TOURNAMENT-RESOURCE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Transport owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 assigns Casey Group Shuttle"
+        },
+        {
+          "actor": "Nova Accommodation owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 assigns Nova Group Lodge"
+        },
+        {
+          "actor": "Riley Supplies owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 assigns Riley Group Supplies"
+        }
+      ]
+    },
+    "EVENT-EDITOR-004": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey tournament-definition host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "EVENT-EDITOR-005": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey active-event capacity editor",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova event-change notification recipient",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-RUNTIME-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey childless-event runtime host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova accepted runtime participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "EVENT-SLOT-002": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey future-slot host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova future-slot participant",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-SLOT-003": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey past-slot host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "EVENT-SLOT-004": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey slot leaderboard host",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        }
+      ]
+    },
+    "EVENT-LIFE-002": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-LIFE-003": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-INV-004": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 Admin approver"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 accepted ordinary inviter"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 pending invitation target"
+        }
+      ]
+    },
+    "EVENT-TICKET-005": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-006": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
+    "EVENT-TICKET-007": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-008": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-009": {
+      "targetUrl": "http://localhost/game",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-VISIBILITY-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-VISIBILITY-001-EXPLORE": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Lina",
+          "userId": "178e8d0cbe164fa3fede5884",
+          "expectedName": "Lina Park"
+        },
+        {
+          "actor": "Liam",
+          "userId": "2d520f3c98b0440c1556f4af",
+          "expectedName": "Liam Parker"
+        }
+      ]
+    },
+    "EVENT-TICKET-010": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-011": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "ASSET-LIFE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset lifecycle owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 Asset create, edit and delete owner"
+        }
+      ]
+    },
+    "ASSET-VIS-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset visibility owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 owner control"
+        },
+        {
+          "actor": "Lina Asset visibility friend",
+          "sessionKind": "demo",
+          "userId": "178e8d0cbe164fa3fede5884",
+          "expectedName": "Lina Park \u00b7 deterministic friend control"
+        },
+        {
+          "actor": "Liam Asset visibility unrelated",
+          "sessionKind": "demo",
+          "userId": "2d520f3c98b0440c1556f4af",
+          "expectedName": "Liam Parker \u00b7 non-friend control"
+        }
+      ]
+    },
+    "ASSET-MEMBER-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 Group A Asset owner and inviter"
+        },
+        {
+          "actor": "Nova invited member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 Group A invitation recipient"
+        },
+        {
+          "actor": "Riley join requester",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 Group A Join requester"
+        }
+      ]
+    },
+    "PAYMENT-METHODS-HISTORY-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava demo payment configuration",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 demo provider configuration"
+        },
+        {
+          "actor": "Alex payment member",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner \u00b7 Payment history and Cards"
+        }
+      ]
+    },
+    "EVENT-CHECKOUT-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Event checkout owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 Event membership oracle"
+        },
+        {
+          "actor": "Nova Event checkout member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 Stripe and Cash-only checkout"
+        },
+        {
+          "actor": "Ava demo payment configuration",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 Stripe and Cash-only configuration"
+        }
+      ]
+    },
+    "ASSET-CHECKOUT-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset checkout owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 paid Asset request owner"
+        },
+        {
+          "actor": "Nova Asset checkout member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 Barion and 3DS checkout"
+        },
+        {
+          "actor": "Ava demo payment configuration",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 Barion and 3DS configuration"
+        }
+      ]
+    },
+    "ASSET-BORROW-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 free and paid request approvals"
+        },
+        {
+          "actor": "Nova Borrow requester",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 free, paid and organizer-only branches"
+        },
+        {
+          "actor": "Riley Borrow requester",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 owner-reject branch"
+        }
+      ]
+    },
+    "ASSET-PRICING-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Asset pricing owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 interactive Asset pricing edits"
+        },
+        {
+          "actor": "Nova accepted pricing member",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 member pricing and three payment snapshots"
+        },
+        {
+          "actor": "Riley public pricing control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 non-member stage access control"
+        }
+      ]
+    },
+    "ASSET-ASSIGNMENT-LIFECYCLE-001": {
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey Event Admin",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge \u00b7 normal and Tournament Event administration"
+        },
+        {
+          "actor": "Nova Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social \u00b7 Transport/Accommodation owner and Group A mutation"
+        },
+        {
+          "actor": "Riley Asset owner",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside \u00b7 Supplies/Accommodation owner and cleanup target"
+        }
+      ]
+    },
+    "CONTENT-ADMIN-LIFECYCLE-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Ava Content administrator",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false,
+          "expectedName": "Ava Moderation \u00b7 governed revisions and Article lifecycle"
+        },
+        {
+          "actor": "Kai retained Content client",
+          "sessionKind": "demo",
+          "userId": "7822c5f99eff99d63abe8933",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Kai Morgan \u00b7 retained public snapshot and Privacy approval"
+        },
+        {
+          "actor": "Riley fresh Content control",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000063",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "expectedName": "Riley Outside \u00b7 fresh public and unapproved Privacy control"
+        }
+      ]
+    },
+    "AUTH-SESSION-001": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Client A",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client A for Nova Social"
+        },
+        {
+          "actor": "Client B",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client B for Nova Social"
+        },
+        {
+          "actor": "Client C",
+          "sessionKind": "anonymous",
+          "expectedName": "Fresh client C for Nova Social"
+        }
+      ]
+    },
+    "EVENT-PUBLISH-CHAT-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "JOB-MESSAGES": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Scheduled-message user",
+          "sessionKind": "demo",
+          "userId": "admin-job-fixture:v1:scheduled-messages:user",
+          "expectedName": "Admin fixture scheduled-message user",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "BELL-RATING-LIFECYCLE-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Nova",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "BELL-RATING-FEEDBACK-001": {
+      "layout": {
+        "columns": 4
+      },
+      "sessions": [
+        {
+          "actor": "Lucas",
+          "sessionKind": "demo",
+          "userId": "23820c1e76d3bd843f61c799",
+          "expectedName": "Lucas Lane",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Maya",
+          "sessionKind": "demo",
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "expectedName": "Maya Stone",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Eszter",
+          "sessionKind": "demo",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "expectedName": "Nagy Eszter",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Bal\u00e1zs",
+          "sessionKind": "demo",
+          "userId": "b29df68956f3fe15e04558de",
+          "expectedName": "Kiss Bal\u00e1zs",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "ADMIN-MONITORING-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "ADMIN-AFFINITY-GRAPH-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "ADMIN-PARAMETERS-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "DEPLOYMENT-SMOKE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "bootstrapEntryConsent": false,
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "anonymous",
+          "expectedName": "Smoke prerequisite configuration",
+          "targetUrl": "https://localhost/entry?redirect=%2Foperator",
+          "entryUrl": "https://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "Smoke",
+          "sessionKind": "anonymous",
+          "expectedName": "Normal account registration smoke",
+          "targetUrl": "https://localhost/entry",
+          "entryUrl": "https://localhost/entry",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "OPERATOR-UPDATE-LIFECYCLE-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "anonymous",
+          "expectedName": "VMware Operator sign-in",
+          "targetUrl": "https://localhost/entry?redirect=%2Foperator",
+          "entryUrl": "https://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "OPERATOR-FIREBASE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "anonymous",
+          "expectedName": "Operator bootstrap sign-in",
+          "targetUrl": "http://localhost/entry?redirect=%2Foperator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        },
+        {
+          "actor": "Public",
+          "sessionKind": "anonymous",
+          "expectedName": "Public configuration observer",
+          "targetUrl": "http://localhost/entry",
+          "entryUrl": "http://localhost/entry",
+          "autoDismissExplanationGuide": false,
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          }
+        }
+      ]
+    },
+    "OPERATOR-REGISTRY-LIFECYCLE-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "OPERATOR-REVENUE-LIFECYCLE-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "OPERATOR-UPDATE-QA3-PRESERVATION": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/operator",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "Operator",
+          "expectedName": "Operator",
+          "sessionKind": "operator-bootstrap",
+          "credentialFileEnvironment": "QA_OPERATOR_CREDENTIAL_FILE",
+          "window": {
+            "x": 840,
+            "y": 40,
+            "width": 1000,
+            "height": 930
+          }
+        }
+      ]
+    },
+    "NETCUP-DEMO-SMOKE": {
+      "entryUrl": "https://myscoutee.com/entry",
+      "targetUrl": "https://myscoutee.com/entry",
+      "ignoreCertificateErrors": false,
+      "hostResolverRules": "MAP myscoutee.com 62.83.35.187",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "NetcupDemoSmoke",
+          "sessionKind": "anonymous",
+          "expectedName": "Netcup public-domain demo smoke",
+          "autoDismissExplanationGuide": false,
+          "window": {
+            "x": 0,
+            "y": 40,
+            "width": 1200,
+            "height": 930
+          }
+        }
+      ]
+    },
+    "RELEASE-1.0.0-SMOKE": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "ReleaseSmoke",
+          "sessionKind": "anonymous",
+          "expectedName": "New demo registration release smoke",
+          "autoDismissExplanationGuide": false,
+          "window": {
+            "x": 0,
+            "y": 40,
+            "width": 1000,
+            "height": 930
+          }
+        }
+      ]
+    },
+    "EVENT-ACTIVITY-RATING-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey reciprocal rating",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a1",
+          "expectedName": "Casey Rating QA",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "x": 0,
+            "y": 30,
+            "width": 900,
+            "height": 900
+          }
+        },
+        {
+          "actor": "Nova reciprocal rating",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a2",
+          "expectedName": "Nova Rating QA",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "x": 920,
+            "y": 30,
+            "width": 900,
+            "height": 900
+          }
+        }
+      ]
+    },
+    "EXPLANATION-GUIDE-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Nagy Eszter guide coverage",
+          "sessionKind": "demo",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "expectedName": "Nagy Eszter",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Casey no-event guide coverage",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a1",
+          "expectedName": "Casey Rating QA",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nova no-event guide coverage",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a2",
+          "expectedName": "Nova Rating QA",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "AFFILIATE-INVITATION-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Affiliate QA owner",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Affiliate new registrant",
+          "sessionKind": "anonymous",
+          "entryUrl": "http://localhost/entry",
+          "targetUrl": "http://localhost/entry"
+        }
+      ]
+    },
+    "EVENT-FOLLOWING-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Following QA Viewer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000001",
+          "expectedName": "Following QA Viewer",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Following QA Organizer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000002",
+          "expectedName": "Following QA Organizer",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "EVENT-FOLLOWING-002": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Following QA Viewer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000001",
+          "expectedName": "Following QA Viewer",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Following QA Organizer",
+          "sessionKind": "demo",
+          "userId": "6af011000000000000000002",
+          "expectedName": "Following QA Organizer",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "EVENT-GALLERY-FEED-001": {
+      "layout": {
+        "columns": 4,
+        "appWindows": true
+      },
+      "sessions": [
+        {
+          "actor": "Gallery creator",
+          "sessionKind": "demo",
+          "userId": "6a1100000000000000000001",
+          "expectedName": "Gallery QA Creator",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Gallery viewer",
+          "sessionKind": "demo",
+          "userId": "6a1100000000000000000002",
+          "expectedName": "Gallery QA Viewer",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Moderation admin Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Moderation admin Noel",
+          "sessionKind": "demo",
+          "userId": "admin-demo-noel",
+          "expectedName": "Noel Safety",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "OPERATOR-EMAIL-WARNING-001": {
+      "layout": {
+        "columns": 2,
+        "appWindows": true
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Normal user",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "ADMIN-CLIENT-API-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Moderation admin Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Admin API QA user",
+          "sessionKind": "demo",
+          "userId": "6ac102000000000000000001",
+          "expectedName": "Admin API QA 1",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "DEMO-CARDS-001": {
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "Explore card availability smoke",
+          "sessionKind": "anonymous",
+          "entryUrl": "http://localhost/entry",
+          "targetUrl": "http://localhost/entry"
+        }
+      ]
+    },
+    "AFFILIATE-REVENUE-CONCURRENCY-001": {
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "Affiliate QA second buyer",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000002",
+          "expectedName": "Affiliate QA Second",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "AFFILIATE-EXCHANGE-RATES-001": {
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ],
+      "preserveOtherSessions": true
+    },
+    "AFFILIATE-REFUND-CONCURRENCY-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Affiliate owner refund 1",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Affiliate owner refund 2",
+          "sessionKind": "demo",
+          "userId": "6aff10000000000000000001",
+          "expectedName": "Affiliate QA Owner",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "AFFILIATE-EXCHANGE-OPERATOR-001": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "FX configuration operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "AFFILIATE-LOCAL-001": {
+      "preserveOtherSessions": true,
+      "storageScope": "demo",
+      "entryUrl": "http://localhost/entry",
+      "targetUrl": "http://localhost/entry",
+      "bootstrapEntryConsent": true,
+      "sessions": [
+        {
+          "actor": "Frontend local affiliate browser",
+          "sessionKind": "anonymous",
+          "expectedName": "Clean frontend-local demo baseline",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-ENTRY": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "geolocation": false,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Group sharing fresh registrant",
+          "sessionKind": "anonymous",
+          "entryUrl": "http://localhost/entry",
+          "targetUrl": "http://localhost/entry",
+          "window": {
+            "width": 600,
+            "height": 900,
+            "x": 20,
+            "y": 40
+          }
+        },
+        {
+          "actor": "Event sharing fresh registrant",
+          "sessionKind": "anonymous",
+          "entryUrl": "http://localhost/entry",
+          "targetUrl": "http://localhost/entry",
+          "window": {
+            "width": 600,
+            "height": 900,
+            "x": 640,
+            "y": 40
+          }
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-MCP": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "geolocation": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Group Help and MCP scope QA",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 700,
+            "y": 40
+          }
+        }
+      ]
+    },
+    "GROUP-LIFECYCLE-001-PENDING-BLOCK19": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Group block 19 pending coordinates",
+          "sessionKind": "anonymous",
+          "expectedName": "Signed-out stale pending location controls",
+          "geolocationPermission": "denied",
+          "geolocation": {
+            "latitude": 47.4979,
+            "longitude": 19.0402,
+            "accuracy": 10
+          },
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 80,
+            "y": 40
+          },
+          "localStorage": {
+            "myscoutee.http.location.v1:af0436815ab38f4864dd1e24:pending-login": "{\"latitude\":48.8566,\"longitude\":2.3522}",
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": "{\"latitude\":40.7128,\"longitude\":-74.006}"
+          }
+        }
+      ]
+    },
+    "GROUP-ISOLATION-001": {
+      "fixtureCheckpointId": "GROUP-ISOLATION-001",
+      "geolocation": {
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "accuracy": 10
+      },
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Isolation Alex",
+          "sessionKind": "demo",
+          "userId": "f02809260000000000000001",
+          "expectedName": "Isolation Alex",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 30,
+            "y": 30
+          }
+        },
+        {
+          "actor": "Isolation Eszter",
+          "sessionKind": "demo",
+          "userId": "f02809260000000000000002",
+          "expectedName": "Isolation Eszter",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        }
+      ]
+    },
+    "GROUP-ISOLATION-001-OUTSIDER": {
+      "fixtureCheckpointId": "GROUP-ISOLATION-001",
+      "preserveOtherSessions": true,
+      "geolocation": {
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "accuracy": 10
+      },
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Isolation Maya",
+          "sessionKind": "demo",
+          "userId": "f02809260000000000000003",
+          "expectedName": "Isolation Maya",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        }
+      ]
+    },
+    "INTEGRATION-API-GROUP-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Group API Alex",
+          "sessionKind": "demo",
+          "userId": "f03009260000000000000001",
+          "expectedName": "Group API Alex",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Group API signed-out recipient",
+          "sessionKind": "anonymous",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame"
+        }
+      ],
+      "geolocation": {
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "accuracy": 10
+      }
+    },
+    "DEPLOY-EXTERNAL-CONFIG-001": {
+      "device": "android",
+      "preserveOtherSessions": true,
+      "entryUrl": "https://localhost:8443/entry",
+      "targetUrl": "https://localhost:8443/game",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "sessions": [
+        {
+          "actor": "Configured Firebase phone actors",
+          "sessionKind": "anonymous"
+        }
+      ]
+    },
+    "DEPLOY-EXTERNAL-CONFIG-001-DESKTOP": {
+      "fixtureCheckpointId": "DEPLOY-EXTERNAL-CONFIG-001",
+      "preserveOtherSessions": true,
+      "entryUrl": "https://localhost:8443/entry",
+      "targetUrl": "https://localhost:8443/game",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "geolocationPermission": "prompt",
+      "sessions": [
+        {
+          "actor": "Configured deployment OAuth desktop",
+          "sessionKind": "anonymous"
+        }
+      ],
+      "geolocation": false
+    },
+    "EXPLANATION-GUIDE-ADMIN-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "EXPLANATION-GUIDE-PHONE-001": {
+      "device": "android",
+      "fixtureScenario": "event-rating",
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "fixtureReadyPhase": "ready-for-manual-rating",
+      "preserveOtherSessions": true,
+      "entryUrl": "http://localhost:8080/entry",
+      "targetUrl": "http://localhost:8080/game",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "sessions": [
+        {
+          "actor": "Phone guide Back check",
+          "sessionKind": "anonymous"
+        }
+      ]
+    },
+    "EXPLANATION-GUIDE-PAYMENT-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Alex",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "EXPLANATION-GUIDE-LANDING-001": {
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "preserveOtherSessions": true,
+      "entryUrl": "http://localhost/entry",
+      "targetUrl": "http://localhost/entry",
+      "bootstrapEntryConsent": false,
+      "sessions": [
+        {
+          "actor": "Landing guide anonymous coverage",
+          "sessionKind": "anonymous",
+          "autoDismissExplanationGuide": false
+        }
+      ],
+      "geolocation": {
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "accuracy": 10
+      }
+    },
+    "EXPLANATION-GUIDE-FEEDBACK-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "Alex Turner feedback guide edge",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "ROLE-GUIDES-NOTIFICATIONS-001": {
+      "fixtureScenario": "role-triad",
+      "fixtureCheckpointId": "ROLE-GUIDES-NOTIFICATIONS-001",
+      "fixtureReadyPhase": "baseline-ready",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": false
+        }
+      ],
+      "preserveOtherSessions": true
+    },
+    "MSC115-CASE-VIEWER": {
+      "fixtureScenario": "work-community",
+      "fixtureCheckpointId": "MSC115-WORK-COMMUNITY",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "MSC115 case viewer Evan",
+          "sessionKind": "demo",
+          "userId": "1d7d3545ba5e0f1d63918589",
+          "expectedName": "Evan Reed",
+          "window": {
+            "x": 1000,
+            "y": 0,
+            "width": 680,
+            "height": 900
+          }
+        }
+      ]
+    },
+    "MSC115-GUIDES-LOCAL": {
+      "preserveOtherSessions": true,
+      "storageScope": "demo",
+      "entryUrl": "http://localhost:4200/entry",
+      "targetUrl": "http://localhost:4200/entry",
+      "bootstrapEntryConsent": true,
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "MSC115 local member",
+          "sessionKind": "anonymous",
+          "expectedName": "Local guide member baseline",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "MSC115 local admin",
+          "sessionKind": "anonymous",
+          "expectedName": "Local guide admin baseline",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
+    "ENTRY-SETUP-PHONE-001": {
+      "device": "android",
+      "authenticationMode": "demo",
+      "preserveOtherSessions": true,
+      "entryUrl": "http://localhost:8080/entry",
+      "targetUrl": "http://localhost:8080/game",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "sessions": [
+        {
+          "actor": "Device setup and demo sign-in",
+          "sessionKind": "anonymous"
+        }
+      ]
+    }
+  }
+}
