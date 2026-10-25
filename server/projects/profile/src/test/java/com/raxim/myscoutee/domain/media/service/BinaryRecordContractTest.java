@@ -17,7 +17,6 @@ class BinaryRecordContractTest {
                 "com.raxim.myscoutee.domain.media.service.MediaStorageService$ImportedImage",
                 "com.raxim.myscoutee.domain.integrations.service.McpEventCallbackClient$Response",
                 "com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient$BlindSession$Secrets",
-                "com.raxim.myscoutee.domain.platform.security.bootstrap.OperatorBootstrapAuthenticationService$BootstrapConfiguration",
                 "com.raxim.myscoutee.domain.platform.service.DefaultOperatorFirebaseCapabilityClient$HttpFirebasePublicConfigurationOperations$BoundedResponse");
     }
 

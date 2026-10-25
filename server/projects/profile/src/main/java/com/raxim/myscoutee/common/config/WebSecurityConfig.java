@@ -4,11 +4,9 @@ import com.raxim.myscoutee.domain.accounts.config.GroupWorkspaceFilter;
 import com.raxim.myscoutee.domain.integrations.config.AdminClientAuthenticationFilter;
 import com.raxim.myscoutee.domain.integrations.config.IntegrationTokenAuthenticationFilter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,15 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
-import com.raxim.myscoutee.domain.platform.security.bootstrap.OperatorBootstrapAuthenticationFilter;
-import com.raxim.myscoutee.domain.platform.security.bootstrap.OperatorBootstrapAuthenticationService;
-import com.raxim.myscoutee.domain.platform.api.OperatorBootstrapRequestSupport;
-import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationProvider;
-import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseFilter;
+import com.raxim.myscoutee.domain.accounts.api.SessionRequestSupport;
+import com.raxim.myscoutee.domain.accounts.security.session.AccountSessionFilter;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseService;
-import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
 import com.raxim.myscoutee.common.security.media.MediaSessionAccessService;
@@ -36,70 +30,47 @@ import com.raxim.myscoutee.common.security.media.MediaSessionAccessService;
 public class WebSecurityConfig {
 
     private final FirebaseService firebaseService;
-    private final FirebaseAuthenticationProvider firebaseProvider;
-    private final FirebaseTokenVerifier firebaseTokenVerifier;
-    private final OperatorBootstrapAuthenticationService
-            operatorBootstrapAuthenticationService;
     private final ConfigProperties configProperties;
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
     private final org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles;
-    private final com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
     private final AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,
-            FirebaseAuthenticationProvider firebaseProvider,
-            FirebaseTokenVerifier firebaseTokenVerifier,
-            OperatorBootstrapAuthenticationService
-                    operatorBootstrapAuthenticationService,
             ConfigProperties configProperties,
             UserLoginSessionService userLoginSessionService,
             MediaSessionAccessService mediaSessionAccess,
             IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter,
             org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles,
-            com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication,
             AdminClientAuthenticationFilter adminClientAuthenticationFilter,
             org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.common.security.http.HttpSecurityContribution> securityContributions) {
         this.groupProfiles = groupProfiles;
-        this.profileAuthentication = profileAuthentication;
         this.adminClientAuthenticationFilter = adminClientAuthenticationFilter;
         this.securityContributions = securityContributions;
 
         this.firebaseService = firebaseService;
-        this.firebaseProvider = firebaseProvider;
-        this.firebaseTokenVerifier = firebaseTokenVerifier;
-        this.operatorBootstrapAuthenticationService =
-                operatorBootstrapAuthenticationService;
         this.configProperties = configProperties;
         this.userLoginSessionService = userLoginSessionService;
         this.mediaSessionAccess = mediaSessionAccess;
         this.integrationTokenAuthenticationFilter = integrationTokenAuthenticationFilter;
     }
 
-    @Autowired
-    protected void registerProvider(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(firebaseProvider);
-    }
-
     private final org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.common.security.http.HttpSecurityContribution> securityContributions;
 
     @Bean
-    // Authentication for mutations is header-based; media cookies are GET/HEAD-only. See WebSecurityConfigBootstrapTest and FirebaseFilterPublicDocumentsTest.
+    // Authentication for mutations is header-based; media cookies are GET/HEAD-only. See WebSecurityConfigSessionTest and AccountSessionFilterPublicDocumentsTest.
     @SuppressWarnings("java:S4502")
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(sessionMongoRoutingFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(
-                        operatorBootstrapAuthenticationFilter(),
-                        SessionMongoRoutingFilter.class)
-                .addFilterAfter(
                         integrationTokenAuthenticationFilter,
-                        OperatorBootstrapAuthenticationFilter.class)
+                        SessionMongoRoutingFilter.class)
                 .addFilterAfter(adminClientAuthenticationFilter, IntegrationTokenAuthenticationFilter.class)
                 .addFilterAfter(
                         tokenAuthorizationFilter(),
                         AdminClientAuthenticationFilter.class)
-                .addFilterAfter(new GroupWorkspaceFilter(groupProfiles), FirebaseFilter.class)
+                .addFilterAfter(new GroupWorkspaceFilter(groupProfiles), AccountSessionFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/admin-client/v1/**", "/api/admin-client/v1/**").hasAuthority("ADMIN_CLIENT");
                     authorizeRequests.requestMatchers("/shutdown").denyAll();
@@ -116,8 +87,8 @@ public class WebSecurityConfig {
                             "/auth/eligibility",
                             "/auth/demo-users",
                             "/api/auth/demo-users",
-                            OperatorBootstrapRequestSupport.LOGIN_PATH,
-                            OperatorBootstrapRequestSupport.API_LOGIN_PATH,
+                            SessionRequestSupport.LOGIN_PATH,
+                            SessionRequestSupport.API_LOGIN_PATH,
                             "/auth/facebook/data-deletion",
                             "/auth/facebook/data-deletion/status",
                             "/public/email/unsubscribe",
@@ -154,11 +125,7 @@ public class WebSecurityConfig {
                             "/user/groups/images/**",
                             "/history/events/*/members/*/images/**")
                             .permitAll();
-                    if (configProperties.isMemberFallbackEnabled()
-                            && !operatorBootstrapAuthenticationService
-                                    .isConfigured()) {
-                        authorizeRequests.anyRequest().permitAll();
-                    } else if (configProperties.isChatOnlyMode()) {
+                    if (configProperties.isChatOnlyMode()) {
                         authorizeRequests.requestMatchers("/activities/chats/**").authenticated()
                                 .anyRequest().denyAll();
                     } else {
@@ -174,6 +141,9 @@ public class WebSecurityConfig {
                                 .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
                         .permissionsPolicyHeader(permissionsPolicy -> permissionsPolicy
                                 .policy("geolocation=(), microphone=(), camera=()")))
+                .exceptionHandling(errors -> errors
+                        .authenticationEntryPoint((request, response, error) -> response.sendError(401))
+                        .accessDeniedHandler((request, response, error) -> response.sendError(403)))
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .csrf(csrf -> csrf.disable());
         if (securityContributions != null) {
@@ -182,20 +152,8 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    private FirebaseFilter tokenAuthorizationFilter() {
-        return new FirebaseFilter(
-                firebaseService,
-                configProperties,
-                firebaseTokenVerifier,
-                userLoginSessionService,
-                mediaSessionAccess);
-    }
-
-    private OperatorBootstrapAuthenticationFilter
-            operatorBootstrapAuthenticationFilter() {
-        return new OperatorBootstrapAuthenticationFilter(
-                operatorBootstrapAuthenticationService,
-                configProperties, profileAuthentication);
+    private AccountSessionFilter tokenAuthorizationFilter() {
+        return new AccountSessionFilter(firebaseService, configProperties, userLoginSessionService, mediaSessionAccess);
     }
 
     private SessionMongoRoutingFilter sessionMongoRoutingFilter() {

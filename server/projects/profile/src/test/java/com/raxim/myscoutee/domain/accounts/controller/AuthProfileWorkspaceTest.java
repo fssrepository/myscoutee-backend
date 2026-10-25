@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 class AuthProfileWorkspaceTest {
     final HomeUserProfileService profiles = mock(HomeUserProfileService.class);
     final ProfileWorkspaceLoads groups = mock(ProfileWorkspaceLoads.class);
-    final AuthController controller = new AuthController(profiles, mock(UserLoginSessionService.class), groups);
+    final AuthController controller = new AuthController(profiles, mock(UserLoginSessionService.class), groups, mock(com.raxim.myscoutee.domain.accounts.service.AccountLoginService.class));
     @AfterEach void clear() { SecurityContextHolder.clearContext(); }
     @Test void completesOnlyTheResolvedActorsAccountAndPreservesAccountResponse() {
         var actor = new Users(); actor.setUserId("selected-profile"); actor.setAccountUserId("account"); actor.setWorkspaceGroupId("current-workspace");

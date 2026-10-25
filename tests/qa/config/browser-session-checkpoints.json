@@ -34,7 +34,7 @@
       "session": "myscoutee.{scope}.session.v1",
       "activeUser": "myscoutee.{scope}.demo.active-user.v1",
       "consent": "myscoutee.{scope}.entry.gdpr-consent.v1",
-      "operatorPrefix": "myscoutee.{scope}.operator-bootstrap"
+      "accountSession": "myscoutee.{scope}.session.v1"
     },
     "routes": {
       "login": "/api/auth/session/login",
@@ -42,8 +42,7 @@
       "identity": "/api/auth/me?userId=",
       "workspaces": "/api/groups/workspaces?userId=",
       "realtime": "/api/auth/me/realtime/long-poll",
-      "operatorLogin": "/api/auth/operator-bootstrap",
-      "operatorPage": "/operator"
+            "operatorPage": "/operator"
     },
     "headers": {
       "sessionId": "X-App-Session-Id",
@@ -2342,7 +2341,7 @@
         {
           "actor": "Operator",
           "expectedName": "Operator",
-          "sessionKind": "operator-bootstrap",
+          "sessionKind": "authenticated",
           "credentialFileEnvironment": "QA_OPERATOR_CREDENTIAL_FILE",
           "window": {
             "x": 840,
@@ -2920,10 +2919,10 @@
       "sessions": [
         {
           "actor": "Configured deployment OAuth desktop",
-          "sessionKind": "anonymous"
+          "sessionKind": "anonymous",
+          "geolocation": false
         }
-      ],
-      "geolocation": false
+      ]
     },
     "EXPLANATION-GUIDE-ADMIN-001": {
       "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",

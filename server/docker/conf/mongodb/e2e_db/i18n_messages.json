@@ -1740,16 +1740,16 @@
     "value": "The installer operator email or password is incorrect."
   },
   {
-    "_id": "i18n-message-en-operator-bootstrap-auth-throttled",
-    "key": "operator.bootstrap.auth.throttled",
+    "_id": "i18n-message-en-auth-session-login-throttled",
+    "key": "auth.session.login.throttled",
     "lang": "en",
-    "value": "Too many operator sign-in attempts. Try again later."
+    "value": "Too many sign-in attempts. Try again later."
   },
   {
-    "_id": "i18n-message-en-operator-bootstrap-auth-failed",
-    "key": "operator.bootstrap.auth.failed",
+    "_id": "i18n-message-en-auth-session-login-failed",
+    "key": "auth.session.login.failed",
     "lang": "en",
-    "value": "The dedicated operator sign-in is temporarily unavailable."
+    "value": "Sign-in failed. Check your details and try again."
   },
   {
     "_id": "i18n-message-en-operator-bootstrap-auth-response-invalid",
@@ -38358,16 +38358,16 @@
     "value": "A telepítői operátori e-mail-cím vagy jelszó helytelen."
   },
   {
-    "_id": "i18n-message-hu-operator-bootstrap-auth-throttled",
-    "key": "operator.bootstrap.auth.throttled",
+    "_id": "i18n-message-hu-auth-session-login-throttled",
+    "key": "auth.session.login.throttled",
     "lang": "hu",
-    "value": "Túl sok operátori bejelentkezési kísérlet történt. Próbáld újra később."
+    "value": "Túl sok bejelentkezési kísérlet történt. Próbáld újra később."
   },
   {
-    "_id": "i18n-message-hu-operator-bootstrap-auth-failed",
-    "key": "operator.bootstrap.auth.failed",
+    "_id": "i18n-message-hu-auth-session-login-failed",
+    "key": "auth.session.login.failed",
     "lang": "hu",
-    "value": "A dedikált operátori bejelentkezés átmenetileg nem érhető el."
+    "value": "A bejelentkezés sikertelen. Ellenőrizd az adataidat, majd próbáld újra."
   },
   {
     "_id": "i18n-message-hu-operator-bootstrap-auth-response-invalid",
@@ -126930,10 +126930,10 @@
     "value": "Bedieneraktionen"
   },
   {
-    "_id": "i18n-message-de-operator-bootstrap-auth-failed",
-    "key": "operator.bootstrap.auth.failed",
+    "_id": "i18n-message-de-auth-session-login-failed",
+    "key": "auth.session.login.failed",
     "lang": "de",
-    "value": "Die dedizierte Operator-Anmeldung ist vorübergehend nicht verfügbar."
+    "value": "Die Anmeldung ist fehlgeschlagen. Prüfen Sie Ihre Angaben und versuchen Sie es erneut."
   },
   {
     "_id": "i18n-message-de-operator-bootstrap-auth-invalid",
@@ -126954,10 +126954,10 @@
     "value": "Der Server hat eine ungültige Operator-Anmeldeantwort zurückgegeben."
   },
   {
-    "_id": "i18n-message-de-operator-bootstrap-auth-throttled",
-    "key": "operator.bootstrap.auth.throttled",
+    "_id": "i18n-message-de-auth-session-login-throttled",
+    "key": "auth.session.login.throttled",
     "lang": "de",
-    "value": "Zu viele Anmeldeversuche des Bedieners. Versuchen Sie es später noch einmal."
+    "value": "Zu viele Anmeldeversuche. Versuchen Sie es später noch einmal."
   },
   {
     "_id": "i18n-message-de-operator-brand-aria",
@@ -181212,10 +181212,10 @@
     "value": "Acciones del operador"
   },
   {
-    "_id": "i18n-message-es-operator-bootstrap-auth-failed",
-    "key": "operator.bootstrap.auth.failed",
+    "_id": "i18n-message-es-auth-session-login-failed",
+    "key": "auth.session.login.failed",
     "lang": "es",
-    "value": "El inicio de sesión del operador dedicado no está disponible temporalmente."
+    "value": "No se pudo iniciar sesión. Comprueba tus datos y vuelve a intentarlo."
   },
   {
     "_id": "i18n-message-es-operator-bootstrap-auth-invalid",
@@ -181236,10 +181236,10 @@
     "value": "El servidor devolvió una respuesta de inicio de sesión de operador no válida."
   },
   {
-    "_id": "i18n-message-es-operator-bootstrap-auth-throttled",
-    "key": "operator.bootstrap.auth.throttled",
+    "_id": "i18n-message-es-auth-session-login-throttled",
+    "key": "auth.session.login.throttled",
     "lang": "es",
-    "value": "Demasiados intentos de inicio de sesión del operador. Vuelve a intentarlo más tarde."
+    "value": "Demasiados intentos de inicio de sesión. Vuelve a intentarlo más tarde."
   },
   {
     "_id": "i18n-message-es-operator-brand-aria",
@@ -203475,7 +203475,7 @@
     "_id": "i18n-message-de-entry-auth-unavailable",
     "key": "entry.auth.unavailable",
     "lang": "de",
-    "value": "Hier nicht verfügbar"
+    "value": "Dienst nicht verfügbar"
   },
   {
     "_id": "i18n-message-de-help-document-loading",
@@ -203733,7 +203733,7 @@
     "_id": "i18n-message-en-entry-auth-unavailable",
     "key": "entry.auth.unavailable",
     "lang": "en",
-    "value": "Unavailable here"
+    "value": "Service unavailable"
   },
   {
     "_id": "i18n-message-en-help-document-loading",
@@ -203991,7 +203991,7 @@
     "_id": "i18n-message-es-entry-auth-unavailable",
     "key": "entry.auth.unavailable",
     "lang": "es",
-    "value": "No disponible aquí"
+    "value": "Servicio no disponible"
   },
   {
     "_id": "i18n-message-es-help-document-loading",
@@ -204249,7 +204249,7 @@
     "_id": "i18n-message-hu-entry-auth-unavailable",
     "key": "entry.auth.unavailable",
     "lang": "hu",
-    "value": "Itt nem elérhető"
+    "value": "Nem elérhető"
   },
   {
     "_id": "i18n-message-hu-help-document-loading",

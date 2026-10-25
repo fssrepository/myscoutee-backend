@@ -1,0 +1,163 @@
+MyScoutee frontendek — byte-ra azonos fájlok (frissítve: 2026-10-24)
+
+A: /home/raxim/workspace/myscoutee-backend/frontend
+B: /home/raxim/workspace/myscoutee-template/frontend
+
+Hatókör: az aktuális munkapéldány Gitben követett és nem ignorált helyi fájljai.
+A törölt fájlok, ignorált függőségek és cache-ek nem szerepelnek.
+Ellenőrzés: méret és SHA-256 szerinti keresés, majd teljes bájtsorozat-egyezés.
+
+A WOFF/WOFF2 fontok a @fssrepository/myscoutee-components@1.5.0 csomagból érkeznek.
+A Pages build publikáláskor állítja elő őket; a telepített oldal helyben szolgálja ki őket.
+
+Vizsgált fájlok: A=1627, B=447
+Közös relatív útvonalak: 309
+Azonos útvonalon byte-ra azonos: 122 fájlpár
+Azonos útvonalon eltérő: 187 fájlpár
+Összes tartalmi egyezés útvonaltól függetlenül: 138 fájlpár
+Ebből eltérő útvonalon: 16 fájlpár
+Legalább egy egyező párja van: A=124, B=122 fájl
+
+AZONOS RELATÍV ÚTVONAL ÉS TARTALOM (az útvonal mindkét frontendben megtalálható)
+
+.dockerignore
+.github/workflows/pages.yml
+.gitignore
+.npmrc
+.nvmrc
+docs/.nojekyll
+docs/assets/chat-call-crypto/index_bg.wasm
+docs/assets/icon/android-chrome-192x192.png
+docs/assets/icon/android-chrome-512x512.png
+docs/assets/icon/apple-touch-icon.png
+docs/assets/icon/favicon.ico
+docs/assets/logo/heart.png
+docs/assets/logo/heart.webp
+docs/prerendered-routes.json
+docs/robots.txt
+docs/styles-RF4YJR7Z.css
+scripts/app-sw-push.test.mjs
+scripts/landing-debug.test.mjs
+scripts/stamp-prod-build.js
+scripts/watch-ng-serve-log.sh
+src/_styles/_deployment-themes.scss
+src/_styles/styles.scss
+src/app/entry/components/entry-firebase-auth-popup/entry-firebase-auth-popup.component.html
+src/app/entry/components/entry-firebase-auth-popup/entry-firebase-auth-popup.component.scss
+src/app/entry/components/entry-firebase-auth-popup/entry-firebase-auth-popup.component.ts
+src/app/entry/components/entry-landing/landing-guide-surface.directive.ts
+src/app/home/components/home-header/home-header.component.scss
+src/app/home/components/home-header/home-header.component.ts
+src/app/home/shared/_home-page-frame.scss
+src/app/operator/components/_operator-configuration.scss
+src/app/operator/components/operator-email-configuration/operator-email-configuration.component.scss
+src/app/operator/components/operator-email-configuration/operator-email-configuration.component.ts
+src/app/profile/components/integration-settings-popup/integration-access-button.component.scss
+src/app/profile/components/integration-settings-popup/integration-access-button.component.ts
+src/app/profile/components/integration-settings-popup/mcp-authorization.component.scss
+src/app/profile/components/integration-settings-popup/mcp-connections.component.ts
+src/app/profile/components/settings-popups/settings-popups.component.scss
+src/app/shared/core/README.md
+src/app/shared/core/base/html-sanitizer.ts
+src/app/shared/core/base/repositories/localization/i18n-bundle.repository.spec.ts
+src/app/shared/core/base/repositories/localization/i18n-bundle.repository.ts
+src/app/shared/core/base/services/accounts/firebase-app.service.spec.ts
+src/app/shared/core/base/services/accounts/firebase-app.service.ts
+src/app/shared/core/base/services/accounts/session.service.spec.ts
+src/app/shared/core/base/services/chat/chat-call-mls.ts
+src/app/shared/core/base/services/chat/chat-call-voice-activity.ts
+src/app/shared/core/base/services/chat/chat-call.service.spec.ts
+src/app/shared/core/base/services/chat/chat-call.service.ts
+src/app/shared/core/base/services/help/explanation-guide.service.ts
+src/app/shared/core/base/services/platform/adapter-proxy.service.ts
+src/app/shared/core/base/services/platform/base-route-mode.service.spec.ts
+src/app/shared/core/base/services/platform/base-route-mode.service.ts
+src/app/shared/core/base/services/platform/route-delay.service.ts
+src/app/shared/core/common/backend-connectivity.ts
+src/app/shared/core/common/deployment-privacy-token.resolver.ts
+src/app/shared/core/common/firebase-login-mode.spec.ts
+src/app/shared/core/common/firebase-login-mode.ts
+src/app/shared/core/common/public-media.ts
+src/app/shared/core/common/pwa-runtime-policy.ts
+src/app/shared/core/common/secure-random.spec.ts
+src/app/shared/core/common/secure-random.ts
+src/app/shared/core/common/user-role.ts
+src/app/shared/core/contracts/accounts/device-registration.interface.ts
+src/app/shared/core/contracts/chat/chat-call.interface.ts
+src/app/shared/core/contracts/email/operator-email.interface.ts
+src/app/shared/core/contracts/notifications/notification.interface.ts
+src/app/shared/core/http/interceptors/accounts/session-auth.interceptor.spec.ts
+src/app/shared/core/http/interceptors/accounts/session-auth.interceptor.ts
+src/app/shared/core/http/interceptors/accounts/session-mode.interceptor.spec.ts
+src/app/shared/core/http/interceptors/accounts/session-mode.interceptor.ts
+src/app/shared/core/http/interceptors/platform/api-request.ts
+src/app/shared/core/http/interceptors/platform/connectivity.interceptor.ts
+src/app/shared/core/http/services/accounts/device-registrations.service.ts
+src/app/shared/core/http/services/accounts/session-registry.service.ts
+src/app/shared/core/http/services/email/operator-email.service.ts
+src/app/shared/core/http/services/notifications/notifications.service.ts
+src/app/shared/core/http/services/platform/deployment-configuration.service.ts
+src/app/shared/core/local/source/entity/accounts/device-registration.entity.ts
+src/app/shared/core/local/source/entity/integrations/integration.entity.ts
+src/app/shared/core/local/source/entity/notifications/notification.entity.ts
+src/app/shared/core/local/source/entity/platform/country-partition.entity.ts
+src/app/shared/core/local/source/mappers/common/mapper.types.ts
+src/app/shared/core/local/source/mappers/notifications/notification.mapper.ts
+src/app/shared/core/local/source/mappers/operator/operator-tls.mapper.ts
+src/app/shared/core/local/source/repositories/accounts/device-registrations.repository.ts
+src/app/shared/core/local/source/repositories/media/media.repository.ts
+src/app/shared/core/local/source/repositories/platform/country-de.generated.ts
+src/app/shared/core/local/source/repositories/platform/country-es.generated.ts
+src/app/shared/core/local/source/repositories/platform/country-gb.generated.ts
+src/app/shared/core/local/source/repositories/platform/country-hu.generated.ts
+src/app/shared/core/local/source/repositories/platform/country-partitions.repository.spec.ts
+src/app/shared/core/local/source/repositories/platform/country-partitions.repository.ts
+src/app/shared/core/local/source/services/accounts/device-registrations.service.ts
+src/app/shared/core/local/source/services/email/operator-email.service.ts
+src/app/shared/core/local/source/services/platform/route-delay.service.ts
+src/app/shared/ui/components/chat-call-popup/chat-call-popup.component.ts
+src/app/shared/ui/components/demo-bootstrap-selector/demo-bootstrap-selector.component.html
+src/app/shared/ui/components/demo-bootstrap-selector/demo-bootstrap-selector.component.scss
+src/app/shared/ui/components/document-viewer/document-viewer.component.html
+src/app/shared/ui/components/document-viewer/document-viewer.component.scss
+src/app/shared/ui/components/document-viewer/document-viewer.component.spec.ts
+src/app/shared/ui/components/document-viewer/document-viewer.types.ts
+src/app/shared/ui/components/document-viewer/index.ts
+src/app/shared/ui/components/notification-center-popup/notification-center-popup.component.html
+src/app/shared/ui/components/notification-center-popup/notification-center-popup.component.scss
+src/app/shared/ui/components/side-menu/_navigator-avatar.scss
+src/app/shared/ui/context/stores/app/help-center.store.ts
+src/app/shared/ui/context/stores/profile/integration-settings.store.ts
+src/app/shared/ui/converters/chat/chat-message-menu.converter.spec.ts
+src/assets/icon/android-chrome-192x192.png
+src/assets/icon/android-chrome-192x192.webp
+src/assets/icon/android-chrome-512x512.png
+src/assets/icon/android-chrome-512x512.webp
+src/assets/icon/apple-touch-icon.png
+src/assets/icon/favicon.ico
+src/assets/logo/heart.png
+src/assets/logo/heart.webp
+src/robots.txt
+tsconfig.app.json
+tsconfig.json
+tsconfig.spec.json
+vitest.config.ts
+
+ELTÉRŐ RELATÍV ÚTVONAL, AZONOS TARTALOM (A -> B)
+
+docs/assets/icon/android-chrome-192x192.png -> src/assets/icon/android-chrome-192x192.png
+docs/assets/icon/android-chrome-512x512.png -> src/assets/icon/android-chrome-512x512.png
+docs/assets/icon/apple-touch-icon.png -> src/assets/icon/apple-touch-icon.png
+docs/assets/icon/favicon.ico -> src/assets/icon/favicon.ico
+docs/assets/logo/heart.png -> src/assets/logo/heart.png
+docs/assets/logo/heart.webp -> src/assets/logo/heart.webp
+docs/robots.txt -> src/robots.txt
+src/app/asset/components/asset-ticket-scan-popup/asset-ticket-scan-popup.component.scss -> src/app/profile/components/settings-popups/settings-popups.component.scss
+src/app/shared/ui/components/core/form/inputs/pricing-editor/pricing-editor-popup/pricing-editor-popup.component.scss -> src/app/profile/components/settings-popups/settings-popups.component.scss
+src/assets/icon/android-chrome-192x192.png -> docs/assets/icon/android-chrome-192x192.png
+src/assets/icon/android-chrome-512x512.png -> docs/assets/icon/android-chrome-512x512.png
+src/assets/icon/apple-touch-icon.png -> docs/assets/icon/apple-touch-icon.png
+src/assets/icon/favicon.ico -> docs/assets/icon/favicon.ico
+src/assets/logo/heart.png -> docs/assets/logo/heart.png
+src/assets/logo/heart.webp -> docs/assets/logo/heart.webp
+src/robots.txt -> docs/robots.txt

@@ -30,9 +30,14 @@ input.
 
 ## Current release
 
-The current MSC-126 container/data release is **1.4.5**; see [notes](v1.4.5.md). API, MinIO and nginx are published and verified on VMware/Netcup. Installed Debian packages remain 1.4.1.
+The current source/container release is **1.5.0**; see [notes](v1.5.0.md).
+The managed images, frontend Pages build and corrected signed Debian package are
+published. The owner's uploaded DEB, matching metadata, signatures and canonical
+Java update discovery are verified. Netcup runs that exact 1.5.0 package, including
+the corrected shared deployment verifier; host qualification and all 13 public
+checks pass. Template VMware testing is separate.
 
-The latest published Debian package is **1.4.1**. Its
+The earlier validated Debian release is **1.4.1**. Its
 [release](v1.4.1.md) includes the signed DEB and published
 Docker images; the owner’s uploaded hash and canonical discovery are verified. The
 [1.4.3 frontend patch](v1.4.3.md) publishes only a compatible
@@ -206,7 +211,8 @@ have migration023 receipts, all 25 served WebPs match the pinned hashes/MIME,
 and all nine containers are healthy. The partial updater preserves completed
 history from a strictly older DEB while taking the current image as its rollback
 baseline. Its 24 focused tests and reproducible client-tools packaging pass.
-Netcup remains unchanged and awaits owner testing of VMware first.
+At that checkpoint Netcup remained unchanged. The October25 rollout is ordered
+after the owner replaces the 1.5.0 DEB and its public metadata is verified.
 
 ## Release configuration
 

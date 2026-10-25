@@ -70,15 +70,6 @@ services:
       - /run/myscoutee-update-status:/run/myscoutee-update-status:ro
     networks:
       - myscoutee
-    depends_on:
-      mongodb:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      profilemanagement:
-        condition: service_healthy
-      mcp:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health >/dev/null 2>&1 || exit 1"]
       interval: 30s

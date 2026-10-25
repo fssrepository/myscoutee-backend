@@ -327,7 +327,7 @@ try {
   } else if (action === 'text') await send('Input.insertText', { text: args[0] });
   else if (action === 'navigate') {
     if (!args[0]?.startsWith('/') || args[0].startsWith('//')) throw Error('Only QA-relative paths allowed');
-    await send('Page.navigate', { url: `http://localhost:8080${args[0]}` });
+    await send('Page.navigate', { url: new URL(args[0], origin).href });
   } else if (action === 'backend-offline' || action === 'network-offline') {
     // Fixture-only CDP shaping: keep phone radios/tethering and native caches intact.
     // Include this origin's service worker so its fetches cannot bypass page shaping.

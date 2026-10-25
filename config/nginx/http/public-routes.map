@@ -130,7 +130,6 @@
 "/api/auth/me/profile-ext" 1;
 "/api/auth/me/realtime/long-poll" 1;
 "/api/auth/me/report-user" 1;
-"/api/auth/operator-bootstrap" 1;
 "/api/auth/session/login" 1;
 "/api/campaigns" 1;
 "/api/campaigns/history" 1;

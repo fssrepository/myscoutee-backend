@@ -38,15 +38,15 @@
     ],
     [
       "/api/auth/me",
-      403
+      401
     ],
     [
       "/api/assets",
-      403
+      401
     ],
     [
       "/api/admin/content-moderation?adminUserId=untrusted",
-      403
+      401
     ],
     [
       "/api/_internal/v1/accounts/selected-profile",
