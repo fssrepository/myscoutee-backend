@@ -23,7 +23,7 @@
       "PAYMENT_SIMULATOR_IMAGE",
       "MCP_IMAGE"
     ],
-    "nginxNativeImage": "ghcr.io/fssrepository/myscoutee-nginx:1.5.0@sha256:355b6b8b49e841a4954e795831c8a58b84bdf063a3bec6641fea50e6dbd28900"
+    "nginxNativeImage": "ghcr.io/fssrepository/myscoutee-nginx:1.5.0@sha256:9ab49ea949afaee5164e828b699c102dca38a2766d7573c4f342984e8da74774"
   },
   "partialData": {
     "requiredMigration": "006-release-system-defaults.js",

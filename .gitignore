@@ -114,3 +114,6 @@ config/microservices/**/*.local.env
 /guides/publication/presentations/**/*_Office.pdf
 /guides/**/__pycache__/
 /tests/**/__pycache__/
+
+# Local credentials, private evidence and runtime state; never publish.
+/.local/

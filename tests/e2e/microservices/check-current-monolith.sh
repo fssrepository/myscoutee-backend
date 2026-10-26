@@ -41,7 +41,7 @@ for service in config['services'].values():
   raise SystemExit('Refusing an existing non-E2E container: '+name)
 PY
 umask 077
-result_dir="${XDG_STATE_HOME:-$HOME/.local/state}/myscoutee-domain-segregation/e2e/current-$(date -u +%Y%m%dT%H%M%SZ)"
+result_dir="${XDG_STATE_HOME:-$root/.local/state}/myscoutee-domain-segregation/e2e/current-$(date -u +%Y%m%dT%H%M%SZ)"
 mkdir -p "$result_dir"
 printf '%s\n' "$result_dir"
 trap '"${compose[@]}" stop > "$result_dir/stop.log" 2>&1' EXIT

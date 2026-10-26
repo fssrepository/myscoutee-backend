@@ -12,6 +12,8 @@ downloadable PDF releases of the English manuals and integration guide.
 | MCP User Guide | MSC-MCP-001 | 1.4.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/publication/manuals/MyScoutee_MCP_User_Guide_EN.pdf) |
 | Microservices Guide (implementation preview) | MSC-MS-001 | 1.4.1 | [Download PDF](MyScoutee_Microservices_Guide_EN.pdf) |
 
+| Laboratory Access Manual | MSC-LAB-001 | 1.0.0 | [Download PDF](MyScoutee_Laboratory_Access_Manual_EN.pdf) |
+
 ## Regenerating the PDFs
 
 Prerequisites: Node.js, the development dependencies installed in `frontend`,
@@ -28,6 +30,7 @@ To regenerate only one integration guide:
 node guides/publication/manuals/build-manuals.mjs MSC-API-001
 node guides/publication/manuals/build-manuals.mjs MSC-MCP-001
 node guides/publication/manuals/build-manuals.mjs MSC-MS-001
+node guides/publication/manuals/build-manuals.mjs MSC-LAB-001
 ```
 
 For a non-standard browser path:
@@ -39,7 +42,8 @@ DOCS_CHROME_PATH=/absolute/path/to/chrome \
 
 The build overwrites the selected PDFs and automatically copies them to
 `frontend/guides/manuals` in the public frontend repository. The public README
-download links point to these copies.
+download links point to these copies. The Laboratory Access Manual stays in the backend/template guides;
+its catalog entry sets `publishToFrontend: false`.
 
 When document content changes, update the version on the cover, in the
 document-control table and in the build metadata. Keep version numbers inside

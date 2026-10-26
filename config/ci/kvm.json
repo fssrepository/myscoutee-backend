@@ -1,0 +1,13 @@
+{
+  "localPort": 18029,
+  "lab": {
+    "stateDirectory": "myscoutee-microservices/msc129",
+    "vmName": "myscoutee-msc129",
+    "bridge": "virbr-msc129",
+    "networkCidr": "192.168.175.0/24",
+    "macAddress": "52:54:00:12:90:01",
+    "monitoringProject": "msc129-observability",
+    "grafanaPort": 13029,
+    "prometheusPort": 19029
+  }
+}
