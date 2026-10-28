@@ -45,6 +45,13 @@ Editable manual sources and PDF build instructions are in
 | MyScoutee Network | 1.0.0 | [PDF](guides/publication/presentations/network/MyScoutee_Network_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/publication/presentations/network/MyScoutee_Network_Pitch_v1.0.0_EN.pptx) |
 | MyScoutee Product | 1.0.0 | [PDF](guides/publication/presentations/product/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/publication/presentations/product/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
 
+### Books
+
+| Book | Version | English | Hungarian | Amazon |
+|---|---:|---|---|---|
+| [The Story, Part I — The City Between Us](guides/publication/story/books/trilogy/01-the-city-between-us/README.md) | 1.0.0 | [PDF](guides/publication/story/books/trilogy/01-the-city-between-us/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf) · [EPUB](guides/publication/story/books/trilogy/01-the-city-between-us/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.epub) | [PDF](guides/publication/story/books/trilogy/01-the-city-between-us/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.pdf) · [EPUB](guides/publication/story/books/trilogy/01-the-city-between-us/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.epub) | [Kindle](https://www.amazon.com/dp/B0HFHHD2H7) |
+| [The Story, Part II — The System Between Us](guides/publication/story/books/trilogy/02-the-system-between-us/README.md) | 1.0.0 | [PDF](guides/publication/story/books/trilogy/02-the-system-between-us/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf) · [EPUB](guides/publication/story/books/trilogy/02-the-system-between-us/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.epub) | [PDF](guides/publication/story/books/trilogy/02-the-system-between-us/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_HU.pdf) · [EPUB](guides/publication/story/books/trilogy/02-the-system-between-us/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_HU.epub) | [Kindle](https://www.amazon.com/dp/B0HFHLG3TZ) |
+| [A Match Is Not a Meeting](guides/publication/story/books/a-match-is-not-a-meeting/README.md) | 1.0.0 | [PDF](guides/publication/story/books/a-match-is-not-a-meeting/MyScoutee_A_Match_Is_Not_A_Meeting_v1.0.0_EN.pdf) | [PDF](guides/publication/story/books/a-match-is-not-a-meeting/MyScoutee_A_Match_Nem_Talalkozas_v1.0.0_HU.pdf) | — |
 
 ## Shared release dependencies
 
