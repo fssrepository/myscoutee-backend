@@ -5,10 +5,10 @@ import argparse
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-ROOT = next(candidate for candidate in Path(__file__).resolve().parents if (candidate / "frontend/src/assets/logo/heart.png").is_file())
+ROOT = next(candidate for candidate in Path(__file__).resolve().parents if (candidate / "myscoutee-frontend/src/assets/logo/heart.png").is_file())
 PACKAGE = ROOT / "guides/publication/story/films/google-flow/a-match-is-not-a-meeting"
 FRAMES = PACKAGE / "assets/frames"
-LOGO = ROOT / "frontend/src/assets/logo/heart.png"
+LOGO = ROOT / "myscoutee-frontend/src/assets/logo/heart.png"
 SOURCES = {
     name: PACKAGE / f"assets/source/{name}_imagegen_source.png"
     for name in ("PR_CP01", "PR_CP02", "PR_CP03", "PR_CP04", "PR_CP05", "PR_CP06", "PR_CP07", "PR_CP08")

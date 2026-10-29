@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-REPO_ROOT = next(candidate for candidate in Path(__file__).resolve().parents if (candidate / "frontend/src/assets/logo/heart.png").is_file())
+REPO_ROOT = next(candidate for candidate in Path(__file__).resolve().parents if (candidate / "myscoutee-frontend/src/assets/logo/heart.png").is_file())
 MAX_CHUNK_CHARACTERS = 4_950
 WORDS_PER_MINUTE = 150
 

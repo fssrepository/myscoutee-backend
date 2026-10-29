@@ -22,7 +22,7 @@ BOOK_DIR = Path(__file__).resolve().parent
 
 
 def find_project_dir(start: Path) -> Path:
-    logo_path = Path("frontend/src/assets/logo/heart.png")
+    logo_path = Path("myscoutee-frontend/src/assets/logo/heart.png")
     for candidate in (start, *start.parents):
         if (candidate / logo_path).is_file():
             return candidate
@@ -39,7 +39,7 @@ PAPERBACK_COVER_TEMPLATE = (
     BOOK_DIR / "assets" / "paperback-cover-standard-color.svg.in"
 )
 PAPERBACK_SPINE_TITLE = "THE CITY BETWEEN US  •  PETER SZABO"
-LOGO = PROJECT_DIR / "frontend" / "src" / "assets" / "logo" / "heart.png"
+LOGO = PROJECT_DIR / "myscoutee-frontend" / "src" / "assets" / "logo" / "heart.png"
 COVER_EMBLEM = BOOK_DIR / "assets" / "cover-emblem-v1.png"
 ILLUSTRATIONS = BOOK_DIR / "illustrations.json"
 BOOK_VERSION = BOOK_DIR / "version.json"

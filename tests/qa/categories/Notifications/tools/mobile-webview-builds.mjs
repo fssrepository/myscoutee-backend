@@ -67,7 +67,7 @@ if (command === 'snapshot-dev') {
   const destination = path.join(runtime, label);
   if (existsSync(destination)) throw Error('Retained lifecycle snapshot already exists');
   execFileSync('docker', ['cp', `frontend-sync:${source}`, destination], { stdio: 'pipe' });
-  execFileSync('node', [path.join(repository, 'frontend/scripts/stamp-prod-build.js')], {
+  execFileSync('node', [path.join(repository, 'myscoutee-frontend/scripts/stamp-prod-build.js')], {
     env: { ...process.env, FRONTEND_BUILD_OUTPUT_DIR: destination, MYSCOUTEE_UI_BUILD_ID: `mobile-webview-lifecycle-${Date.now()}` },
     stdio: 'pipe'
   });

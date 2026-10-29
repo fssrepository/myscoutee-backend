@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 
 const [, , checkpointId = '', actor = '', sourceId = ''] = process.argv;
 if (!checkpointId.trim() || !actor.trim() || !sourceId.trim()) {

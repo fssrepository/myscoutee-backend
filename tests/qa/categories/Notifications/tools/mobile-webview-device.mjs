@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // User-delegated physical-device execution; only the local QA origin is targeted.
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 import { readFileSync, writeFileSync, existsSync, unlinkSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';

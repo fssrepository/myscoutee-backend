@@ -1,6 +1,6 @@
 MyScoutee frontendek — byte-ra azonos fájlok (frissítve: 2026-10-24)
 
-A: /home/raxim/workspace/myscoutee-backend/frontend
+A: /home/raxim/workspace/myscoutee-backend/myscoutee-frontend
 B: /home/raxim/workspace/myscoutee-template/frontend
 
 Hatókör: az aktuális munkapéldány Gitben követett és nem ignorált helyi fájljai.

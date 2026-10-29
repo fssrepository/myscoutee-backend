@@ -175,7 +175,7 @@ LOCKED STORY AND TIMING
   handoff to a technically capable local
   operator; independent own-brand servers and cultural/community tests cooperate
   through a voluntary network with opt-out. Reserve an exact blank central plate
-  for the original unmodified `frontend/src/assets/logo/heart.png`, composited in
+  for the original unmodified `myscoutee-frontend/src/assets/logo/heart.png`, composited in
   post. Its helmet-like shelter, guiding star and central heart may suggest
   protection, direction and human connection, never certified safety. One core
   is reusable globally; local people and communities shape each meaning and test.

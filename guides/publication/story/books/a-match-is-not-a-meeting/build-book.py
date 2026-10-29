@@ -11,11 +11,11 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-ROOT = next(candidate for candidate in Path(__file__).resolve().parents if (candidate / "frontend/src/assets/logo/heart.png").is_file())
+ROOT = next(candidate for candidate in Path(__file__).resolve().parents if (candidate / "myscoutee-frontend/src/assets/logo/heart.png").is_file())
 BOOK = Path(__file__).resolve().parent
 PACKAGE = BOOK
 PUBLISHED = BOOK
-LOGO = ROOT / "frontend/src/assets/logo/heart.png"
+LOGO = ROOT / "myscoutee-frontend/src/assets/logo/heart.png"
 COVER_ART = BOOK / "assets/illustrations/after-door-opens.jpg"
 DIVIDER_ORNAMENT = BOOK / "assets/ornaments/hungarian-symmetric-divider.svg"
 INITIAL_ORNAMENT = BOOK / "assets/ornaments/hungarian-symmetric-initial.svg"

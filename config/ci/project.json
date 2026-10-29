@@ -2,7 +2,7 @@
   "project": "myscoutee-backend",
   "type": "application",
   "depends_on": [
-    "myscoutee",
+    "myscoutee-frontend",
     "myscoutee-base",
     "myscoutee-packaging",
     "myscoutee-nginx",
@@ -13,7 +13,7 @@
     "myscoutee-e2e",
     "myscoutee-qa"
   ],
-  "frontend": "myscoutee",
+  "frontend": "myscoutee-frontend",
   "deploy": [
     "kvm",
     "vmware",

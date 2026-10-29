@@ -132,7 +132,7 @@ implementation; show no legal, tax, health-insurance or
 administrative symbol. It then shows a verified installation-package handoff,
 competent local operator, own-brand independent server, culturally specific test,
 voluntary shared network and opt-out. Reserve a clean central plate for the exact
-unmodified `frontend/src/assets/logo/heart.png` in post. Its helmet-like shelter,
+unmodified `myscoutee-frontend/src/assets/logo/heart.png` in post. Its helmet-like shelter,
 star and heart may suggest protection, direction and connection, not certified
 safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,

@@ -1,7 +1,7 @@
 Generation mode: built-in image_gen edit
 Output: cover-linkedin-en.png
 Edit target: cover-en.png
-Official logo reference: frontend/docs/assets/logo/heart.png
+Official logo reference: myscoutee-frontend/docs/assets/logo/heart.png
 Generated raster: 1672 x 941 px; final export: 1920 x 1080 px (16:9).
 Intended placement: LinkedIn article cover.
 LinkedIn article-cover guidance: https://www.linkedin.com/help/linkedin/answer/a6524328

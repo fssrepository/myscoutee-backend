@@ -8659,7 +8659,7 @@
       "status": "PREPARED_NOT_RENDERED",
       "input_mode": "PROMPT_WITH_ONE_LOCAL_LOGO_IMAGE",
       "local_reference_files": [
-        "../../../../frontend/src/assets/icon/myscoutee-meta-app-icon-1024.png"
+        "../../../../myscoutee-frontend/src/assets/icon/myscoutee-meta-app-icon-1024.png"
       ],
       "local_reference_sha256": "067ff57353031c5770eafa88e8d8d77be2411a93e308b876f9a545a5a49199ac",
       "prompt_sha256": "bfeb7ac53a0220f085554d26a828a6205b62ceacde53c731bea24986c386fdad",

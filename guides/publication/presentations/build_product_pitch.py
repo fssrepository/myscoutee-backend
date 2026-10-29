@@ -44,11 +44,11 @@ INK = ui.INK
 
 
 SVG_ASSETS = {
-    "rating": ROOT / "frontend/src/assets/help-center/explanations/en/home-game/affinity.svg",
-    "affinity_network": ROOT / "frontend/src/assets/help-center/explanations/en/home-game/affinity-network.svg",
-    "chat": ROOT / "frontend/src/assets/help-center/explanations/en/chats/activity-chat-message-window.svg",
-    "event_join": ROOT / "frontend/src/assets/help-center/explanations/en/events/activity-event-join.svg",
-    "ticket_scan": ROOT / "frontend/src/assets/help-center/explanations/en/assets-tickets/assets-ticket-scanner.svg",
+    "rating": ROOT / "myscoutee-frontend/src/assets/help-center/explanations/en/home-game/affinity.svg",
+    "affinity_network": ROOT / "myscoutee-frontend/src/assets/help-center/explanations/en/home-game/affinity-network.svg",
+    "chat": ROOT / "myscoutee-frontend/src/assets/help-center/explanations/en/chats/activity-chat-message-window.svg",
+    "event_join": ROOT / "myscoutee-frontend/src/assets/help-center/explanations/en/events/activity-event-join.svg",
+    "ticket_scan": ROOT / "myscoutee-frontend/src/assets/help-center/explanations/en/assets-tickets/assets-ticket-scanner.svg",
 }
 
 

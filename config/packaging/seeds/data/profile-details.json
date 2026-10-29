@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "builder": "frontend/src/app/shared/core/local/seed/builders/accounts/user-seed.builder.ts",
+  "builder": "myscoutee-frontend/src/app/shared/core/local/seed/builders/accounts/user-seed.builder.ts",
   "exportName": "SeedUserBuilder",
   "method": "buildExpandedDemoUsers",
   "preloadModules": ["@angular/compiler"],

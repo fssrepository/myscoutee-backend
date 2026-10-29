@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
-const require=createRequire(new URL('../../../../../frontend/package.json', import.meta.url));
+const require=createRequire(new URL('../../../../../myscoutee-frontend/package.json', import.meta.url));
 const b=await require('playwright').chromium.connectOverCDP('http://127.0.0.1:36087');
 const p=b.contexts().flatMap(c=>c.pages()).find(p=>p.url().startsWith('http://localhost:8080/'));
 const pause=ms=>new Promise(r=>setTimeout(r,ms));

@@ -30,7 +30,7 @@ workflow become clear through the same user's journey.
 - sound: retain each accepted Flow clip's generated music/atmosphere and mix it
   beneath Jon, following the delivered-film method;
 - captions: Hungarian manual SRT/VTT, English correction files;
-- brand: exact `frontend/src/assets/logo/heart.png` plus editable `yScoutee`;
+- brand: exact `myscoutee-frontend/src/assets/logo/heart.png` plus editable `yScoutee`;
 - final MP4: deliberately outside Git; prompts, sources, frames, captions and
   the PDF are versioned here.
 

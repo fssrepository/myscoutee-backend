@@ -437,7 +437,7 @@ virtual-enterprise participation legible through actions, not labels. This is a
 future operating model, not evidence of current deployments or proven efficiency.
 Leave one exact, undistorted blank central plate at the shared network core for
 post-production placement of the original repository
-`frontend/src/assets/logo/heart.png`. Do not draw or approximate the logo. The
+`myscoutee-frontend/src/assets/logo/heart.png`. Do not draw or approximate the logo. The
 final composite may let its helmet-like shelter, guiding star and central heart
 suggest protection, direction and human connection without claiming certified
 safety.

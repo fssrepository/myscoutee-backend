@@ -2071,8 +2071,8 @@
   ],
   "paths": {
     "database": "server/docker/conf/mongodb/demo_db",
-    "frontendHelper": "frontend/src/app/shared/core/local/seed/builders/media/demo-image-pool.ts",
-    "frontendDefinitions": "frontend/src/app/shared/core/local/seed/builders/media/demo-image-pool.definitions.json",
+    "frontendHelper": "myscoutee-frontend/src/app/shared/core/local/seed/builders/media/demo-image-pool.ts",
+    "frontendDefinitions": "myscoutee-frontend/src/app/shared/core/local/seed/builders/media/demo-image-pool.definitions.json",
     "manifest": "config/packaging/seeds/data/demo-image-pool-manifest.json",
     "media": "server/docker/conf/minio/media"
   },

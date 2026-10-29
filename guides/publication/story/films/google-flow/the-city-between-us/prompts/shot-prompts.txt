@@ -349,7 +349,7 @@ independently hosted server workspaces cooperating around the same unresolved
 relationship-to-meeting problem. One node has a clear voluntary opt-out path and
 remains locally operable. One 45 mm over-shoulder move ends in a balanced network
 composition with an exact blank central plate reserved for post placement of the
-original unmodified `frontend/src/assets/logo/heart.png`. The helmet-like shelter,
+original unmodified `myscoutee-frontend/src/assets/logo/heart.png`. The helmet-like shelter,
 star and central heart may suggest protection, direction and human connection,
 but not certified safety. The core is shared globally while local people,
 cultures and organizers shape each test; do not homogenize the local palettes.

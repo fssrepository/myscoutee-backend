@@ -599,7 +599,7 @@ verification checklist show a technically accountable handoff. Reveal several
 independently hosted local servers and culturally distinct community tests around
 one common coral core; one node can opt out while staying independently operable.
 Reserve an exact central plate for the original unmodified repository
-`frontend/src/assets/logo/heart.png`, composited in post. Its helmet-like shelter,
+`myscoutee-frontend/src/assets/logo/heart.png`, composited in post. Its helmet-like shelter,
 guiding star and central heart visually connect protection, direction and human
 connection without turning the mark into a certification or safety guarantee.
 This is the intended virtual-enterprise model, not a claim of current deployment,

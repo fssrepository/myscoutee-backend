@@ -17,7 +17,7 @@
     "optional": false,
     "error": "Production privacy help content must use runtime contact tokens without fixed privacy identities.",
     "slurpFiles": {
-      "languages": "frontend/src/app/shared/core/common/content-languages.json"
+      "languages": "myscoutee-frontend/src/app/shared/core/common/content-languages.json"
     }
   }
 ]

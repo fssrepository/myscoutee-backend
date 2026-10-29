@@ -156,7 +156,7 @@ handoff to a technically capable local operator,
 independently hosted own-brand servers, culturally specific community tests,
 voluntary cooperation and one real opt-out. Leave an exact blank central plate
 for post placement of the original unmodified
-`frontend/src/assets/logo/heart.png`. The helmet-like shelter, guiding star and
+`myscoutee-frontend/src/assets/logo/heart.png`. The helmet-like shelter, guiding star and
 central heart may suggest protection, direction and human connection, but never
 certified safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,

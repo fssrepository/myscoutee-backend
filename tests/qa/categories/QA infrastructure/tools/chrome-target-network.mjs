@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 
 const args = process.argv.slice(2);
 const command = args[0] ?? 'list';

@@ -6,5 +6,5 @@ services:
   frontend-sync:
     environment:
       FRONTEND_BUILD_CONFIGURATION: github
-      FRONTEND_SOURCE_DIR: /workspace/frontend/docs
+      FRONTEND_SOURCE_DIR: /workspace/myscoutee-frontend/docs
       NG_BUILD_MAX_WORKERS: "2"

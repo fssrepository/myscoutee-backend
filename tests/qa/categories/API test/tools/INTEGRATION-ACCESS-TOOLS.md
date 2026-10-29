@@ -92,7 +92,7 @@ to an existing launcher window; it creates no browser or tab:
 ```js
 const {readFile} = await import('node:fs/promises');
 const {createRequire} = await import('node:module');
-const require = createRequire(process.cwd() + '/frontend/package.json');
+const require = createRequire(process.cwd() + '/myscoutee-frontend/package.json');
 const {chromium} = require('playwright');
 const manifest = JSON.parse(await readFile('/tmp/myscoutee-qa-browser-sessions/INTEGRATION-ACCESS-001.json', 'utf8'));
 const browser = await chromium.connectOverCDP('http://127.0.0.1:' + manifest.sessions[0].devToolsPort);
@@ -472,7 +472,7 @@ The normal campaign reset owns eventual restoration of this retained fixture.
 Translation content/version changes use the existing generator and importer:
 
 ```bash
-node frontend/scripts/generate-i18n-mongo-seed.js
+node myscoutee-frontend/scripts/generate-i18n-mongo-seed.js
 # Import messages first, then publish the bundle revision; only these two files.
 for collection in i18n_messages i18n_bundles; do
   docker exec -e MONGO_APP_DATABASE=demo_db -e MONGO_SEED_DIRECTORY=demo_db \

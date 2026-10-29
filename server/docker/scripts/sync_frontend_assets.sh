@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../../.." && pwd)"
 
-DEFAULT_FRONTEND_ROOT="${REPO_ROOT}/frontend"
+DEFAULT_FRONTEND_ROOT="${REPO_ROOT}/myscoutee-frontend"
 DEFAULT_NGINX_HTML_DIR="${REPO_ROOT}/server/docker/conf/nginx/app/myscoutee"
 
 MODE="${1:-dev}"

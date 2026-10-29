@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { EventEmitter, once } from 'node:events';
 import path from 'node:path';
 import os from 'node:os';
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 
 const [action, actor = 'Ava', ...args] = process.argv.slice(2);
 const root = path.join(os.tmpdir(), 'myscoutee-qa-browser-sessions');

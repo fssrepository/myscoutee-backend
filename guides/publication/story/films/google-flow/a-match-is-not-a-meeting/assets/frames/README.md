@@ -18,7 +18,7 @@
 | branded last-frame reference | `PR_CLOSING_BRANDED.png` | no, post composite |
 
 The exact brand source is
-`../../../../../frontend/src/assets/logo/heart.png`.
+`../../../../../myscoutee-frontend/src/assets/logo/heart.png`.
 
 `PR_OPENING_BRANDED` and `PR_CLOSING_BRANDED` use the untouched heart asset with
 editable rasterized `yScoutee`; they document the first/last appearance but

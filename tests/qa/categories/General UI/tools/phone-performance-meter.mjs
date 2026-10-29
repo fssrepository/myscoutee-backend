@@ -2,7 +2,7 @@
 // Install: node <this file>; collect: node <this file> --collect [--stop]
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
-const require = createRequire(new URL('../../../../../frontend/package.json', import.meta.url));
+const require = createRequire(new URL('../../../../../myscoutee-frontend/package.json', import.meta.url));
 const browser = await require('playwright').chromium.connectOverCDP('http://127.0.0.1:36087');
 try {
   const page = browser.contexts().flatMap(context => context.pages())

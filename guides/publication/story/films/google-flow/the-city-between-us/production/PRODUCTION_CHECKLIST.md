@@ -126,7 +126,7 @@ continuity and technical faults before an expensive final render.
 
 ## D. Original branding
 
-- [ ] Brand source is exactly `frontend/src/assets/logo/heart.png`.
+- [ ] Brand source is exactly `myscoutee-frontend/src/assets/logo/heart.png`.
 - [ ] The image was not recolored, redrawn, cropped, generated or enhanced.
 - [ ] S01 briefly shows the mark and separate product name.
 - [ ] S22 uses the unmodified mark at the shared MyScoutee Network core; the

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Explicitly delegated EVENT-FOLLOWING-002 browser actions. No app API substitution.
 import { readFile, writeFile } from 'node:fs/promises';
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 const [command='inspect', value='', actor='0'] = process.argv.slice(2);
 const checkpoint='EVENT-FOLLOWING-002';
 const manifest=JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`,'utf8'));

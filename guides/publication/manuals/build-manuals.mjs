@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, '..', '..', '..');
-const frontendPackage = path.join(repositoryRoot, 'frontend', 'package.json');
+const frontendPackage = path.join(repositoryRoot, 'myscoutee-frontend', 'package.json');
 const requireFromFrontend = createRequire(frontendPackage);
 
 const catalog = JSON.parse(await fs.readFile(path.join(scriptDirectory, 'manuals.json'), 'utf8'));
@@ -27,7 +27,7 @@ try {
 } catch (error) {
   throw new Error(
     'The frontend development dependencies are required to generate the PDFs. '
-      + 'Run this first: (cd frontend && npm ci)',
+      + 'Run this first: (cd myscoutee-frontend && npm ci)',
     { cause: error }
   );
 }
@@ -158,7 +158,7 @@ try {
   await browser.close();
 }
 
-const publicManualDirectory = path.join(repositoryRoot, 'frontend', 'guides', 'manuals');
+const publicManualDirectory = path.join(repositoryRoot, 'myscoutee-frontend', 'guides', 'manuals');
 if (catalog.publishToFrontend) await fs.mkdir(publicManualDirectory, { recursive: true });
 for (const manual of generatedManuals.filter(manual => manual.publishToFrontend ?? catalog.publishToFrontend)) {
   const publicPath = path.join(publicManualDirectory, manual.output);

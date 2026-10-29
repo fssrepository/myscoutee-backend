@@ -49,7 +49,7 @@ class OperatorUpdateReleaseServiceTest {
         manifest.put("artifact_sha256", "sha256:" + "a".repeat(64));
         manifest.put("package_signing_key_id", ReleaseProtocol.packageSigningKeyId(key.getPublic().getEncoded()));
         manifest.put("backup_required", false); manifest.put("expected_downtime_seconds", 300);
-        manifest.put("status", "AVAILABLE"); manifest.put("release_notes_url", "https://github.com/fssrepository/myscoutee/releases/tag/v1.2.3");
+        manifest.put("status", "AVAILABLE"); manifest.put("release_notes_url", "https://github.com/fssrepository/myscoutee-frontend/releases/tag/v1.2.3");
         var signature = Signature.getInstance("Ed25519");
         signature.initSign(key.getPrivate());
         signature.update(ReleaseProtocol.releasePackage(mapper.convertValue(manifest, UpdateManifest.class)));
@@ -128,7 +128,7 @@ class OperatorUpdateReleaseServiceTest {
         Files.write(properties.getReleasePublicKeyPath(), key.getPublic().getEncoded());
         var advertised = new java.util.ArrayList<Map<String, Object>>();
         for (String version : java.util.List.of("1.0.0-qa.2", "1.0.0-qa.10", "1.0.0-qa.3")) {
-            String prefix = "https://github.com/fssrepository/myscoutee/releases/download/v" + version + "/";
+            String prefix = "https://github.com/fssrepository/myscoutee-frontend/releases/download/v" + version + "/";
             advertised.add(Map.of("tag_name", "v" + version, "draft", false, "prerelease", true,
                     "assets", new Object[]{Map.of("name", "myscoutee_" + version + "_amd64.deb",
                             "size", 123, "browser_download_url", prefix + "myscoutee_" + version + "_amd64.deb"),
@@ -138,7 +138,7 @@ class OperatorUpdateReleaseServiceTest {
         manifest.put("manifest_version", "1"); manifest.put("release_version", "1.0.0-qa.10");
         manifest.put("channel", "qa"); manifest.put("published_at", "2026-09-16T12:00:00Z");
         manifest.put("minimum_compatible_version", "1.0.0-qa.1"); manifest.put("maximum_compatible_version", "1.0.0-qa.9");
-        manifest.put("artifact_url", "https://github.com/fssrepository/myscoutee/releases/download/v1.0.0-qa.10/myscoutee_1.0.0-qa.10_amd64.deb");
+        manifest.put("artifact_url", "https://github.com/fssrepository/myscoutee-frontend/releases/download/v1.0.0-qa.10/myscoutee_1.0.0-qa.10_amd64.deb");
         manifest.put("artifact_size_bytes", 123); manifest.put("artifact_sha256", "sha256:" + "a".repeat(64));
         manifest.put("package_signing_key_id", ReleaseProtocol.packageSigningKeyId(key.getPublic().getEncoded()));
         manifest.put("backup_required", false); manifest.put("expected_downtime_seconds", 300); manifest.put("status", "AVAILABLE");

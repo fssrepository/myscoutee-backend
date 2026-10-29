@@ -20,7 +20,7 @@ Prerequisites: Node.js, the development dependencies installed in `frontend`,
 and Google Chrome/Chromium or Playwright's bundled browser.
 
 ```bash
-(cd frontend && npm ci)
+(cd myscoutee-frontend && npm ci)
 node guides/publication/manuals/build-manuals.mjs
 ```
 
@@ -41,7 +41,7 @@ DOCS_CHROME_PATH=/absolute/path/to/chrome \
 ```
 
 The build overwrites the selected PDFs and automatically copies them to
-`frontend/guides/manuals` in the public frontend repository. The public README
+`myscoutee-frontend/guides/manuals` in the public frontend repository. The public README
 download links point to these copies. The Laboratory Access Manual stays in the backend/template guides;
 its catalog entry sets `publishToFrontend: false`.
 

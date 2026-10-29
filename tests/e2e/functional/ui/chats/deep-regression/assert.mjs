@@ -14,7 +14,7 @@ const CHAT_POPUP_SELECTOR = '.event-chat-popup-shell .ui-popup__panel';
 const SENDER_USER_ID = 'bf057de7c586eede7e84bdc7';
 const RECEIVER_USER_ID = '7822c5f99eff99d63abe8933';
 const PREFERRED_SHARED_CHAT_ID = '60c8f35688886a1030926aed';
-const IMAGE_FIXTURE_PATH = '/home/raxim/workspace/myscoutee-backend/frontend/src/assets/logo/heart.png';
+const IMAGE_FIXTURE_PATH = '/home/raxim/workspace/myscoutee-backend/myscoutee-frontend/src/assets/logo/heart.png';
 const TINY_WAV_DATA_URL = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=';
 
 export async function assertUi({ page, ctx, newIsolatedRecordedPage }) {

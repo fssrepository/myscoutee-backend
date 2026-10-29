@@ -146,7 +146,7 @@ or a “perfect match” message.
 
 The brand source of truth is:
 
-`frontend/src/assets/logo/heart.png`
+`myscoutee-frontend/src/assets/logo/heart.png`
 
 Use the original file without recoloring, redraw, crop, glow, tint or AI
 enhancement. Add `MyScoutee` as separate editable text. Show a brief cue in S01,

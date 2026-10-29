@@ -66,7 +66,7 @@ const workerContext = vm.createContext({ URL, Request, Response, console, caches
   fetch: async () => new Response('public-image'),
   self: { location: { origin: 'http://localhost:8080', href: 'http://localhost:8080/app-sw.js' },
     clients: { claim: async () => {} }, addEventListener: (name, handler) => handlers.set(name, handler) } });
-vm.runInContext(readFileSync('frontend/src/app-sw.js', 'utf8'), workerContext);
+vm.runInContext(readFileSync('myscoutee-frontend/src/app-sw.js', 'utf8'), workerContext);
 for (const [url, destination] of [['/api/auth/me', ''], ['/api/auth/me/realtime/long-poll', ''], ['/media/private/avatar', 'image']]) {
   let intercepted = false;
   handlers.get('fetch')({ request: { url: 'http://localhost:8080' + url, method: 'GET', mode: 'cors', destination }, respondWith: () => { intercepted = true; } });

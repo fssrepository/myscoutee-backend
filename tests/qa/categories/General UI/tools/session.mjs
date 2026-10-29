@@ -3,7 +3,7 @@ import {createRequire} from 'node:module';
 import fs from 'node:fs';
 // Screenshots are local diagnostics, never repository evidence.
 fs.mkdirSync('/tmp/myscoutee-guide-screenshots',{recursive:true});
-const require=createRequire(new URL('../../../../../frontend/package.json', import.meta.url));
+const require=createRequire(new URL('../../../../../myscoutee-frontend/package.json', import.meta.url));
 const {chromium}=require('playwright');
 // An existing managed browser owner can pass its page to tour without a second
 // CDP client changing that page's emulated viewport on attach/disconnect.

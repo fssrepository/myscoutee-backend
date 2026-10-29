@@ -9,4 +9,4 @@ The adjacent `build_network_pitch.py` and `build_product_pitch.py` own the sourc
 Run the selected builder from the application root for a deliberate rebuild.
 Generated slide PNGs, contact sheets, ODP and Office conversion PDFs are temporary
 build products, not additional maintained publications. The public frontend
-continues to receive the released PDF/PPTX in `frontend/guides/pitches`.
+continues to receive the released PDF/PPTX in `myscoutee-frontend/guides/pitches`.

@@ -16,7 +16,7 @@ Rotate it in Firebase or Google Cloud before the next production deploy:
 For the Firebase browser configuration, rotate or restrict the browser API key
 in Google Cloud Credentials, then update the public browser fields through the
 same Operator deployment configuration flow. The frontend does not load or
-package `frontend/keys/firebase.config.json`.
+package `myscoutee-frontend/keys/firebase.config.json`.
 
 The legacy file-backed startup variables remain available for existing
 deployments, but Operator-managed activation stores the credentials encrypted

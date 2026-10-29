@@ -9,7 +9,7 @@ import {
   waitForVisibleText
 } from '@fssrepository/myscoutee-e2e/functional/ui/lib/ui-contracts.mjs';
 
-const ASSET_IMAGE_FIXTURE_PATH = '/home/raxim/workspace/myscoutee-backend/frontend/src/assets/logo/heart.png';
+const ASSET_IMAGE_FIXTURE_PATH = '/home/raxim/workspace/myscoutee-backend/myscoutee-frontend/src/assets/logo/heart.png';
 const ASSET_AVAILABILITY_POPUP = 'app-asset-availability-popup app-popup.asset-availability-popup .ui-popup__panel';
 
 export async function assertUi({ page }) {

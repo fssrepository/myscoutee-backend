@@ -94,7 +94,7 @@ Linux/server workspace, the Founder transfers a verified package
 to a competent local operator. Independent own-brand local servers and culturally
 specific communities cooperate around one voluntary shared core; one node keeps
 a clean opt-out and remains operable. Leave an exact blank central plate for the
-original unmodified repository file `frontend/src/assets/logo/heart.png`, added
+original unmodified repository file `myscoutee-frontend/src/assets/logo/heart.png`, added
 in post. The icon's helmet-like shelter, guiding star and central heart may read
 as protection, direction and human connection, but never as a certification or
 guarantee. Local brands remain distinct. Make no current-deployment, traction,

@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readManagedBrowserManifest } from '../../qa/node_modules/@fssrepository/myscoutee-qa/browser/managed-browser-manifest.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-const require = createRequire(path.join(root, 'frontend/package.json'));
+const require = createRequire(path.join(root, 'myscoutee-frontend/package.json'));
 const { chromium } = require('playwright');
 const manifest = await readManagedBrowserManifest('MSC120-LOCAL-SELECTION');
 if (manifest.checkpointId !== 'MSC120-LOCAL-SELECTION' || manifest.sessions.length !== 1) throw new Error('Wrong checkpoint');

@@ -3,7 +3,7 @@
 These helpers operate on a MyScoutee source checkout to build, inspect, and
 sign production release artifacts:
 
-- `build-production.sh` builds frontend/backend artifacts and production images;
+- `build-production.sh` builds frontend and backend artifacts and production images;
 - `build-debian-release.sh` builds the Debian package and Operator bundle and
   writes a separate `.sha256` checksum file beside each artifact;
 - `package-production.sh` stages and creates those release archives;
@@ -50,12 +50,12 @@ tags remain unchanged; the coordinated `v1.4.1` source tag identifies this candi
 ## Build a QA prerelease from current source
 
 Use the normal builder with `MYSCOUTEE_VERSION=1.0.0-qa.1`. It builds the complete
-current frontend/backend and managed images, then packages them. Application
+current frontend and backend artifacts and managed images, then packages them. Application
 markers, image tags and filenames use `1.0.0-qa.1`; the Debian control version
 uses `1.0.0~qa.1` so it sorts before stable `1.0.0`. The final stable version
 remains unchanged. Do not patch old application binaries to make this baseline.
 
-Production nginx consumes `frontend/prod` through its named build context.
+Production nginx consumes `myscoutee-frontend/prod` through its named build context.
 Release builds must not copy output into the dev-owned
 `server/docker/conf/nginx/app/myscoutee` directory.
 

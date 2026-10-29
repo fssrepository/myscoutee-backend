@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Full-flow runner for the explicitly delegated EVENT-FOLLOWING-001 checkpoint.
 import { readFile } from 'node:fs/promises';
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 const [actor = '0', script] = process.argv.slice(2);
 const checkpoint = process.env.QA_CHECKPOINT || 'EVENT-FOLLOWING-001';
 if (!['EVENT-FOLLOWING-001', 'EVENT-FOLLOWING-002'].includes(checkpoint)) throw Error('Unknown checkpoint');

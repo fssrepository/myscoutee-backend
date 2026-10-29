@@ -354,7 +354,7 @@ services:
       secrets:
         - npmrc
       additional_contexts:
-        frontend-source: ../frontend
+        frontend-source: ../myscoutee-frontend
         nginx-config: ../config/nginx
         nginx-partitions: ./docker/conf/mongodb/e2e_db
     container_name: nginx

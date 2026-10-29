@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Operates only the named disposable checkpoint after explicit full-flow delegation.
 import {readFile,writeFile} from 'node:fs/promises';
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 const [actor='0',file,output]=process.argv.slice(2);
 let stepExpression;
 if(file?.startsWith('@')) {

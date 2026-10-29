@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { ChatCallVoiceActivity } from '../../../../../../../frontend/src/app/shared/core/base/services/chat/chat-call-voice-activity.ts';
+import { ChatCallVoiceActivity } from '../../../../../../../myscoutee-frontend/src/app/shared/core/base/services/chat/chat-call-voice-activity.ts';
 
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(predicate) {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync } from 'node:fs';
-import WebSocket from '../../../../../frontend/node_modules/ws/index.js';
+import WebSocket from '../../../../../myscoutee-frontend/node_modules/ws/index.js';
 
 const manifestPath = process.argv[process.argv.indexOf('--manifest') + 1];
 if (!manifestPath) fail('Usage: verify-chat-actions-oracle.mjs --manifest FILE');

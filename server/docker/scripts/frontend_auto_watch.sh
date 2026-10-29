@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SOURCE_FRONTEND_ROOT="${FRONTEND_ROOT:-/workspace/frontend}"
+SOURCE_FRONTEND_ROOT="${FRONTEND_ROOT:-/workspace/myscoutee-frontend}"
 SYNC_SCRIPT="${SYNC_SCRIPT:-/scripts/sync_frontend_assets.sh}"
 BUILD_MODE="${FRONTEND_BUILD_MODE:-}"
 BUILD_CONFIGURATION="${FRONTEND_BUILD_CONFIGURATION:-}"
@@ -18,7 +18,7 @@ if [[ ! -d "${SOURCE_FRONTEND_ROOT}" ]]; then
 fi
 
 if [[ ! -d "${SOURCE_FRONTEND_ROOT}/node_modules" ]]; then
-  echo "Error: frontend/node_modules is missing. Run npm install in the frontend workspace first." >&2
+  echo "Error: myscoutee-frontend/node_modules is missing. Run npm install in the frontend workspace first." >&2
   exit 1
 fi
 

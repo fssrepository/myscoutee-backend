@@ -7,7 +7,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../..');
-const require = createRequire(path.join(root, 'frontend/package.json'));
+const require = createRequire(path.join(root, 'myscoutee-frontend/package.json'));
 const { chromium } = require('playwright');
 const format = process.argv[2];
 if (!['before-meeting', 'speed-meeting'].includes(format) || !process.argv.includes('--delegated')) {

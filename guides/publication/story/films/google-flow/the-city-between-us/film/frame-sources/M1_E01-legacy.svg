@@ -18,7 +18,7 @@
   <rect width="720" height="1280" fill="url(#veil)"/>
   <g filter="url(#shadow)">
     <image x="145" y="132" width="88" height="88"
-           xlink:href="frontend/src/assets/logo/heart.png"/>
+           xlink:href="myscoutee-frontend/src/assets/logo/heart.png"/>
     <text x="247" y="204" fill="#ffffff" font-family="DejaVu Sans, sans-serif"
           font-size="65" font-weight="700" letter-spacing="-1">yScoutee</text>
   </g>

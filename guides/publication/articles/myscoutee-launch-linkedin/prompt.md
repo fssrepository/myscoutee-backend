@@ -6,7 +6,7 @@ Tool: built-in `image_gen`, edit mode. Final image: `cover.png`.
 
 The accepted `cover.png` now includes FREE TO JOIN. It replaces the earlier NOW LIVE cover.
 
-Logo source: `frontend/src/assets/logo/heart.png`. The logo replaces the capital M in the wordmark.
+Logo source: `myscoutee-frontend/src/assets/logo/heart.png`. The logo replaces the capital M in the wordmark.
 
 ## Logo insertion prompt
 

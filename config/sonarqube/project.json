@@ -6,7 +6,7 @@
   ],
   "modules": {
     "backend": "server/projects/profile",
-    "frontend": "frontend",
+    "frontend": "myscoutee-frontend",
     "microservices": "."
   }
 }

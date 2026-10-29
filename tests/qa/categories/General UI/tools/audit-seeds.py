@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[5]
-DATA = ROOT / 'frontend/src/app/shared/core/local/seed/data'
+DATA = ROOT / 'myscoutee-frontend/src/app/shared/core/local/seed/data'
 
 
 def read(path):
@@ -13,7 +13,7 @@ def read(path):
 
 inventory = read(DATA / 'help-center-guide-fields.json')
 versions = read(DATA / 'help-center-guide-versions.json')
-bundles = {lang: read(ROOT / f'frontend/src/assets/i18n/{lang}.json')['messages']
+bundles = {lang: read(ROOT / f'myscoutee-frontend/src/assets/i18n/{lang}.json')['messages']
            for lang in ['en', 'hu']}
 field_count = sum(map(len, inventory.values()))
 parser = argparse.ArgumentParser(description='Audit the complete guide catalog or selected contexts.')

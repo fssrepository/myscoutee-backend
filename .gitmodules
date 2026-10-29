@@ -1,4 +1,4 @@
 [submodule "frontend"]
-	path = frontend
-	url = https://github.com/fssrepository/myscoutee.git
+	path = myscoutee-frontend
+	url = https://github.com/fssrepository/myscoutee-frontend.git
 	branch = master

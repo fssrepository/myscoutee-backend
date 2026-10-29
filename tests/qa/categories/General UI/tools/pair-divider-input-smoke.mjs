@@ -6,7 +6,7 @@ import {execFileSync} from 'node:child_process';
 const phone=process.env.PHONE==='1',scenario=process.env.SCENARIO||'rates';
 let p,browser;
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
-if(phone){const require=createRequire(new URL('../../../../../frontend/package.json',import.meta.url));browser=await require('playwright').chromium.connectOverCDP('http://127.0.0.1:36087');p=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().startsWith('http://localhost:8080/'));}
+if(phone){const require=createRequire(new URL('../../../../../myscoutee-frontend/package.json',import.meta.url));browser=await require('playwright').chromium.connectOverCDP('http://127.0.0.1:36087');p=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().startsWith('http://localhost:8080/'));}
 else{process.env.MOBILE='1';process.env.CHECKPOINT=scenario==='home'?'EXPLANATION-GUIDE-001':'EXPLANATION-GUIDE-FEEDBACK-001';const s=await import('./session.mjs');({p,browser}=s);if(scenario==='home'){await s.home();await p.getByRole('button',{name:'Select game mode',exact:true}).click();await p.getByRole('menuitemradio',{name:/Outside Network/}).click();}else{await s.menu('Open rates');await p.getByRole('button',{name:/^Open activity\.rates\.group\./}).click();await p.locator('[data-guide-item="rate:pair-given"]').click();await p.getByRole('button',{name:'Open rates fullscreen mode',exact:true}).click();}}
 const checks=[];
 const pair=p.locator('.smart-list__fullscreen-card--active app-pair-card'),handle=pair.locator('[data-guide-field="pair-resize"]');

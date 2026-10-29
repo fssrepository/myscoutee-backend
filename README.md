@@ -13,13 +13,13 @@ Its goal is a **completed, mutually welcomed real-world meeting**.
 
 ### Installer
 
-The current installer release is **1.4.1**, with its Debian package, client tools,
+The current installer release is **1.5.0**, with its Debian package, client tools,
 checksums, container references and signed metadata available from
-[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.4.1).
+[GitHub Releases](https://github.com/fssrepository/myscoutee-frontend/releases/tag/v1.5.0).
 
 See the [installation guide](guides/development/reference/packaging.md),
-[1.4.1 installer release notes](guides/development/releases/v1.4.1.md) and
-[1.4.3 application update notes](guides/development/releases/v1.4.3.md).
+[1.5.0 release record](guides/development/releases/v1.5.0.md) and
+[1.4.1 installer release notes](guides/development/releases/v1.4.1.md).
 
 ### Documentation PDFs
 

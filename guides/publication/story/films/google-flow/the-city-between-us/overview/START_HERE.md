@@ -84,7 +84,7 @@ delete a generated test before its cost, settings, score and hash have been
 recorded.
 
 The only approved brand source is
-`frontend/src/assets/logo/heart.png`. Keep it unmodified and add `MyScoutee` as
+`myscoutee-frontend/src/assets/logo/heart.png`. Keep it unmodified and add `MyScoutee` as
 separate editable text in post.
 
 ## 5. Produce exact endpoint pairs

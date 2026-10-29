@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "network"
 SLIDES = OUT / "slides"
-FRONTEND_ROOT = ROOT / "frontend"
+FRONTEND_ROOT = ROOT / "myscoutee-frontend"
 FRONTEND_PITCHES = FRONTEND_ROOT / "guides" / "pitches"
 RELEASE_VERSION = "1.0.0"
 RELEASE_LANGUAGE = "EN"
@@ -335,7 +335,7 @@ def paste_brand_logo(image: Image.Image, box: tuple[int, int, int, int]) -> None
     x1, y1, x2, y2 = box
     target_w = x2 - x1
     target_h = y2 - y1
-    source = Image.open(ROOT / "frontend/src/assets/logo/heart.png").convert("RGBA")
+    source = Image.open(ROOT / "myscoutee-frontend/src/assets/logo/heart.png").convert("RGBA")
     scale = min(target_w / source.width, target_h / source.height)
     resized = source.resize(
         (max(1, round(source.width * scale)), max(1, round(source.height * scale))),
@@ -504,7 +504,7 @@ def slide_2() -> Image.Image:
         status="BUILT",
     )
 
-    visual = ROOT / "frontend/src/assets/logo/cards_no_edges.webp"
+    visual = ROOT / "myscoutee-frontend/src/assets/logo/cards_no_edges.webp"
     paste_cover(image, visual, (88, 230, 1190, 718), radius=28, outline="#465894")
 
     differentiators = [

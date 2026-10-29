@@ -13,7 +13,7 @@ BOOK_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = next(
     candidate
     for candidate in (BOOK_DIR, *BOOK_DIR.parents)
-    if (candidate / "frontend/src/assets/logo/heart.png").is_file()
+    if (candidate / "myscoutee-frontend/src/assets/logo/heart.png").is_file()
 )
 BASE_BUILDER = (
     PROJECT_DIR
@@ -51,7 +51,7 @@ book.PAPERBACK_COVER_TEMPLATE = (
     ASSET_DIR / "paperback-cover-standard-color.svg.in"
 )
 book.PAPERBACK_SPINE_TITLE = "THE SYSTEM BETWEEN US  •  PETER SZABO"
-book.LOGO = PROJECT_DIR / "frontend/src/assets/logo/heart.png"
+book.LOGO = PROJECT_DIR / "myscoutee-frontend/src/assets/logo/heart.png"
 book.COVER_EMBLEM = ASSET_DIR / "cover-emblem.svg"
 book.ILLUSTRATIONS = BOOK_DIR / "illustrations.json"
 book.BOOK_VERSION = BOOK_DIR / "version.json"

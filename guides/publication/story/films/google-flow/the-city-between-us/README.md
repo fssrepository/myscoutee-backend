@@ -214,7 +214,7 @@ safe or successful meeting.
   is not a compulsory group date and does not manufacture chemistry.
 - Product UI shown in generated plates must be abstract. Capture the real UI or
   rebuild clean motion graphics in post; do not publish AI-generated gibberish.
-- Use the unmodified original `frontend/src/assets/logo/heart.png`. It is the
+- Use the unmodified original `myscoutee-frontend/src/assets/logo/heart.png`. It is the
   repository's high-resolution logo asset. Do not recolor, redraw, crop, glow or
   AI-regenerate it. Keep **MyScoutee** as separate editable text in post rather
   than creating a new combined bitmap.

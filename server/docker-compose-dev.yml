@@ -353,8 +353,8 @@ services:
       exec bash /scripts/frontend_auto_watch.sh"
     environment:
       MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.5.0}"
-      FRONTEND_ROOT: /workspace/frontend
-      FRONTEND_SOURCE_DIR: /workspace/frontend/dev
+      FRONTEND_ROOT: /workspace/myscoutee-frontend
+      FRONTEND_SOURCE_DIR: /workspace/myscoutee-frontend/dev
       FRONTEND_BUILD_CONFIGURATION: dev
       NGINX_HTML_DIR: /workspace/nginx-html
       NG_BUILD_MAX_WORKERS: "12"
@@ -365,7 +365,7 @@ services:
       SYNC_DEBOUNCE_SECONDS: "2"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
-      - ../frontend:/workspace/frontend
+      - ../myscoutee-frontend:/workspace/myscoutee-frontend
       - ./docker/conf/nginx/app/myscoutee:/workspace/nginx-html
       - ./docker/scripts/sync_frontend_assets.sh:/scripts/sync_frontend_assets.sh:ro
       - ./docker/scripts/frontend_auto_watch.sh:/scripts/frontend_auto_watch.sh:ro

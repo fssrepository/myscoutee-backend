@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "outputDirectory": "frontend/src/assets/help-center/explanations",
+  "outputDirectory": "myscoutee-frontend/src/assets/help-center/explanations",
   "languages": [
     "en",
     "hu"

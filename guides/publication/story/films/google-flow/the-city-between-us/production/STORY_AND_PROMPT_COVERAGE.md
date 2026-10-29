@@ -105,7 +105,7 @@ uncertainty and public boundaries.
 | Country change may reuse the group-first method | Book 30 | S22 contextual note/master prompts | Current independent operators do not automatically exchange profiles, chats, contacts or private-rate history; migration is later work. |
 | Shared core, independent own-brand local operators, voluntary network and opt-out | Book 30–31 | S22 | Intended operating model, not proof of live deployments, revenue or efficiency. |
 | Broad built core, hardening/pilots/distribution/partners still needed | Book 31 and epilogue | S22–E01 | Built software is not validated social outcome, traction or solved loneliness. |
-| Brand mark: helmet-like shelter, guiding star and central heart | Book epilogue | P00, S22 and E01 | Use exact unmodified `frontend/src/assets/logo/heart.png`; symbolism is not safety certification. |
+| Brand mark: helmet-like shelter, guiding star and central heart | Book epilogue | P00, S22 and E01 | Use exact unmodified `myscoutee-frontend/src/assets/logo/heart.png`; symbolism is not safety certification. |
 | Book cover: mark replaces the initial M, then `yScoutee`; title `The Story`; large Roman `I` marks trilogy Part I | Book build, `version.json` and book README | Generated HTML/PDF cover | Part and edition version are separate; never place the mark beside the complete word or generate a fake logo. |
 
 ## 4. Production decisions already synchronized

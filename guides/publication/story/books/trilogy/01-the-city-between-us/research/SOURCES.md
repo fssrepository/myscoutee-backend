@@ -25,16 +25,16 @@ research supports the story framing, not MyScoutee performance claims.
   event/chat/resource operating surface.
 - [DeploymentConfigurationController.java](../../../../../../../server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/controller/DeploymentConfigurationController.java)
   and operator controllers: branding/configuration/operator surface.
-- [explanation-popup.component.ts](../../../../../../../frontend/src/app/shared/ui/components/explanation-popup/explanation-popup.component.ts)
-  and [home.component.ts](../../../../../../../frontend/src/app/home/components/home/home.component.ts):
+- [explanation-popup.component.ts](../../../../../../../myscoutee-frontend/src/app/shared/ui/components/explanation-popup/explanation-popup.component.ts)
+  and [home.component.ts](../../../../../../../myscoutee-frontend/src/app/home/components/home/home.component.ts):
   current interface categories include Friends in Common, Inside Network and
   Outside Network. They support context wording, not endorsement or trust claims.
-- [activity-invite-candidates.repository.ts](../../../../../../../frontend/src/app/shared/core/local/source/repositories/events/activity-invite-candidates.repository.ts)
-  and [activity-members-seed.repository.ts](../../../../../../../frontend/src/app/shared/core/local/seed/repositories/events/activity-members-seed.repository.ts):
+- [activity-invite-candidates.repository.ts](../../../../../../../myscoutee-frontend/src/app/shared/core/local/source/repositories/events/activity-invite-candidates.repository.ts)
+  and [activity-members-seed.repository.ts](../../../../../../../myscoutee-frontend/src/app/shared/core/local/seed/repositories/events/activity-members-seed.repository.ts):
   retain meeting time/context for known contacts and invite candidates. The film
   may show “met at an event” context without inventing a reputation system.
 - Original brand asset:
-  [heart.png](../../../../../../../frontend/src/assets/logo/heart.png). The video must use
+  [heart.png](../../../../../../../myscoutee-frontend/src/assets/logo/heart.png). The video must use
   this file unmodified; the product name stays editable text in post.
 
 The code supports “built feature” wording where the truth matrix says built. It

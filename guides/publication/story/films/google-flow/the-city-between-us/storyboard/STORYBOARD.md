@@ -551,7 +551,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   core then reveals several independent server workspaces cooperating as a
   voluntary network/virtual enterprise; one node has a clean opt-out branch and
   remains locally operable. At the common MyScoutee Network core, composite the
-  original unmodified `frontend/src/assets/logo/heart.png` in post. Its helmet-
+  original unmodified `myscoutee-frontend/src/assets/logo/heart.png` in post. Its helmet-
   like shelter, guiding star and central heart make protection, direction and
   human connection legible without explanatory text. Local brands remain
   visually distinct around it. This is accountable shared infrastructure, not

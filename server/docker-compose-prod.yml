@@ -2,7 +2,7 @@ name: myscoutee-prod
 
 # Production stack.
 # Build the frontend production bundle before building this stack. The nginx
-# image bakes frontend/prod into /usr/share/nginx/html.
+# image bakes myscoutee-frontend/prod into /usr/share/nginx/html.
 
 networks:
   myscoutee:
@@ -78,7 +78,7 @@ services:
       dockerfile: images/nginx/prod/Dockerfile
       additional_contexts:
         nginx-config: ../config/nginx
-        frontend-prod: ../frontend/prod
+        frontend-prod: ../myscoutee-frontend/prod
       args:
         NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-ghcr.io/fssrepository/myscoutee-nginx:1.5.0@sha256:9ab49ea949afaee5164e828b699c102dca38a2766d7573c4f342984e8da74774}
         MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.5.0}

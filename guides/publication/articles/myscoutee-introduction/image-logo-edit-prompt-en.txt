@@ -1,7 +1,7 @@
 Generation mode: built-in image_gen edit
 Output: cover-en.png (replaces initial artwork)
 Edit target: initial square cover-en.png before the logo correction
-Official logo reference: frontend/docs/assets/logo/heart.png
+Official logo reference: myscoutee-frontend/docs/assets/logo/heart.png
 
 Use case: precise-object-edit
 Edit target: Image 1, the square MyScoutee Facebook campaign artwork.
